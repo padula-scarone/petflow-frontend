@@ -75,7 +75,8 @@ export function RegistrarVentaCarrito({
       </div>
 
       {/* --- FOOTER COBRO --- */}
-      <footer className="fixed inset-x-0 bottom-0 z-10 flex items-center justify-between gap-4 border-t bg-card p-4 lg:static lg:justify-end lg:gap-6 lg:border-0 lg:bg-transparent lg:p-0">
+      {/* bottom-16: queda sobre la barra inferior de modulos en mobile */}
+      <footer className="fixed inset-x-0 bottom-16 z-10 flex items-center justify-between gap-4 border-t bg-card p-4 lg:static lg:justify-end lg:gap-6 lg:border-0 lg:bg-transparent lg:p-0">
         <p className="flex flex-col lg:flex-row lg:items-baseline lg:gap-2">
           <span className="text-sm text-muted-foreground">Subtotal:</span>
           <span className="text-xl font-bold tabular-nums">

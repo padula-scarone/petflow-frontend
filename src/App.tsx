@@ -1,4 +1,7 @@
 import { useState } from 'react'
+import { MenuDoble } from '@/features/navegacion/components/menu-doble'
+import { MODULOS_MENU } from '@/features/navegacion/config/modulos-menu'
+import { useMenuDoble } from '@/features/navegacion/hooks/use-menu-doble'
 import { RegistrarVentaCarrito } from '@/features/ventas/components/registrar-venta-carrito'
 import type {
   ArticuloCarrito,
@@ -30,6 +33,8 @@ function recalcularArticulo(articulo: ArticuloCarrito, cantidad: number): Articu
 }
 
 function App() {
+  const { idModuloActivo, idSeccionActiva, seleccionarModulo, seleccionarSeccion } =
+    useMenuDoble(MODULOS_MENU)
   const [canalVenta, setCanalVenta] = useState<CanalVenta>('mostrador')
   const [tipoEntrega, setTipoEntrega] = useState<TipoEntrega>('retiro')
   const [textoBusqueda, setTextoBusqueda] = useState('')
@@ -61,23 +66,37 @@ function App() {
   }
 
   return (
-    <main className="mx-auto max-w-6xl p-4 lg:p-8">
-      <RegistrarVentaCarrito
-        estadoVenta={{ canalVenta, tipoEntrega, articulos, subtotal }}
-        textoBusqueda={textoBusqueda}
-        resultadosBusqueda={textoBusqueda.trim() === '' ? [] : resultadosBusqueda}
-        onBuscarProducto={setTextoBusqueda}
-        onAgregarProducto={agregarProducto}
-        onCambiarCanal={setCanalVenta}
-        onCambiarEntrega={setTipoEntrega}
-        onAumentarCantidad={(idProducto) => cambiarCantidad(idProducto, 1)}
-        onDisminuirCantidad={(idProducto) => cambiarCantidad(idProducto, -1)}
-        onEliminarArticulo={(idProducto) =>
-          setArticulos(articulos.filter((articulo) => articulo.idProducto !== idProducto))
-        }
-        onContinuarACobro={() => undefined}
-      />
-    </main>
+    <MenuDoble
+      modulos={MODULOS_MENU}
+      idModuloActivo={idModuloActivo}
+      idSeccionActiva={idSeccionActiva}
+      nombreUsuario="Usuario"
+      onSeleccionarModulo={seleccionarModulo}
+      onSeleccionarSeccion={seleccionarSeccion}
+      onAbrirMenuUsuario={() => undefined}
+    >
+      {idSeccionActiva !== 'registrar-venta' ? (
+        <p className="py-10 text-center text-muted-foreground">Sección en construcción</p>
+      ) : (
+        <div className="mx-auto max-w-6xl">
+          <RegistrarVentaCarrito
+            estadoVenta={{ canalVenta, tipoEntrega, articulos, subtotal }}
+            textoBusqueda={textoBusqueda}
+            resultadosBusqueda={textoBusqueda.trim() === '' ? [] : resultadosBusqueda}
+            onBuscarProducto={setTextoBusqueda}
+            onAgregarProducto={agregarProducto}
+            onCambiarCanal={setCanalVenta}
+            onCambiarEntrega={setTipoEntrega}
+            onAumentarCantidad={(idProducto) => cambiarCantidad(idProducto, 1)}
+            onDisminuirCantidad={(idProducto) => cambiarCantidad(idProducto, -1)}
+            onEliminarArticulo={(idProducto) =>
+              setArticulos(articulos.filter((articulo) => articulo.idProducto !== idProducto))
+            }
+            onContinuarACobro={() => undefined}
+          />
+        </div>
+      )}
+    </MenuDoble>
   )
 }
 
