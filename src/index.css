@@ -1,1 +1,67 @@
 @import "tailwindcss";
+@import "@fontsource-variable/inter";
+
+/* --- TOKENS DE DISENO --- */
+/* Variables CSS que consumen los componentes de shadcn/ui. */
+:root {
+  --background: var(--color-slate-50);
+  --foreground: var(--color-slate-900);
+  --card: #ffffff;
+  --card-foreground: var(--color-slate-900);
+  --popover: #ffffff;
+  --popover-foreground: var(--color-slate-900);
+  --primary: #9385de;
+  /* slate-900 sobre el morado: el blanco no alcanza contraste AA */
+  --primary-foreground: var(--color-slate-900);
+  /* fondo tenue para elementos seleccionados, en lugar de bordes marcados */
+  --primary-muted: #f4f2fb;
+  --secondary: var(--color-slate-100);
+  --secondary-foreground: var(--color-slate-900);
+  --muted: var(--color-slate-100);
+  --muted-foreground: var(--color-slate-500);
+  --accent: var(--primary-muted);
+  --accent-foreground: var(--color-slate-900);
+  --destructive: var(--color-red-600);
+  --border: var(--color-slate-200);
+  --input: var(--color-slate-200);
+  --ring: #9385de;
+  --radius: 0.5rem;
+}
+
+/* --- REGISTRO DE TOKENS EN TAILWIND --- */
+@theme inline {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-muted: var(--primary-muted);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+  }
+}
