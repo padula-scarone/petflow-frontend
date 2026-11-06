@@ -3,6 +3,8 @@ import { MenuDoble } from '@/features/navegacion/components/menu-doble'
 import { MODULOS_MENU } from '@/features/navegacion/config/modulos-menu'
 import { useMenuDoble } from '@/features/navegacion/hooks/use-menu-doble'
 import { RegistrarVentaCarrito } from '@/features/ventas/components/registrar-venta-carrito'
+import { RegistrarVentaCobro } from '@/features/ventas/components/registrar-venta-cobro'
+import { useCobroVentaEjemplo } from '@/features/ventas/hooks/use-cobro-venta-ejemplo'
 import type {
   ArticuloCarrito,
   CanalVenta,
@@ -35,6 +37,7 @@ function recalcularArticulo(articulo: ArticuloCarrito, cantidad: number): Articu
 function App() {
   const { idModuloActivo, idSeccionActiva, seleccionarModulo, seleccionarSeccion } =
     useMenuDoble(MODULOS_MENU)
+  const [mostrandoCobro, setMostrandoCobro] = useState(false)
   const [canalVenta, setCanalVenta] = useState<CanalVenta>('mostrador')
   const [tipoEntrega, setTipoEntrega] = useState<TipoEntrega>('retiro')
   const [textoBusqueda, setTextoBusqueda] = useState('')
@@ -47,6 +50,7 @@ function App() {
     producto.nombreProducto.toLowerCase().includes(textoBusqueda.trim().toLowerCase()),
   )
   const subtotal = articulos.reduce((acumulado, articulo) => acumulado + articulo.montoTotal, 0)
+  const propiedadesCobro = useCobroVentaEjemplo(subtotal)
 
   const cambiarCantidad = (idProducto: string, variacion: number) =>
     setArticulos(
@@ -79,6 +83,14 @@ function App() {
         <p className="py-10 text-center text-texto-suave">Sección en construcción</p>
       ) : (
         <div className="mx-auto max-w-6xl">
+          {mostrandoCobro ? (
+            <RegistrarVentaCobro
+              {...propiedadesCobro}
+              onVolverAlCarrito={() => setMostrandoCobro(false)}
+              onCancelarVenta={() => setMostrandoCobro(false)}
+              onConfirmarCobro={() => setMostrandoCobro(false)}
+            />
+          ) : (
           <RegistrarVentaCarrito
             estadoVenta={{ canalVenta, tipoEntrega, articulos, subtotal }}
             textoBusqueda={textoBusqueda}
@@ -92,8 +104,9 @@ function App() {
             onEliminarArticulo={(idProducto) =>
               setArticulos(articulos.filter((articulo) => articulo.idProducto !== idProducto))
             }
-            onContinuarACobro={() => undefined}
+            onContinuarACobro={() => setMostrandoCobro(true)}
           />
+          )}
         </div>
       )}
     </MenuDoble>
