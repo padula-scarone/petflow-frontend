@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react'
+import { HandCoins } from 'lucide-react'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatearMoneda } from '@/lib/formatear-moneda'
@@ -24,11 +24,9 @@ export function RegistrarVentaCarrito({
   const carritoVacio = articulos.length === 0
 
   return (
-    // El padding inferior en mobile evita que el pie fijo tape el ultimo articulo
-    <section className="flex flex-col gap-6 pb-28 lg:pb-0">
+    <section className="flex flex-col gap-6">
       {/* --- HEADER Y CONFIGURACION --- */}
-      <header className="flex flex-col gap-4 rounded-lg border bg-card p-4">
-        <h1 className="text-xl font-bold">Registrar venta</h1>
+      <header className="flex flex-col gap-4 rounded-grande border bg-fondo-tarjeta p-4">
         <SelectorConfiguracionVenta
           canalVenta={canalVenta}
           tipoEntrega={tipoEntrega}
@@ -49,13 +47,13 @@ export function RegistrarVentaCarrito({
       <div className="flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <h2 className="text-lg font-bold">Artículos agregados</h2>
-          <Badge variant="secondary" className="tabular-nums">
+          <Badge variant="outline" className="bg-fondo-tarjeta tabular-nums">
             {articulos.length}
           </Badge>
         </div>
 
         {carritoVacio ? (
-          <p className="rounded-lg border border-dashed bg-card px-4 py-10 text-center text-muted-foreground">
+          <p className="rounded-grande border border-dashed bg-fondo-tarjeta px-4 py-10 text-center text-texto-suave">
             Todavía no agregaste artículos
           </p>
         ) : (
@@ -75,22 +73,23 @@ export function RegistrarVentaCarrito({
       </div>
 
       {/* --- FOOTER COBRO --- */}
-      {/* bottom-16: queda sobre la barra inferior de modulos en mobile */}
-      <footer className="fixed inset-x-0 bottom-16 z-10 flex items-center justify-between gap-4 border-t bg-card p-4 lg:static lg:justify-end lg:gap-6 lg:border-0 lg:bg-transparent lg:p-0">
+      {/* En mobile queda pegado al borde inferior del area con scroll; -bottom-4 y los margenes negativos compensan el padding del contenedor */}
+      <footer className="sticky -bottom-4 z-10 -mx-4 -mb-4 flex items-center justify-between gap-3 border-t bg-fondo-tarjeta p-4 lg:static lg:mx-0 lg:mb-0 lg:justify-end lg:gap-6 lg:border-0 lg:bg-transparent lg:p-0">
         <p className="flex flex-col lg:flex-row lg:items-baseline lg:gap-2">
-          <span className="text-sm text-muted-foreground">Subtotal:</span>
-          <span className="text-xl font-bold tabular-nums">
+          <span className="text-sm text-texto-suave">Subtotal:</span>
+          <span className="text-xl font-bold tabular-nums lg:text-2xl">
             {formatearMoneda(subtotal)}
           </span>
         </p>
         <Button
           type="button"
-          className="h-11 px-6"
+          variant="exito"
+          className="h-12 min-w-0 flex-1 px-5 text-base sm:px-8 font-bold tracking-wide shadow-md sm:flex-none lg:h-14 lg:min-w-56 lg:text-lg"
           disabled={carritoVacio}
           onClick={onContinuarACobro}
         >
-          Cobrar
-          <ArrowRight />
+          COBRAR
+          <HandCoins className="size-5 lg:size-6" />
         </Button>
       </footer>
     </section>

@@ -4,7 +4,7 @@ import type {
   TipoEntrega,
 } from '@/features/ventas/types/venta'
 
-const CLASE_GRUPO = 'rounded-lg border bg-card'
+const CLASE_GRUPO = 'rounded-grande border bg-fondo-tarjeta'
 const CLASE_OPCION = 'h-11 flex-1 px-5 sm:flex-none sm:min-w-28'
 
 /** Props del selector de canal de venta y tipo de entrega. */

@@ -27,7 +27,7 @@ export function PestanasSecciones({
             aria-current={activa ? 'page' : undefined}
             className={cn(
               'h-11 shrink-0 rounded-full border px-5',
-              activa ? 'bg-primary-muted font-medium' : 'font-normal',
+              activa ? 'bg-fondo-seleccion font-medium hover:bg-fondo-seleccion' : 'bg-fondo-tarjeta font-normal',
             )}
             onClick={() => onSeleccionarSeccion(seccion.idSeccion)}
           >

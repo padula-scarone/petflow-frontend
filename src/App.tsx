@@ -76,7 +76,7 @@ function App() {
       onAbrirMenuUsuario={() => undefined}
     >
       {idSeccionActiva !== 'registrar-venta' ? (
-        <p className="py-10 text-center text-muted-foreground">Sección en construcción</p>
+        <p className="py-10 text-center text-texto-suave">Sección en construcción</p>
       ) : (
         <div className="mx-auto max-w-6xl">
           <RegistrarVentaCarrito

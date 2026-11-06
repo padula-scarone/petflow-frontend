@@ -19,7 +19,8 @@ export function MenuDoble({
     modulos.find((modulo) => modulo.idModulo === idModuloActivo)?.secciones ?? []
 
   return (
-    <div className="min-h-dvh bg-background">
+    // La pantalla ocupa exactamente el alto visible: solo el contenido hace scroll
+    <div className="flex h-dvh flex-col overflow-hidden bg-fondo-pagina">
       {/* --- BARRA LATERAL (ESCRITORIO) --- */}
       <BarraLateralModulos
         modulos={modulos}
@@ -30,8 +31,8 @@ export function MenuDoble({
       />
 
       {/* --- CABECERA: LOGO Y USUARIO (MOBILE) + SECCIONES --- */}
-      <header className="sticky top-0 z-20 flex flex-col gap-3 border-b bg-card p-4 lg:ml-60 lg:h-[73px] lg:justify-center lg:py-0">
-        <div className="flex items-center justify-between gap-3 lg:hidden">
+      <header className="flex shrink-0 flex-col lg:ml-60 lg:h-[73px] lg:justify-center">
+        <div className="flex items-center justify-between gap-3 border-b bg-fondo-tarjeta px-4 py-3 lg:hidden">
           <p className="text-2xl font-bold">PetFlow</p>
           <Button
             type="button"
@@ -43,16 +44,17 @@ export function MenuDoble({
             {nombreUsuario}
           </Button>
         </div>
-        <PestanasSecciones
-          secciones={seccionesDelModulo}
-          idSeccionActiva={idSeccionActiva}
-          onSeleccionarSeccion={onSeleccionarSeccion}
-        />
+        <div className="px-4 py-3 lg:py-0">
+          <PestanasSecciones
+            secciones={seccionesDelModulo}
+            idSeccionActiva={idSeccionActiva}
+            onSeleccionarSeccion={onSeleccionarSeccion}
+          />
+        </div>
       </header>
 
-      {/* --- CONTENIDO --- */}
-      {/* El padding inferior en mobile deja lugar a la barra inferior de modulos */}
-      <main className="p-4 pb-20 lg:ml-60 lg:p-8">{children}</main>
+      {/* --- CONTENIDO (UNICA ZONA CON SCROLL) --- */}
+      <main className="min-h-0 flex-1 overflow-y-auto p-4 lg:ml-60 lg:p-8">{children}</main>
 
       {/* --- BARRA INFERIOR (MOBILE) --- */}
       <BarraInferiorModulos

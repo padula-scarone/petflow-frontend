@@ -20,7 +20,7 @@ export function BarraLateralModulos({
   onAbrirMenuUsuario,
 }: BarraLateralModulosProps) {
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 border-r bg-card p-4 lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 border-r bg-fondo-tarjeta p-4 lg:flex">
       {/* --- LOGO --- */}
       <p className="px-2 pt-1 text-center text-2xl font-bold">PetFlow</p>
 
@@ -37,7 +37,7 @@ export function BarraLateralModulos({
               aria-current={activo ? 'page' : undefined}
               className={cn(
                 'h-11 justify-start gap-3 rounded-full px-4',
-                activo ? 'bg-primary-muted font-medium' : 'font-normal',
+                activo ? 'bg-primario text-texto-sobre-primario font-medium hover:bg-primario' : 'font-normal',
               )}
               onClick={() => onSeleccionarModulo(modulo.idModulo)}
             >

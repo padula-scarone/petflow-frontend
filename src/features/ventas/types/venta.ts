@@ -28,6 +28,8 @@ export interface ArticuloCarrito {
 export interface ResultadoBusqueda {
   idProducto: string
   nombreProducto: string
+  /** URL de la miniatura del producto; conviene que sea una version chica, no la original. */
+  urlImagen?: string
   precioUnitario: number
   stockDisponible: number
 }

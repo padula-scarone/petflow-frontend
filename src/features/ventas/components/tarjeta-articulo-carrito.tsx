@@ -1,7 +1,8 @@
-import { ImageIcon, Minus, Plus, Trash2, TriangleAlert } from 'lucide-react'
+import { Minus, Plus, Trash2, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatearMoneda } from '@/lib/formatear-moneda'
+import { ImagenProducto } from '@/features/ventas/components/imagen-producto'
 import type { ArticuloCarrito } from '@/features/ventas/types/venta'
 
 /** Props de la tarjeta de un articulo del carrito. */
@@ -25,21 +26,14 @@ export function TarjetaArticuloCarrito({
     <Card className="flex flex-col gap-3 p-3 shadow-none lg:flex-row lg:items-center lg:gap-6 lg:p-4">
       {/* --- IMAGEN Y DATOS --- */}
       <div className="flex items-start gap-3 lg:contents">
-        <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted text-muted-foreground lg:size-[104px]">
-          {articulo.urlImagen ? (
-            <img
-              src={articulo.urlImagen}
-              alt=""
-              className="size-full object-cover"
-            />
-          ) : (
-            <ImageIcon aria-hidden="true" className="size-6" />
-          )}
-        </div>
+        <ImagenProducto
+          urlImagen={articulo.urlImagen}
+          className="size-16 lg:size-26"
+        />
 
         <div className="min-w-0 flex-1">
           <p className="line-clamp-2 font-bold">{articulo.nombreProducto}</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-texto-suave">
             {articulo.categoria} · {articulo.formato === 'granel' ? 'Granel' : 'Unidad'}
           </p>
           {excedeStock && (
@@ -61,7 +55,7 @@ export function TarjetaArticuloCarrito({
           variant="ghost"
           size="icon"
           aria-label={`Eliminar ${articulo.nombreProducto}`}
-          className="size-11 shrink-0 text-slate-500 hover:text-destructive lg:order-last lg:size-9"
+          className="size-11 shrink-0 text-slate-500 lg:order-last lg:size-9"
           onClick={() => onEliminarArticulo(articulo.idProducto)}
         >
           <Trash2 />
@@ -69,15 +63,16 @@ export function TarjetaArticuloCarrito({
       </div>
 
       {/* --- PRECIO, CANTIDAD Y TOTAL --- */}
-      <div className="flex items-center justify-between gap-3 lg:contents">
+      {/* En pantallas angostas el total baja a su propia linea en lugar de desbordar */}
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 lg:contents">
         <div className="flex flex-col lg:w-28">
-          <span className="text-xs whitespace-nowrap text-muted-foreground">Precio unidad</span>
+          <span className="text-xs whitespace-nowrap text-texto-suave">Precio unidad</span>
           <span className="tabular-nums">
             {formatearMoneda(articulo.precioUnitario)}
           </span>
         </div>
 
-        <div className="flex items-center rounded-lg border">
+        <div className="flex items-center rounded-grande border">
           <Button
             type="button"
             variant="ghost"
@@ -107,7 +102,7 @@ export function TarjetaArticuloCarrito({
           </Button>
         </div>
 
-        <span className="min-w-20 text-right font-bold tabular-nums lg:w-28">
+        <span className="ml-auto min-w-20 text-right font-bold tabular-nums lg:ml-0 lg:w-28">
           {formatearMoneda(articulo.montoTotal)}
         </span>
       </div>
