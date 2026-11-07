@@ -14,13 +14,13 @@ export function BotonNuevaVenta({ onNuevaVenta, className }: BotonNuevaVentaProp
     <Button
       type="button"
       className={cn(
-        'h-12 min-w-0 px-5 text-base font-bold tracking-wide shadow-md lg:h-14 lg:text-lg',
+        'h-12 min-w-0 px-5 text-base font-bold tracking-wide shadow-md xl:h-14 xl:text-lg',
         className,
       )}
       onClick={onNuevaVenta}
     >
       NUEVA VENTA
-      <Plus className="size-5 lg:size-6" />
+      <Plus className="size-5 xl:size-6" />
     </Button>
   )
 }

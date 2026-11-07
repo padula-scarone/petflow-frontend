@@ -97,7 +97,7 @@ function App() {
       {idSeccionActiva !== 'registrar-venta' ? (
         <p className="py-10 text-center text-texto-suave">Sección en construcción</p>
       ) : (
-        <div className="mx-auto max-w-6xl">
+        <div className="mx-auto w-full max-w-6xl flex-1">
           {pantalla === 'comprobante' && comprobante ? (
             <RegistrarVentaComprobante
               comprobante={comprobante}

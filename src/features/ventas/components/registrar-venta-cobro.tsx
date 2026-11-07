@@ -34,7 +34,7 @@ export function RegistrarVentaCobro({
   const { resumen, formaPago, puedeConfirmar, motivoNoConfirmable } = estadoCobro
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex min-h-full flex-col gap-6">
       {/* --- ENCABEZADO --- */}
       <header>
         <Button
@@ -48,7 +48,7 @@ export function RegistrarVentaCobro({
         </Button>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
         {/* --- DESCUENTO Y FORMA DE PAGO --- */}
         <div className="flex min-w-0 flex-col gap-6">
           <TarjetaDescuentoManual
@@ -88,13 +88,13 @@ export function RegistrarVentaCobro({
 
       {/* --- CANCELAR (MOBILE) --- */}
       {/* Al final del contenido, lejos del pulgar, para evitar toques accidentales */}
-      <div className="lg:hidden">
+      <div className="xl:hidden">
         <BotonCancelarVenta etiqueta="Cancelar venta" onCancelarVenta={onCancelarVenta} />
       </div>
 
       {/* --- FOOTER CONFIRMAR (MOBILE) --- */}
       {/* Mismo patron que la Seccion 1: pegado al borde inferior del area con scroll */}
-      <footer className="sticky -bottom-4 z-10 -mx-4 -mb-4 flex flex-col gap-2 border-t bg-fondo-tarjeta p-4 lg:hidden">
+      <footer className="sticky -bottom-4 z-10 mt-auto -mx-4 -mb-4 flex flex-col gap-2 border-t bg-fondo-tarjeta p-4 xl:hidden">
         {/* El estado va en su propia linea: dentro de la columna del total ensancharia y desbordaria el boton */}
         {formaPago === 'mixto' && (
           <EstadoCobertura

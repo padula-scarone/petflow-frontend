@@ -23,12 +23,12 @@ export function TarjetaArticuloCarrito({
 
   return (
     // En mobile se apila en dos filas; desde lg los bloques pasan a una sola fila
-    <Card className="flex flex-col gap-3 p-3 shadow-none lg:flex-row lg:items-center lg:gap-6 lg:p-4">
+    <Card className="flex flex-col gap-3 p-3 shadow-none xl:flex-row xl:items-center xl:gap-6 xl:p-4">
       {/* --- IMAGEN Y DATOS --- */}
-      <div className="flex items-start gap-3 lg:contents">
+      <div className="flex items-start gap-3 xl:contents">
         <ImagenProducto
           urlImagen={articulo.urlImagen}
-          className="size-16 lg:size-26"
+          className="size-16 xl:size-26"
         />
 
         <div className="min-w-0 flex-1">
@@ -55,7 +55,7 @@ export function TarjetaArticuloCarrito({
           variant="ghost"
           size="icon"
           aria-label={`Eliminar ${articulo.nombreProducto}`}
-          className="size-11 shrink-0 text-slate-500 lg:order-last lg:size-9"
+          className="size-11 shrink-0 text-slate-500 xl:order-last"
           onClick={() => onEliminarArticulo(articulo.idProducto)}
         >
           <Trash2 />
@@ -64,8 +64,8 @@ export function TarjetaArticuloCarrito({
 
       {/* --- PRECIO, CANTIDAD Y TOTAL --- */}
       {/* En pantallas angostas el total baja a su propia linea en lugar de desbordar */}
-      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 lg:contents">
-        <div className="flex flex-col lg:w-28">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 xl:contents">
+        <div className="flex flex-col xl:w-28">
           <span className="text-xs whitespace-nowrap text-texto-suave">Precio unidad</span>
           <span className="tabular-nums">
             {formatearMoneda(articulo.precioUnitario)}
@@ -78,7 +78,7 @@ export function TarjetaArticuloCarrito({
             variant="ghost"
             size="icon"
             aria-label={`Disminuir cantidad de ${articulo.nombreProducto}`}
-            className="size-11 lg:size-9"
+            className="size-11"
             disabled={articulo.cantidad <= 1}
             onClick={() => onDisminuirCantidad(articulo.idProducto)}
           >
@@ -95,14 +95,14 @@ export function TarjetaArticuloCarrito({
             variant="ghost"
             size="icon"
             aria-label={`Aumentar cantidad de ${articulo.nombreProducto}`}
-            className="size-11 lg:size-9"
+            className="size-11"
             onClick={() => onAumentarCantidad(articulo.idProducto)}
           >
             <Plus />
           </Button>
         </div>
 
-        <span className="ml-auto min-w-20 text-right font-bold tabular-nums lg:ml-0 lg:w-28">
+        <span className="ml-auto min-w-20 text-right font-bold tabular-nums xl:ml-0 xl:w-28">
           {formatearMoneda(articulo.montoTotal)}
         </span>
       </div>

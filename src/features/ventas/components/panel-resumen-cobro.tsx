@@ -26,7 +26,7 @@ export function PanelResumenCobro({
   onAjustarMontosAutomaticamente,
 }: PanelResumenCobroProps) {
   return (
-    <Card className="gap-4 p-4 shadow-none lg:sticky lg:top-0">
+    <Card className="gap-4 p-4 shadow-none xl:sticky xl:top-0">
       {/* --- DESGLOSE --- */}
       <dl className="flex flex-col gap-3 text-sm">
         <div className="flex justify-between gap-3">
@@ -66,7 +66,7 @@ export function PanelResumenCobro({
       )}
 
       {/* --- ACCIONES (ESCRITORIO) --- */}
-      <div className="hidden flex-col gap-3 border-t pt-4 lg:flex">
+      <div className="hidden flex-col gap-3 border-t pt-4 xl:flex">
         <BotonConfirmarCobro
           formaPago={formaPago}
           habilitado={puedeConfirmar}

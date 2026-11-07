@@ -24,7 +24,7 @@ export function RegistrarVentaCarrito({
   const carritoVacio = articulos.length === 0
 
   return (
-    <section className="flex flex-col gap-6">
+    <section className="flex min-h-full flex-col gap-6">
       {/* --- HEADER Y CONFIGURACION --- */}
       <header className="flex flex-col gap-4 rounded-grande border bg-fondo-tarjeta p-4">
         <SelectorConfiguracionVenta
@@ -74,22 +74,22 @@ export function RegistrarVentaCarrito({
 
       {/* --- FOOTER COBRO --- */}
       {/* En mobile queda pegado al borde inferior del area con scroll; -bottom-4 y los margenes negativos compensan el padding del contenedor */}
-      <footer className="sticky -bottom-4 z-10 -mx-4 -mb-4 flex items-center justify-between gap-3 border-t bg-fondo-tarjeta p-4 lg:static lg:mx-0 lg:mb-0 lg:justify-end lg:gap-6 lg:border-0 lg:bg-transparent lg:p-0">
-        <p className="flex flex-col lg:flex-row lg:items-baseline lg:gap-2">
+      <footer className="sticky -bottom-4 z-10 mt-auto xl:mt-0 -mx-4 -mb-4 flex items-center justify-between gap-3 border-t bg-fondo-tarjeta p-4 xl:static xl:mx-0 xl:mb-0 xl:justify-end xl:gap-6 xl:border-0 xl:bg-transparent xl:p-0">
+        <p className="flex flex-col xl:flex-row xl:items-baseline xl:gap-2">
           <span className="text-sm text-texto-suave">Subtotal:</span>
-          <span className="text-xl font-bold tabular-nums lg:text-2xl">
+          <span className="text-xl font-bold tabular-nums xl:text-2xl">
             {formatearMoneda(subtotal)}
           </span>
         </p>
         <Button
           type="button"
           variant="exito"
-          className="h-12 min-w-0 flex-1 px-5 text-base sm:px-8 font-bold tracking-wide shadow-md sm:flex-none lg:h-14 lg:min-w-56 lg:text-lg"
+          className="h-12 min-w-0 flex-1 px-5 text-base sm:px-8 font-bold tracking-wide shadow-md sm:flex-none xl:h-14 xl:min-w-56 xl:text-lg"
           disabled={carritoVacio}
           onClick={onContinuarACobro}
         >
           COBRAR
-          <HandCoins className="size-5 lg:size-6" />
+          <HandCoins className="size-5 xl:size-6" />
         </Button>
       </footer>
     </section>
