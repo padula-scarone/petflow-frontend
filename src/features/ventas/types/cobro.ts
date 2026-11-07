@@ -47,19 +47,6 @@ export interface DescuentoManual extends DatosDescuentoManual {
   montoDescontado: number
 }
 
-/** Cliente deudor, obligatorio para registrar un fiado. */
-export interface ClienteFiado {
-  idCliente: string
-  nombreCompleto: string
-  telefono?: string
-}
-
-/** Datos que emite el formulario de cliente nuevo. */
-export interface DatosNuevoCliente {
-  nombreCompleto: string
-  telefono?: string
-}
-
 /** Totales que la vista solo muestra. */
 export interface ResumenCobro {
   subtotalProductos: number
@@ -83,8 +70,8 @@ export interface EstadoCobro {
   vuelto: number | null
   /** Pago mixto. */
   lineasPagoMixto: LineaPagoMixto[]
-  /** Fiado. */
-  clienteFiado: ClienteFiado | null
+  /** Fiado: nombre del cliente deudor, obligatorio. */
+  nombreClienteFiado: string
   descuentoManual: DescuentoManual | null
   resumen: ResumenCobro
   puedeConfirmar: boolean
@@ -119,10 +106,5 @@ export interface RegistrarVentaCobroProps {
   onAplicarDescuento: (datos: DatosDescuentoManual) => void
   onQuitarDescuento: () => void
   // --- Fiado ---
-  textoBusquedaCliente: string
-  resultadosBusquedaCliente: ClienteFiado[]
-  onBuscarCliente: (textoBusqueda: string) => void
-  onSeleccionarCliente: (idCliente: string) => void
-  onQuitarCliente: () => void
-  onCrearCliente: (datos: DatosNuevoCliente) => void
+  onCambiarNombreClienteFiado: (nombreCliente: string) => void
 }

@@ -1,14 +1,9 @@
 import { Card } from '@/components/ui/card'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
+import { CampoClienteFiado } from '@/features/ventas/components/campo-cliente-fiado'
 import { GrillaMediosPago } from '@/features/ventas/components/grilla-medios-pago'
 import { ListaPagoMixto } from '@/features/ventas/components/lista-pago-mixto'
-import { SelectorClienteFiado } from '@/features/ventas/components/selector-cliente-fiado'
-import type {
-  ClienteFiado,
-  DatosNuevoCliente,
-  EstadoCobro,
-  FormaPago,
-} from '@/features/ventas/types/cobro'
+import type { EstadoCobro, FormaPago } from '@/features/ventas/types/cobro'
 
 const CLASE_GRUPO = 'w-full rounded-grande border bg-fondo-tarjeta sm:w-fit'
 const CLASE_OPCION = 'h-11 flex-1 px-5 sm:flex-none sm:min-w-28'
@@ -16,8 +11,6 @@ const CLASE_OPCION = 'h-11 flex-1 px-5 sm:flex-none sm:min-w-28'
 /** Props del panel donde se elige la forma de pago y se completa segun ella. */
 interface PanelFormaPagoProps {
   estadoCobro: EstadoCobro
-  textoBusquedaCliente: string
-  resultadosBusquedaCliente: ClienteFiado[]
   onCambiarFormaPago: (formaPago: FormaPago) => void
   onSeleccionarMedioPago: (idMedioPago: string) => void
   onCambiarPagaCon: (monto: number | null) => void
@@ -26,16 +19,11 @@ interface PanelFormaPagoProps {
   onCambiarMontoLinea: (idMedioPago: string, monto: number | null) => void
   onCambiarPagaConLinea: (idMedioPago: string, monto: number | null) => void
   onCompletarConRestante: (idMedioPago: string) => void
-  onBuscarCliente: (textoBusqueda: string) => void
-  onSeleccionarCliente: (idCliente: string) => void
-  onQuitarCliente: () => void
-  onCrearCliente: (datos: DatosNuevoCliente) => void
+  onCambiarNombreClienteFiado: (nombreCliente: string) => void
 }
 
 export function PanelFormaPago({
   estadoCobro,
-  textoBusquedaCliente,
-  resultadosBusquedaCliente,
   onCambiarFormaPago,
   onSeleccionarMedioPago,
   onCambiarPagaCon,
@@ -44,10 +32,7 @@ export function PanelFormaPago({
   onCambiarMontoLinea,
   onCambiarPagaConLinea,
   onCompletarConRestante,
-  onBuscarCliente,
-  onSeleccionarCliente,
-  onQuitarCliente,
-  onCrearCliente,
+  onCambiarNombreClienteFiado,
 }: PanelFormaPagoProps) {
   const { formaPago } = estadoCobro
 
@@ -104,14 +89,9 @@ export function PanelFormaPago({
         />
       )}
       {formaPago === 'fiado' && (
-        <SelectorClienteFiado
-          clienteFiado={estadoCobro.clienteFiado}
-          textoBusqueda={textoBusquedaCliente}
-          resultadosBusqueda={resultadosBusquedaCliente}
-          onBuscarCliente={onBuscarCliente}
-          onSeleccionarCliente={onSeleccionarCliente}
-          onQuitarCliente={onQuitarCliente}
-          onCrearCliente={onCrearCliente}
+        <CampoClienteFiado
+          nombreCliente={estadoCobro.nombreClienteFiado}
+          onCambiarNombreCliente={onCambiarNombreClienteFiado}
         />
       )}
     </Card>

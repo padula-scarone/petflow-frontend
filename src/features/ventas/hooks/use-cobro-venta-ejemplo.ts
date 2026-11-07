@@ -1,9 +1,7 @@
 import { useState } from 'react'
 import { Banknote, CreditCard, QrCode, Wallet } from 'lucide-react'
 import type {
-  ClienteFiado,
   DatosDescuentoManual,
-  DatosNuevoCliente,
   EstadoCobro,
   FormaPago,
   LineaPagoMixto,
@@ -18,12 +16,6 @@ const MEDIOS_EJEMPLO: MedioPago[] = [
   { idMedioPago: 'debito', nombre: 'Débito', icono: Wallet, tipoAjuste: 'ninguno', porcentajeAjuste: 0, admiteVuelto: false },
   { idMedioPago: 'credito', nombre: 'Crédito', icono: CreditCard, tipoAjuste: 'recargo', porcentajeAjuste: 15, admiteVuelto: false },
   { idMedioPago: 'qr', nombre: 'QR', icono: QrCode, tipoAjuste: 'ninguno', porcentajeAjuste: 0, admiteVuelto: false },
-]
-
-const CLIENTES_EJEMPLO: ClienteFiado[] = [
-  { idCliente: 'c1', nombreCompleto: 'María Fernández', telefono: '11 5555-1234' },
-  { idCliente: 'c2', nombreCompleto: 'Juan Pérez', telefono: '11 4444-9876' },
-  { idCliente: 'c3', nombreCompleto: 'Lucía Gómez' },
 ]
 
 /** Lo que tipea el usuario en cada linea del pago mixto; el resto se deriva. */
@@ -47,9 +39,7 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
   const [datosDescuento, setDatosDescuento] = useState<DatosDescuentoManual | null>(null)
   const [formularioDescuentoAbierto, setFormularioDescuentoAbierto] = useState(false)
   const [errorFormularioDescuento, setErrorFormularioDescuento] = useState<string>()
-  const [clientes, setClientes] = useState<ClienteFiado[]>(CLIENTES_EJEMPLO)
-  const [clienteFiado, setClienteFiado] = useState<ClienteFiado | null>(null)
-  const [textoBusquedaCliente, setTextoBusquedaCliente] = useState('')
+  const [nombreClienteFiado, setNombreClienteFiado] = useState('')
 
   // --- CALCULOS ---
   const buscarMedio = (idMedioPago: string | null) =>
@@ -122,7 +112,9 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
       })
       if (efectivoInsuficiente) return 'El monto con el que paga no cubre su parte'
     }
-    if (formaPago === 'fiado' && !clienteFiado) return 'Seleccioná o creá el cliente'
+    if (formaPago === 'fiado' && nombreClienteFiado.trim() === '') {
+      return 'Ingresá el nombre del cliente'
+    }
     return undefined
   }
   const motivoNoConfirmable = calcularMotivoNoConfirmable()
@@ -134,7 +126,7 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
     pagaCon,
     vuelto: vueltoUnico,
     lineasPagoMixto,
-    clienteFiado,
+    nombreClienteFiado,
     descuentoManual: datosDescuento
       ? { ...datosDescuento, montoDescontado: montoDescuentoManual }
       : null,
@@ -220,27 +212,6 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
     setErrorFormularioDescuento(undefined)
   }
 
-  // --- ACCIONES: FIADO ---
-  const textoClienteNormalizado = textoBusquedaCliente.trim().toLowerCase()
-  const resultadosBusquedaCliente =
-    textoClienteNormalizado === ''
-      ? []
-      : clientes.filter((cliente) =>
-          cliente.nombreCompleto.toLowerCase().includes(textoClienteNormalizado),
-        )
-
-  const seleccionarCliente = (idCliente: string) => {
-    setClienteFiado(clientes.find((cliente) => cliente.idCliente === idCliente) ?? null)
-    setTextoBusquedaCliente('')
-  }
-
-  const crearCliente = (datos: DatosNuevoCliente) => {
-    const clienteNuevo: ClienteFiado = { idCliente: `c${clientes.length + 1}`, ...datos }
-    setClientes([...clientes, clienteNuevo])
-    setClienteFiado(clienteNuevo)
-    setTextoBusquedaCliente('')
-  }
-
   return {
     estadoCobro,
     onCambiarFormaPago: cambiarFormaPago,
@@ -267,11 +238,6 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
     onCerrarFormularioDescuento: cerrarFormularioDescuento,
     onAplicarDescuento: aplicarDescuento,
     onQuitarDescuento: () => setDatosDescuento(null),
-    textoBusquedaCliente,
-    resultadosBusquedaCliente,
-    onBuscarCliente: setTextoBusquedaCliente,
-    onSeleccionarCliente: seleccionarCliente,
-    onQuitarCliente: () => setClienteFiado(null),
-    onCrearCliente: crearCliente,
+    onCambiarNombreClienteFiado: setNombreClienteFiado,
   }
 }

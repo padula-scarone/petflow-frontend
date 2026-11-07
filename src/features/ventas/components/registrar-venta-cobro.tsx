@@ -29,12 +29,7 @@ export function RegistrarVentaCobro({
   onCerrarFormularioDescuento,
   onAplicarDescuento,
   onQuitarDescuento,
-  textoBusquedaCliente,
-  resultadosBusquedaCliente,
-  onBuscarCliente,
-  onSeleccionarCliente,
-  onQuitarCliente,
-  onCrearCliente,
+  onCambiarNombreClienteFiado,
 }: RegistrarVentaCobroProps) {
   const { resumen, formaPago, puedeConfirmar, motivoNoConfirmable } = estadoCobro
 
@@ -67,8 +62,6 @@ export function RegistrarVentaCobro({
           />
           <PanelFormaPago
             estadoCobro={estadoCobro}
-            textoBusquedaCliente={textoBusquedaCliente}
-            resultadosBusquedaCliente={resultadosBusquedaCliente}
             onCambiarFormaPago={onCambiarFormaPago}
             onSeleccionarMedioPago={onSeleccionarMedioPago}
             onCambiarPagaCon={onCambiarPagaCon}
@@ -77,10 +70,7 @@ export function RegistrarVentaCobro({
             onCambiarMontoLinea={onCambiarMontoLinea}
             onCambiarPagaConLinea={onCambiarPagaConLinea}
             onCompletarConRestante={onCompletarConRestante}
-            onBuscarCliente={onBuscarCliente}
-            onSeleccionarCliente={onSeleccionarCliente}
-            onQuitarCliente={onQuitarCliente}
-            onCrearCliente={onCrearCliente}
+            onCambiarNombreClienteFiado={onCambiarNombreClienteFiado}
           />
         </div>
 
