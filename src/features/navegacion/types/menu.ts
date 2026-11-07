@@ -24,6 +24,8 @@ export interface MenuDobleProps {
   onSeleccionarModulo: (idModulo: string) => void
   onSeleccionarSeccion: (idSeccion: string) => void
   onAbrirMenuUsuario: () => void
+  /** Identifica la pantalla mostrada; al cambiar, el contenido vuelve a su inicio en lugar de conservar el scroll. */
+  claveContenido?: string
   /** Contenido de la pantalla activa, que se renderiza dentro del marco del menu. */
   children: ReactNode
 }

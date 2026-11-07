@@ -32,7 +32,7 @@ export function TarjetaArticuloCarrito({
         />
 
         <div className="min-w-0 flex-1">
-          <p className="line-clamp-2 font-bold">{articulo.nombreProducto}</p>
+          <p className="line-clamp-2 font-bold tabular-nums">{articulo.nombreProducto}</p>
           <p className="text-sm text-texto-suave">
             {articulo.categoria} · {articulo.formato === 'granel' ? 'Granel' : 'Unidad'}
           </p>

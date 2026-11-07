@@ -13,6 +13,7 @@ export function MenuDoble({
   onSeleccionarModulo,
   onSeleccionarSeccion,
   onAbrirMenuUsuario,
+  claveContenido = '',
   children,
 }: MenuDobleProps) {
   const seccionesDelModulo =
@@ -54,7 +55,13 @@ export function MenuDoble({
       </header>
 
       {/* --- CONTENIDO (UNICA ZONA CON SCROLL) --- */}
-      <main className="min-h-0 flex-1 overflow-y-auto p-4 lg:ml-60 lg:p-8">{children}</main>
+      {/* La key reinicia el scroll al cambiar de modulo, de seccion o de pantalla */}
+      <main
+        key={`${idModuloActivo}-${idSeccionActiva}-${claveContenido}`}
+        className="min-h-0 flex-1 overflow-y-auto p-4 lg:ml-60 lg:p-8"
+      >
+        {children}
+      </main>
 
       {/* --- BARRA INFERIOR (MOBILE) --- */}
       <BarraInferiorModulos

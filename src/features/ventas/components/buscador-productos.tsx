@@ -56,7 +56,7 @@ export function BuscadorProductos({
                       urlImagen={resultado.urlImagen}
                       className="size-10"
                     />
-                    <span className="truncate font-medium">
+                    <span className="truncate font-medium tabular-nums">
                       {resultado.nombreProducto}
                     </span>
                   </span>

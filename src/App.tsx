@@ -4,7 +4,14 @@ import { MODULOS_MENU } from '@/features/navegacion/config/modulos-menu'
 import { useMenuDoble } from '@/features/navegacion/hooks/use-menu-doble'
 import { RegistrarVentaCarrito } from '@/features/ventas/components/registrar-venta-carrito'
 import { RegistrarVentaCobro } from '@/features/ventas/components/registrar-venta-cobro'
+import { RegistrarVentaComprobante } from '@/features/ventas/components/registrar-venta-comprobante'
 import { useCobroVentaEjemplo } from '@/features/ventas/hooks/use-cobro-venta-ejemplo'
+import { crearComprobanteEjemplo } from '@/features/ventas/utils/crear-comprobante-ejemplo'
+import {
+  construirEnlaceMail,
+  construirEnlaceWhatsApp,
+} from '@/features/ventas/utils/construir-enlaces-comprobante'
+import type { Comprobante } from '@/features/ventas/types/comprobante'
 import type {
   ArticuloCarrito,
   CanalVenta,
@@ -34,10 +41,17 @@ function recalcularArticulo(articulo: ArticuloCarrito, cantidad: number): Articu
   return { ...articulo, cantidad, montoTotal: articulo.precioUnitario * cantidad }
 }
 
+/** Pantalla visible de la vista de prueba de Registrar Venta. */
+type PantallaVenta = 'carrito' | 'cobro' | 'comprobante'
+
+// Tiempo que dura la ventana para editar una venta, segun SSOT.md
+const MINUTOS_EDICION = 15
+
 function App() {
   const { idModuloActivo, idSeccionActiva, seleccionarModulo, seleccionarSeccion } =
     useMenuDoble(MODULOS_MENU)
-  const [mostrandoCobro, setMostrandoCobro] = useState(false)
+  const [pantalla, setPantalla] = useState<PantallaVenta>('carrito')
+  const [comprobante, setComprobante] = useState<Comprobante | null>(null)
   const [canalVenta, setCanalVenta] = useState<CanalVenta>('mostrador')
   const [tipoEntrega, setTipoEntrega] = useState<TipoEntrega>('retiro')
   const [textoBusqueda, setTextoBusqueda] = useState('')
@@ -78,17 +92,44 @@ function App() {
       onSeleccionarModulo={seleccionarModulo}
       onSeleccionarSeccion={seleccionarSeccion}
       onAbrirMenuUsuario={() => undefined}
+      claveContenido={pantalla}
     >
       {idSeccionActiva !== 'registrar-venta' ? (
         <p className="py-10 text-center text-texto-suave">Sección en construcción</p>
       ) : (
         <div className="mx-auto max-w-6xl">
-          {mostrandoCobro ? (
+          {pantalla === 'comprobante' && comprobante ? (
+            <RegistrarVentaComprobante
+              comprobante={comprobante}
+              enlaceWhatsApp={construirEnlaceWhatsApp(comprobante)}
+              enlaceMail={construirEnlaceMail(comprobante)}
+              // Temporal: con ?edicionVencida en la URL se prueba el plazo vencido
+              edicionDisponible={!window.location.search.includes('edicionVencida')}
+              fechaHoraLimiteEdicion={new Date(
+                new Date(comprobante.fechaHora).getTime() + MINUTOS_EDICION * 60 * 1000,
+              ).toISOString()}
+              onEditarVenta={() => setPantalla('carrito')}
+              onNuevaVenta={() => {
+                setArticulos([])
+                setPantalla('carrito')
+              }}
+            />
+          ) : pantalla === 'cobro' ? (
             <RegistrarVentaCobro
               {...propiedadesCobro}
-              onVolverAlCarrito={() => setMostrandoCobro(false)}
-              onCancelarVenta={() => setMostrandoCobro(false)}
-              onConfirmarCobro={() => setMostrandoCobro(false)}
+              onVolverAlCarrito={() => setPantalla('carrito')}
+              onCancelarVenta={() => setPantalla('carrito')}
+              onConfirmarCobro={() => {
+                setComprobante(
+                  crearComprobanteEjemplo(
+                    articulos,
+                    propiedadesCobro.estadoCobro,
+                    canalVenta,
+                    tipoEntrega,
+                  ),
+                )
+                setPantalla('comprobante')
+              }}
             />
           ) : (
           <RegistrarVentaCarrito
@@ -104,7 +145,7 @@ function App() {
             onEliminarArticulo={(idProducto) =>
               setArticulos(articulos.filter((articulo) => articulo.idProducto !== idProducto))
             }
-            onContinuarACobro={() => setMostrandoCobro(true)}
+            onContinuarACobro={() => setPantalla('cobro')}
           />
           )}
         </div>
