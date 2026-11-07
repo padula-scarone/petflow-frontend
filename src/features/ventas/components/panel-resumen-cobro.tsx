@@ -1,8 +1,8 @@
-import { Check } from 'lucide-react'
 import { Card } from '@/components/ui/card'
 import { formatearMoneda, formatearMonedaConSigno } from '@/lib/formatear-moneda'
 import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-venta'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
+import { EstadoCobertura } from '@/features/ventas/components/estado-cobertura'
 import type { FormaPago, ResumenCobro } from '@/features/ventas/types/cobro'
 
 /** Props del panel de resumen del cobro. Los botones solo se muestran en escritorio. */
@@ -13,6 +13,7 @@ interface PanelResumenCobroProps {
   motivoNoConfirmable?: string
   onConfirmarCobro: () => void
   onCancelarVenta: () => void
+  onAjustarMontosAutomaticamente: () => void
 }
 
 export function PanelResumenCobro({
@@ -22,6 +23,7 @@ export function PanelResumenCobro({
   motivoNoConfirmable,
   onConfirmarCobro,
   onCancelarVenta,
+  onAjustarMontosAutomaticamente,
 }: PanelResumenCobroProps) {
   return (
     <Card className="gap-4 p-4 shadow-none lg:sticky lg:top-0">
@@ -53,23 +55,14 @@ export function PanelResumenCobro({
         <span className="text-3xl font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
       </div>
 
-      {/* --- FALTA CUBRIR (SOLO PAGO MIXTO) --- */}
+      {/* --- ESTADO DE COBERTURA (SOLO PAGO MIXTO) --- */}
       {formaPago === 'mixto' && (
-        <div className="flex items-center justify-between gap-3 border-t pt-4">
-          {resumen.faltaCubrir > 0 ? (
-            <>
-              <span className="text-sm text-texto-suave">Falta cubrir</span>
-              <span className="font-bold text-amber-700 tabular-nums">
-                {formatearMoneda(resumen.faltaCubrir)}
-              </span>
-            </>
-          ) : (
-            <span className="flex items-center gap-1 text-sm font-medium text-green-700">
-              <Check aria-hidden="true" className="size-4" />
-              Total cubierto
-            </span>
-          )}
-        </div>
+        <EstadoCobertura
+          faltaCubrir={resumen.faltaCubrir}
+          excedente={resumen.excedente}
+          onAjustarAutomaticamente={onAjustarMontosAutomaticamente}
+          className="border-t pt-4"
+        />
       )}
 
       {/* --- ACCIONES (ESCRITORIO) --- */}

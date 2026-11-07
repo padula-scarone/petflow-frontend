@@ -67,8 +67,10 @@ export interface ResumenCobro {
   /** Suma de ajustes de los medios elegidos (negativo = descuento). */
   montoAjusteMediosPago: number
   total: number
-  /** Solo pago mixto; 0 cuando esta cubierto. */
+  /** Solo pago mixto; 0 cuando esta cubierto o excedido. */
   faltaCubrir: number
+  /** Solo pago mixto; cuanto superan los montos al total. 0 si no hay exceso. */
+  excedente: number
 }
 
 /** Estado del cobro en curso. */
@@ -107,6 +109,8 @@ export interface RegistrarVentaCobroProps {
   onCambiarMontoLinea: (idMedioPago: string, monto: number | null) => void
   onCambiarPagaConLinea: (idMedioPago: string, monto: number | null) => void
   onCompletarConRestante: (idMedioPago: string) => void
+  /** Reduce los montos de los ultimos medios hasta que sumen el total exacto. */
+  onAjustarMontosAutomaticamente: () => void
   // --- Descuento manual ---
   formularioDescuentoAbierto: boolean
   errorFormularioDescuento?: string

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-venta'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
+import { EstadoCobertura } from '@/features/ventas/components/estado-cobertura'
 import { PanelFormaPago } from '@/features/ventas/components/panel-forma-pago'
 import { PanelResumenCobro } from '@/features/ventas/components/panel-resumen-cobro'
 import { TarjetaDescuentoManual } from '@/features/ventas/components/tarjeta-descuento-manual'
@@ -21,6 +22,7 @@ export function RegistrarVentaCobro({
   onCambiarMontoLinea,
   onCambiarPagaConLinea,
   onCompletarConRestante,
+  onAjustarMontosAutomaticamente,
   formularioDescuentoAbierto,
   errorFormularioDescuento,
   onAbrirFormularioDescuento,
@@ -90,6 +92,7 @@ export function RegistrarVentaCobro({
           motivoNoConfirmable={motivoNoConfirmable}
           onConfirmarCobro={onConfirmarCobro}
           onCancelarVenta={onCancelarVenta}
+          onAjustarMontosAutomaticamente={onAjustarMontosAutomaticamente}
         />
       </div>
 
@@ -102,8 +105,15 @@ export function RegistrarVentaCobro({
       {/* --- FOOTER CONFIRMAR (MOBILE) --- */}
       {/* Mismo patron que la Seccion 1: pegado al borde inferior del area con scroll */}
       <footer className="sticky -bottom-4 z-10 -mx-4 -mb-4 flex flex-col gap-2 border-t bg-fondo-tarjeta p-4 lg:hidden">
-        {/* El motivo va en su propia linea: dentro de la columna del total ensancharia y desbordaria el boton */}
-        {!puedeConfirmar && motivoNoConfirmable && (
+        {/* El estado va en su propia linea: dentro de la columna del total ensancharia y desbordaria el boton */}
+        {formaPago === 'mixto' && (
+          <EstadoCobertura
+            faltaCubrir={resumen.faltaCubrir}
+            excedente={resumen.excedente}
+            onAjustarAutomaticamente={onAjustarMontosAutomaticamente}
+          />
+        )}
+        {motivoNoConfirmable && !puedeConfirmar && (
           <p role="status" className="text-xs text-amber-700 tabular-nums">
             {motivoNoConfirmable}
           </p>

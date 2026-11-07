@@ -32,6 +32,24 @@ export function ListaPagoMixto({
 
   return (
     <div className="flex flex-col gap-3">
+      {/* --- AGREGAR MEDIO --- */}
+      {mediosSinUsar.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {mediosSinUsar.map((medio) => (
+            <Button
+              key={medio.idMedioPago}
+              type="button"
+              variant="outline"
+              className="h-11 gap-2 rounded-full bg-fondo-tarjeta px-4"
+              onClick={() => onAgregarLineaPago(medio.idMedioPago)}
+            >
+              <Plus />
+              {medio.nombre}
+            </Button>
+          ))}
+        </div>
+      )}
+
       {/* --- LINEAS --- */}
       {lineas.length === 0 && (
         <p className="rounded-grande border border-dashed px-4 py-6 text-center text-texto-suave">
@@ -56,24 +74,6 @@ export function ListaPagoMixto({
           />
         )
       })}
-
-      {/* --- AGREGAR MEDIO --- */}
-      {mediosSinUsar.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {mediosSinUsar.map((medio) => (
-            <Button
-              key={medio.idMedioPago}
-              type="button"
-              variant="outline"
-              className="h-11 gap-2 rounded-full bg-fondo-tarjeta px-4"
-              onClick={() => onAgregarLineaPago(medio.idMedioPago)}
-            >
-              <Plus />
-              {medio.nombre}
-            </Button>
-          ))}
-        </div>
-      )}
     </div>
   )
 }

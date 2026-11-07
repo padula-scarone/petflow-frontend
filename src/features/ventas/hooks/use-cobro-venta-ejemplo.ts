@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Banknote, CreditCard, QrCode, Wallet } from 'lucide-react'
-import { formatearMoneda } from '@/lib/formatear-moneda'
 import type {
   ClienteFiado,
   DatosDescuentoManual,
@@ -88,6 +87,7 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
     0,
   )
   const faltaCubrir = formaPago === 'mixto' ? Math.max(montoBase - sumaMontosMixtos, 0) : 0
+  const excedente = formaPago === 'mixto' ? Math.max(sumaMontosMixtos - montoBase, 0) : 0
   const montoAjusteMediosPago =
     formaPago === 'unico'
       ? medioUnico
@@ -109,9 +109,7 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
       }
     }
     if (formaPago === 'mixto') {
-      if (lineasPagoMixto.length === 0) return 'Agregá al menos un medio de pago'
-      if (sumaMontosMixtos > montoBase) return 'Los montos superan el total'
-      if (faltaCubrir > 0) return `Falta cubrir ${formatearMoneda(faltaCubrir)}`
+      // Falta cubrir y excedente no son motivos aparte: los muestra el estado de cobertura
       const lineaSinMonto = lineasPagoMixto.some((linea) => (linea.montoACubrir ?? 0) === 0)
       if (lineaSinMonto) return 'Quitá o completá los medios sin monto'
       const efectivoInsuficiente = lineasPagoMixto.some((linea) => {
@@ -146,8 +144,11 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
       montoAjusteMediosPago,
       total,
       faltaCubrir,
+      excedente,
     },
-    puedeConfirmar: motivoNoConfirmable === undefined,
+    puedeConfirmar:
+      motivoNoConfirmable === undefined &&
+      (formaPago !== 'mixto' || (faltaCubrir === 0 && excedente === 0 && entradasMixtas.length > 0)),
     motivoNoConfirmable,
   }
 
@@ -176,6 +177,29 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
         entrada.idMedioPago === idMedioPago ? { ...entrada, ...cambios } : entrada,
       ),
     )
+
+  // Descuenta el excedente desde el ultimo medio hacia atras; los que quedan sin monto se quitan
+  const ajustarMontosAutomaticamente = () => {
+    const { lineas: ajustadas } = entradasMixtas.reduceRight<{
+      restante: number
+      lineas: EntradaLineaMixta[]
+    }>(
+      (acumulado, entrada) => {
+        const monto = entrada.montoACubrir ?? 0
+        const descuento = Math.min(monto, acumulado.restante)
+        const montoFinal = monto - descuento
+        const sigueEnLaLista = !(descuento > 0 && montoFinal === 0)
+        return {
+          restante: acumulado.restante - descuento,
+          lineas: sigueEnLaLista
+            ? [{ ...entrada, montoACubrir: montoFinal }, ...acumulado.lineas]
+            : acumulado.lineas,
+        }
+      },
+      { restante: excedente, lineas: [] },
+    )
+    setEntradasMixtas(ajustadas)
+  }
 
   // --- ACCIONES: DESCUENTO MANUAL ---
   const aplicarDescuento = (datos: DatosDescuentoManual) => {
@@ -236,6 +260,7 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
       const entrada = entradasMixtas.find((candidata) => candidata.idMedioPago === idMedioPago)
       actualizarEntrada(idMedioPago, { montoACubrir: (entrada?.montoACubrir ?? 0) + faltaCubrir })
     },
+    onAjustarMontosAutomaticamente: ajustarMontosAutomaticamente,
     formularioDescuentoAbierto,
     errorFormularioDescuento,
     onAbrirFormularioDescuento: () => setFormularioDescuentoAbierto(true),
