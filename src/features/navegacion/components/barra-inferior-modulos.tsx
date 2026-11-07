@@ -26,12 +26,12 @@ export function BarraInferiorModulos({
             key={modulo.idModulo}
             type="button"
             aria-current={activo ? 'page' : undefined}
-            className="flex min-h-11 min-w-20 flex-1 flex-col items-center justify-center gap-0.5 text-xs outline-none focus-visible:bg-fondo-hover"
+            className="flex min-h-11 min-w-11 flex-auto flex-col items-center justify-center gap-0.5 px-0.5 text-[11px] outline-none focus-visible:bg-fondo-hover sm:flex-1 sm:text-xs"
             onClick={() => onSeleccionarModulo(modulo.idModulo)}
           >
             <span
               className={cn(
-                'flex h-7 w-14 items-center justify-center rounded-full',
+                'flex h-7 w-11 items-center justify-center rounded-full sm:w-14',
                 activo && 'bg-primario text-texto-sobre-primario',
               )}
             >
