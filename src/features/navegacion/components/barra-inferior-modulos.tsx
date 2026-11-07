@@ -16,7 +16,7 @@ export function BarraInferiorModulos({
   return (
     <nav
       aria-label="Modulos"
-      className="flex h-16 shrink-0 border-t bg-fondo-tarjeta lg:hidden"
+      className="flex h-16 shrink-0 overflow-x-auto border-t bg-fondo-tarjeta lg:hidden"
     >
       {modulos.map((modulo) => {
         const Icono = modulo.icono
@@ -26,7 +26,7 @@ export function BarraInferiorModulos({
             key={modulo.idModulo}
             type="button"
             aria-current={activo ? 'page' : undefined}
-            className="flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 text-xs outline-none focus-visible:bg-fondo-hover"
+            className="flex min-h-11 min-w-20 flex-1 flex-col items-center justify-center gap-0.5 text-xs outline-none focus-visible:bg-fondo-hover"
             onClick={() => onSeleccionarModulo(modulo.idModulo)}
           >
             <span

@@ -25,7 +25,7 @@ export function BarraLateralModulos({
       <p className="px-2 pt-1 text-center text-2xl font-bold">PetFlow</p>
 
       {/* --- MODULOS --- */}
-      <nav aria-label="Modulos" className="flex flex-1 flex-col gap-2">
+      <nav aria-label="Modulos" className="flex flex-1 flex-col gap-2 overflow-y-auto">
         {modulos.map((modulo) => {
           const Icono = modulo.icono
           const activo = modulo.idModulo === idModuloActivo

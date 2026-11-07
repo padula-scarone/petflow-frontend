@@ -45,13 +45,15 @@ export function MenuDoble({
             {nombreUsuario}
           </Button>
         </div>
-        <div className="px-4 py-3 lg:py-0">
-          <PestanasSecciones
-            secciones={seccionesDelModulo}
-            idSeccionActiva={idSeccionActiva}
-            onSeleccionarSeccion={onSeleccionarSeccion}
-          />
-        </div>
+        {seccionesDelModulo.length > 0 && (
+          <div className="px-4 py-3 lg:py-0">
+            <PestanasSecciones
+              secciones={seccionesDelModulo}
+              idSeccionActiva={idSeccionActiva}
+              onSeleccionarSeccion={onSeleccionarSeccion}
+            />
+          </div>
+        )}
       </header>
 
       {/* --- CONTENIDO (UNICA ZONA CON SCROLL) --- */}
