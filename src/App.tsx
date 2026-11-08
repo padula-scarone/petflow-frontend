@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { IniciarSesion } from '@/features/auth/components/iniciar-sesion'
+import { useIniciarSesionEjemplo } from '@/features/auth/hooks/use-iniciar-sesion-ejemplo'
 import { MenuDoble } from '@/features/navegacion/components/menu-doble'
 import { MODULOS_MENU } from '@/features/navegacion/config/modulos-menu'
 import { useMenuDoble } from '@/features/navegacion/hooks/use-menu-doble'
@@ -66,6 +68,12 @@ function App() {
   const subtotal = articulos.reduce((acumulado, articulo) => acumulado + articulo.montoTotal, 0)
   const propiedadesCobro = useCobroVentaEjemplo(subtotal)
 
+  // Temporal: con ?login en la URL se muestra Iniciar Sesion. Se borra cuando entre React Router.
+  const [mostrandoInicioSesion, setMostrandoInicioSesion] = useState(() =>
+    window.location.search.includes('login'),
+  )
+  const propiedadesInicioSesion = useIniciarSesionEjemplo(() => setMostrandoInicioSesion(false))
+
   const cambiarCantidad = (idProducto: string, variacion: number) =>
     setArticulos(
       articulos.map((articulo) =>
@@ -82,6 +90,8 @@ function App() {
     else if (producto) setArticulos([...articulos, crearArticulo(producto)])
     setTextoBusqueda('')
   }
+
+  if (mostrandoInicioSesion) return <IniciarSesion {...propiedadesInicioSesion} />
 
   return (
     <MenuDoble
