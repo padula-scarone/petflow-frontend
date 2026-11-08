@@ -6,7 +6,7 @@ import type {
   FormaPago,
   LineaPagoMixto,
   MedioPago,
-  RegistrarVentaCobroProps,
+  PropiedadesCobro,
 } from '@/features/ventas/types/cobro'
 
 // --- DATOS DE EJEMPLO ---
@@ -24,11 +24,6 @@ interface EntradaLineaMixta {
   montoACubrir: number | null
   pagaCon: number | null
 }
-
-type PropiedadesCobro = Omit<
-  RegistrarVentaCobroProps,
-  'onVolverAlCarrito' | 'onCancelarVenta' | 'onConfirmarCobro'
->
 
 export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobro {
   // --- ESTADOS ---
