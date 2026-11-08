@@ -1,7 +1,7 @@
 import type { FormEvent } from 'react'
-import { PawPrint, TriangleAlert } from 'lucide-react'
+import { TriangleAlert } from 'lucide-react'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import { Card, CardContent, CardDescription, CardHeader } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { BotonIngresar } from '@/features/auth/components/boton-ingresar'
 import { CampoClave } from '@/features/auth/components/campo-clave'
 import { CampoUsuario } from '@/features/auth/components/campo-usuario'
@@ -30,13 +30,10 @@ export function IniciarSesion({
       <Card className="w-full max-w-sm sm:py-8">
         {/* --- MARCA Y TITULO --- */}
         <CardHeader className="items-center justify-items-center text-center sm:px-8">
-          <div className="flex items-center gap-2 text-2xl font-bold">
-            <PawPrint aria-hidden="true" className="size-7" />
-            PetFlow
-          </div>
+          {/* Solo texto: el logotipo con su propio icono se incorporara mas adelante */}
+          <p className="text-2xl font-bold">PetFlow</p>
           {/* h1 propio: CardTitle es un div y la pantalla necesita un encabezado semantico */}
           <h1 className="mt-2 text-xl leading-none font-semibold">Iniciar sesión</h1>
-          <CardDescription>Ingresá tu usuario y contraseña para continuar.</CardDescription>
         </CardHeader>
 
         {/* --- FORMULARIO --- */}
