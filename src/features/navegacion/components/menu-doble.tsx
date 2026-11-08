@@ -1,8 +1,7 @@
 import { useEffect, useRef } from 'react'
-import { User } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { BarraInferiorModulos } from '@/features/navegacion/components/barra-inferior-modulos'
 import { BarraLateralModulos } from '@/features/navegacion/components/barra-lateral-modulos'
+import { MenuUsuario } from '@/features/navegacion/components/menu-usuario'
 import { PestanasSecciones } from '@/features/navegacion/components/pestanas-secciones'
 import type { MenuDobleProps } from '@/features/navegacion/types/menu'
 
@@ -13,7 +12,7 @@ export function MenuDoble({
   nombreUsuario,
   onSeleccionarModulo,
   onSeleccionarSeccion,
-  onAbrirMenuUsuario,
+  onCerrarSesion,
   claveContenido = '',
   children,
 }: MenuDobleProps) {
@@ -36,22 +35,20 @@ export function MenuDoble({
         idModuloActivo={idModuloActivo}
         nombreUsuario={nombreUsuario}
         onSeleccionarModulo={onSeleccionarModulo}
-        onAbrirMenuUsuario={onAbrirMenuUsuario}
+        onCerrarSesion={onCerrarSesion}
       />
 
       {/* --- CABECERA: LOGO Y USUARIO (MOBILE) + SECCIONES --- */}
       <header className="flex shrink-0 flex-col lg:ml-60 lg:h-[73px] lg:justify-center">
         <div className="flex items-center justify-between gap-3 border-b bg-fondo-tarjeta px-4 py-3 lg:hidden">
           <p className="text-2xl font-bold">PetFlow</p>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-11 gap-2 rounded-full px-5"
-            onClick={onAbrirMenuUsuario}
-          >
-            <User />
-            {nombreUsuario}
-          </Button>
+          {/* El menu sale hacia abajo y se alinea al borde derecho del boton */}
+          <MenuUsuario
+            nombreUsuario={nombreUsuario}
+            ladoMenu="bottom"
+            alineacionMenu="end"
+            onCerrarSesion={onCerrarSesion}
+          />
         </div>
         {seccionesDelModulo.length > 0 && (
           <div className="px-4 py-3 lg:py-0">

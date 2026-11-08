@@ -17,7 +17,8 @@ export function LayoutMenu() {
       nombreUsuario="Usuario"
       onSeleccionarModulo={seleccionarModulo}
       onSeleccionarSeccion={seleccionarSeccion}
-      onAbrirMenuUsuario={() => undefined}
+      // Temporal: con useCerrarSesion descartara el token y llevara al inicio de sesion
+      onCerrarSesion={() => undefined}
       // La ruta completa reinicia el scroll en cada cambio de pantalla
       claveContenido={pathname}
     >
