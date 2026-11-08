@@ -108,3 +108,9 @@ export interface RegistrarVentaCobroProps {
   // --- Fiado ---
   onCambiarNombreClienteFiado: (nombreCliente: string) => void
 }
+
+/** Props del cobro sin la navegacion, que decide cada pagina de ruta. */
+export type PropiedadesCobro = Omit<
+  RegistrarVentaCobroProps,
+  'onVolverAlCarrito' | 'onCancelarVenta' | 'onConfirmarCobro'
+>
