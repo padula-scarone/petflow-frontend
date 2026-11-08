@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { BarraInferiorModulos } from '@/features/navegacion/components/barra-inferior-modulos'
@@ -16,8 +17,15 @@ export function MenuDoble({
   claveContenido = '',
   children,
 }: MenuDobleProps) {
+  const contenidoRef = useRef<HTMLElement>(null)
   const seccionesDelModulo =
     modulos.find((modulo) => modulo.idModulo === idModuloActivo)?.secciones ?? []
+
+  // Al cambiar de modulo, de seccion o de pantalla el contenido vuelve a su inicio. Se mueve el
+  // scroll en lugar de cambiar la key: remontar el contenido destruiria el estado de las rutas hijas
+  useEffect(() => {
+    contenidoRef.current?.scrollTo({ top: 0 })
+  }, [idModuloActivo, idSeccionActiva, claveContenido])
 
   return (
     // La pantalla ocupa exactamente el alto visible: solo el contenido hace scroll
@@ -57,9 +65,8 @@ export function MenuDoble({
       </header>
 
       {/* --- CONTENIDO (UNICA ZONA CON SCROLL) --- */}
-      {/* La key reinicia el scroll al cambiar de modulo, de seccion o de pantalla */}
       <main
-        key={`${idModuloActivo}-${idSeccionActiva}-${claveContenido}`}
+        ref={contenidoRef}
         className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4 lg:ml-60 xl:p-8"
       >
         {children}
