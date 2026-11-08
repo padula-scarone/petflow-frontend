@@ -20,6 +20,7 @@ function DropdownMenuContent({
   className,
   sideOffset = 8,
   collisionPadding = 16,
+  onPointerDownOutside,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
   return (
@@ -28,6 +29,18 @@ function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         collisionPadding={collisionPadding}
+        onPointerDownOutside={(evento) => {
+          // Radix cierra este menu al apoyar el dedo (Dialog y Popover si difieren el cierre). Al soltar,
+          // el navegador emite un click sobre lo que quedo debajo y lo activa. Cancelar el touchend
+          // evita ese click: el toque afuera solo cierra el menu.
+          if (evento.detail.originalEvent.pointerType === 'touch') {
+            document.addEventListener('touchend', (toqueTerminado) => toqueTerminado.preventDefault(), {
+              once: true,
+              passive: false,
+            })
+          }
+          onPointerDownOutside?.(evento)
+        }}
         className={cn(
           "z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 overflow-x-hidden overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md",
           className
@@ -46,7 +59,7 @@ function DropdownMenuItem({
     <DropdownMenuPrimitive.Item
       data-slot="dropdown-menu-item"
       className={cn(
-        "relative flex min-h-11 cursor-pointer items-center gap-3 rounded-mediano px-3 text-sm outline-none select-none data-[disabled]:pointer-events-none data-[disabled]:text-texto-suave data-[highlighted]:bg-fondo-hover [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex min-h-11 cursor-pointer items-center gap-3 whitespace-nowrap rounded-mediano px-3 text-sm outline-none select-none data-disabled:pointer-events-none data-disabled:text-texto-suave data-highlighted:bg-fondo-hover [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}
