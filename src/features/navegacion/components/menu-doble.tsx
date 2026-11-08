@@ -12,6 +12,7 @@ export function MenuDoble({
   nombreUsuario,
   onSeleccionarModulo,
   onSeleccionarSeccion,
+  onAbrirMiPerfil,
   onCerrarSesion,
   claveContenido = '',
   children,
@@ -35,6 +36,7 @@ export function MenuDoble({
         idModuloActivo={idModuloActivo}
         nombreUsuario={nombreUsuario}
         onSeleccionarModulo={onSeleccionarModulo}
+        onAbrirMiPerfil={onAbrirMiPerfil}
         onCerrarSesion={onCerrarSesion}
       />
 
@@ -47,6 +49,7 @@ export function MenuDoble({
             nombreUsuario={nombreUsuario}
             ladoMenu="bottom"
             alineacionMenu="end"
+            onAbrirMiPerfil={onAbrirMiPerfil}
             onCerrarSesion={onCerrarSesion}
           />
         </div>

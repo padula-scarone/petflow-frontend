@@ -1,4 +1,5 @@
 import { useLocation, useNavigate } from 'react-router'
+import { RUTA_PERFIL } from '@/features/navegacion/config/rutas'
 import type { ModuloMenu } from '@/features/navegacion/types/menu'
 import { construirRutaSeccion } from '@/features/navegacion/utils/construir-ruta-seccion'
 
@@ -33,5 +34,7 @@ export function useMenuDoble(modulos: ModuloMenu[]) {
     navegar(construirRutaSeccion(idModuloActivo, idSeccion))
   }
 
-  return { idModuloActivo, idSeccionActiva, seleccionarModulo, seleccionarSeccion }
+  const abrirMiPerfil = () => navegar(RUTA_PERFIL)
+
+  return { idModuloActivo, idSeccionActiva, seleccionarModulo, seleccionarSeccion, abrirMiPerfil }
 }

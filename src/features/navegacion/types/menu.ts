@@ -29,6 +29,8 @@ export interface MenuUsuarioProps {
   alineacionMenu: AlineacionMenuUsuario
   /** El boton ocupa todo el ancho de su contenedor y el menu iguala ese ancho (barra lateral). */
   anchoCompleto?: boolean
+  /** Lleva a la pantalla de perfil del usuario. */
+  onAbrirMiPerfil: () => void
   /** Sin confirmacion: se dispara de inmediato. La sesion y la navegacion las resuelve quien lo recibe. */
   onCerrarSesion: () => void
 }
@@ -41,6 +43,7 @@ export interface MenuDobleProps {
   nombreUsuario: string
   onSeleccionarModulo: (idModulo: string) => void
   onSeleccionarSeccion: (idSeccion: string) => void
+  onAbrirMiPerfil: () => void
   onCerrarSesion: () => void
   /** Identifica la pantalla mostrada; al cambiar, el contenido vuelve a su inicio en lugar de conservar el scroll. */
   claveContenido?: string

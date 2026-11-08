@@ -19,6 +19,7 @@ export function MenuUsuario({
   ladoMenu,
   alineacionMenu,
   anchoCompleto = false,
+  onAbrirMiPerfil,
   onCerrarSesion,
 }: MenuUsuarioProps) {
   // La flecha apunta hacia donde sale el menu
@@ -48,11 +49,9 @@ export function MenuUsuario({
           anchoCompleto ? 'min-w-(--radix-dropdown-menu-trigger-width)' : 'min-w-56'
         }
       >
-        {/* Sin pantalla en la Demo: deshabilitada para que no parezca un boton roto */}
-        <DropdownMenuItem disabled>
+        <DropdownMenuItem onSelect={onAbrirMiPerfil}>
           <UserRound />
           Mi perfil
-          <span className="ml-auto text-xs">Próximamente</span>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         {/* Al resaltarse se oscurece: text-peligro sobre fondo-hover no llega a 4,5:1 de contraste */}

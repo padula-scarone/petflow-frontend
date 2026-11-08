@@ -9,6 +9,7 @@ interface BarraLateralModulosProps {
   idModuloActivo: string
   nombreUsuario: string
   onSeleccionarModulo: (idModulo: string) => void
+  onAbrirMiPerfil: () => void
   onCerrarSesion: () => void
 }
 
@@ -17,6 +18,7 @@ export function BarraLateralModulos({
   idModuloActivo,
   nombreUsuario,
   onSeleccionarModulo,
+  onAbrirMiPerfil,
   onCerrarSesion,
 }: BarraLateralModulosProps) {
   return (
@@ -54,6 +56,7 @@ export function BarraLateralModulos({
         ladoMenu="top"
         alineacionMenu="start"
         anchoCompleto
+        onAbrirMiPerfil={onAbrirMiPerfil}
         onCerrarSesion={onCerrarSesion}
       />
     </aside>
