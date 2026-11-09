@@ -1,8 +1,6 @@
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-
-/** Largo maximo de `username` en el back (columna usuarios.username). */
-const LONGITUD_MAXIMA_USERNAME = 50
+import { LONGITUD_MAXIMA_USERNAME } from '@/features/auth/config/reglas-inicio-sesion'
 
 /** Props del campo donde se escribe el nombre de usuario. */
 interface CampoUsuarioProps {
