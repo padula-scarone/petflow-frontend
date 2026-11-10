@@ -9,8 +9,9 @@ import type {
 } from '@/lib/cliente-http.types'
 
 // --- CONSTANTES ---
-// El back en Render puede tardar casi un minuto en despertar; sin limite, la peticion quedaria colgada.
-const TIEMPO_LIMITE_POR_DEFECTO_MS = 60_000
+// Sin limite, un back que no responde dejaria la peticion colgada. 30 s alcanza porque el cron del
+// SSOT mantiene despierto el back en Render; si igual estaba dormido, el reintento ya lo encuentra activo.
+const TIEMPO_LIMITE_POR_DEFECTO_MS = 30_000
 const ESTADO_NO_AUTORIZADO = 401
 
 // --- FUNCIONES AUXILIARES ---
