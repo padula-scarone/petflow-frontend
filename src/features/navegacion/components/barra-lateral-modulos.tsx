@@ -1,5 +1,5 @@
-import { User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { MenuUsuario } from '@/features/navegacion/components/menu-usuario'
 import { cn } from '@/lib/utils'
 import type { ModuloMenu } from '@/features/navegacion/types/menu'
 
@@ -9,7 +9,8 @@ interface BarraLateralModulosProps {
   idModuloActivo: string
   nombreUsuario: string
   onSeleccionarModulo: (idModulo: string) => void
-  onAbrirMenuUsuario: () => void
+  onAbrirMiPerfil: () => void
+  onCerrarSesion: () => void
 }
 
 export function BarraLateralModulos({
@@ -17,7 +18,8 @@ export function BarraLateralModulos({
   idModuloActivo,
   nombreUsuario,
   onSeleccionarModulo,
-  onAbrirMenuUsuario,
+  onAbrirMiPerfil,
+  onCerrarSesion,
 }: BarraLateralModulosProps) {
   return (
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 border-r bg-fondo-tarjeta p-4 lg:flex">
@@ -49,15 +51,14 @@ export function BarraLateralModulos({
       </nav>
 
       {/* --- USUARIO --- */}
-      <Button
-        type="button"
-        variant="outline"
-        className="h-11 w-full gap-3 rounded-full"
-        onClick={onAbrirMenuUsuario}
-      >
-        <User />
-        {nombreUsuario}
-      </Button>
+      <MenuUsuario
+        nombreUsuario={nombreUsuario}
+        ladoMenu="top"
+        alineacionMenu="start"
+        anchoCompleto
+        onAbrirMiPerfil={onAbrirMiPerfil}
+        onCerrarSesion={onCerrarSesion}
+      />
     </aside>
   )
 }

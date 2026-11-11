@@ -1,0 +1,32 @@
+import { Outlet, useLocation } from 'react-router'
+import { useCerrarSesion } from '@/features/auth/hooks/use-cerrar-sesion'
+import { useUsuarioSesion } from '@/features/auth/hooks/use-usuario-sesion'
+import { MenuDoble } from '@/features/navegacion/components/menu-doble'
+import { MODULOS_MENU } from '@/features/navegacion/config/modulos-menu'
+import { useMenuDoble } from '@/features/navegacion/hooks/use-menu-doble'
+
+/** Marco comun de las pantallas internas: el menu doble con la pantalla activa dentro. */
+export function LayoutMenu() {
+  const { idModuloActivo, idSeccionActiva, seleccionarModulo, seleccionarSeccion, abrirMiPerfil } =
+    useMenuDoble(MODULOS_MENU)
+  const { cerrarSesion } = useCerrarSesion()
+  const usuario = useUsuarioSesion()
+  const { pathname } = useLocation()
+
+  return (
+    <MenuDoble
+      modulos={MODULOS_MENU}
+      idModuloActivo={idModuloActivo}
+      idSeccionActiva={idSeccionActiva}
+      nombreUsuario={usuario.nombre}
+      onSeleccionarModulo={seleccionarModulo}
+      onSeleccionarSeccion={seleccionarSeccion}
+      onAbrirMiPerfil={abrirMiPerfil}
+      onCerrarSesion={cerrarSesion}
+      // La ruta completa reinicia el scroll en cada cambio de pantalla
+      claveContenido={pathname}
+    >
+      <Outlet />
+    </MenuDoble>
+  )
+}
