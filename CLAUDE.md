@@ -3,7 +3,7 @@ Para consultar el modelo de datos relacional, los Casos de Uso Base (CUB) y las 
 
 # Stack Tecnológico
 - **Base:** React + Vite, TypeScript.
-- **Estilos y Maquetado:** Tailwind CSS (maquetación en archivo único, sin hojas de estilo externas).
+- **Estilos y Maquetado:** Tailwind CSS + shadcn//ui (maquetación en archivo único, sin hojas de estilo externas).
 - **Enrutamiento:** React Router (rutas protegidas por roles de usuario).
 - **Integraciones Nativas:** Uso de URL Schemes (`wa.me` / `mailto:`) para envíos mediante Deep Links.
 
