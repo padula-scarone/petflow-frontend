@@ -1,5 +1,6 @@
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { PRESENTACION_ESTADO_VENTA } from '@/features/ventas/config/estados-venta'
 import type { PropiedadesFiltrosHistorial } from '@/features/ventas/types/historial'
 import { describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
@@ -13,6 +14,7 @@ interface ResumenFiltrosActivosProps {
    * false (mobile): todos, porque la hoja de filtros esta cerrada.
    */
   soloAdicionales: boolean
+  className?: string
 }
 
 interface Chip {
@@ -21,7 +23,11 @@ interface Chip {
   onQuitar: () => void
 }
 
-export function ResumenFiltrosActivos({ propiedades, soloAdicionales }: ResumenFiltrosActivosProps) {
+export function ResumenFiltrosActivos({
+  propiedades,
+  soloAdicionales,
+  className,
+}: ResumenFiltrosActivosProps) {
   const { filtros, opciones, onCambiarFiltros, onSeleccionarProducto } = propiedades
   const chips: Chip[] = []
 
@@ -90,7 +96,7 @@ export function ResumenFiltrosActivos({ propiedades, soloAdicionales }: ResumenF
   if (chips.length === 0) return null
 
   return (
-    <ul aria-label="Filtros aplicados" className="flex flex-wrap gap-2">
+    <ul aria-label="Filtros aplicados" className={cn('flex flex-wrap gap-2', className)}>
       {chips.map((chip) => (
         <li key={chip.descripcion}>
           <Button

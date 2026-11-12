@@ -43,7 +43,7 @@ export function HojaFiltrosHistorial({ propiedades }: HojaFiltrosHistorialProps)
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button type="button" variant="outline" className="h-11 w-full gap-2 bg-fondo-tarjeta">
+        <Button type="button" variant="outline" className="h-11 shrink-0 gap-2 bg-fondo-tarjeta px-4">
           <SlidersHorizontal />
           Filtros
           {cantidadFiltrosActivos > 0 && (

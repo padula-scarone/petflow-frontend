@@ -31,7 +31,7 @@ export function HistorialVentas({
       {/* Los margenes negativos cubren el padding del area con scroll, asi la lista no se ve pasar por encima.
           El top negativo compensa ese mismo padding: sticky se mide desde el borde interno, no desde el borde real */}
       <div className="sticky -top-4 z-20 -mx-4 -mt-4 bg-fondo-pagina px-4 pt-4 pb-3 xl:-top-8 xl:-mx-8 xl:-mt-8 xl:px-8 xl:pt-8">
-        <PanelFiltrosHistorial propiedades={propiedadesFiltros} />
+        <PanelFiltrosHistorial propiedades={propiedadesFiltros} estadoLista={estadoLista} />
       </div>
 
       {/* --- RESUMEN: CUANTAS VENTAS, FILTROS APLICADOS Y LIMPIAR --- */}

@@ -10,9 +10,9 @@ export function EstadoCargandoHistorial() {
       <span className="sr-only">Cargando ventas</span>
 
       {/* --- TARJETAS --- */}
-      <ul className="grid gap-3 md:grid-cols-2 xl:hidden">
+      <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:hidden">
         {Array.from({ length: CANTIDAD_ESQUELETOS }, (_, indice) => (
-          <li key={indice}>
+          <li key={indice} className="min-w-0">
             <Card className="gap-3 p-4 shadow-none">
               <div className="flex justify-between gap-3">
                 <Skeleton className="h-10 w-32" />

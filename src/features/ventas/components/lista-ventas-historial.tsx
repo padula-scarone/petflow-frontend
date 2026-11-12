@@ -38,9 +38,10 @@ export function ListaVentasHistorial({
   return (
     <div className="flex flex-col gap-4">
       {/* --- TARJETAS (HASTA XL) --- */}
-      <ul className="grid gap-3 md:grid-cols-2 xl:hidden">
+      {/* grid-cols-1 = minmax(0, 1fr): sin esto la columna crece al ancho del contenido y la tarjeta se corta */}
+      <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:hidden">
         {filas.map((fila) => (
-          <li key={fila.idVenta}>
+          <li key={fila.idVenta} className="min-w-0">
             <TarjetaVentaHistorial fila={fila} acciones={acciones} />
           </li>
         ))}

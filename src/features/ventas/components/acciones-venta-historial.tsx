@@ -15,6 +15,11 @@ interface AccionesVentaHistorialProps {
   variante: 'tabla' | 'tarjeta' | 'detalle'
 }
 
+// Botones con texto de la tarjeta y del detalle. shrink + min-w-0 anulan el shrink-0 del Button para que los tres
+// entren en 320 px; por debajo de 360 px se oculta el icono y queda solo el texto.
+const CLASE_BOTON_TEXTO =
+  'h-11 min-w-0 shrink flex-1 gap-1.5 bg-fondo-tarjeta px-2 max-[359px]:[&_svg]:hidden'
+
 /** Boton de solo icono de la tabla, con su tooltip y su aria-label. */
 function BotonIconoTabla({
   Icono,
@@ -93,7 +98,7 @@ export function AccionesVentaHistorial({ fila, acciones, variante }: AccionesVen
       type="button"
       variant="outline"
       aria-label={`Editar el comprobante ${numeroComprobante}`}
-      className="h-11 flex-1 gap-1.5 bg-fondo-tarjeta px-2"
+      className={CLASE_BOTON_TEXTO}
       onClick={solicitarEdicion}
     >
       <Pencil />
@@ -105,7 +110,7 @@ export function AccionesVentaHistorial({ fila, acciones, variante }: AccionesVen
       type="button"
       variant="outline"
       aria-label={`Anular el comprobante ${numeroComprobante}`}
-      className="h-11 flex-1 gap-1.5 bg-fondo-tarjeta px-2 text-peligro hover:text-peligro"
+      className={cn(CLASE_BOTON_TEXTO, 'text-peligro hover:text-peligro')}
       onClick={solicitarAnulacion}
     >
       <Trash2 />
@@ -130,7 +135,7 @@ export function AccionesVentaHistorial({ fila, acciones, variante }: AccionesVen
         type="button"
         variant="outline"
         aria-label={`Ver detalle del comprobante ${numeroComprobante}`}
-        className="h-11 flex-1 gap-1.5 bg-fondo-tarjeta px-2"
+        className={CLASE_BOTON_TEXTO}
         onClick={() => acciones.onVerDetalle(idVenta)}
       >
         <Eye />
