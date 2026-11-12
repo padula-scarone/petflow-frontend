@@ -11,16 +11,16 @@ import type {
 
 // --- DATOS DE EJEMPLO ---
 // Hook temporal para probar la vista: se reemplaza por el hook real de la accion Registrar Venta.
-const MEDIOS_EJEMPLO: MedioPago[] = [
-  { idMedioPago: 'efectivo', nombre: 'Efectivo', icono: Banknote, tipoAjuste: 'descuento', porcentajeAjuste: 10, admiteVuelto: true },
-  { idMedioPago: 'debito', nombre: 'Débito', icono: Wallet, tipoAjuste: 'ninguno', porcentajeAjuste: 0, admiteVuelto: false },
-  { idMedioPago: 'credito', nombre: 'Crédito', icono: CreditCard, tipoAjuste: 'recargo', porcentajeAjuste: 15, admiteVuelto: false },
-  { idMedioPago: 'qr', nombre: 'QR', icono: QrCode, tipoAjuste: 'ninguno', porcentajeAjuste: 0, admiteVuelto: false },
+export const MEDIOS_EJEMPLO: MedioPago[] = [
+  { idMedioPago: 1, nombre: 'Efectivo', icono: Banknote, tipoAjuste: 'descuento', porcentajeAjuste: 10, admiteVuelto: true },
+  { idMedioPago: 2, nombre: 'Débito', icono: Wallet, tipoAjuste: 'ninguno', porcentajeAjuste: 0, admiteVuelto: false },
+  { idMedioPago: 3, nombre: 'Crédito', icono: CreditCard, tipoAjuste: 'recargo', porcentajeAjuste: 15, admiteVuelto: false },
+  { idMedioPago: 4, nombre: 'QR', icono: QrCode, tipoAjuste: 'ninguno', porcentajeAjuste: 0, admiteVuelto: false },
 ]
 
 /** Lo que tipea el usuario en cada linea del pago mixto; el resto se deriva. */
 interface EntradaLineaMixta {
-  idMedioPago: string
+  idMedioPago: number
   montoACubrir: number | null
   pagaCon: number | null
 }
@@ -28,7 +28,7 @@ interface EntradaLineaMixta {
 export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobro {
   // --- ESTADOS ---
   const [formaPago, setFormaPago] = useState<FormaPago>('unico')
-  const [idMedioSeleccionado, setIdMedioSeleccionado] = useState<string | null>(null)
+  const [idMedioSeleccionado, setIdMedioSeleccionado] = useState<number | null>(null)
   const [pagaCon, setPagaCon] = useState<number | null>(null)
   const [entradasMixtas, setEntradasMixtas] = useState<EntradaLineaMixta[]>([])
   const [datosDescuento, setDatosDescuento] = useState<DatosDescuentoManual | null>(null)
@@ -37,7 +37,7 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
   const [nombreClienteFiado, setNombreClienteFiado] = useState('')
 
   // --- CALCULOS ---
-  const buscarMedio = (idMedioPago: string | null) =>
+  const buscarMedio = (idMedioPago: number | null) =>
     MEDIOS_EJEMPLO.find((medio) => medio.idMedioPago === idMedioPago)
 
   const calcularAjuste = (medio: MedioPago, monto: number) => {
@@ -152,13 +152,13 @@ export function useCobroVentaEjemplo(subtotalProductos: number): PropiedadesCobr
     setFormaPago(nuevaFormaPago)
   }
 
-  const seleccionarMedioPago = (idMedioPago: string) => {
+  const seleccionarMedioPago = (idMedioPago: number) => {
     setIdMedioSeleccionado(idMedioPago)
     if (!buscarMedio(idMedioPago)?.admiteVuelto) setPagaCon(null)
   }
 
   // --- ACCIONES: PAGO MIXTO ---
-  const actualizarEntrada = (idMedioPago: string, cambios: Partial<EntradaLineaMixta>) =>
+  const actualizarEntrada = (idMedioPago: number, cambios: Partial<EntradaLineaMixta>) =>
     setEntradasMixtas(
       entradasMixtas.map((entrada) =>
         entrada.idMedioPago === idMedioPago ? { ...entrada, ...cambios } : entrada,

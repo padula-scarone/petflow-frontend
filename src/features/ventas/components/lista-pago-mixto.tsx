@@ -8,11 +8,11 @@ interface ListaPagoMixtoProps {
   lineas: LineaPagoMixto[]
   mediosDisponibles: MedioPago[]
   faltaCubrir: number
-  onAgregarLineaPago: (idMedioPago: string) => void
-  onQuitarLineaPago: (idMedioPago: string) => void
-  onCambiarMontoLinea: (idMedioPago: string, monto: number | null) => void
-  onCambiarPagaConLinea: (idMedioPago: string, monto: number | null) => void
-  onCompletarConRestante: (idMedioPago: string) => void
+  onAgregarLineaPago: (idMedioPago: number) => void
+  onQuitarLineaPago: (idMedioPago: number) => void
+  onCambiarMontoLinea: (idMedioPago: number, monto: number | null) => void
+  onCambiarPagaConLinea: (idMedioPago: number, monto: number | null) => void
+  onCompletarConRestante: (idMedioPago: number) => void
 }
 
 export function ListaPagoMixto({

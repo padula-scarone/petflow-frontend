@@ -1,4 +1,5 @@
-import { Mail, MessageCircle, Pencil } from 'lucide-react'
+import { Pencil } from 'lucide-react'
+import { BotonesEnvioComprobante } from '@/features/ventas/components/botones-envio-comprobante'
 import { Button } from '@/components/ui/button'
 import {
   AlertDialog,
@@ -43,18 +44,11 @@ export function AccionesComprobante({
     <div className="flex flex-col gap-2">
       <div className={cn('flex gap-2', !compacta && 'flex-col gap-3')}>
         {/* --- ENVIOS: ENLACES NATIVOS, PARA QUE EL NAVEGADOR NO LOS BLOQUEE --- */}
-        <Button asChild variant="outline" className={claseBoton}>
-          <a href={enlaceWhatsApp} target="_blank" rel="noopener noreferrer">
-            <MessageCircle />
-            {compacta ? 'WhatsApp' : 'Enviar por WhatsApp'}
-          </a>
-        </Button>
-        <Button asChild variant="outline" className={claseBoton}>
-          <a href={enlaceMail}>
-            <Mail />
-            {compacta ? 'Mail' : 'Enviar por mail'}
-          </a>
-        </Button>
+        <BotonesEnvioComprobante
+          enlaceWhatsApp={enlaceWhatsApp}
+          enlaceMail={enlaceMail}
+          variante={variante}
+        />
 
         {/* --- EDICION: PIDE CONFIRMACION PORQUE ANULA LA VENTA --- */}
         <AlertDialog>

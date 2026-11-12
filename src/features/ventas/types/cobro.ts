@@ -11,7 +11,7 @@ export type TipoDescuentoManual = 'porcentaje' | 'monto'
 
 /** Medio de pago configurado en la seccion "Medios de pago". */
 export interface MedioPago {
-  idMedioPago: string
+  idMedioPago: number
   nombre: string
   /** Si falta, la vista usa un icono generico. */
   icono?: LucideIcon
@@ -24,7 +24,7 @@ export interface MedioPago {
 
 /** Linea de un pago mixto; los montos derivados los calcula el hook. */
 export interface LineaPagoMixto {
-  idMedioPago: string
+  idMedioPago: number
   /** Parte del total que cubre este medio, antes de aplicar su ajuste. */
   montoACubrir: number | null
   /** Solo si el medio admite vuelto. */
@@ -65,7 +65,7 @@ export interface EstadoCobro {
   formaPago: FormaPago
   mediosDisponibles: MedioPago[]
   /** Pago unico. */
-  idMedioSeleccionado: string | null
+  idMedioSeleccionado: number | null
   pagaCon: number | null
   vuelto: number | null
   /** Pago mixto. */
@@ -88,14 +88,14 @@ export interface RegistrarVentaCobroProps {
   onConfirmarCobro: () => void
   // --- Forma y medios de pago ---
   onCambiarFormaPago: (formaPago: FormaPago) => void
-  onSeleccionarMedioPago: (idMedioPago: string) => void
+  onSeleccionarMedioPago: (idMedioPago: number) => void
   onCambiarPagaCon: (monto: number | null) => void
   // --- Pago mixto ---
-  onAgregarLineaPago: (idMedioPago: string) => void
-  onQuitarLineaPago: (idMedioPago: string) => void
-  onCambiarMontoLinea: (idMedioPago: string, monto: number | null) => void
-  onCambiarPagaConLinea: (idMedioPago: string, monto: number | null) => void
-  onCompletarConRestante: (idMedioPago: string) => void
+  onAgregarLineaPago: (idMedioPago: number) => void
+  onQuitarLineaPago: (idMedioPago: number) => void
+  onCambiarMontoLinea: (idMedioPago: number, monto: number | null) => void
+  onCambiarPagaConLinea: (idMedioPago: number, monto: number | null) => void
+  onCompletarConRestante: (idMedioPago: number) => void
   /** Reduce los montos de los ultimos medios hasta que sumen el total exacto. */
   onAjustarMontosAutomaticamente: () => void
   // --- Descuento manual ---
