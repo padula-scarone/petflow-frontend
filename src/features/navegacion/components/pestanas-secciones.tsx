@@ -15,8 +15,13 @@ export function PestanasSecciones({
   onSeleccionarSeccion,
 }: PestanasSeccionesProps) {
   return (
-    // Si no entran en pantalla se desplazan en horizontal en lugar de romper el layout
-    <nav aria-label="Secciones" className="flex gap-2 overflow-x-auto">
+    // Si no entran en pantalla se desplazan en horizontal en lugar de romper el layout.
+    // El margen lateral es relleno de la propia nav (px-4) y no del contenedor: asi la zona que se
+    // desplaza llega hasta el borde de la pantalla y las pestanas se cortan ahi, no 16 px antes
+    <nav
+      aria-label="Secciones"
+      className="sin-barra-desplazamiento flex gap-2 overflow-x-auto px-4"
+    >
       {secciones.map((seccion) => {
         const activa = seccion.idSeccion === idSeccionActiva
         return (

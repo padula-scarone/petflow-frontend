@@ -52,7 +52,8 @@ function DialogContent({
         <DialogPrimitive.Close
           data-slot="dialog-close-icon"
           aria-label="Cerrar"
-          className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-mediano text-texto-suave outline-none hover:bg-fondo-hover focus-visible:ring-[3px] focus-visible:ring-foco/50"
+          // Fondo casi opaco: si el contenido scrollea por debajo, no se mezcla con la X
+          className="absolute top-2 right-2 flex size-11 items-center justify-center rounded-mediano bg-fondo-tarjeta/90 text-texto-suave outline-none hover:bg-fondo-hover focus-visible:ring-[3px] focus-visible:ring-foco/50"
         >
           <XIcon aria-hidden="true" className="size-5" />
         </DialogPrimitive.Close>

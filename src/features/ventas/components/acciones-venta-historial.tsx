@@ -1,4 +1,4 @@
-import { Eye, Pencil, Trash2, type LucideIcon } from 'lucide-react'
+import { FileText, Pencil, Trash2, type LucideIcon } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
@@ -15,10 +15,9 @@ interface AccionesVentaHistorialProps {
   variante: 'tabla' | 'tarjeta' | 'detalle'
 }
 
-// Botones con texto de la tarjeta y del detalle. shrink + min-w-0 anulan el shrink-0 del Button para que los tres
-// entren en 320 px; por debajo de 360 px se oculta el icono y queda solo el texto.
-const CLASE_BOTON_TEXTO =
-  'h-11 min-w-0 shrink flex-1 gap-1.5 bg-fondo-tarjeta px-2 max-[359px]:[&_svg]:hidden'
+// Editar y Anular, con texto: se reparten por mitades la fila que comparten (min-w-0 + shrink anulan
+// el shrink-0 del Button para que nunca desborden).
+const CLASE_BOTON_TEXTO = 'h-11 min-w-0 shrink flex-1 gap-1.5 bg-fondo-tarjeta px-2'
 
 /** Boton de solo icono de la tabla, con su tooltip y su aria-label. */
 function BotonIconoTabla({
@@ -67,7 +66,7 @@ export function AccionesVentaHistorial({ fila, acciones, variante }: AccionesVen
       // Ancho de tres botones fijo y contenido centrado: el ojo solo queda en el centro de la columna
       <div className="mx-auto flex w-[8.75rem] items-center justify-center gap-1">
         <BotonIconoTabla
-          Icono={Eye}
+          Icono={FileText}
           etiqueta="Ver detalle"
           etiquetaAccesible={`Ver detalle del comprobante ${numeroComprobante}`}
           onClick={() => acciones.onVerDetalle(idVenta)}
@@ -120,32 +119,35 @@ export function AccionesVentaHistorial({ fila, acciones, variante }: AccionesVen
 
   // --- DETALLE ---
   if (variante === 'detalle') {
+    // Fragmento: Editar y Anular comparten la fila del pie con el boton Cobrar, que arma esa fila
     return ventanaVigente ? (
-      <div className="flex gap-2">
+      <>
         {botonEditar}
         {botonAnular}
-      </div>
+      </>
     ) : null
   }
 
   // --- TARJETA ---
+  // "Ver detalle" va completo y a ancho total en su propia fila; Editar y Anular, que solo existen en la
+  // ventana de 15 minutos, se reparten una fila aparte. Asi el texto entero entra en 320 px.
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col gap-2">
       <Button
         type="button"
         variant="outline"
         aria-label={`Ver detalle del comprobante ${numeroComprobante}`}
-        className={CLASE_BOTON_TEXTO}
+        className="h-11 w-full gap-1.5 bg-fondo-tarjeta px-2"
         onClick={() => acciones.onVerDetalle(idVenta)}
       >
-        <Eye />
-        Ver
+        <FileText />
+        Ver detalle
       </Button>
       {ventanaVigente && (
-        <>
+        <div className="flex gap-2">
           {botonEditar}
           {botonAnular}
-        </>
+        </div>
       )}
     </div>
   )

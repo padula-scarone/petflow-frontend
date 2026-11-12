@@ -100,15 +100,17 @@ export function DetalleVentaHistorial({
 
           return (
             <>
-              <DialogHeader>
-                <DialogDescription>Comprobante</DialogDescription>
-                <DialogTitle className="text-xl tabular-nums">{venta.numeroComprobante}</DialogTitle>
-                <div className="pt-1">
-                  <InsigniaEstadoVenta estado={venta.estado} />
-                </div>
-              </DialogHeader>
-
               <DialogBody>
+                {/* --- ENCABEZADO: VA DENTRO DEL SCROLL --- */}
+                {/* Se mueve con el contenido en lugar de quedar fijo y ocupar espacio. pr-10: no pisa la X, que si es fija */}
+                <div className="flex flex-col gap-1 pr-10">
+                  <DialogDescription>Comprobante</DialogDescription>
+                  <DialogTitle className="text-xl tabular-nums">{venta.numeroComprobante}</DialogTitle>
+                  <div className="pt-1">
+                    <InsigniaEstadoVenta estado={venta.estado} />
+                  </div>
+                </div>
+
                 {anulada && (
                   <Alert role="status">
                     <Ban aria-hidden="true" />
@@ -204,14 +206,14 @@ export function DetalleVentaHistorial({
               {/* --- ACCIONES --- */}
               {/* Sin nada que hacer (plazo vencido y no es un fiado), el pie no se muestra */}
               {(fila.ventanaVigente || fila.puedeCobrarFiado) && (
-                // Mobile: el aviso arriba y los botones apilados. Desde sm: aviso a la izquierda y botones a la derecha
+                // Mobile: el aviso arriba y todos los botones en una sola fila. Desde sm: aviso a la izquierda y botones a la derecha
                 <DialogFooter className="flex-col sm:flex-row sm:items-center sm:justify-between">
                   <AvisoVentanaVenta fila={fila} />
-                  <div className="flex flex-col gap-2 sm:ml-auto sm:flex-row">
+                  <div className="flex gap-2 sm:ml-auto">
                     <BotonCobrarFiado
                       fila={fila}
                       onCobrarFiado={acciones.onCobrarFiado}
-                      className="w-full sm:w-auto"
+                      className="min-w-0 shrink flex-1 px-2 sm:flex-none sm:px-4"
                     />
                     <AccionesVentaHistorial fila={fila} acciones={acciones} variante="detalle" />
                   </div>

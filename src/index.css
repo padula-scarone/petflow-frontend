@@ -64,3 +64,12 @@
     cursor: pointer;
   }
 }
+
+/* Scroll horizontal que se sigue usando con el dedo o el trackpad, pero sin la barra visible del navegador */
+@utility sin-barra-desplazamiento {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
