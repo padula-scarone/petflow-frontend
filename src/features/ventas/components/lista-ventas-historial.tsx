@@ -1,9 +1,13 @@
-import { EstadoCargandoHistorial } from '@/features/ventas/components/estado-cargando-historial'
-import { EstadoErrorHistorial } from '@/features/ventas/components/estado-error-historial'
-import { EstadoVacioHistorial } from '@/features/ventas/components/estado-vacio-historial'
-import { PaginacionHistorial } from '@/features/ventas/components/paginacion-historial'
+import { FilterX, ReceiptText } from 'lucide-react'
+import { Link } from 'react-router'
+import { Button } from '@/components/ui/button'
+import { EstadoCargandoLista } from '@/features/ventas/components/estado-cargando-lista'
+import { EstadoErrorLista } from '@/features/ventas/components/estado-error-lista'
+import { EstadoVacioLista } from '@/features/ventas/components/estado-vacio-lista'
+import { PaginacionLista } from '@/features/ventas/components/paginacion-lista'
 import { TablaVentasHistorial } from '@/features/ventas/components/tabla-ventas-historial'
 import { TarjetaVentaHistorial } from '@/features/ventas/components/tarjeta-venta-historial'
+import { RUTAS_REGISTRAR_VENTA } from '@/features/ventas/config/rutas-registrar-venta'
 import type {
   EstadoListaHistorial,
   PropiedadesAccionesVenta,
@@ -25,12 +29,44 @@ export function ListaVentasHistorial({
   onReintentar,
   onLimpiarFiltros,
 }: ListaVentasHistorialProps) {
-  if (estadoLista.tipo === 'cargando') return <EstadoCargandoHistorial />
+  if (estadoLista.tipo === 'cargando') return <EstadoCargandoLista textoAccesible="Cargando ventas" />
   if (estadoLista.tipo === 'error') {
-    return <EstadoErrorHistorial mensaje={estadoLista.mensaje} onReintentar={onReintentar} />
+    return (
+      <EstadoErrorLista
+        titulo="No se pudo cargar el historial"
+        mensaje={estadoLista.mensaje}
+        onReintentar={onReintentar}
+      />
+    )
   }
-  if (estadoLista.tipo === 'sin-ventas' || estadoLista.tipo === 'sin-resultados') {
-    return <EstadoVacioHistorial variante={estadoLista.tipo} onLimpiarFiltros={onLimpiarFiltros} />
+  // sin-ventas: todavia no hay ninguna. sin-resultados: hay ventas, pero los filtros no devuelven ninguna
+  if (estadoLista.tipo === 'sin-ventas') {
+    return (
+      <EstadoVacioLista
+        icono={ReceiptText}
+        titulo="Todavía no hay ventas registradas"
+        descripcion="Cuando registres una venta, la vas a ver acá."
+        accion={
+          <Button asChild className="h-11 px-6">
+            <Link to={RUTAS_REGISTRAR_VENTA.carrito}>Registrar venta</Link>
+          </Button>
+        }
+      />
+    )
+  }
+  if (estadoLista.tipo === 'sin-resultados') {
+    return (
+      <EstadoVacioLista
+        icono={FilterX}
+        titulo="No encontramos ventas con estos filtros"
+        descripcion="Probá con otro rango de fechas o quitá algún filtro."
+        accion={
+          <Button type="button" variant="outline" className="h-11 bg-fondo-tarjeta px-6" onClick={onLimpiarFiltros}>
+            Limpiar filtros
+          </Button>
+        }
+      />
+    )
   }
 
   const { filas, paginacion } = estadoLista
@@ -52,7 +88,7 @@ export function ListaVentasHistorial({
         <TablaVentasHistorial filas={filas} acciones={acciones} />
       </div>
 
-      <PaginacionHistorial paginacion={paginacion} onCambiarPagina={onCambiarPagina} />
+      <PaginacionLista paginacion={paginacion} onCambiarPagina={onCambiarPagina} />
     </div>
   )
 }

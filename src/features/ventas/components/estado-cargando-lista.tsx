@@ -3,11 +3,17 @@ import { Skeleton } from '@/components/ui/skeleton'
 
 const CANTIDAD_ESQUELETOS = 6
 
-/** Marcador de posicion mientras se consulta el historial: tarjetas hasta xl y filas desde xl. */
-export function EstadoCargandoHistorial() {
+/** Props del marcador de posicion de una lista. */
+interface EstadoCargandoListaProps {
+  /** Lo que anuncia el lector de pantalla, por ejemplo "Cargando ventas". */
+  textoAccesible: string
+}
+
+/** Marcador de posicion mientras se consulta una lista: tarjetas hasta xl y filas desde xl. */
+export function EstadoCargandoLista({ textoAccesible }: EstadoCargandoListaProps) {
   return (
     <div role="status" aria-busy="true" className="flex flex-col gap-3">
-      <span className="sr-only">Cargando ventas</span>
+      <span className="sr-only">{textoAccesible}</span>
 
       {/* --- TARJETAS --- */}
       <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:hidden">

@@ -1,14 +1,14 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import type { PaginacionHistorial as DatosPaginacion } from '@/features/ventas/types/historial'
+import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
 
-/** Props de la paginacion del historial. */
-interface PaginacionHistorialProps {
-  paginacion: DatosPaginacion
+/** Props de la paginacion de una lista. */
+interface PaginacionListaProps {
+  paginacion: PaginacionResultados
   onCambiarPagina: (pagina: number) => void
 }
 
-export function PaginacionHistorial({ paginacion, onCambiarPagina }: PaginacionHistorialProps) {
+export function PaginacionLista({ paginacion, onCambiarPagina }: PaginacionListaProps) {
   const { pagina, totalPaginas } = paginacion
   // Con una sola pagina no hay nada que paginar
   if (totalPaginas <= 1) return null

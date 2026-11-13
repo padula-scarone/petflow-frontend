@@ -1,8 +1,5 @@
-import { SlidersHorizontal } from 'lucide-react'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { BarraFiltros } from '@/features/ventas/components/barra-filtros'
 import { FiltroEstado } from '@/features/ventas/components/filtro-estado'
 import { FiltroProducto } from '@/features/ventas/components/filtro-producto'
 import { FiltroRangoFechas } from '@/features/ventas/components/filtro-rango-fechas'
@@ -15,9 +12,8 @@ interface BarraFiltrosHistorialProps {
 }
 
 /**
- * Una sola fila de controles de la misma altura: fecha, producto y estado (los del SSOT), el cliente
- * cuando el estado es "Pendiente de pago", y "Mas filtros". Sin etiquetas visibles: cada control se
- * entiende por su valor o su placeholder y lleva su aria-label.
+ * Fecha, producto y estado (los del SSOT), el cliente cuando el estado es "Pendiente de pago", y
+ * "Mas filtros". Arma los controles; la fila y el popover son de BarraFiltros.
  */
 export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProps) {
   const {
@@ -32,8 +28,12 @@ export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProp
   } = propiedades
 
   return (
-    // auto-fit: los controles se reparten parejos y, si no entran, bajan alineados por columna
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-3">
+    <BarraFiltros
+      cantidadFiltrosAdicionales={cantidadFiltrosAdicionales}
+      contenidoAdicional={
+        <FiltrosAdicionalesHistorial propiedades={propiedades} idPrefijo="barra-adicionales" />
+      }
+    >
       <FiltroRangoFechas
         idCampo="barra-fecha"
         variante="barra"
@@ -71,29 +71,6 @@ export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProp
           onChange={(evento) => onCambiarFiltros({ textoCliente: evento.target.value })}
         />
       )}
-
-      {/* --- MAS FILTROS --- */}
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            type="button"
-            variant="outline"
-            className="h-11 w-full gap-2 bg-fondo-tarjeta"
-          >
-            <SlidersHorizontal />
-            Más filtros
-            {cantidadFiltrosAdicionales > 0 && (
-              <Badge className="size-6 justify-center rounded-full p-0 tabular-nums">
-                <span className="sr-only">Activos: </span>
-                {cantidadFiltrosAdicionales}
-              </Badge>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent align="end" className="w-80 p-4">
-          <FiltrosAdicionalesHistorial propiedades={propiedades} idPrefijo="barra-adicionales" />
-        </PopoverContent>
-      </Popover>
-    </div>
+    </BarraFiltros>
   )
 }

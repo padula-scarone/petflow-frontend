@@ -13,6 +13,8 @@ interface GrillaMediosPagoProps {
   vuelto: number | null
   onSeleccionarMedioPago: (idMedioPago: number) => void
   onCambiarPagaCon: (monto: number | null) => void
+  /** false en un cambio: el saldo se cobra sin el recargo o descuento del medio, asi que no se muestra. */
+  mostrarAjustes?: boolean
 }
 
 export function GrillaMediosPago({
@@ -22,6 +24,7 @@ export function GrillaMediosPago({
   vuelto,
   onSeleccionarMedioPago,
   onCambiarPagaCon,
+  mostrarAjustes = true,
 }: GrillaMediosPagoProps) {
   const medioSeleccionado = medios.find((medio) => medio.idMedioPago === idMedioSeleccionado)
 
@@ -49,9 +52,11 @@ export function GrillaMediosPago({
             >
               <Icono className="size-6" />
               <span className="font-medium">{medio.nombre}</span>
-              <span className="text-sm font-normal text-texto-suave tabular-nums">
-                {describirAjusteMedio(medio)}
-              </span>
+              {mostrarAjustes && (
+                <span className="text-sm font-normal text-texto-suave tabular-nums">
+                  {describirAjusteMedio(medio)}
+                </span>
+              )}
             </ToggleGroupItem>
           )
         })}

@@ -1,12 +1,9 @@
-import { Ban, CircleCheck, Clock, type LucideIcon } from 'lucide-react'
+import { Ban, CircleCheck, Clock } from 'lucide-react'
+import type { PresentacionEstado } from '@/features/ventas/types/compartidos'
 import type { EstadoVentaHistorial } from '@/features/ventas/types/historial'
 
 /** Como se presenta cada estado de venta: siempre icono y texto, nunca solo color. */
-export interface PresentacionEstadoVenta {
-  etiqueta: string
-  icono: LucideIcon
-  claseInsignia: string
-}
+export type PresentacionEstadoVenta = PresentacionEstado
 
 export const PRESENTACION_ESTADO_VENTA: Record<EstadoVentaHistorial, PresentacionEstadoVenta> = {
   COMPLETADA: {
