@@ -30,24 +30,15 @@ export function PasoVentaOriginal({ borrador, busquedaVenta, acciones }: PasoVen
           etiquetaQuitar="Elegir otra venta"
           onDesvincularVenta={acciones.onDesvincularVenta}
         />
-        <p className="text-sm text-texto-suave">
-          La venta no se modifica: el cambio queda como un registro aparte que la referencia.
-        </p>
       </section>
     )
   }
 
   return (
     <section aria-labelledby="titulo-venta-original" className="flex flex-col gap-4">
-      <div className="flex flex-col gap-1">
-        <h2 id="titulo-venta-original" className="text-base font-bold">
-          Venta original <span className="font-normal text-texto-suave">(opcional)</span>
-        </h2>
-        <p className="text-sm text-texto-suave">
-          Si el cliente trae el comprobante, buscá la venta y vinculala. Si no, seguí sin vincular y cargá el
-          artículo a mano.
-        </p>
-      </div>
+      <h2 id="titulo-venta-original" className="text-base font-bold">
+        Venta original <span className="font-normal text-texto-suave">(opcional)</span>
+      </h2>
       <FiltrosBusquedaVenta propiedades={busquedaVenta} />
       <ListaVentasVinculables propiedades={busquedaVenta} />
     </section>

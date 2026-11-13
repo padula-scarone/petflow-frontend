@@ -1,3 +1,4 @@
+import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { CampoCantidad } from '@/features/ventas/cambios-mercaderia/components/campo-cantidad'
 import { InterruptorBolsaAbierta } from '@/features/ventas/cambios-mercaderia/components/interruptor-bolsa-abierta'
@@ -42,27 +43,11 @@ export function FormularioArticuloDevuelto({
 
       {/* --- ELEGIR EL ARTICULO: ENTRE LOS DE LA VENTA O EN EL CATALOGO --- */}
       {ventaVinculada ? (
-        <>
-          <SelectorItemVenta
-            venta={ventaVinculada}
-            idProductoSeleccionado={articulo?.idProducto ?? null}
-            onSeleccionarArticulo={acciones.onSeleccionarArticuloVenta}
-          />
-          {/* Lo que recibio en un cambio anterior no figura en la venta: se carga sin vincular */}
-          <div className="flex flex-col items-start">
-            <p className="text-xs text-texto-suave">
-              ¿Devuelve algo que recibió en un cambio anterior? No figura en la venta.
-            </p>
-            <Button
-              type="button"
-              variant="link"
-              className="h-11 px-0 text-sm text-texto-principal underline"
-              onClick={acciones.onDesvincularVenta}
-            >
-              Cargarlo como cambio sin vincular
-            </Button>
-          </div>
-        </>
+        <SelectorItemVenta
+          venta={ventaVinculada}
+          idProductoSeleccionado={articulo?.idProducto ?? null}
+          onSeleccionarArticulo={acciones.onSeleccionarArticuloVenta}
+        />
       ) : (
         <BuscadorProductos
           textoBusqueda={textoBusqueda}
@@ -78,17 +63,29 @@ export function FormularioArticuloDevuelto({
       {/* --- ARTICULO ELEGIDO: CANTIDAD, BOLSA ABIERTA Y PESO --- */}
       {articulo && (
         <div className="flex flex-col gap-3 rounded-grande border bg-fondo-seleccion/40 p-3">
-          <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start justify-between gap-2">
             <p className="min-w-0 font-medium wrap-break-word">{articulo.nombreProducto}</p>
-            <p className="shrink-0 text-sm tabular-nums text-texto-suave">
-              {formatearMoneda(articulo.precioUnitario)}
-              {articulo.formatoVenta === 'GRANEL' ? '/kg' : ''}
-              <span className="sr-only">{articulo.origen === 'VENTA' ? ', precio pagado' : ', precio actual'}</span>
-            </p>
+            <div className="-my-2 -mr-2 flex shrink-0 items-center gap-1">
+              <p className="text-sm tabular-nums text-texto-suave">
+                {formatearMoneda(articulo.precioUnitario)}
+                {articulo.formatoVenta === 'GRANEL' ? '/kg' : ''}
+                <span className="sr-only">{articulo.origen === 'VENTA' ? ', precio pagado' : ', precio actual'}</span>
+              </p>
+              {/* Con venta el articulo se cambia eligiendo otro renglon; del catalogo, se quita y se vuelve a buscar */}
+              {articulo.origen === 'CATALOGO' && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  aria-label={`Quitar ${articulo.nombreProducto}`}
+                  className="size-11"
+                  onClick={acciones.onQuitarProductoDevuelto}
+                >
+                  <X />
+                </Button>
+              )}
+            </div>
           </div>
-          <p className="text-xs text-texto-suave">
-            {articulo.origen === 'VENTA' ? 'Precio que se pagó en la venta' : 'Precio actual del catálogo'}
-          </p>
 
           {articulo.opcionBolsaAbierta && (
             <InterruptorBolsaAbierta

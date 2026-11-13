@@ -14,6 +14,7 @@ import type {
   RegistrarCambioBody,
   ResumenSaldoCambio,
 } from '@/features/ventas/cambios-mercaderia/types/cambio'
+import { obtenerProductoCambioEjemplo } from '@/features/ventas/cambios-mercaderia/utils/catalogo-cambios-ejemplo'
 import { calcularLimiteModificacionCambio } from '@/features/ventas/cambios-mercaderia/utils/calcular-ventana-cambio'
 import type { MedioPago } from '@/features/ventas/types/cobro'
 import { CODIGO_MOTIVO_OTRO } from '@/features/ventas/config/motivos-venta'
@@ -74,10 +75,13 @@ export function simularRegistroCambio(body: RegistrarCambioBody): ErrorAccionCam
     }
   }
   if (body.idProductoEntregado === ID_PRODUCTO_SIN_STOCK) {
+    // La pantalla no deja elegir un producto sin stock: este rechazo es la carrera, cuando otro vendedor
+    // se llevo las unidades mientras este cambio se cargaba
+    const { nombreProducto } = obtenerProductoCambioEjemplo(body.idProductoEntregado)
     return {
       estadoHttp: 409,
       codigo: 'STOCK_INSUFICIENTE',
-      mensaje: 'No hay stock suficiente del artículo que se lleva el cliente. Elegí otro producto.',
+      mensaje: `Mientras cargabas el cambio se vendió el stock de «${nombreProducto}» y ya no alcanza. Volvé al paso de artículos y elegí otro producto.`,
     }
   }
   if (body.idProductoEntregado === ID_PRODUCTO_RECHAZADO) {

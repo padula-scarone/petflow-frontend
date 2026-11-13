@@ -16,7 +16,9 @@ import type {
 } from '@/features/ventas/cambios-mercaderia/types/cambio'
 import {
   buscarProductosCambioEjemplo,
+  sugerirProductosEntrega,
 } from '@/features/ventas/cambios-mercaderia/utils/catalogo-cambios-ejemplo'
+import { calcularValorDevuelto } from '@/features/ventas/cambios-mercaderia/utils/calcular-resumen-saldo'
 import {
   aplicarBolsaAbierta,
   calcularCantidadDisponible,
@@ -37,7 +39,8 @@ import type { VentaDetalle } from '@/features/ventas/types/historial'
 // Hook temporal del alta de un cambio: se reemplaza por el hook real de la accion Alta de Cambio.
 // Errores del servidor simulados al confirmar (ver la tabla en use-cambios-posventa-ejemplo.ts).
 
-const ORDEN_PASOS: PasoAltaCambio[] = ['VENTA_ORIGINAL', 'ARTICULOS', 'COBRO']
+// El motivo va primero: es lo que explica por que el cliente viene a cambiar
+const ORDEN_PASOS: PasoAltaCambio[] = ['MOTIVO', 'VENTA_ORIGINAL', 'ARTICULOS', 'COBRO']
 
 interface ParametrosAltaCambio {
   /** Base de ventas de ejemplo: de ahi salen la busqueda y el detalle de la venta a vincular. */
@@ -61,7 +64,7 @@ export function useAltaCambioEjemplo({
   onCerrar,
 }: ParametrosAltaCambio) {
   // --- ESTADOS ---
-  const [paso, setPaso] = useState<PasoAltaCambio>(borradorInicial ? 'ARTICULOS' : 'VENTA_ORIGINAL')
+  const [paso, setPaso] = useState<PasoAltaCambio>(borradorInicial ? 'ARTICULOS' : 'MOTIVO')
   const [borrador, setBorrador] = useState<BorradorCambio>(borradorInicial ?? BORRADOR_CAMBIO_VACIO)
   const [textoBusquedaDevuelto, setTextoBusquedaDevuelto] = useState('')
   const [textoBusquedaEntregado, setTextoBusquedaEntregado] = useState('')
@@ -75,6 +78,9 @@ export function useAltaCambioEjemplo({
     borrador.articuloDevuelto !== null ||
     borrador.articuloEntregado !== null ||
     borrador.codigoMotivo !== null
+
+  // Productos de igual o mayor valor que lo devuelto, para no obligar a saber los precios de memoria
+  const sugerenciasEntregado = sugerirProductosEntrega(calcularValorDevuelto(borrador.articuloDevuelto))
 
   // --- AUXILIARES ---
   const actualizarBorrador = (cambios: Partial<BorradorCambio>) =>
@@ -124,8 +130,11 @@ export function useAltaCambioEjemplo({
   }
 
   const seleccionarProductoEntregado = (idProducto: number) => {
-    const producto = buscarProductosCambioEjemplo(textoBusquedaEntregado).find((candidato) => candidato.idProducto === idProducto)
-    if (!producto) return
+    // Sale del buscador o de las sugerencias; sin stock no se puede elegir (el buscador ya lo muestra deshabilitado)
+    const producto = [...buscarProductosCambioEjemplo(textoBusquedaEntregado), ...sugerenciasEntregado].find(
+      (candidato) => candidato.idProducto === idProducto,
+    )
+    if (!producto || producto.stockDisponible <= 0) return
     descartarErrorEnvio()
     actualizarBorrador({ articuloEntregado: crearArticuloEntregado(producto) })
     setTextoBusquedaEntregado('')
@@ -196,7 +205,7 @@ export function useAltaCambioEjemplo({
     setTextoBusquedaDevuelto('')
     setTextoBusquedaEntregado('')
     setEstadoEnvio({ tipo: 'inactivo' })
-    setPaso('VENTA_ORIGINAL')
+    setPaso('MOTIVO')
   }
 
   // --- ACCIONES: CIERRE ---
@@ -224,6 +233,14 @@ export function useAltaCambioEjemplo({
     onCambiarPesoDevuelto: (pesoKg) => {
       descartarErrorEnvio()
       actualizarArticuloDevuelto((articulo) => ({ ...articulo, pesoDevueltoKg: pesoKg }))
+    },
+    onQuitarProductoDevuelto: () => {
+      descartarErrorEnvio()
+      actualizarBorrador({ articuloDevuelto: null })
+    },
+    onQuitarProductoEntregado: () => {
+      descartarErrorEnvio()
+      actualizarBorrador({ articuloEntregado: null })
     },
     onBuscarProductoEntregado: setTextoBusquedaEntregado,
     onSeleccionarProductoEntregado: seleccionarProductoEntregado,
@@ -262,6 +279,7 @@ export function useAltaCambioEjemplo({
     textoBusquedaEntregado,
     resultadosDevuelto: buscarProductosCambioEjemplo(textoBusquedaDevuelto),
     resultadosEntregado: buscarProductosCambioEjemplo(textoBusquedaEntregado),
+    sugerenciasEntregado,
     mediosPago: MEDIOS_EJEMPLO,
     resumenSaldo,
     validacion,

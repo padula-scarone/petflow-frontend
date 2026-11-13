@@ -71,6 +71,16 @@ function validarArticuloEntregado(articulo: ArticuloEntregadoCargado | null) {
       errores: (articulo.cantidad === null ? {} : { cantidadEntregada: 'La cantidad tiene que ser mayor a 0.' }) as ErroresCampo,
     }
   }
+  // Sin stock no se puede entregar: el buscador ya no deja elegirlo, pero una edicion puede traerlo cargado
+  const unidad = articulo.formatoVenta === 'GRANEL' ? 'kg' : 'u'
+  if (articulo.stockDisponible <= 0) {
+    const mensaje = 'El artículo elegido no tiene stock.'
+    return { motivo: mensaje, errores: { cantidadEntregada: mensaje } as ErroresCampo }
+  }
+  if (articulo.cantidad > articulo.stockDisponible) {
+    const mensaje = `Solo hay ${formateadorCantidad.format(articulo.stockDisponible)} ${unidad} en stock.`
+    return { motivo: mensaje, errores: { cantidadEntregada: mensaje } as ErroresCampo }
+  }
   return { motivo: null, errores: {} as ErroresCampo }
 }
 
@@ -111,23 +121,35 @@ export function validarCambio(
       }
     }
   }
-  if (motivoCobro === null && !esMotivoValido(borrador.codigoMotivo, borrador.detalleMotivo)) {
-    motivoCobro =
-      borrador.codigoMotivo === null ? 'Elegí el motivo del cambio.' : 'Escribí el motivo del cambio.'
-  }
   const cobroCompleto = motivoCobro === null
 
+  // --- PASO MOTIVO (EL PRIMERO) ---
+  const motivoValido = esMotivoValido(borrador.codigoMotivo, borrador.detalleMotivo)
+  const motivoDelCambio = motivoValido
+    ? null
+    : borrador.codigoMotivo === null
+      ? 'Elegí el motivo del cambio.'
+      : 'Escribí el motivo del cambio.'
+
+  // Se sale de cada paso cuando esta completo; confirmar exige todos
   const puedeAvanzar: Record<PasoAltaCambio, boolean> = {
+    MOTIVO: motivoValido,
     VENTA_ORIGINAL: true,
     ARTICULOS: articulosCompletos,
-    COBRO: articulosCompletos && cobroCompleto,
+    COBRO: motivoValido && articulosCompletos && cobroCompleto,
+  }
+
+  const motivoNoAvanzarPorPaso: Record<PasoAltaCambio, string | null> = {
+    MOTIVO: motivoDelCambio,
+    VENTA_ORIGINAL: null,
+    ARTICULOS: motivoArticulos,
+    COBRO: motivoDelCambio ?? motivoArticulos ?? motivoCobro,
   }
 
   return {
     puedeAvanzar,
     puedeConfirmar: puedeAvanzar.COBRO,
-    motivoNoAvanzar:
-      paso === 'VENTA_ORIGINAL' ? null : paso === 'ARTICULOS' ? motivoArticulos : (motivoArticulos ?? motivoCobro),
+    motivoNoAvanzar: motivoNoAvanzarPorPaso[paso],
     erroresCampo,
   }
 }

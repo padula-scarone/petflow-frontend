@@ -35,7 +35,8 @@ export function PanelFiltros({
     <>
       <div className="hidden items-start gap-3 lg:flex">
         <div className="min-w-0 flex-1">{barra}</div>
-        {accionEscritorio}
+        {/* La linea separa la accion principal de los filtros: no es un filtro mas */}
+        {accionEscritorio && <div className="flex shrink-0 border-l pl-3">{accionEscritorio}</div>}
       </div>
 
       {/* --- MOBILE: UNA SOLA FILA, SIN BOTON DE ANCHO COMPLETO --- */}
@@ -58,7 +59,7 @@ export function PanelFiltros({
             Limpiar
           </Button>
         )}
-        {accionMobile}
+        {accionMobile && <div className="flex shrink-0 border-l pl-2">{accionMobile}</div>}
       </div>
     </>
   )

@@ -3,6 +3,7 @@ import { DialogoDescartarCambio } from '@/features/ventas/cambios-mercaderia/com
 import { EncabezadoAltaCambio } from '@/features/ventas/cambios-mercaderia/components/encabezado-alta-cambio'
 import { ExitoCambio } from '@/features/ventas/cambios-mercaderia/components/exito-cambio'
 import { PasoArticulos } from '@/features/ventas/cambios-mercaderia/components/paso-articulos'
+import { PasoMotivo } from '@/features/ventas/cambios-mercaderia/components/paso-motivo'
 import { PasoCobro } from '@/features/ventas/cambios-mercaderia/components/paso-cobro'
 import { PasoVentaOriginal } from '@/features/ventas/cambios-mercaderia/components/paso-venta-original'
 import { PieAltaCambio } from '@/features/ventas/cambios-mercaderia/components/pie-alta-cambio'
@@ -22,6 +23,7 @@ export function AltaCambio({
   textoBusquedaEntregado,
   resultadosDevuelto,
   resultadosEntregado,
+  sugerenciasEntregado,
   mediosPago,
   resumenSaldo,
   validacion,
@@ -32,13 +34,23 @@ export function AltaCambio({
   return (
     <>
       <Dialog open={abierto} onOpenChange={(estaAbierto) => !estaAbierto && acciones.onSolicitarCierre()}>
-        <DialogContent className="sm:max-w-3xl">
+        <DialogContent
+          className="sm:max-w-3xl"
+          // Radix atiende Escape antes que el buscador: si el foco esta en uno con la lista abierta,
+          // ese Escape cierra la lista y no el modal
+          onEscapeKeyDown={(evento) => {
+            if (evento.target instanceof Element && evento.target.closest('[data-buscador-abierto]')) {
+              evento.preventDefault()
+            }
+          }}
+        >
           {estadoEnvio.tipo === 'exito' ? (
             <ExitoCambio cambio={estadoEnvio.cambio} acciones={acciones} />
           ) : (
             <>
               <EncabezadoAltaCambio paso={paso} />
               <DialogBody>
+                {paso === 'MOTIVO' && <PasoMotivo borrador={borrador} acciones={acciones} />}
                 {paso === 'VENTA_ORIGINAL' && (
                   <PasoVentaOriginal borrador={borrador} busquedaVenta={busquedaVenta} acciones={acciones} />
                 )}
@@ -49,6 +61,7 @@ export function AltaCambio({
                     textoBusquedaEntregado={textoBusquedaEntregado}
                     resultadosDevuelto={resultadosDevuelto}
                     resultadosEntregado={resultadosEntregado}
+                    sugerenciasEntregado={sugerenciasEntregado}
                     resumenSaldo={resumenSaldo}
                     validacion={validacion}
                     acciones={acciones}

@@ -12,14 +12,15 @@ type PasoArticulosProps = Pick<
   | 'textoBusquedaEntregado'
   | 'resultadosDevuelto'
   | 'resultadosEntregado'
+  | 'sugerenciasEntregado'
   | 'resumenSaldo'
   | 'validacion'
   | 'acciones'
 >
 
 /**
- * Paso 2: lo que devuelve y lo que se lleva el cliente, con el saldo en vivo debajo. Dos columnas desde md;
- * en mobile, una debajo de la otra.
+ * Paso 3: una sola columna y de a un articulo por vez, para no mostrar todo junto. Primero lo que devuelve el
+ * cliente; recien cuando lo eligio aparece lo que se lleva, y cuando eligio los dos, el saldo en vivo.
  */
 export function PasoArticulos({
   borrador,
@@ -27,12 +28,16 @@ export function PasoArticulos({
   textoBusquedaEntregado,
   resultadosDevuelto,
   resultadosEntregado,
+  sugerenciasEntregado,
   resumenSaldo,
   validacion,
   acciones,
 }: PasoArticulosProps) {
+  const eligioDevuelto = borrador.articuloDevuelto !== null
+  const eligioLosDos = eligioDevuelto && borrador.articuloEntregado !== null
+
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-5">
       {borrador.ventaVinculada && (
         <ResumenVentaVinculada
           venta={borrador.ventaVinculada}
@@ -41,24 +46,27 @@ export function PasoArticulos({
         />
       )}
 
-      <div className="grid gap-6 md:grid-cols-2">
-        <FormularioArticuloDevuelto
-          borrador={borrador}
-          textoBusqueda={textoBusquedaDevuelto}
-          resultadosBusqueda={resultadosDevuelto}
-          erroresCampo={validacion.erroresCampo}
-          acciones={acciones}
-        />
+      <FormularioArticuloDevuelto
+        borrador={borrador}
+        textoBusqueda={textoBusquedaDevuelto}
+        resultadosBusqueda={resultadosDevuelto}
+        erroresCampo={validacion.erroresCampo}
+        acciones={acciones}
+      />
+
+      {eligioDevuelto && (
         <FormularioArticuloEntregado
           borrador={borrador}
           textoBusqueda={textoBusquedaEntregado}
           resultadosBusqueda={resultadosEntregado}
+          sugerencias={sugerenciasEntregado}
+          valorDevuelto={resumenSaldo.valorDevuelto}
           erroresCampo={validacion.erroresCampo}
           acciones={acciones}
         />
-      </div>
+      )}
 
-      <TarjetaSaldoCambio resumen={resumenSaldo} />
+      {eligioLosDos && <TarjetaSaldoCambio resumen={resumenSaldo} />}
     </div>
   )
 }

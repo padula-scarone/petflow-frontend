@@ -11,7 +11,7 @@ const TITULO_POR_CODIGO: Record<ErrorAccionCambio['codigo'], string> = {
   VENTA_NO_ENCONTRADA: 'No se encontró la venta',
   CAMBIO_NO_ENCONTRADO: 'El cambio ya no existe',
   SIN_CAJA_ABIERTA: 'No hay caja abierta',
-  STOCK_INSUFICIENTE: 'No hay stock suficiente',
+  STOCK_INSUFICIENTE: 'Se agotó el stock',
   VENTA_NO_VINCULABLE: 'La venta no se puede vincular',
   CANTIDAD_EXCEDE_VENTA: 'La cantidad supera lo vendido',
   CAMBIO_YA_ANULADO: 'El cambio ya estaba anulado',

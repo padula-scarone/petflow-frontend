@@ -1,9 +1,7 @@
 import { AlertaErrorCambio } from '@/features/ventas/cambios-mercaderia/components/alerta-error-cambio'
 import { ResumenCambio } from '@/features/ventas/cambios-mercaderia/components/resumen-cambio'
-import { MOTIVOS_CAMBIO } from '@/features/ventas/cambios-mercaderia/config/motivos-cambio'
 import type { AltaCambioProps } from '@/features/ventas/cambios-mercaderia/types/cambio'
 import { GrillaMediosPago } from '@/features/ventas/components/grilla-medios-pago'
-import { SelectorMotivo } from '@/features/ventas/components/selector-motivo'
 
 /** Props del paso "Cobro y confirmación". */
 type PasoCobroProps = Pick<
@@ -12,7 +10,7 @@ type PasoCobroProps = Pick<
 >
 
 /**
- * Paso 3: resumen previo, cobro de la diferencia (solo si hay saldo), motivo y, si el servidor rechazo
+ * Paso 4: resumen previo, cobro de la diferencia (solo si hay saldo) y, si el servidor rechazo
  * el cambio, el aviso con lo que se puede hacer.
  */
 export function PasoCobro({
@@ -23,7 +21,6 @@ export function PasoCobro({
   estadoEnvio,
   acciones,
 }: PasoCobroProps) {
-  const enviando = estadoEnvio.tipo === 'enviando'
   const errorMonto = validacion.erroresCampo.montoRecibido
 
   return (
@@ -63,17 +60,6 @@ export function PasoCobro({
           </p>
         )}
       </section>
-
-      {/* --- MOTIVO (OBLIGATORIO) --- */}
-      <SelectorMotivo
-        idPrefijo="motivo-cambio"
-        opciones={MOTIVOS_CAMBIO}
-        codigoMotivo={borrador.codigoMotivo}
-        detalleMotivo={borrador.detalleMotivo}
-        deshabilitado={enviando}
-        onSeleccionarMotivo={acciones.onSeleccionarMotivo}
-        onCambiarDetalleMotivo={acciones.onCambiarDetalleMotivo}
-      />
     </div>
   )
 }

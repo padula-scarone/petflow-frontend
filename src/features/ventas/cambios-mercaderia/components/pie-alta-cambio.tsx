@@ -20,7 +20,7 @@ export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estado
   // puedeAvanzar[paso]: el paso actual esta completo. En el ultimo, eso es poder confirmar
   const puedeContinuar = validacion.puedeAvanzar[paso]
   const hayMotivoDeBloqueo = !enviando && !puedeContinuar && validacion.motivoNoAvanzar !== null
-  const mostrarSaldo = paso !== 'VENTA_ORIGINAL' && resumenSaldo.situacion !== 'INCOMPLETO'
+  const mostrarSaldo = (paso === 'ARTICULOS' || paso === 'COBRO') && resumenSaldo.situacion !== 'INCOMPLETO'
 
   const etiquetaPrincipal = esUltimoPaso
     ? enviando
@@ -49,7 +49,7 @@ export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estado
           </p>
         )}
         {/* Por que el boton esta deshabilitado */}
-        {hayMotivoDeBloqueo && paso !== 'VENTA_ORIGINAL' && (
+        {hayMotivoDeBloqueo && (
           <p role="status" className="text-xs text-texto-suave">
             {validacion.motivoNoAvanzar}
           </p>
@@ -57,7 +57,7 @@ export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estado
       </div>
 
       <div className="flex gap-2">
-        {paso !== 'VENTA_ORIGINAL' && (
+        {paso !== 'MOTIVO' && (
           <Button
             type="button"
             variant="outline"

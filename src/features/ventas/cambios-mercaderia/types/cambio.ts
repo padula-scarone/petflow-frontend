@@ -378,7 +378,7 @@ export interface ResumenSaldoCambio {
   vuelto: number | null
 }
 
-export type PasoAltaCambio = 'VENTA_ORIGINAL' | 'ARTICULOS' | 'COBRO'
+export type PasoAltaCambio = 'MOTIVO' | 'VENTA_ORIGINAL' | 'ARTICULOS' | 'COBRO'
 
 /** Que se puede hacer con lo cargado hasta ahora y por que no. */
 export interface ValidacionCambio {
@@ -506,6 +506,10 @@ export interface AccionesAltaCambio {
   onCambiarCantidadDevuelta: (cantidad: number | null) => void
   onCambiarBolsaAbierta: (esBolsaAbierta: boolean) => void
   onCambiarPesoDevuelto: (pesoKg: number | null) => void
+  /** Quita el articulo devuelto elegido del catalogo, para volver a buscar. */
+  onQuitarProductoDevuelto: () => void
+  /** Quita el articulo entregado elegido, para volver a buscar. */
+  onQuitarProductoEntregado: () => void
   onBuscarProductoEntregado: (textoBusqueda: string) => void
   onSeleccionarProductoEntregado: (idProducto: number) => void
   onCambiarCantidadEntregada: (cantidad: number | null) => void
@@ -535,6 +539,8 @@ export interface AltaCambioProps {
   textoBusquedaEntregado: string
   resultadosDevuelto: ProductoCatalogoCambio[]
   resultadosEntregado: ProductoCatalogoCambio[]
+  /** Productos de igual o mayor valor que lo devuelto, para ofrecer sin que el vendedor deba buscarlos. */
+  sugerenciasEntregado: ProductoCatalogoCambio[]
   mediosPago: MedioPago[]
   resumenSaldo: ResumenSaldoCambio
   validacion: ValidacionCambio

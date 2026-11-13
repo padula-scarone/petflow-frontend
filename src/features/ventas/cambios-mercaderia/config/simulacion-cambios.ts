@@ -9,7 +9,7 @@ export const ID_CAMBIO_SIN_STOCK_PARA_REVERTIR = 2009
 export const ID_VENTA_SIN_CAJA = 1044
 /** Confirmar un cambio vinculado a esta venta responde 404: la venta no se encuentra. */
 export const ID_VENTA_NO_ENCONTRADA = 1043
-/** Entregar este producto responde 409: no hay stock. */
+/** Entregar este producto responde 409: se vendio el stock mientras se cargaba el cambio (la carrera). */
 export const ID_PRODUCTO_SIN_STOCK = 7
 /** Entregar este producto responde 400: el servidor rechaza los datos. */
 export const ID_PRODUCTO_RECHAZADO = 6

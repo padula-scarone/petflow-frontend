@@ -28,8 +28,11 @@ const DATOS_GRANEL_POR_PRODUCTO: Record<number, { idProductoGranel: number; peso
   10: { idProductoGranel: 4, pesoNominalKg: 15 },
 }
 
-/** Stock de ejemplo. El producto 7 esta sin stock a proposito: entregarlo responde 409. */
-const STOCK_POR_PRODUCTO: Record<number, number> = { 7: 0, 4: 85, 8: 120, 9: 60 }
+/**
+ * Stock de ejemplo. Las piedras sanitarias (3) estan sin stock a proposito: se ven en el buscador pero no se
+ * pueden elegir como articulo entregado. Del rascador (7) quedan 3, y el servidor igual responde 409 al entregarlo.
+ */
+const STOCK_POR_PRODUCTO: Record<number, number> = { 3: 0, 7: 3, 4: 85, 8: 120, 9: 60 }
 const STOCK_POR_DEFECTO = 14
 
 export const CATALOGO_CAMBIOS_EJEMPLO: ProductoCambioEjemplo[] = [
@@ -91,6 +94,20 @@ export function convertirAProductoCatalogoCambio(producto: ProductoCambioEjemplo
     stockDisponible: producto.stockDisponible,
     opcionBolsaAbierta: crearOpcionBolsaAbiertaDeCatalogo(producto),
   }
+}
+
+/**
+ * Productos para ofrecer como articulo entregado: los que cuestan igual o mas que lo devuelto (una unidad),
+ * con stock, del mas cercano al mas caro. Asi el vendedor no tiene que saber los precios de memoria.
+ */
+export function sugerirProductosEntrega(valorDevuelto: number | null, cantidadMaxima = 6): ProductoCatalogoCambio[] {
+  if (valorDevuelto === null) return []
+  return CATALOGO_CAMBIOS_EJEMPLO.filter(
+    (producto) => producto.stockDisponible > 0 && producto.precioUnitario >= valorDevuelto,
+  )
+    .toSorted((primero, segundo) => primero.precioUnitario - segundo.precioUnitario)
+    .slice(0, cantidadMaxima)
+    .map(convertirAProductoCatalogoCambio)
 }
 
 /** Productos cuyo nombre contiene el texto (sin distinguir mayusculas); sin texto, ninguno. */

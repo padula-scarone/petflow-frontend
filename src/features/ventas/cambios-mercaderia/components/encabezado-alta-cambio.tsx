@@ -3,6 +3,7 @@ import type { PasoAltaCambio } from '@/features/ventas/cambios-mercaderia/types/
 import { cn } from '@/lib/utils'
 
 const PASOS: Array<{ paso: PasoAltaCambio; nombre: string }> = [
+  { paso: 'MOTIVO', nombre: 'Motivo' },
   { paso: 'VENTA_ORIGINAL', nombre: 'Venta original' },
   { paso: 'ARTICULOS', nombre: 'Artículos' },
   { paso: 'COBRO', nombre: 'Cobro y confirmación' },
@@ -24,7 +25,7 @@ export function EncabezadoAltaCambio({ paso }: EncabezadoAltaCambioProps) {
         Paso {indiceActual + 1} de {PASOS.length} · {PASOS[indiceActual].nombre}
       </DialogDescription>
       {/* Decorativo: el texto de arriba ya dice en que paso se esta */}
-      <ol aria-hidden="true" className="mt-2 grid grid-cols-3 gap-1.5">
+      <ol aria-hidden="true" className="mt-2 grid grid-cols-4 gap-1.5">
         {PASOS.map((elemento, indice) => (
           <li
             key={elemento.paso}
