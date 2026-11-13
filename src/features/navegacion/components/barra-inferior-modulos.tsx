@@ -16,7 +16,7 @@ export function BarraInferiorModulos({
   return (
     <nav
       aria-label="Modulos"
-      className="flex h-16 shrink-0 overflow-x-auto border-t bg-fondo-tarjeta lg:hidden"
+      className="sin-barra-desplazamiento flex h-16 shrink-0 overflow-x-auto border-t bg-fondo-tarjeta lg:hidden"
     >
       {modulos.map((modulo) => {
         const Icono = modulo.icono

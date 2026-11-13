@@ -40,7 +40,7 @@ export function crearComprobanteEjemplo(
   const { resumen } = estadoCobro
   const datosComunes = {
     idVenta: '123',
-    numeroComprobante: 'PF-000123',
+    numeroComprobante: 'CMP-00000123',
     fechaHora: new Date().toISOString(),
     canalVenta,
     tipoEntrega,

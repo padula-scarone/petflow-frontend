@@ -8,10 +8,10 @@ import type { MedioPago } from '@/features/ventas/types/cobro'
 /** Props de la grilla de medios de pago del pago unico. */
 interface GrillaMediosPagoProps {
   medios: MedioPago[]
-  idMedioSeleccionado: string | null
+  idMedioSeleccionado: number | null
   pagaCon: number | null
   vuelto: number | null
-  onSeleccionarMedioPago: (idMedioPago: string) => void
+  onSeleccionarMedioPago: (idMedioPago: number) => void
   onCambiarPagaCon: (monto: number | null) => void
 }
 
@@ -33,10 +33,10 @@ export function GrillaMediosPago({
         spacing={3}
         aria-label="Medio de pago"
         className="grid w-full grid-cols-2 lg:grid-cols-4"
-        value={idMedioSeleccionado ?? ''}
+        value={idMedioSeleccionado === null ? '' : String(idMedioSeleccionado)}
         // Radix emite '' al des-seleccionar; en pago unico siempre debe haber un medio
         onValueChange={(valor) => {
-          if (valor) onSeleccionarMedioPago(valor)
+          if (valor) onSeleccionarMedioPago(Number(valor))
         }}
       >
         {medios.map((medio) => {
@@ -44,7 +44,7 @@ export function GrillaMediosPago({
           return (
             <ToggleGroupItem
               key={medio.idMedioPago}
-              value={medio.idMedioPago}
+              value={String(medio.idMedioPago)}
               className="h-auto min-h-24 w-full flex-col gap-1 rounded-grande border bg-fondo-tarjeta px-3 py-4"
             >
               <Icono className="size-6" />

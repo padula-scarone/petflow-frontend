@@ -12,14 +12,16 @@ const CLASE_OPCION = 'h-11 flex-1 px-5 sm:flex-none sm:min-w-28'
 interface PanelFormaPagoProps {
   estadoCobro: EstadoCobro
   onCambiarFormaPago: (formaPago: FormaPago) => void
-  onSeleccionarMedioPago: (idMedioPago: string) => void
+  onSeleccionarMedioPago: (idMedioPago: number) => void
   onCambiarPagaCon: (monto: number | null) => void
-  onAgregarLineaPago: (idMedioPago: string) => void
-  onQuitarLineaPago: (idMedioPago: string) => void
-  onCambiarMontoLinea: (idMedioPago: string, monto: number | null) => void
-  onCambiarPagaConLinea: (idMedioPago: string, monto: number | null) => void
-  onCompletarConRestante: (idMedioPago: string) => void
+  onAgregarLineaPago: (idMedioPago: number) => void
+  onQuitarLineaPago: (idMedioPago: number) => void
+  onCambiarMontoLinea: (idMedioPago: number, monto: number | null) => void
+  onCambiarPagaConLinea: (idMedioPago: number, monto: number | null) => void
+  onCompletarConRestante: (idMedioPago: number) => void
   onCambiarNombreClienteFiado: (nombreCliente: string) => void
+  /** Falso al cobrar un fiado ya registrado: no se puede volver a fiar. */
+  permiteFiado?: boolean
 }
 
 export function PanelFormaPago({
@@ -33,6 +35,7 @@ export function PanelFormaPago({
   onCambiarPagaConLinea,
   onCompletarConRestante,
   onCambiarNombreClienteFiado,
+  permiteFiado = true,
 }: PanelFormaPagoProps) {
   const { formaPago } = estadoCobro
 
@@ -59,9 +62,11 @@ export function PanelFormaPago({
           <ToggleGroupItem value="mixto" className={CLASE_OPCION}>
             Mixto
           </ToggleGroupItem>
-          <ToggleGroupItem value="fiado" className={CLASE_OPCION}>
-            Fiado
-          </ToggleGroupItem>
+          {permiteFiado && (
+            <ToggleGroupItem value="fiado" className={CLASE_OPCION}>
+              Fiado
+            </ToggleGroupItem>
+          )}
         </ToggleGroup>
       </div>
 

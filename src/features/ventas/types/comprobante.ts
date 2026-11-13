@@ -21,7 +21,7 @@ export interface DescuentoManualComprobante {
 
 /** Datos comunes a todo pago registrado. */
 interface PagoComprobanteBase {
-  idMedioPago: string
+  idMedioPago: number
   nombreMedioPago: string
   /** Parte del total cubierta por este medio, antes de su ajuste. */
   montoBase: number

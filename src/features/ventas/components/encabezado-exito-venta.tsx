@@ -5,9 +5,11 @@ import type { Comprobante } from '@/features/ventas/types/comprobante'
 /** Props del encabezado que confirma que la venta quedo registrada. */
 interface EncabezadoExitoVentaProps {
   estado: Comprobante['estado']
+  /** Reemplaza el titulo por defecto, por ejemplo "Fiado cobrado". */
+  titulo?: string
 }
 
-export function EncabezadoExitoVenta({ estado }: EncabezadoExitoVentaProps) {
+export function EncabezadoExitoVenta({ estado, titulo }: EncabezadoExitoVentaProps) {
   const cobrada = estado === 'completada'
   const Icono = cobrada ? CircleCheck : NotebookPen
 
@@ -25,7 +27,7 @@ export function EncabezadoExitoVenta({ estado }: EncabezadoExitoVentaProps) {
         <Icono aria-hidden="true" className="size-8" />
       </span>
       <div className="min-w-0">
-        <h1 className="text-2xl font-bold">{cobrada ? 'Venta confirmada' : 'Fiado registrado'}</h1>
+        <h1 className="text-2xl font-bold">{titulo ?? (cobrada ? 'Venta confirmada' : 'Fiado registrado')}</h1>
         <p className="text-texto-suave">Comprobante emitido</p>
       </div>
     </header>

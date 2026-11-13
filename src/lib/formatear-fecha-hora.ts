@@ -22,3 +22,14 @@ export function formatearFechaHora(fechaIso: string) {
 export function formatearHora(fechaIso: string) {
   return formateadorHora.format(new Date(fechaIso))
 }
+
+const formateadorFecha = new Intl.DateTimeFormat('es-AR', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+})
+
+/** Devuelve la fecha de un instante ISO 8601 como "07/11/2026". */
+export function formatearFecha(fechaIso: string) {
+  return formateadorFecha.format(new Date(fechaIso))
+}

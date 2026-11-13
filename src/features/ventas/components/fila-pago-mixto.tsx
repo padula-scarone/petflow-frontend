@@ -12,10 +12,10 @@ interface FilaPagoMixtoProps {
   medio: MedioPago
   /** Lo que todavia falta cubrir de la venta, para ofrecer completarlo en esta linea. */
   faltaCubrir: number
-  onQuitar: (idMedioPago: string) => void
-  onCambiarMonto: (idMedioPago: string, monto: number | null) => void
-  onCambiarPagaCon: (idMedioPago: string, monto: number | null) => void
-  onCompletarConRestante: (idMedioPago: string) => void
+  onQuitar: (idMedioPago: number) => void
+  onCambiarMonto: (idMedioPago: number, monto: number | null) => void
+  onCambiarPagaCon: (idMedioPago: number, monto: number | null) => void
+  onCompletarConRestante: (idMedioPago: number) => void
 }
 
 export function FilaPagoMixto({

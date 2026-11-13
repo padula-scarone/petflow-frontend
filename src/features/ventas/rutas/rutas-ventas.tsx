@@ -3,6 +3,8 @@ import {
   ID_MODULO_VENTAS,
   ID_SECCION_REGISTRAR_VENTA,
 } from '@/features/ventas/config/rutas-registrar-venta'
+import { ID_SECCION_HISTORIAL } from '@/features/ventas/config/rutas-historial'
+import { PaginaHistorialVentas } from '@/features/ventas/paginas/pagina-historial-ventas'
 import { LayoutRegistrarVenta } from '@/features/ventas/paginas/layout-registrar-venta'
 import { PaginaRegistrarVentaCarrito } from '@/features/ventas/paginas/pagina-registrar-venta-carrito'
 import { PaginaRegistrarVentaCobro } from '@/features/ventas/paginas/pagina-registrar-venta-cobro'
@@ -21,5 +23,10 @@ export const RUTAS_VENTAS: RutaSeccion[] = [
         { path: 'comprobante', element: <PaginaRegistrarVentaComprobante /> },
       ],
     },
+  },
+  {
+    idModulo: ID_MODULO_VENTAS,
+    idSeccion: ID_SECCION_HISTORIAL,
+    ruta: { element: <PaginaHistorialVentas /> },
   },
 ]
