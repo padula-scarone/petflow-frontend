@@ -1,6 +1,6 @@
-import { Button } from '@/components/ui/button'
 import { BarraFiltrosHistorial } from '@/features/ventas/components/barra-filtros-historial'
 import { HojaFiltrosHistorial } from '@/features/ventas/components/hoja-filtros-historial'
+import { PanelFiltros } from '@/features/ventas/components/panel-filtros'
 import type {
   EstadoListaHistorial,
   PropiedadesFiltrosHistorial,
@@ -14,38 +14,15 @@ interface PanelFiltrosHistorialProps {
   estadoLista: EstadoListaHistorial
 }
 
-/**
- * Escritorio: la barra de una fila. Mobile: una fila compacta con el boton "Filtros" (que abre la
- * hoja), la cantidad de ventas y "Limpiar". Ambas se alternan con CSS.
- */
+/** Arma el panel generico con la barra y la hoja del historial. */
 export function PanelFiltrosHistorial({ propiedades, estadoLista }: PanelFiltrosHistorialProps) {
   return (
-    <>
-      <div className="hidden lg:block">
-        <BarraFiltrosHistorial propiedades={propiedades} />
-      </div>
-
-      {/* --- MOBILE: UNA SOLA FILA, SIN BOTON DE ANCHO COMPLETO --- */}
-      <div className="flex items-center gap-2 lg:hidden">
-        <HojaFiltrosHistorial propiedades={propiedades} />
-        <p
-          role="status"
-          className="min-w-0 flex-1 truncate text-right text-sm text-texto-suave tabular-nums"
-        >
-          {describirCantidadVentas(estadoLista)}
-        </p>
-        {propiedades.cantidadFiltrosActivos > 0 && (
-          <Button
-            type="button"
-            variant="ghost"
-            aria-label="Limpiar filtros"
-            className="h-11 shrink-0 px-3"
-            onClick={propiedades.onLimpiarFiltros}
-          >
-            Limpiar
-          </Button>
-        )}
-      </div>
-    </>
+    <PanelFiltros
+      barra={<BarraFiltrosHistorial propiedades={propiedades} />}
+      hoja={<HojaFiltrosHistorial propiedades={propiedades} />}
+      textoCantidad={describirCantidadVentas(estadoLista)}
+      cantidadFiltrosActivos={propiedades.cantidadFiltrosActivos}
+      onLimpiarFiltros={propiedades.onLimpiarFiltros}
+    />
   )
 }

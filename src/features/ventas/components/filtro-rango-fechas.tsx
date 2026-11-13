@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { EtiquetaFiltro, type VarianteFiltro } from '@/features/ventas/components/etiqueta-filtro'
-import type { FiltrosHistorial, PeriodoRapido } from '@/features/ventas/types/historial'
+import type { RangoFechasFiltro } from '@/features/ventas/types/compartidos'
+import type { PeriodoRapido } from '@/features/ventas/types/historial'
 import {
   formatearFechaCalendario,
   parsearFechaCalendario,
@@ -23,7 +24,8 @@ interface FiltroRangoFechasProps {
   fechaDesde: string | null
   fechaHasta: string | null
   periodoRapidoActivo: PeriodoRapido | null
-  onCambiarFiltros: (cambios: Partial<FiltrosHistorial>) => void
+  /** Acepta cualquier funcion de filtros que contenga las dos fechas (Historial, Cambios, busqueda de venta). */
+  onCambiarFiltros: (cambios: Partial<RangoFechasFiltro>) => void
   onSeleccionarPeriodoRapido: (periodo: PeriodoRapido) => void
 }
 

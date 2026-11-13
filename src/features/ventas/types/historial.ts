@@ -1,5 +1,6 @@
 import type { PropiedadesCobro } from '@/features/ventas/types/cobro'
 import type { Comprobante } from '@/features/ventas/types/comprobante'
+import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
 
 // --- ENUMS DEL BACK ---
 
@@ -69,13 +70,7 @@ export interface VentaHistorial {
 }
 
 /** Metadatos de paginacion de la respuesta. */
-export interface PaginacionHistorial {
-  /** Empieza en 1. */
-  pagina: number
-  cantidadPorPagina: number
-  totalRegistros: number
-  totalPaginas: number
-}
+export type PaginacionHistorial = PaginacionResultados
 
 /** Fila lista para renderizar: el hook ya calculo el plazo contra la hora del servidor. */
 export interface FilaHistorial extends VentaHistorial {

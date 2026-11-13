@@ -1,5 +1,6 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { EtiquetaFiltro, type VarianteFiltro } from '@/features/ventas/components/etiqueta-filtro'
+import { FiltroSelector } from '@/features/ventas/components/filtro-selector'
+import type { VarianteFiltro } from '@/features/ventas/components/etiqueta-filtro'
+import type { OpcionSelector } from '@/features/ventas/types/compartidos'
 import type { EstadoVentaHistorial } from '@/features/ventas/types/historial'
 
 /** Props del filtro por estado. */
@@ -10,28 +11,23 @@ interface FiltroEstadoProps {
   onCambiarEstado: (estado: EstadoVentaHistorial | null) => void
 }
 
+const OPCIONES_ESTADO_VENTA: OpcionSelector<EstadoVentaHistorial>[] = [
+  { valor: 'COMPLETADA', etiqueta: 'Completada' },
+  { valor: 'PENDIENTE_PAGO', etiqueta: 'Pendiente de pago' },
+  { valor: 'ANULADA', etiqueta: 'Anulada' },
+]
+
+/** Filtro por estado de venta: el selector generico con las opciones del Historial. */
 export function FiltroEstado({ idCampo, variante, estado, onCambiarEstado }: FiltroEstadoProps) {
   return (
-    <div className="flex min-w-0 flex-col gap-1.5">
-      <EtiquetaFiltro variante={variante} idCampo={idCampo}>
-        Estado
-      </EtiquetaFiltro>
-      <Select
-        value={estado ?? 'TODOS'}
-        onValueChange={(valor) =>
-          onCambiarEstado(valor === 'TODOS' ? null : (valor as EstadoVentaHistorial))
-        }
-      >
-        <SelectTrigger id={idCampo} aria-label={variante === 'barra' ? 'Estado' : undefined}>
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="TODOS">Todos los estados</SelectItem>
-          <SelectItem value="COMPLETADA">Completada</SelectItem>
-          <SelectItem value="PENDIENTE_PAGO">Pendiente de pago</SelectItem>
-          <SelectItem value="ANULADA">Anulada</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+    <FiltroSelector
+      idCampo={idCampo}
+      variante={variante}
+      etiqueta="Estado"
+      etiquetaTodos="Todos los estados"
+      opciones={OPCIONES_ESTADO_VENTA}
+      valor={estado}
+      onCambiarValor={onCambiarEstado}
+    />
   )
 }

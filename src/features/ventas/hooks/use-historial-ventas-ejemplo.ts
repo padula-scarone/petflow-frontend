@@ -27,6 +27,7 @@ import type {
   VentaHistorial,
 } from '@/features/ventas/types/historial'
 import { calcularPeriodoRapido } from '@/features/ventas/utils/calcular-periodo-rapido'
+import { corregirRangoFechas } from '@/features/ventas/utils/corregir-rango-fechas'
 import { crearFilaHistorial } from '@/features/ventas/utils/calcular-plazo-modificacion'
 import {
   consultarVentasEjemplo,
@@ -103,15 +104,6 @@ function crearClaveConsulta(
   filtros: FiltrosHistorial,
 ) {
   return `${version}|${numeroReintento}|${pagina}|${JSON.stringify(filtros)}`
-}
-
-/** Recorre a la fecha 'desde' hasta la 'hasta' si quedaron cruzadas, priorizando lo que acaba de cambiar. */
-function corregirRangoFechas(filtros: FiltrosHistorial, cambios: Partial<FiltrosHistorial>) {
-  const { fechaDesde, fechaHasta } = filtros
-  if (fechaDesde === null || fechaHasta === null || fechaDesde <= fechaHasta) return filtros
-  return 'fechaDesde' in cambios
-    ? { ...filtros, fechaHasta: fechaDesde }
-    : { ...filtros, fechaDesde: fechaHasta }
 }
 
 export function useHistorialVentasEjemplo() {
