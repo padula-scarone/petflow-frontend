@@ -21,6 +21,28 @@ export type AccionVenta = 'EDITAR' | 'ANULAR'
 /** Atajos para elegir un rango de fechas. */
 export type PeriodoRapido = 'HOY' | 'AYER' | 'ULTIMOS_7_DIAS'
 
+/** Motivos para anular una venta. Valores fijos del back; OTRO exige un detalle escrito. */
+export type CodigoMotivoAnulacion =
+  | 'VENTA_DUPLICADA'
+  | 'PAGO_NO_CONCRETADO'
+  | 'CLIENTE_CANCELO'
+  | 'PRODUCTO_NO_DISPONIBLE'
+  | 'ENVIO_NO_POSIBLE'
+  | 'ERROR_DE_CARGA'
+  | 'OTRO'
+
+/** Motivos para editar una venta. Valores fijos del back; OTRO exige un detalle escrito. */
+export type CodigoMotivoEdicion =
+  | 'PRODUCTO_O_CANTIDAD_INCORRECTOS'
+  | 'CLIENTE_CAMBIO_PEDIDO'
+  | 'MEDIO_DE_PAGO_INCORRECTO'
+  | 'DESCUENTO_O_PRECIO_INCORRECTO'
+  | 'DATOS_DEL_CLIENTE_INCORRECTOS'
+  | 'OTRO'
+
+/** Cualquier motivo de anulacion o edicion. */
+export type CodigoMotivo = CodigoMotivoAnulacion | CodigoMotivoEdicion
+
 /** Filtro por medio de pago: un medio puntual, "MIXTO" (2 o mas pagos) o ninguno. */
 export type FiltroMedioPago = number | 'MIXTO' | null
 
@@ -146,8 +168,20 @@ export interface VendedorVenta {
   nombre: string
 }
 
+/** Quien anulo la venta, cuando y por que. Usuario y fecha y hora los asigna el servidor. */
+export interface DatosAnulacion {
+  motivo: CodigoMotivo
+  /** Solo con motivo OTRO. */
+  detalleMotivo: string | null
+  nombreUsuario: string
+  /** ISO 8601. */
+  fechaHora: string
+}
+
 /** Venta completa con sus items y pagos. */
 export interface VentaDetalle extends VentaHistorial {
+  /** null mientras la venta no esta anulada. Pendiente de pedir al back. */
+  anulacion: DatosAnulacion | null
   /** null mientras el fiado no se cobro. */
   fechaHoraPago: string | null
   vendedor: VendedorVenta
@@ -180,6 +214,12 @@ export interface ConfirmacionAccionVenta {
   fila: FilaHistorial
   enviando: boolean
   error: ErrorAccionVenta | null
+  /** null hasta que se elige uno: no hay opcion preseleccionada. */
+  codigoMotivo: CodigoMotivo | null
+  /** Lo escrito en "Otro". Vacio con cualquier otro motivo. */
+  detalleMotivo: string
+  /** Hay motivo elegido y, si es OTRO, un detalle de 1 a 200 caracteres. */
+  motivoValido: boolean
 }
 
 /** Mensaje de exito que se muestra sobre la lista. */
@@ -266,6 +306,8 @@ export interface HistorialVentasProps {
   /** Confirma la anulacion (baja logica). */
   onAnularVenta: (idVenta: number) => void
   onCancelarConfirmacion: () => void
+  onSeleccionarMotivo: (codigoMotivo: CodigoMotivo) => void
+  onCambiarDetalleMotivo: (detalleMotivo: string) => void
 }
 
 /** Props del dialogo de cobro de un fiado. */

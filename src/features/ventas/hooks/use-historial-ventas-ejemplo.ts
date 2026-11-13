@@ -5,12 +5,14 @@ import {
   ESPERA_FILTROS_TEXTO_MILISEGUNDOS,
   LATENCIA_EJEMPLO_MILISEGUNDOS,
 } from '@/features/ventas/config/plazo-modificacion'
+import { CODIGO_MOTIVO_OTRO } from '@/features/ventas/config/motivos-venta'
 import { RUTAS_REGISTRAR_VENTA } from '@/features/ventas/config/rutas-registrar-venta'
 import { MEDIOS_EJEMPLO } from '@/features/ventas/hooks/use-cobro-venta-ejemplo'
 import { usePlazoModificacionVenta } from '@/features/ventas/hooks/use-plazo-modificacion-venta'
 import type {
   AccionVenta,
   AvisoHistorial,
+  CodigoMotivo,
   ConfirmacionAccionVenta,
   EstadoDetalleVenta,
   EstadoListaHistorial,
@@ -36,6 +38,7 @@ import {
   FILTROS_HISTORIAL_VACIOS,
 } from '@/features/ventas/utils/contar-filtros-activos'
 import { detectarPeriodoRapido } from '@/features/ventas/utils/detectar-periodo-rapido'
+import { esMotivoValido } from '@/features/ventas/utils/motivos-venta'
 import { crearVentasEjemplo, PRODUCTOS_EJEMPLO } from '@/features/ventas/utils/crear-ventas-ejemplo'
 import {
   construirVentaCobrada,
@@ -73,6 +76,12 @@ interface BaseVentas {
   version: number
   ventas: VentaDetalle[]
 }
+
+/** Confirmacion abierta tal como se guarda: "motivoValido" se calcula al exponerla. */
+type EstadoConfirmacion = Omit<ConfirmacionAccionVenta, 'motivoValido'>
+
+/** Nombre del usuario de la sesion de prueba; en la integracion lo asigna el servidor desde el token. */
+const NOMBRE_USUARIO_EJEMPLO = 'Usuario de prueba'
 
 interface SolicitudDetalle {
   idVenta: number
@@ -127,7 +136,7 @@ export function useHistorialVentasEjemplo() {
   // --- ESTADOS: DETALLE, CONFIRMACION Y COBRO ---
   const [solicitudDetalle, setSolicitudDetalle] = useState<SolicitudDetalle | null>(null)
   const [claveDetalleCargado, setClaveDetalleCargado] = useState<string | null>(null)
-  const [confirmacion, setConfirmacion] = useState<ConfirmacionAccionVenta | null>(null)
+  const [confirmacion, setConfirmacion] = useState<EstadoConfirmacion | null>(null)
   const [aviso, setAviso] = useState<AvisoHistorial | null>(null)
   const [filaACobrar, setFilaACobrar] = useState<FilaHistorial | null>(null)
 
@@ -294,12 +303,38 @@ export function useHistorialVentasEjemplo() {
   // --- ACCIONES: EDITAR Y ANULAR ---
   const solicitarAccion = (accion: AccionVenta, idVenta: number) => {
     const fila = buscarFila(idVenta)
-    if (fila) setConfirmacion({ accion, fila, enviando: false, error: null })
+    // Sin motivo elegido: no hay opcion preseleccionada
+    if (fila) {
+      setConfirmacion({
+        accion,
+        fila,
+        enviando: false,
+        error: null,
+        codigoMotivo: null,
+        detalleMotivo: '',
+      })
+    }
   }
+
+  const seleccionarMotivo = (codigoMotivo: CodigoMotivo) =>
+    setConfirmacion((actual) =>
+      // El detalle solo existe con "Otro": al elegir otro motivo se descarta lo escrito
+      actual && {
+        ...actual,
+        codigoMotivo,
+        detalleMotivo: codigoMotivo === CODIGO_MOTIVO_OTRO ? actual.detalleMotivo : '',
+      },
+    )
+
+  const cambiarDetalleMotivo = (detalleMotivo: string) =>
+    setConfirmacion((actual) => actual && { ...actual, detalleMotivo })
 
   const confirmarModificacion = (idVenta: number) => {
     if (confirmacion === null) return
+    // El front no deja confirmar sin motivo; el servidor tambien lo validaria (400)
+    if (!esMotivoValido(confirmacion.codigoMotivo, confirmacion.detalleMotivo)) return
     const confirmacionEnCurso = confirmacion
+    const { codigoMotivo, detalleMotivo } = confirmacionEnCurso
     setConfirmacion({ ...confirmacionEnCurso, enviando: true, error: null })
 
     setTimeout(() => {
@@ -329,6 +364,13 @@ export function useHistorialVentasEjemplo() {
         ...actual,
         estado: 'ANULADA',
         fechaHoraLimiteModificacion: null,
+        // El servidor asigna usuario y fecha y hora; el motivo viene de la persona
+        anulacion: {
+          motivo: codigoMotivo as CodigoMotivo,
+          detalleMotivo: codigoMotivo === CODIGO_MOTIVO_OTRO ? detalleMotivo.trim() : null,
+          nombreUsuario: NOMBRE_USUARIO_EJEMPLO,
+          fechaHora: new Date(ahoraRespuesta).toISOString(),
+        },
       }))
       setConfirmacion(null)
 
@@ -414,7 +456,10 @@ export function useHistorialVentasEjemplo() {
     },
     aviso,
     detalle: estadoDetalle,
-    confirmacion,
+    confirmacion: confirmacion && {
+      ...confirmacion,
+      motivoValido: esMotivoValido(confirmacion.codigoMotivo, confirmacion.detalleMotivo),
+    },
     onCambiarPagina: setPagina,
     onReintentar: reintentarLista,
     onCerrarAviso: () => setAviso(null),
@@ -425,6 +470,8 @@ export function useHistorialVentasEjemplo() {
     onEditarVenta: confirmarModificacion,
     onAnularVenta: confirmarModificacion,
     onCancelarConfirmacion: () => setConfirmacion(null),
+    onSeleccionarMotivo: seleccionarMotivo,
+    onCambiarDetalleMotivo: cambiarDetalleMotivo,
   }
 
   return {

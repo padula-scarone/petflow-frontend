@@ -1,6 +1,8 @@
+import { MOTIVOS_ANULACION } from '@/features/ventas/config/motivos-venta'
 import { MEDIOS_EJEMPLO } from '@/features/ventas/hooks/use-cobro-venta-ejemplo'
 import { calcularLimiteModificacion } from '@/features/ventas/utils/calcular-plazo-modificacion'
 import type {
+  DatosAnulacion,
   EstadoVentaHistorial,
   FormatoVenta,
   ModalidadEntrega,
@@ -118,6 +120,18 @@ interface DatosVentaEjemplo {
   indiceVendedor?: number
 }
 
+/** Anulacion de ejemplo: el motivo rota segun la venta, y a veces es "Otro" con su detalle. */
+function crearAnulacionEjemplo(idVenta: number, fechaHoraVenta: Date): DatosAnulacion {
+  const { codigo } = MOTIVOS_ANULACION[idVenta % MOTIVOS_ANULACION.length]
+  return {
+    motivo: codigo,
+    detalleMotivo: codigo === 'OTRO' ? 'El cliente se fue sin avisar y dejó el pedido armado' : null,
+    nombreUsuario: VENDEDORES_EJEMPLO[idVenta % VENDEDORES_EJEMPLO.length].nombre,
+    // Se anula a los pocos minutos de la venta, dentro de la ventana de 15
+    fechaHora: new Date(fechaHoraVenta.getTime() + 5 * MILISEGUNDOS_POR_MINUTO).toISOString(),
+  }
+}
+
 function crearVentaEjemplo(ahoraMilisegundos: number, datos: DatosVentaEjemplo): VentaDetalle {
   const items = datos.items.map(([idProducto, cantidad]) => {
     const producto = PRODUCTOS_EJEMPLO.find((candidato) => candidato.idProducto === idProducto)
@@ -146,6 +160,7 @@ function crearVentaEjemplo(ahoraMilisegundos: number, datos: DatosVentaEjemplo):
             : ahoraMilisegundos - datos.minutosDesdePago * MILISEGUNDOS_POR_MINUTO,
         ).toISOString()
   const origen = datos.origen ?? 'MOSTRADOR'
+  const vendedor = VENDEDORES_EJEMPLO[(datos.indiceVendedor ?? datos.idVenta) % VENDEDORES_EJEMPLO.length]
 
   const venta: VentaDetalle = {
     idVenta: datos.idVenta,
@@ -162,12 +177,13 @@ function crearVentaEjemplo(ahoraMilisegundos: number, datos: DatosVentaEjemplo):
     clienteReferencia: datos.clienteReferencia,
     origen,
     modalidadEntrega: datos.modalidadEntrega ?? 'RETIRO',
-    vendedor: VENDEDORES_EJEMPLO[(datos.indiceVendedor ?? datos.idVenta) % VENDEDORES_EJEMPLO.length],
+    vendedor,
     subtotalBruto,
     descuentoManual,
     motivoDescuento: datos.descuentoManual?.motivo ?? null,
     items,
     pagos,
+    anulacion: datos.estado === 'ANULADA' ? crearAnulacionEjemplo(datos.idVenta, fechaHora) : null,
     fechaHoraLimiteModificacion: null,
   }
   return { ...venta, fechaHoraLimiteModificacion: calcularLimiteModificacion(venta) }

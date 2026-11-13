@@ -21,6 +21,8 @@ export function HistorialVentas({
   onEditarVenta,
   onAnularVenta,
   onCancelarConfirmacion,
+  onSeleccionarMotivo,
+  onCambiarDetalleMotivo,
 }: HistorialVentasProps) {
   return (
     <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4">
@@ -62,6 +64,8 @@ export function HistorialVentas({
         onEditarVenta={onEditarVenta}
         onAnularVenta={onAnularVenta}
         onCancelar={onCancelarConfirmacion}
+        onSeleccionarMotivo={onSeleccionarMotivo}
+        onCambiarDetalleMotivo={onCambiarDetalleMotivo}
       />
     </section>
   )

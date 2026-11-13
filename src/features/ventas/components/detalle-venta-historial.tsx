@@ -32,6 +32,7 @@ import {
 } from '@/features/ventas/utils/construir-enlaces-comprobante'
 import { convertirVentaAComprobante } from '@/features/ventas/utils/convertir-venta-a-comprobante'
 import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
+import { describirMotivo } from '@/features/ventas/utils/motivos-venta'
 
 /** Props de la ventana con el detalle de una venta. */
 interface DetalleVentaHistorialProps {
@@ -120,6 +121,20 @@ export function DetalleVentaHistorial({
                         Se repuso el stock{anuladaSinPagos ? '.' : ' y se revirtió la caja.'} La venta queda
                         en el historial solo para consulta.
                       </p>
+                      {venta.anulacion && (
+                        <dl className="mt-1 grid gap-1.5 text-sm text-texto-principal">
+                          <div>
+                            <dt className="text-texto-suave">Motivo</dt>
+                            <dd className="font-medium wrap-break-word">{describirMotivo(venta.anulacion)}</dd>
+                          </div>
+                          <div>
+                            <dt className="text-texto-suave">Anulada por</dt>
+                            <dd className="font-medium tabular-nums">
+                              {venta.anulacion.nombreUsuario} · {formatearFechaHora(venta.anulacion.fechaHora)}
+                            </dd>
+                          </div>
+                        </dl>
+                      )}
                     </AlertDescription>
                   </Alert>
                 )}

@@ -10,7 +10,8 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
-import type { ConfirmacionAccionVenta } from '@/features/ventas/types/historial'
+import { SelectorMotivoVenta } from '@/features/ventas/components/selector-motivo-venta'
+import type { CodigoMotivo, ConfirmacionAccionVenta } from '@/features/ventas/types/historial'
 
 const TITULO_ERROR: Record<403 | 404 | 409, string> = {
   403: 'Se venció el plazo',
@@ -18,13 +19,15 @@ const TITULO_ERROR: Record<403 | 404 | 409, string> = {
   409: 'No se pudo completar la acción',
 }
 
-/** Props del dialogo que confirma editar o anular una venta. */
+/** Props del dialogo que confirma editar o anular una venta y pide el motivo. */
 interface DialogoConfirmarAccionVentaProps {
   /** null mientras no hay una confirmacion abierta. */
   confirmacion: ConfirmacionAccionVenta | null
   onEditarVenta: (idVenta: number) => void
   onAnularVenta: (idVenta: number) => void
   onCancelar: () => void
+  onSeleccionarMotivo: (codigoMotivo: CodigoMotivo) => void
+  onCambiarDetalleMotivo: (detalleMotivo: string) => void
 }
 
 export function DialogoConfirmarAccionVenta({
@@ -32,6 +35,8 @@ export function DialogoConfirmarAccionVenta({
   onEditarVenta,
   onAnularVenta,
   onCancelar,
+  onSeleccionarMotivo,
+  onCambiarDetalleMotivo,
 }: DialogoConfirmarAccionVentaProps) {
   const esAnulacion = confirmacion?.accion === 'ANULAR'
 
@@ -43,7 +48,8 @@ export function DialogoConfirmarAccionVenta({
         if (!abierto && !confirmacion?.enviando) onCancelar()
       }}
     >
-      <AlertDialogContent>
+      {/* Con la lista de motivos el contenido puede superar la pantalla: scrollea dentro del dialogo */}
+      <AlertDialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto">
         {confirmacion && (
           <>
             <AlertDialogHeader>
@@ -58,6 +64,18 @@ export function DialogoConfirmarAccionVenta({
               </AlertDialogDescription>
             </AlertDialogHeader>
 
+            {/* --- MOTIVO (SOLO ANTES DE ENVIAR; UN RECHAZO DEL SERVIDOR LO REEMPLAZA) --- */}
+            {!confirmacion.error && (
+              <SelectorMotivoVenta
+                accion={confirmacion.accion}
+                codigoMotivo={confirmacion.codigoMotivo}
+                detalleMotivo={confirmacion.detalleMotivo}
+                deshabilitado={confirmacion.enviando}
+                onSeleccionarMotivo={onSeleccionarMotivo}
+                onCambiarDetalleMotivo={onCambiarDetalleMotivo}
+              />
+            )}
+
             {/* --- RECHAZO DEL SERVIDOR --- */}
             {confirmacion.error && (
               <Alert variant="destructive">
@@ -67,6 +85,15 @@ export function DialogoConfirmarAccionVenta({
                   <p>{confirmacion.error.mensaje}</p>
                 </AlertDescription>
               </Alert>
+            )}
+
+            {/* Por que el boton esta deshabilitado */}
+            {!confirmacion.error && !confirmacion.motivoValido && (
+              <p role="status" className="text-xs text-texto-suave">
+                {confirmacion.codigoMotivo === null
+                  ? 'Elegí un motivo para continuar.'
+                  : 'Escribí el motivo para continuar.'}
+              </p>
             )}
 
             <AlertDialogFooter>
@@ -80,7 +107,7 @@ export function DialogoConfirmarAccionVenta({
                   <AlertDialogAction
                     variant={esAnulacion ? 'destructive' : 'default'}
                     className="h-11 px-6"
-                    disabled={confirmacion.enviando}
+                    disabled={confirmacion.enviando || !confirmacion.motivoValido}
                     // preventDefault: el dialogo queda abierto hasta que responda el servidor
                     onClick={(evento) => {
                       evento.preventDefault()
