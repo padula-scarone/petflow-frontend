@@ -1,23 +1,45 @@
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { ImagenProducto } from '@/features/ventas/components/imagen-producto'
-import type { ResultadoBusqueda } from '@/features/ventas/types/venta'
 
-/** Props del buscador de productos con desplegable de coincidencias. */
-interface BuscadorProductosProps {
-  textoBusqueda: string
-  resultadosBusqueda: ResultadoBusqueda[]
-  onBuscarProducto: (textoBusqueda: string) => void
-  onAgregarProducto: (idProducto: string) => void
+/** Producto del catalogo que coincide con el texto buscado. */
+export interface ResultadoBuscadorProducto<Identificador extends string | number> {
+  idProducto: Identificador
+  nombreProducto: string
+  /** URL de la miniatura del producto; conviene que sea una version chica, no la original. */
+  urlImagen?: string
+  precioUnitario: number
+  stockDisponible: number
 }
 
-export function BuscadorProductos({
+/** Props del buscador de productos con desplegable de coincidencias. */
+interface BuscadorProductosProps<Identificador extends string | number> {
+  textoBusqueda: string
+  resultadosBusqueda: ResultadoBuscadorProducto<Identificador>[]
+  onBuscarProducto: (textoBusqueda: string) => void
+  onAgregarProducto: (idProducto: Identificador) => void
+  /** Por defecto "Buscar por nombre". */
+  placeholder?: string
+  /** Por defecto "Buscar producto por nombre". */
+  etiquetaAccesible?: string
+  /**
+   * flotante: lista sobre el contenido (carrito). en-linea: la lista empuja el contenido; es la
+   * opcion para campos dentro de un cuerpo con scroll, donde una lista flotante quedaria cortada.
+   */
+  modoResultados?: 'flotante' | 'en-linea'
+}
+
+export function BuscadorProductos<Identificador extends string | number>({
   textoBusqueda,
   resultadosBusqueda,
   onBuscarProducto,
   onAgregarProducto,
-}: BuscadorProductosProps) {
+  placeholder = 'Buscar por nombre',
+  etiquetaAccesible = 'Buscar producto por nombre',
+  modoResultados = 'flotante',
+}: BuscadorProductosProps<Identificador>) {
   const desplegableVisible = textoBusqueda.trim() !== ''
 
   return (
@@ -25,20 +47,33 @@ export function BuscadorProductos({
       {/* --- CAMPO DE BUSQUEDA --- */}
       <Search
         aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-texto-suave"
+        className="pointer-events-none absolute top-[1.375rem] left-3 size-5 -translate-y-1/2 text-texto-suave"
       />
       <Input
         type="text"
-        aria-label="Buscar producto por nombre"
-        placeholder="Buscar por nombre"
+        autoComplete="off"
+        aria-label={etiquetaAccesible}
+        placeholder={placeholder}
         className="h-11 bg-fondo-tarjeta pl-10"
         value={textoBusqueda}
         onChange={(evento) => onBuscarProducto(evento.target.value)}
+        // Escape vacia el texto y cierra la lista sin elegir nada
+        onKeyDown={(evento) => {
+          if (evento.key === 'Escape' && textoBusqueda !== '') {
+            evento.stopPropagation()
+            onBuscarProducto('')
+          }
+        }}
       />
 
       {/* --- DESPLEGABLE DE RESULTADOS --- */}
       {desplegableVisible && (
-        <ul className="absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md">
+        <ul
+          className={cn(
+            'max-h-72 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md',
+            modoResultados === 'flotante' ? 'absolute inset-x-0 top-full z-20 mt-1' : 'mt-2',
+          )}
+        >
           {resultadosBusqueda.length === 0 ? (
             <li className="px-3 py-3 text-sm text-texto-suave">
               Sin resultados
