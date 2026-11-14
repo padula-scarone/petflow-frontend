@@ -16,6 +16,7 @@ function esProductoApi(valor: unknown): valor is ProductoApi {
     esObjeto(valor) &&
     typeof valor.idProducto === 'number' &&
     typeof valor.nombre === 'string' &&
+    typeof valor.categoria === 'string' &&
     typeof valor.precioVenta === 'string' &&
     typeof valor.stockFisico === 'string' &&
     esFormatoVentaApi(valor.formatoVenta)
@@ -34,6 +35,7 @@ function convertirProductoApi(producto: ProductoApi): ProductoCatalogo | null {
   return {
     idProducto: String(producto.idProducto),
     nombreProducto: producto.nombre,
+    categoria: producto.categoria,
     formato: convertirFormatoApiAFormato(producto.formatoVenta),
     precioUnitario: convertirCentavosAPesos(precioCentavos),
     stockDisponible: stockMilesimas / FACTOR_MILESIMAS,

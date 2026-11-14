@@ -22,6 +22,8 @@ export type EstadoVentaApi = 'COMPLETADA' | 'PENDIENTE_PAGO'
 export interface ProductoApi {
   idProducto: number
   nombre: string
+  /** Nombre vigente de la categoria; el back siempre la manda. */
+  categoria: string
   /** Texto con 2 decimales, por ejemplo "48500.00". */
   precioVenta: string
   /** Texto con 3 decimales, por ejemplo "12.000". */

@@ -14,8 +14,8 @@ export interface ArticuloCarrito {
   /** Identificador del producto en el catalogo. */
   idProducto: string
   nombreProducto: string
-  /** Hoy el back no la expone; cuando la agregue, la tarjeta ya la muestra. */
-  categoria?: string
+  /** Nombre de la categoria del producto, tal como lo manda el back. */
+  categoria: string
   formato: FormatoArticulo
   /** URL de la imagen; si falta, se muestra un marcador de posicion. */
   urlImagen?: string
@@ -39,6 +39,7 @@ export interface ResultadoBusqueda {
 
 /** Producto del catalogo del back: lo que se necesita para buscarlo y sumarlo al carrito. */
 export interface ProductoCatalogo extends ResultadoBusqueda {
+  categoria: string
   formato: FormatoArticulo
 }
 

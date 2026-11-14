@@ -27,6 +27,7 @@ function crearArticulo(producto: ProductoCatalogo): ArticuloCarrito {
     {
       idProducto: producto.idProducto,
       nombreProducto: producto.nombreProducto,
+      categoria: producto.categoria,
       formato: producto.formato,
       urlImagen: producto.urlImagen,
       precioUnitario: producto.precioUnitario,
@@ -63,6 +64,7 @@ export function useCarritoVenta(catalogo: ProductoCatalogo[]) {
       : recalcularArticulo(
           {
             ...articulo,
+            categoria: producto.categoria,
             precioUnitario: producto.precioUnitario,
             stockDisponible: producto.stockDisponible,
           },
