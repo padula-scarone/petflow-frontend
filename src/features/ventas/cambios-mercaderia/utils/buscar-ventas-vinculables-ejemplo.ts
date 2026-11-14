@@ -10,6 +10,7 @@ import { obtenerProductoCambioEjemplo } from '@/features/ventas/cambios-mercader
 import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
 import type { VentaDetalle } from '@/features/ventas/types/historial'
 import { formatearFechaCalendario } from '@/features/ventas/utils/calcular-periodo-rapido'
+import { coincideFiltroMedioPago } from '@/features/ventas/utils/coincide-filtro-medio-pago'
 import { obtenerVentaHistorial } from '@/features/ventas/utils/consultar-ventas-ejemplo'
 
 // Temporal: simula el GET /api/ventas (con los filtros que el back todavia no tiene) y el GET /api/ventas/:idVenta
@@ -34,10 +35,7 @@ function cumpleFiltros(venta: VentaDetalle, filtros: FiltrosBusquedaVenta) {
     (filtros.productoSeleccionado === null ||
       venta.items.some((item) => item.idProducto === filtros.productoSeleccionado?.idProducto)) &&
     (filtros.origen === null || venta.origen === filtros.origen) &&
-    (filtros.medioPago === null ||
-      (filtros.medioPago === 'MIXTO'
-        ? venta.pagos.length >= 2
-        : venta.pagos.some((pago) => pago.idMedioPago === filtros.medioPago))) &&
+    coincideFiltroMedioPago(venta.pagos, filtros.medioPago) &&
     (textoComprobante === '' || normalizarTexto(venta.numeroComprobante).includes(textoComprobante))
   )
 }
