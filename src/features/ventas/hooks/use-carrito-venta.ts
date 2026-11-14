@@ -100,7 +100,12 @@ export function useCarritoVenta(catalogo: ProductoCatalogo[]) {
   /** Un producto por unidad suma de a una; uno a granel, de a PASO_GRANEL_GRAMOS, sin bajar del minimo. */
   const calcularCantidadNueva = (articulo: ArticuloCarrito, variacion: number) => {
     if (articulo.formato === 'granel') {
-      const gramos = Math.round(articulo.cantidad * GRAMOS_POR_KILO) + variacion * PASO_GRANEL_GRAMOS
+      const gramosActuales = Math.round(articulo.cantidad * GRAMOS_POR_KILO)
+      // Si se bajo hasta el minimo, el primer + vuelve al paso exacto (100) y no a 101
+      const gramos =
+        gramosActuales === CANTIDAD_MINIMA_GRANEL_GRAMOS && variacion > 0
+          ? variacion * PASO_GRANEL_GRAMOS
+          : gramosActuales + variacion * PASO_GRANEL_GRAMOS
       return Math.max(CANTIDAD_MINIMA_GRANEL_GRAMOS, gramos) / GRAMOS_POR_KILO
     }
     return Math.max(1, articulo.cantidad + variacion)
