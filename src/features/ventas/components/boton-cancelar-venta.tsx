@@ -15,14 +15,25 @@ import {
 interface BotonCancelarVentaProps {
   etiqueta: string
   onCancelarVenta: () => void
+  /** true mientras la venta se envia: cancelar en ese momento dejaria una venta registrada sin que se vea. */
+  deshabilitado?: boolean
 }
 
-export function BotonCancelarVenta({ etiqueta, onCancelarVenta }: BotonCancelarVentaProps) {
+export function BotonCancelarVenta({
+  etiqueta,
+  onCancelarVenta,
+  deshabilitado = false,
+}: BotonCancelarVentaProps) {
   return (
     // Radix maneja si el dialogo esta abierto, por eso la vista no necesita estado
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button type="button" variant="outline" className="h-11 w-full bg-fondo-tarjeta">
+        <Button
+          type="button"
+          variant="outline"
+          className="h-11 w-full bg-fondo-tarjeta"
+          disabled={deshabilitado}
+        >
           {etiqueta}
         </Button>
       </AlertDialogTrigger>

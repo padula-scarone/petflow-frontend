@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router'
+import { RUTA_HISTORIAL } from '@/features/ventas/config/rutas-historial'
 import { RUTAS_REGISTRAR_VENTA } from '@/features/ventas/config/rutas-registrar-venta'
 
 /**
@@ -13,5 +14,11 @@ export function useNavegacionRegistrarVenta() {
     irAlCobro: () => navegar(RUTAS_REGISTRAR_VENTA.cobro),
     irAlCarrito: () => navegar(RUTAS_REGISTRAR_VENTA.carrito, { replace: true }),
     irAlComprobante: () => navegar(RUTAS_REGISTRAR_VENTA.comprobante, { replace: true }),
+    /** Lleva al Historial con la venta indicada en `?venta=`; abrir su panel es tarea del Historial. */
+    irAEditarEnHistorial: (idVenta: string) =>
+      navegar(
+        { pathname: RUTA_HISTORIAL, search: new URLSearchParams({ venta: idVenta }).toString() },
+        { replace: true },
+      ),
   }
 }

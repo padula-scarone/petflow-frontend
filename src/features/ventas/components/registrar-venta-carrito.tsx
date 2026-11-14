@@ -3,6 +3,7 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { BuscadorProductos } from '@/features/ventas/components/buscador-productos'
+import { EstadoCatalogoProductos } from '@/features/ventas/components/estado-catalogo-productos'
 import { SelectorConfiguracionVenta } from '@/features/ventas/components/selector-configuracion-venta'
 import { TarjetaArticuloCarrito } from '@/features/ventas/components/tarjeta-articulo-carrito'
 import type { RegistrarVentaCarritoProps } from '@/features/ventas/types/venta'
@@ -11,6 +12,8 @@ export function RegistrarVentaCarrito({
   estadoVenta,
   textoBusqueda,
   resultadosBusqueda,
+  estadoCatalogo,
+  onReintentarCatalogo,
   onBuscarProducto,
   onAgregarProducto,
   onCambiarCanal,
@@ -36,12 +39,17 @@ export function RegistrarVentaCarrito({
       </header>
 
       {/* --- BUSCADOR --- */}
-      <BuscadorProductos
-        textoBusqueda={textoBusqueda}
-        resultadosBusqueda={resultadosBusqueda}
-        onBuscarProducto={onBuscarProducto}
-        onAgregarProducto={onAgregarProducto}
-      />
+      {/* Sin catalogo no hay nada que buscar: se muestra la carga o el error con reintento */}
+      {estadoCatalogo.fase === 'listo' ? (
+        <BuscadorProductos
+          textoBusqueda={textoBusqueda}
+          resultadosBusqueda={resultadosBusqueda}
+          onBuscarProducto={onBuscarProducto}
+          onAgregarProducto={onAgregarProducto}
+        />
+      ) : (
+        <EstadoCatalogoProductos estadoCatalogo={estadoCatalogo} onReintentar={onReintentarCatalogo} />
+      )}
 
       {/* --- LISTA DE PRODUCTOS --- */}
       <div className="flex flex-col gap-3">

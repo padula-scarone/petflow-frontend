@@ -48,7 +48,8 @@ export function PagosComprobante({ comprobante }: PagosComprobanteProps) {
                 Parte del total: {formatearMoneda(pago.montoBase)}
               </p>
             )}
-            {pago.admiteVuelto && (
+            {/* Sin "Paga con" el back no registra recibido ni vuelto: no hay nada que mostrar */}
+            {pago.admiteVuelto && pago.montoRecibido !== null && pago.vuelto !== null && (
               <p className="flex flex-wrap justify-between gap-x-3 text-sm text-texto-suave tabular-nums">
                 <span>Recibido: {formatearMoneda(pago.montoRecibido)}</span>
                 <span>Vuelto: {formatearMoneda(pago.vuelto)}</span>

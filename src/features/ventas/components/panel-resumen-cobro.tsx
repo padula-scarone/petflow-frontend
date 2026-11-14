@@ -3,7 +3,9 @@ import { formatearMoneda, formatearMonedaConSigno } from '@/lib/formatear-moneda
 import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-venta'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
 import { EstadoCobertura } from '@/features/ventas/components/estado-cobertura'
+import { EstadoEnvioCobro } from '@/features/ventas/components/estado-envio-cobro'
 import type { FormaPago, ResumenCobro } from '@/features/ventas/types/cobro'
+import type { EstadoEnvioVenta } from '@/features/ventas/types/envio-venta'
 
 /** Props del panel de resumen del cobro. Los botones solo se muestran en escritorio. */
 interface PanelResumenCobroProps {
@@ -11,6 +13,7 @@ interface PanelResumenCobroProps {
   formaPago: FormaPago
   puedeConfirmar: boolean
   motivoNoConfirmable?: string
+  estadoEnvio: EstadoEnvioVenta
   onConfirmarCobro: () => void
   onCancelarVenta: () => void
   onAjustarMontosAutomaticamente: () => void
@@ -21,10 +24,13 @@ export function PanelResumenCobro({
   formaPago,
   puedeConfirmar,
   motivoNoConfirmable,
+  estadoEnvio,
   onConfirmarCobro,
   onCancelarVenta,
   onAjustarMontosAutomaticamente,
 }: PanelResumenCobroProps) {
+  const enviando = estadoEnvio.fase === 'enviando'
+
   return (
     <Card className="gap-4 p-4 shadow-none xl:sticky xl:top-0">
       {/* --- DESGLOSE --- */}
@@ -67,9 +73,11 @@ export function PanelResumenCobro({
 
       {/* --- ACCIONES (ESCRITORIO) --- */}
       <div className="hidden flex-col gap-3 border-t pt-4 xl:flex">
+        <EstadoEnvioCobro estadoEnvio={estadoEnvio} />
         <BotonConfirmarCobro
           formaPago={formaPago}
           habilitado={puedeConfirmar}
+          enviando={enviando}
           onConfirmarCobro={onConfirmarCobro}
           className="w-full"
         />
@@ -78,7 +86,7 @@ export function PanelResumenCobro({
             {motivoNoConfirmable}
           </p>
         )}
-        <BotonCancelarVenta etiqueta="Cancelar" onCancelarVenta={onCancelarVenta} />
+        <BotonCancelarVenta etiqueta="Cancelar" onCancelarVenta={onCancelarVenta} deshabilitado={enviando} />
       </div>
     </Card>
   )

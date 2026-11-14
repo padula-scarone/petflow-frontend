@@ -7,6 +7,8 @@ import type { FormaPago } from '@/features/ventas/types/cobro'
 interface BotonConfirmarCobroProps {
   formaPago: FormaPago
   habilitado: boolean
+  /** true mientras la venta viaja al back: el boton queda deshabilitado y avisa que esta registrando. */
+  enviando?: boolean
   onConfirmarCobro: () => void
   className?: string
 }
@@ -14,6 +16,7 @@ interface BotonConfirmarCobroProps {
 export function BotonConfirmarCobro({
   formaPago,
   habilitado,
+  enviando = false,
   onConfirmarCobro,
   className,
 }: BotonConfirmarCobroProps) {
@@ -31,7 +34,7 @@ export function BotonConfirmarCobro({
       disabled={!habilitado}
       onClick={onConfirmarCobro}
     >
-      {esFiado ? 'REGISTRAR FIADO' : 'CONFIRMAR'}
+      {enviando ? 'REGISTRANDO…' : esFiado ? 'REGISTRAR FIADO' : 'CONFIRMAR'}
       {/* En pantallas muy angostas el icono se oculta para que el texto entre completo */}
       {esFiado ? (
         <NotebookPen className="size-5 max-sm:hidden xl:size-6" />

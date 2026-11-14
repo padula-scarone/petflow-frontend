@@ -1,17 +1,6 @@
 import { Pencil } from 'lucide-react'
 import { BotonesEnvioComprobante } from '@/features/ventas/components/botones-envio-comprobante'
 import { Button } from '@/components/ui/button'
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from '@/components/ui/alert-dialog'
 import { cn } from '@/lib/utils'
 import { formatearHora } from '@/lib/formatear-fecha-hora'
 
@@ -21,6 +10,7 @@ interface AccionesComprobanteProps {
   enlaceMail: string
   edicionDisponible: boolean
   fechaHoraLimiteEdicion: string
+  /** Lleva al Historial con la venta abierta; la confirmacion y el motivo de la edicion se piden alli. */
   onEditarVenta: () => void
   /** compacta: tres botones en fila con el icono arriba (mobile); completa: apilados (escritorio). */
   variante: 'compacta' | 'completa'
@@ -50,35 +40,17 @@ export function AccionesComprobante({
           variante={variante}
         />
 
-        {/* --- EDICION: PIDE CONFIRMACION PORQUE ANULA LA VENTA --- */}
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button
-              type="button"
-              variant="outline"
-              className={claseBoton}
-              disabled={!edicionDisponible}
-            >
-              <Pencil />
-              {compacta ? 'Editar' : 'Editar venta'}
-            </Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogTitle>¿Editar la venta?</AlertDialogTitle>
-              <AlertDialogDescription>
-                Editar anula esta venta, ajusta el stock y la caja, y vuelve a cargar los productos
-                en el carrito para registrarla de nuevo.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-            <AlertDialogFooter>
-              <AlertDialogCancel className="h-11">Volver al comprobante</AlertDialogCancel>
-              <AlertDialogAction className="h-11" onClick={onEditarVenta}>
-                Sí, editar venta
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
+        {/* --- EDICION: LA VENTA SE EDITA DESDE EL HISTORIAL --- */}
+        <Button
+          type="button"
+          variant="outline"
+          className={claseBoton}
+          disabled={!edicionDisponible}
+          onClick={onEditarVenta}
+        >
+          <Pencil />
+          {compacta ? 'Editar' : 'Editar venta'}
+        </Button>
       </div>
 
       {/* --- PLAZO DE EDICION --- */}
