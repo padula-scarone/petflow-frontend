@@ -59,8 +59,8 @@ export function convertirFiltrosAConsulta(
   }
 }
 
-/** Serializa la consulta como query string: todo texto, con "MIXTO" en mayusculas. */
-export function convertirConsultaAParametros(consulta: ConsultaHistorialApi): Record<string, string> {
+/** Serializa una consulta como query string: todo texto, con "MIXTO" en mayusculas. Tambien la usa Cambios. */
+export function convertirConsultaAParametros(consulta: object): Record<string, string> {
   return Object.fromEntries(
     Object.entries(consulta)
       .filter((entrada): entrada is [string, string | number] => entrada[1] !== undefined)

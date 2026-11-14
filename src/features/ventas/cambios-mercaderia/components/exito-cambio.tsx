@@ -34,7 +34,7 @@ export function ExitoCambio({ cambio, acciones }: ExitoCambioProps) {
             <span className="text-texto-suave">Entró al stock: </span>
             <span className="font-medium tabular-nums">
               {articuloDevuelto.esBolsaAbierta
-                ? `${describirPesoKg(articuloDevuelto.cantidad)} de «${articuloDevuelto.nombreProductoStockIngresado}» (a granel)`
+                ? `${describirPesoKg(articuloDevuelto.pesoDevueltoKg ?? 0)} de «${articuloDevuelto.nombreProductoStockIngresado}» (a granel)`
                 : `${describirCantidadArticulo(articuloDevuelto.cantidad, articuloDevuelto.formatoVenta)} de «${articuloDevuelto.nombreProducto}»`}
             </span>
           </li>

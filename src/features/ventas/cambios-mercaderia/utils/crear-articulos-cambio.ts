@@ -5,6 +5,7 @@ import type {
   OpcionBolsaAbierta,
   ProductoCatalogoCambio,
 } from '@/features/ventas/cambios-mercaderia/types/cambio'
+import { crearOpcionBolsaAbierta } from '@/features/ventas/cambios-mercaderia/utils/catalogo-cambios'
 
 /** Redondea a 3 decimales (la precision de las cantidades) para que 2,5 - 0,1 no quede en 2,4000000001. */
 function redondearCantidad(cantidad: number) {
@@ -17,20 +18,19 @@ export function calcularCantidadDisponible(item: ItemVentaVinculable) {
 }
 
 /**
- * Datos de "Bolsa abierta" de un renglon de la venta: solo si es una unidad con variante a granel.
- * El kilo se valua al precio pagado por la bolsa dividido su peso nominal.
+ * Datos de "Bolsa abierta" de un renglon de la venta: solo si es una unidad con variante a granel (los datos
+ * salen del catalogo). Se acredita al precio pagado por la bolsa.
  */
 function crearOpcionBolsaAbiertaDesdeItem(item: ItemVentaVinculable): OpcionBolsaAbierta | null {
   if (item.formatoVenta !== 'UNIDAD') return null
-  if (item.idProductoGranel === null || item.pesoNominalKg === null || item.nombreProductoGranel === null) {
+  if (item.idProductoGranel === null || item.nombreProductoGranel === null || item.pesoNominalMilesimas === null) {
     return null
   }
-  return {
+  return crearOpcionBolsaAbierta(item.precioUnitario, {
     idProductoGranel: item.idProductoGranel,
     nombreProductoGranel: item.nombreProductoGranel,
-    pesoNominalKg: item.pesoNominalKg,
-    precioPorKg: item.precioUnitario / item.pesoNominalKg,
-  }
+    pesoUnitarioMilesimas: item.pesoNominalMilesimas,
+  })
 }
 
 /** Articulo devuelto elegido entre los renglones de la venta vinculada, con el precio que se pago. */

@@ -1,4 +1,5 @@
 import { Dialog, DialogBody, DialogContent } from '@/components/ui/dialog'
+import { AvisosRepobladoCambio } from '@/features/ventas/cambios-mercaderia/components/avisos-repoblado-cambio'
 import { DialogoDescartarCambio } from '@/features/ventas/cambios-mercaderia/components/dialogo-descartar-cambio'
 import { EncabezadoAltaCambio } from '@/features/ventas/cambios-mercaderia/components/encabezado-alta-cambio'
 import { ExitoCambio } from '@/features/ventas/cambios-mercaderia/components/exito-cambio'
@@ -25,6 +26,11 @@ export function AltaCambio({
   resultadosEntregado,
   sugerenciasEntregado,
   mediosPago,
+  estadoCatalogo,
+  estadoMediosPago,
+  onReintentarCatalogo,
+  onReintentarMediosPago,
+  avisosRepoblado,
   resumenSaldo,
   validacion,
   estadoEnvio,
@@ -50,9 +56,16 @@ export function AltaCambio({
             <>
               <EncabezadoAltaCambio paso={paso} />
               <DialogBody>
+                <AvisosRepobladoCambio avisos={avisosRepoblado} />
                 {paso === 'MOTIVO' && <PasoMotivo borrador={borrador} acciones={acciones} />}
                 {paso === 'VENTA_ORIGINAL' && (
-                  <PasoVentaOriginal borrador={borrador} busquedaVenta={busquedaVenta} acciones={acciones} />
+                  <PasoVentaOriginal
+                    borrador={borrador}
+                    busquedaVenta={busquedaVenta}
+                    estadoCatalogo={estadoCatalogo}
+                    onReintentarCatalogo={onReintentarCatalogo}
+                    acciones={acciones}
+                  />
                 )}
                 {paso === 'ARTICULOS' && (
                   <PasoArticulos
@@ -62,6 +75,8 @@ export function AltaCambio({
                     resultadosDevuelto={resultadosDevuelto}
                     resultadosEntregado={resultadosEntregado}
                     sugerenciasEntregado={sugerenciasEntregado}
+                    estadoCatalogo={estadoCatalogo}
+                    onReintentarCatalogo={onReintentarCatalogo}
                     resumenSaldo={resumenSaldo}
                     validacion={validacion}
                     acciones={acciones}
@@ -71,6 +86,8 @@ export function AltaCambio({
                   <PasoCobro
                     borrador={borrador}
                     mediosPago={mediosPago}
+                    estadoMediosPago={estadoMediosPago}
+                    onReintentarMediosPago={onReintentarMediosPago}
                     resumenSaldo={resumenSaldo}
                     validacion={validacion}
                     estadoEnvio={estadoEnvio}

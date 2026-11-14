@@ -1,3 +1,4 @@
+import { EstadoCatalogoProductos } from '@/features/ventas/components/estado-catalogo-productos'
 import { FormularioArticuloDevuelto } from '@/features/ventas/cambios-mercaderia/components/formulario-articulo-devuelto'
 import { FormularioArticuloEntregado } from '@/features/ventas/cambios-mercaderia/components/formulario-articulo-entregado'
 import { ResumenVentaVinculada } from '@/features/ventas/cambios-mercaderia/components/resumen-venta-vinculada'
@@ -13,6 +14,8 @@ type PasoArticulosProps = Pick<
   | 'resultadosDevuelto'
   | 'resultadosEntregado'
   | 'sugerenciasEntregado'
+  | 'estadoCatalogo'
+  | 'onReintentarCatalogo'
   | 'resumenSaldo'
   | 'validacion'
   | 'acciones'
@@ -29,6 +32,8 @@ export function PasoArticulos({
   resultadosDevuelto,
   resultadosEntregado,
   sugerenciasEntregado,
+  estadoCatalogo,
+  onReintentarCatalogo,
   resumenSaldo,
   validacion,
   acciones,
@@ -38,6 +43,11 @@ export function PasoArticulos({
 
   return (
     <div className="flex flex-col gap-5">
+      {/* Mientras el catalogo no esta listo los buscadores no tienen de donde sacar productos */}
+      {estadoCatalogo.fase !== 'listo' && (
+        <EstadoCatalogoProductos estadoCatalogo={estadoCatalogo} onReintentar={onReintentarCatalogo} />
+      )}
+
       {borrador.ventaVinculada && (
         <ResumenVentaVinculada
           venta={borrador.ventaVinculada}

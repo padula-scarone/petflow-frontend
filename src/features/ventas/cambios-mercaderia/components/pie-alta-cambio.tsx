@@ -15,7 +15,8 @@ type PieAltaCambioProps = Pick<
  * Mobile: saldo arriba y botones debajo. Desde sm: saldo a la izquierda y botones a la derecha.
  */
 export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estadoEnvio, acciones }: PieAltaCambioProps) {
-  const enviando = estadoEnvio.tipo === 'enviando'
+  // Con un resultado incierto el envio queda bloqueado: no se reenvia a ciegas ni se cambia lo cargado
+  const enviando = estadoEnvio.tipo === 'enviando' || estadoEnvio.tipo === 'incierto'
   const esUltimoPaso = paso === 'COBRO'
   // puedeAvanzar[paso]: el paso actual esta completo. En el ultimo, eso es poder confirmar
   const puedeContinuar = validacion.puedeAvanzar[paso]
@@ -23,7 +24,7 @@ export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estado
   const mostrarSaldo = (paso === 'ARTICULOS' || paso === 'COBRO') && resumenSaldo.situacion !== 'INCOMPLETO'
 
   const etiquetaPrincipal = esUltimoPaso
-    ? enviando
+    ? estadoEnvio.tipo === 'enviando'
       ? 'Registrando…'
       : 'Confirmar cambio'
     : paso === 'VENTA_ORIGINAL' && borrador.ventaVinculada === null

@@ -12,9 +12,12 @@ export function describirPesoKg(pesoKg: number) {
   return `${formateadorCantidad.format(pesoKg)} kg`
 }
 
-/** Lo devuelto en una linea: "2 u" o, con bolsa abierta, "Bolsa abierta · 14,8 kg". */
-export function describirDevolucion(cantidad: number, formatoVenta: FormatoVenta, esBolsaAbierta: boolean) {
-  return esBolsaAbierta
-    ? `Bolsa abierta · ${describirPesoKg(cantidad)}`
+/**
+ * Lo devuelto en una linea: "2 u" o, con bolsa abierta (los kilos que entraron al granel), "Bolsa abierta · 14,8 kg".
+ * @param pesoDevueltoKg Kilos devueltos; null si no fue bolsa abierta.
+ */
+export function describirDevolucion(cantidad: number, formatoVenta: FormatoVenta, pesoDevueltoKg: number | null) {
+  return pesoDevueltoKg !== null
+    ? `Bolsa abierta · ${describirPesoKg(pesoDevueltoKg)}`
     : describirCantidadArticulo(cantidad, formatoVenta)
 }

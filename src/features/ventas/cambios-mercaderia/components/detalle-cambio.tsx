@@ -24,7 +24,7 @@ import type {
 } from '@/features/ventas/cambios-mercaderia/types/cambio'
 import {
   describirCantidadArticulo,
-  describirPesoKg,
+  describirDevolucion,
 } from '@/features/ventas/cambios-mercaderia/utils/describir-articulo-cambio'
 import { describirMotivoCambio } from '@/features/ventas/cambios-mercaderia/utils/describir-motivo-cambio'
 import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
@@ -151,11 +151,9 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
                       {cambio.anulacion && (
                         <dl className="mt-1 grid gap-1.5 text-sm text-texto-principal">
                           <div>
-                            <dt className="text-texto-suave">
-                              Motivo{cambio.anulacion.accion === 'EDITAR' ? ' (anulado por una edición)' : ''}
-                            </dt>
+                            <dt className="text-texto-suave">Motivo</dt>
                             <dd className="font-medium wrap-break-word">
-                              {describirMotivoCambio(cambio.anulacion.codigoMotivo, cambio.anulacion.detalleMotivo)}
+                              {describirMotivoCambio(cambio.anulacion.motivo)}
                             </dd>
                           </div>
                           <div>
@@ -194,15 +192,14 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
                 <BloqueArticulo
                   titulo="Artículo devuelto"
                   articulo={devuelto}
-                  cantidadTexto={
-                    devuelto.esBolsaAbierta
-                      ? describirPesoKg(devuelto.cantidad)
-                      : describirCantidadArticulo(devuelto.cantidad, devuelto.formatoVenta)
-                  }
-                  precioTexto={`${formatearMoneda(devuelto.precioUnitario)}${devuelto.esBolsaAbierta ? '/kg' : ''}`}
+                  cantidadTexto={describirDevolucion(devuelto.cantidad, devuelto.formatoVenta, devuelto.pesoDevueltoKg)}
+                  precioTexto={`${formatearMoneda(devuelto.precioUnitario)}${devuelto.esBolsaAbierta ? ' la bolsa' : ''}`}
                   notas={
                     devuelto.esBolsaAbierta
-                      ? [`Bolsa abierta: el contenido ingresó al stock a granel de «${devuelto.nombreProductoStockIngresado}».`]
+                      ? [
+                          `Bolsa abierta: el contenido ingresó al stock a granel de «${devuelto.nombreProductoStockIngresado}».`,
+                          'Se acreditó la fracción devuelta del precio de la bolsa.',
+                        ]
                       : []
                   }
                 />
@@ -267,7 +264,7 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
                     Motivo del cambio
                   </h2>
                   <p className="text-sm wrap-break-word">
-                    {describirMotivoCambio(cambio.motivo.codigoMotivo, cambio.motivo.detalleMotivo)}
+                    {describirMotivoCambio(cambio.motivoCambio)}
                   </p>
                 </section>
               </DialogBody>
