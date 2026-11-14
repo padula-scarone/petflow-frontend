@@ -33,3 +33,23 @@ export const TIEMPO_LIMITE_ENVIO_SEGUNDOS = 30
 
 /** Segundos a partir de los cuales el envio se considera lento y se le pide al vendedor que no toque nada. */
 export const SEGUNDOS_ENVIO_LENTO = 10
+
+/** Texto que se muestra cuando una venta anterior a los comprobantes no tiene numero (el back lo manda null). */
+export const NUMERO_COMPROBANTE_AUSENTE = 'Sin número'
+
+// --- HISTORIAL ---
+
+/** Ventas por pagina del historial: el valor por defecto del back (maximo 100). */
+export const CANTIDAD_POR_PAGINA_HISTORIAL = 20
+
+/** Largo maximo de la busqueda por cliente; mas que eso el back responde 400. */
+export const TEXTO_CLIENTE_LONGITUD_MAXIMA = 100
+
+/** Largo maximo de la busqueda por numero de comprobante; mas que eso el back responde 400. */
+export const NUMERO_COMPROBANTE_LONGITUD_MAXIMA = 30
+
+/**
+ * Margen, en milisegundos, con el que se compara la hora de una anulacion o un cobro contra el momento del
+ * envio al verificar un resultado incierto: absorbe el error al estimar el reloj del servidor.
+ */
+export const MARGEN_VERIFICACION_MILISEGUNDOS = 60_000

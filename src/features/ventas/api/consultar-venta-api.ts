@@ -8,6 +8,7 @@ import {
   esOrigenApi,
 } from '@/features/ventas/api/conversores-enums'
 import type {
+  AnulacionApi,
   ConsultarVentaResponse,
   ItemDetalleApi,
   PagoDetalleApi,
@@ -33,7 +34,8 @@ function esItemDetalleApi(valor: unknown): valor is ItemDetalleApi {
     esFormatoVentaApi(valor.formatoVenta) &&
     typeof valor.cantidad === 'string' &&
     typeof valor.precioUnitario === 'string' &&
-    typeof valor.subtotal === 'string'
+    typeof valor.subtotal === 'string' &&
+    typeof valor.cantidadYaDevuelta === 'string'
   )
 }
 
@@ -50,12 +52,24 @@ function esPagoDetalleApi(valor: unknown): valor is PagoDetalleApi {
   )
 }
 
+function esAnulacionApi(valor: unknown): valor is AnulacionApi {
+  return (
+    esObjeto(valor) &&
+    typeof valor.fechaHora === 'string' &&
+    typeof valor.motivo === 'string' &&
+    esObjeto(valor.usuario) &&
+    typeof valor.usuario.idUsuario === 'number' &&
+    typeof valor.usuario.nombre === 'string'
+  )
+}
+
 function esVentaDetalleApi(valor: unknown): valor is VentaDetalleApi {
   return (
     esObjeto(valor) &&
     typeof valor.idVenta === 'number' &&
     esTextoOpcional(valor.numeroComprobante) &&
     typeof valor.fechaHora === 'string' &&
+    esTextoOpcional(valor.fechaHoraPago) &&
     (esEstadoVentaApi(valor.estado) || valor.estado === 'ANULADA') &&
     esTextoOpcional(valor.fechaHoraLimiteModificacion) &&
     esOrigenApi(valor.origen) &&
@@ -71,7 +85,8 @@ function esVentaDetalleApi(valor: unknown): valor is VentaDetalleApi {
     Array.isArray(valor.items) &&
     valor.items.every(esItemDetalleApi) &&
     Array.isArray(valor.pagos) &&
-    valor.pagos.every(esPagoDetalleApi)
+    valor.pagos.every(esPagoDetalleApi) &&
+    (valor.anulacion === null || esAnulacionApi(valor.anulacion))
   )
 }
 

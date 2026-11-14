@@ -1,14 +1,20 @@
 import { DialogoCobroFiado } from '@/features/ventas/components/dialogo-cobro-fiado'
-import { useLiquidarFiadoEjemplo } from '@/features/ventas/hooks/use-liquidar-fiado-ejemplo'
-import type { FilaHistorial, LiquidarFiadoServidor } from '@/features/ventas/types/historial'
+import { useLiquidarFiado } from '@/features/ventas/hooks/use-liquidar-fiado'
+import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
+import type { MedioPago } from '@/features/ventas/types/cobro'
+import type { FilaHistorial } from '@/features/ventas/types/historial'
 
 /** Props del contenedor del cobro de un fiado. */
 interface ContenedorCobroFiadoProps {
   fila: FilaHistorial
-  liquidarFiado: LiquidarFiadoServidor
+  medios: MedioPago[]
+  estadoMediosPago: EstadoCargaRecurso
+  onReintentarMediosPago: () => void
   onCerrar: () => void
   onVerRecibo: () => void
   onActualizarListado: () => void
+  /** El cobro se aplico o la venta cambio en el servidor: hay que volver a pedir la lista. */
+  alCambiarVenta: () => void
 }
 
 /**
@@ -17,12 +23,21 @@ interface ContenedorCobroFiadoProps {
  */
 export function ContenedorCobroFiado({
   fila,
-  liquidarFiado,
+  medios,
+  estadoMediosPago,
+  onReintentarMediosPago,
   onCerrar,
   onVerRecibo,
   onActualizarListado,
+  alCambiarVenta,
 }: ContenedorCobroFiadoProps) {
-  const cobroFiado = useLiquidarFiadoEjemplo({ fila, liquidarFiado })
+  const cobroFiado = useLiquidarFiado({
+    fila,
+    medios,
+    estadoMediosPago,
+    onReintentarMediosPago,
+    alCambiarVenta,
+  })
 
   return (
     <DialogoCobroFiado

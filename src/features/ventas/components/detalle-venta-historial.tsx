@@ -32,7 +32,6 @@ import {
 } from '@/features/ventas/utils/construir-enlaces-comprobante'
 import { convertirVentaAComprobante } from '@/features/ventas/utils/convertir-venta-a-comprobante'
 import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
-import { describirMotivo } from '@/features/ventas/utils/motivos-venta'
 
 /** Props de la ventana con el detalle de una venta. */
 interface DetalleVentaHistorialProps {
@@ -125,7 +124,7 @@ export function DetalleVentaHistorial({
                         <dl className="mt-1 grid gap-1.5 text-sm text-texto-principal">
                           <div>
                             <dt className="text-texto-suave">Motivo</dt>
-                            <dd className="font-medium wrap-break-word">{describirMotivo(venta.anulacion)}</dd>
+                            <dd className="font-medium wrap-break-word">{venta.anulacion.motivo}</dd>
                           </div>
                           <div>
                             <dt className="text-texto-suave">Anulada por</dt>

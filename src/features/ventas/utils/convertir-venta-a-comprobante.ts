@@ -11,8 +11,8 @@ function convertirPago(pago: PagoVentaDetalle): PagoComprobante {
     montoAjuste: pago.montoFinal - pago.montoBase,
     montoFinal: pago.montoFinal,
   }
-  // El back solo informa recibido y vuelto en efectivo
-  return pago.montoRecibido !== null && pago.vuelto !== null
+  // El back solo informa recibido y vuelto en efectivo; sin "Paga con" ambos quedan en null
+  return pago.admiteVuelto
     ? { ...datosComunes, admiteVuelto: true, montoRecibido: pago.montoRecibido, vuelto: pago.vuelto }
     : { ...datosComunes, admiteVuelto: false }
 }

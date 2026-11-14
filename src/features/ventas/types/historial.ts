@@ -1,3 +1,4 @@
+import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import type { PropiedadesCobro } from '@/features/ventas/types/cobro'
 import type { Comprobante } from '@/features/ventas/types/comprobante'
 import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
@@ -62,9 +63,8 @@ export interface VentaHistorial {
   origen: OrigenVenta
   modalidadEntrega: ModalidadEntrega
   /**
-   * Pendiente de pedir al back. Hasta cuando se puede editar o anular, en ISO 8601:
-   * 15 minutos desde el pago si es un fiado saldado, o desde la venta en el resto.
-   * null si la venta esta anulada.
+   * Hasta cuando se puede editar o anular, en ISO 8601: 15 minutos desde el pago si es un fiado saldado,
+   * o desde la venta en el resto. null si la venta esta anulada. Lo calcula el back.
    */
   fechaHoraLimiteModificacion: string | null
 }
@@ -152,6 +152,8 @@ export interface PagoVentaDetalle {
   /** Negativo = descuento, positivo = recargo. */
   porcentajeAplicado: number
   montoFinal: number
+  /** Si el medio es efectivo (cruzado con los medios cargados). Solo entonces hay recibido y vuelto. */
+  admiteVuelto: boolean
   /** Solo efectivo. */
   montoRecibido: number | null
   vuelto: number | null
@@ -163,11 +165,14 @@ export interface VendedorVenta {
   nombre: string
 }
 
-/** Quien anulo la venta, cuando y por que. Usuario y fecha y hora los asigna el servidor. */
+/**
+ * Quien anulo la venta, cuando y por que. Usuario y fecha y hora los asigna el servidor.
+ * El back no guarda codigos de motivo: guarda el texto que armo el front (ver construirTextoMotivo).
+ */
 export interface DatosAnulacion {
-  motivo: CodigoMotivo
-  /** Solo con motivo OTRO. */
-  detalleMotivo: string | null
+  /** Texto libre de 1 a 200 caracteres, tal como se guardo. */
+  motivo: string
+  idUsuario: number
   nombreUsuario: string
   /** ISO 8601. */
   fechaHora: string
@@ -175,7 +180,7 @@ export interface DatosAnulacion {
 
 /** Venta completa con sus items y pagos. */
 export interface VentaDetalle extends VentaHistorial {
-  /** null mientras la venta no esta anulada. Pendiente de pedir al back. */
+  /** null mientras la venta no esta anulada. */
   anulacion: DatosAnulacion | null
   /** null mientras el fiado no se cobro. */
   fechaHoraPago: string | null
@@ -196,11 +201,19 @@ export type EstadoDetalleVenta =
 
 // --- ACCIONES ---
 
-/** Rechazo del servidor a una accion sobre una venta. */
+/** Por que fallo una accion sobre una venta (anular, editar o cobrar un fiado). */
 export interface ErrorAccionVenta {
-  /** 403: ventana vencida. 404: la venta no existe. 409: conflicto de estado o sin caja abierta. */
-  estadoHttp: 403 | 404 | 409
+  /**
+   * 400: dato invalido. 403: ventana vencida (o sin permiso). 404: la venta no existe. 409: conflicto de
+   * estado o sin caja abierta. null: no hubo respuesta del servidor y no se pudo confirmar el resultado.
+   */
+  estadoHttp: 400 | 403 | 404 | 409 | null
+  /** Texto para la vista; nunca el mensaje tecnico del back. */
   mensaje: string
+  /** true si no se sabe si la accion se aplico: reintentar es seguro, el back responde 409 a la repeticion. */
+  incierto: boolean
+  /** false cuando repetir la accion no tiene sentido (la venta no existe o ya la resolvio otra persona). */
+  reintentable: boolean
 }
 
 /** Confirmacion abierta de editar o anular. */
@@ -222,31 +235,14 @@ export interface AvisoHistorial {
   mensaje: string
 }
 
-/** Un pago del body de POST /api/ventas/:idVenta/cobro. */
-export interface PagoCobroFiado {
-  idMedioPago: number
-  /** Parte del importe adeudado que cubre este medio, antes de su ajuste. */
-  monto: number
-  /** Solo efectivo. */
-  montoRecibido?: number
-}
-
-/** Respuesta del cobro de un fiado. */
-export type ResultadoCobroFiado =
-  | { tipo: 'exito'; venta: VentaDetalle }
-  | { tipo: 'error'; error: ErrorAccionVenta }
-
-/** Funcion que simula el endpoint de cobro de un fiado. */
-export type LiquidarFiadoServidor = (
-  idVenta: number,
-  pagos: PagoCobroFiado[],
-) => Promise<ResultadoCobroFiado>
-
-/** Recibo que se ofrece despues de cobrar un fiado. */
+/**
+ * Recibo que se ofrece despues de cobrar un fiado. El comprobante sale de GET /api/ventas/:idVenta: si ese
+ * pedido falla el cobro igual se hizo, y quedan en null el comprobante y los enlaces ("Ver recibo" reintenta).
+ */
 export interface ReciboFiado {
-  comprobante: Comprobante
-  enlaceWhatsApp: string
-  enlaceMail: string
+  comprobante: Comprobante | null
+  enlaceWhatsApp: string | null
+  enlaceMail: string | null
   /** Suma de los vueltos en efectivo; null si no hubo. */
   vuelto: number | null
   /** Total realmente cobrado, con los recargos y descuentos del dia. */
@@ -308,8 +304,14 @@ export interface HistorialVentasProps {
 /** Props del dialogo de cobro de un fiado. */
 export interface CobroFiadoProps {
   fila: FilaHistorial
-  /** Igual a fila.montoTotal: en un fiado ya es subtotal menos descuento manual. */
+  /** Carga del detalle de la venta, de donde sale el importe adeudado. */
+  estadoImporte: EstadoCargaRecurso
+  onReintentarImporte: () => void
+  /** Subtotal bruto menos descuento manual del detalle. 0 mientras no cargo. */
   importeAdeudado: number
+  /** Carga de los medios de pago activos: sin ellos no hay con que cobrar. */
+  estadoMediosPago: EstadoCargaRecurso
+  onReintentarMediosPago: () => void
   /** Cobro unico o mixto reutilizado de Registrar Venta. */
   propiedadesCobro: PropiedadesCobro
   enviando: boolean

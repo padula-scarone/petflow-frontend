@@ -4,6 +4,8 @@ import {
   MONTO_RECIBIDO_MAXIMO_CENTAVOS,
   MOTIVO_DESCUENTO_LONGITUD_MAXIMA,
 } from '@/features/ventas/config/reglas-venta'
+import { formatearMoneda } from '@/lib/formatear-moneda'
+import type { BorradorRepoblado } from '@/features/ventas/types/borrador-repoblado'
 import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import type {
   DatosDescuentoManual,
@@ -48,6 +50,91 @@ interface OpcionesCobroVenta {
   estadoMediosPago: EstadoCargaRecurso
   onReintentarMediosPago: () => void
   estadoEnvio: EstadoEnvioVenta
+  /** Venta editada cuyo descuento, medios de pago y cliente se vuelven a cargar; null en una venta nueva. */
+  borrador?: BorradorRepoblado | null
+}
+
+/** Cobro de una venta editada, traducido a los estados del hook. */
+interface CobroRepoblado {
+  formaPago: FormaPago
+  idMedioSeleccionado: number | null
+  pagaConCentavos: number | null
+  entradasMixtas: EntradaLineaMixta[]
+  descuento: DatosDescuentoManual | null
+  avisos: string[]
+}
+
+/**
+ * Traduce el descuento y los pagos de la venta anulada al cobro de hoy. Lo que ya no sirve se omite y se avisa
+ * sin bloquear el resto: un medio dado de baja, un descuento mayor al nuevo subtotal. Los montos de un pago
+ * mixto se cargan tal cual y, si ya no suman el total, la pantalla muestra lo que falta o sobra.
+ */
+function repoblarCobro(
+  borrador: BorradorRepoblado,
+  subtotalCentavos: number,
+  medios: MedioPago[],
+): CobroRepoblado {
+  const avisos: string[] = []
+
+  const montoDescuentoCentavos =
+    borrador.descuentoManual === null ? 0 : convertirPesosACentavos(borrador.descuentoManual.monto)
+  const descuentoCabe = borrador.descuentoManual !== null && montoDescuentoCentavos <= subtotalCentavos
+  if (borrador.descuentoManual !== null && !descuentoCabe) {
+    avisos.push(
+      `El descuento manual de ${formatearMoneda(borrador.descuentoManual.monto)} supera el subtotal actual y no se cargó.`,
+    )
+  }
+  const descuento: DatosDescuentoManual | null =
+    borrador.descuentoManual !== null && descuentoCabe
+      ? { motivo: borrador.descuentoManual.motivo, tipo: 'monto', valor: borrador.descuentoManual.monto }
+      : null
+
+  // Un fiado se vuelve a cargar como fiado; el cliente ya viene en el estado inicial
+  if (borrador.pagos.length === 0) {
+    return {
+      formaPago: borrador.clienteReferencia !== null ? 'fiado' : 'unico',
+      idMedioSeleccionado: null,
+      pagaConCentavos: null,
+      entradasMixtas: [],
+      descuento,
+      avisos,
+    }
+  }
+
+  const pagosDisponibles = borrador.pagos.filter((pago) =>
+    medios.some((medio) => medio.idMedioPago === pago.idMedioPago),
+  )
+  for (const pago of borrador.pagos) {
+    if (!pagosDisponibles.includes(pago)) {
+      avisos.push(`El medio de pago ${pago.nombreMedioPago} ya no está disponible y no se cargó.`)
+    }
+  }
+  const aCentavosRecibido = (pago: BorradorRepoblado['pagos'][number]) =>
+    pago.montoRecibido === null ? null : convertirPesosACentavos(pago.montoRecibido)
+
+  if (pagosDisponibles.length >= 2) {
+    return {
+      formaPago: 'mixto',
+      idMedioSeleccionado: null,
+      pagaConCentavos: null,
+      entradasMixtas: pagosDisponibles.map((pago) => ({
+        idMedioPago: pago.idMedioPago,
+        montoACubrirCentavos: convertirPesosACentavos(pago.montoBase),
+        pagaConCentavos: aCentavosRecibido(pago),
+      })),
+      descuento,
+      avisos,
+    }
+  }
+  const [pagoUnico] = pagosDisponibles
+  return {
+    formaPago: 'unico',
+    idMedioSeleccionado: pagoUnico?.idMedioPago ?? null,
+    pagaConCentavos: pagoUnico === undefined ? null : aCentavosRecibido(pagoUnico),
+    entradasMixtas: [],
+    descuento,
+    avisos,
+  }
 }
 
 function calcularDescuentoCentavos(datos: DatosDescuentoManual, subtotalCentavos: number) {
@@ -65,10 +152,14 @@ export function useCobroVenta({
   estadoMediosPago,
   onReintentarMediosPago,
   estadoEnvio,
+  borrador = null,
 }: OpcionesCobroVenta): {
   propiedadesCobro: PropiedadesCobroRegistrarVenta
   /** Lo que el cobro aporta a la solicitud de alta; ya validado por `puedeConfirmar`. */
   datosCobro: DatosCobroSolicitud
+  /** Lo que no se pudo volver a cargar de la venta editada. */
+  avisosRepoblado: string[]
+  descartarAvisosRepoblado: () => void
 } {
   // --- ESTADOS ---
   const [formaPago, setFormaPago] = useState<FormaPago>('unico')
@@ -78,7 +169,27 @@ export function useCobroVenta({
   const [datosDescuento, setDatosDescuento] = useState<DatosDescuentoManual | null>(null)
   const [formularioDescuentoAbierto, setFormularioDescuentoAbierto] = useState(false)
   const [errorFormularioDescuento, setErrorFormularioDescuento] = useState<string>()
-  const [nombreClienteFiado, setNombreClienteFiado] = useState('')
+  const [nombreClienteFiado, setNombreClienteFiado] = useState(borrador?.clienteReferencia ?? '')
+  // Venta editada que espera al subtotal y a los medios para volver a cargarse; null si no hay nada pendiente
+  const [borradorPendiente, setBorradorPendiente] = useState(borrador)
+  const [avisosRepoblado, setAvisosRepoblado] = useState<string[]>([])
+
+  // Se repuebla una sola vez: con el subtotal ya calculado y, si hubo pagos, con los medios cargados.
+  // Se ajusta durante el render, sin efecto aparte
+  if (
+    borradorPendiente !== null &&
+    subtotalCentavos > 0 &&
+    (borradorPendiente.pagos.length === 0 || estadoMediosPago.fase === 'listo')
+  ) {
+    const repoblado = repoblarCobro(borradorPendiente, subtotalCentavos, medios)
+    setBorradorPendiente(null)
+    setFormaPago(repoblado.formaPago)
+    setIdMedioSeleccionado(repoblado.idMedioSeleccionado)
+    setPagaConCentavos(repoblado.pagaConCentavos)
+    setEntradasMixtas(repoblado.entradasMixtas)
+    setDatosDescuento(repoblado.descuento)
+    setAvisosRepoblado(repoblado.avisos)
+  }
 
   // --- CALCULOS ---
   const buscarMedio = (idMedioPago: number | null) =>
@@ -367,5 +478,7 @@ export function useCobroVenta({
       estadoEnvio,
     },
     datosCobro,
+    avisosRepoblado,
+    descartarAvisosRepoblado: () => setAvisosRepoblado([]),
   }
 }

@@ -13,9 +13,8 @@ import type {
 } from '@/features/ventas/types/historial'
 
 // --- DATOS DE EJEMPLO ---
-// Temporal: reemplaza al back hasta la Integracion. Las fechas se calculan contra "ahora" para que
-// el contador de 15 minutos se pueda ver correr. Las ventas 1038 a 1047 tienen un comportamiento
-// pensado para probar cada caso (ver la tabla en use-historial-ventas-ejemplo.ts).
+// Temporal: lo usa Cambios posventa hasta que se integre con el back (el Historial ya usa el back).
+// Las fechas se calculan contra "ahora" para que el contador de 15 minutos se pueda ver correr.
 
 /** Producto del catalogo de ejemplo. */
 export interface ProductoEjemplo extends ProductoFiltro {
@@ -57,7 +56,7 @@ const MILISEGUNDOS_POR_MINUTO = 60 * 1000
  * Arma un pago como lo registra el back: aplica el ajuste del medio sobre la parte que cubre.
  * En efectivo registra el monto recibido (si no se informa, se redondea al proximo mil) y el vuelto.
  */
-export function crearPagoEjemplo(
+function crearPagoEjemplo(
   idMedioPago: number,
   montoBase: number,
   montoRecibidoInformado?: number,
@@ -82,6 +81,7 @@ export function crearPagoEjemplo(
     montoBase,
     porcentajeAplicado,
     montoFinal,
+    admiteVuelto: medio.admiteVuelto,
     montoRecibido,
     vuelto: montoRecibido === null ? null : Math.max(montoRecibido - montoFinal, 0),
   }
@@ -122,11 +122,12 @@ interface DatosVentaEjemplo {
 
 /** Anulacion de ejemplo: el motivo rota segun la venta, y a veces es "Otro" con su detalle. */
 function crearAnulacionEjemplo(idVenta: number, fechaHoraVenta: Date): DatosAnulacion {
-  const { codigo } = MOTIVOS_ANULACION[idVenta % MOTIVOS_ANULACION.length]
+  const { codigo, etiqueta } = MOTIVOS_ANULACION[idVenta % MOTIVOS_ANULACION.length]
+  const vendedor = VENDEDORES_EJEMPLO[idVenta % VENDEDORES_EJEMPLO.length]
   return {
-    motivo: codigo,
-    detalleMotivo: codigo === 'OTRO' ? 'El cliente se fue sin avisar y dejó el pedido armado' : null,
-    nombreUsuario: VENDEDORES_EJEMPLO[idVenta % VENDEDORES_EJEMPLO.length].nombre,
+    motivo: codigo === 'OTRO' ? 'El cliente se fue sin avisar y dejó el pedido armado' : etiqueta,
+    idUsuario: vendedor.idUsuario,
+    nombreUsuario: vendedor.nombre,
     // Se anula a los pocos minutos de la venta, dentro de la ventana de 15
     fechaHora: new Date(fechaHoraVenta.getTime() + 5 * MILISEGUNDOS_POR_MINUTO).toISOString(),
   }

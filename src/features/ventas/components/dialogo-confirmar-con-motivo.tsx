@@ -18,7 +18,8 @@ import {
 
 /** Rechazo del servidor que el dialogo sabe mostrar. */
 export interface ErrorDialogoMotivo {
-  estadoHttp: number
+  /** null: no hubo respuesta del servidor (se busca el titulo bajo la clave 0). */
+  estadoHttp: number | null
   mensaje: string
 }
 
@@ -39,7 +40,7 @@ interface DialogoConfirmarConMotivoProps {
   motivoValido: boolean
   enviando: boolean
   error: ErrorDialogoMotivo | null
-  /** Titulo del aviso segun el codigo HTTP del rechazo. */
+  /** Titulo del aviso segun el codigo HTTP del rechazo; la clave 0 es la de "sin respuesta del servidor". */
   titulosError: Record<number, string>
   onConfirmar: () => void
   onCancelar: () => void
@@ -99,7 +100,7 @@ export function DialogoConfirmarConMotivo({
         {error && (
           <Alert variant="destructive">
             <TriangleAlert aria-hidden="true" />
-            <AlertTitle>{titulosError[error.estadoHttp] ?? 'No se pudo completar la acción'}</AlertTitle>
+            <AlertTitle>{titulosError[error.estadoHttp ?? 0] ?? 'No se pudo completar la acción'}</AlertTitle>
             <AlertDescription>
               <p>{error.mensaje}</p>
             </AlertDescription>
