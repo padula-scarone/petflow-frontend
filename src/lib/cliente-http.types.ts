@@ -17,6 +17,11 @@ export interface ErrorApi {
   estado: number | null
   /** `mensaje` del back cuando la respuesta fue JSON; null si no. */
   mensaje: string | null
+  /**
+   * `codigo` del back cuando la respuesta fue JSON y lo trae (hoy solo los errores de Cambios); null si no.
+   * Un 401 o un 403 de autenticacion no lo traen.
+   */
+  codigo: string | null
   errores: ErrorCampoApi[]
 }
 

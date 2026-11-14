@@ -89,6 +89,7 @@ export function crearClienteHttp(configuracion: ConfiguracionClienteHttp): Clien
           tipo: 'RESPUESTA_NO_JSON',
           estado: respuesta.status,
           mensaje: null,
+          codigo: null,
           errores: [],
         })
       }
@@ -109,6 +110,10 @@ export function crearClienteHttp(configuracion: ConfiguracionClienteHttp): Clien
         tipo: 'RESPUESTA_DEL_SERVIDOR',
         estado: respuesta.status,
         mensaje,
+        codigo:
+          esObjeto(interpretado.cuerpo) && typeof interpretado.cuerpo.codigo === 'string'
+            ? interpretado.cuerpo.codigo
+            : null,
         errores: leerErroresCampos(interpretado.cuerpo),
       })
     } catch (causa) {
@@ -118,6 +123,7 @@ export function crearClienteHttp(configuracion: ConfiguracionClienteHttp): Clien
         tipo: controlador.signal.aborted ? 'TIEMPO_AGOTADO' : 'SIN_RED',
         estado: null,
         mensaje: null,
+        codigo: null,
         errores: [],
       })
     } finally {

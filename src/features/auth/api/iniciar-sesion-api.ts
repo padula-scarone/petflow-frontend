@@ -36,7 +36,7 @@ export async function iniciarSesionApi(
   if (!esIniciarSesionResponse(resultado.datos)) {
     return {
       exitoso: false,
-      error: { tipo: 'RESPUESTA_NO_JSON', estado: 200, mensaje: null, errores: [] },
+      error: { tipo: 'RESPUESTA_NO_JSON', estado: 200, mensaje: null, codigo: null, errores: [] },
     }
   }
   return { exitoso: true, datos: resultado.datos }
