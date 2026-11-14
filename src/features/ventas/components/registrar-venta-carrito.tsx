@@ -1,4 +1,5 @@
-import { HandCoins } from 'lucide-react'
+import { HandCoins, Info } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { formatearMoneda } from '@/lib/formatear-moneda'
@@ -22,6 +23,8 @@ export function RegistrarVentaCarrito({
   onDisminuirCantidad,
   onCambiarPesoGranel,
   onEliminarArticulo,
+  avisosRepoblado,
+  onCerrarAvisosRepoblado,
   onContinuarACobro,
 }: RegistrarVentaCarritoProps) {
   const { canalVenta, tipoEntrega, articulos, subtotal } = estadoVenta
@@ -38,6 +41,29 @@ export function RegistrarVentaCarrito({
           onCambiarEntrega={onCambiarEntrega}
         />
       </header>
+
+      {/* --- AVISOS DE UNA VENTA EDITADA: LO QUE NO SE PUDO VOLVER A CARGAR --- */}
+      {avisosRepoblado.length > 0 && (
+        <Alert role="status">
+          <Info aria-hidden="true" />
+          <AlertTitle>Revisá la venta antes de cobrar</AlertTitle>
+          <AlertDescription>
+            <ul className="list-disc pl-4">
+              {avisosRepoblado.map((aviso) => (
+                <li key={aviso}>{aviso}</li>
+              ))}
+            </ul>
+            <Button
+              type="button"
+              variant="outline"
+              className="mt-2 h-11 bg-fondo-tarjeta px-6 text-texto-principal"
+              onClick={onCerrarAvisosRepoblado}
+            >
+              Entendido
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
 
       {/* --- BUSCADOR --- */}
       {/* Sin catalogo no hay nada que buscar: se muestra la carga o el error con reintento */}

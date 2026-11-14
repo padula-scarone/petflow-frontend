@@ -5,6 +5,7 @@ import {
   CANTIDAD_MINIMA_GRANEL_GRAMOS,
   PASO_GRANEL_GRAMOS,
 } from '@/features/ventas/config/reglas-venta'
+import type { BorradorRepoblado } from '@/features/ventas/types/borrador-repoblado'
 import type { PropiedadesCarrito } from '@/features/ventas/types/contexto-registrar-venta'
 import type {
   ArticuloCarrito,
@@ -17,6 +18,7 @@ import {
   convertirCentavosAPesos,
   convertirPesosACentavos,
 } from '@/features/ventas/utils/calcular-centavos'
+import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
 import { normalizarTextoBusqueda } from '@/features/ventas/utils/normalizar-texto-busqueda'
 
 function recalcularArticulo(articulo: ArticuloCarrito, cantidad: number): ArticuloCarrito {
@@ -49,20 +51,67 @@ function crearArticulo(producto: ProductoCatalogo): ArticuloCarrito {
   )
 }
 
-/** Props del carrito que no dependen de la carga del catalogo; el orquestador agrega las que si. */
-export type PropiedadesCarritoBase = Omit<PropiedadesCarrito, 'estadoCatalogo' | 'onReintentarCatalogo'>
+/** Props del carrito que no dependen de la carga del catalogo ni del repoblado; el orquestador agrega las que si. */
+export type PropiedadesCarritoBase = Omit<
+  PropiedadesCarrito,
+  'estadoCatalogo' | 'onReintentarCatalogo' | 'avisosRepoblado' | 'onCerrarAvisosRepoblado'
+>
+
+/**
+ * Vuelve a armar el carrito de una venta editada con el catalogo vigente: los precios son los de hoy, no los de la
+ * venta anulada. Un producto que ya no esta activo no se agrega; uno sin stock suficiente se agrega igual (el
+ * carrito ya alerta el faltante) y se avisa. Un aviso no bloquea al resto.
+ */
+function repoblarArticulos(items: BorradorRepoblado['items'], catalogo: ProductoCatalogo[]) {
+  const articulos: ArticuloCarrito[] = []
+  const avisos: string[] = []
+  for (const item of items) {
+    const producto = catalogo.find((candidato) => candidato.idProducto === item.idProducto)
+    if (producto === undefined) {
+      avisos.push(`${item.nombreProducto} ya no está disponible y no se agregó al carrito.`)
+      continue
+    }
+    // Un producto a granel admite hasta 3 decimales; nunca menos que el peso minimo
+    const cantidad =
+      producto.formato === 'granel'
+        ? Math.max(item.cantidad, CANTIDAD_MINIMA_GRANEL_GRAMOS / GRAMOS_POR_KILO)
+        : item.cantidad
+    articulos.push(recalcularArticulo(crearArticulo(producto), cantidad))
+    if (cantidad > producto.stockDisponible) {
+      avisos.push(
+        `Del producto ${producto.nombreProducto} solo hay ${formatearCantidad(producto.stockDisponible, producto.formato)} en stock.`,
+      )
+    }
+  }
+  return { articulos, avisos }
+}
 
 /**
  * Carrito de la venta en curso: canal, entrega, buscador y articulos. Busca en el catalogo ya cargado,
  * sin pedir nada al back. Los articulos toman precio y stock del catalogo vigente, asi que una recarga
  * del catalogo (por ejemplo tras un rechazo por stock) se refleja en el carrito.
  */
-export function useCarritoVenta(catalogo: ProductoCatalogo[]) {
+export function useCarritoVenta(
+  catalogo: ProductoCatalogo[],
+  catalogoListo: boolean,
+  borrador: BorradorRepoblado | null,
+) {
   // --- ESTADOS ---
-  const [canalVenta, setCanalVenta] = useState<CanalVenta>('mostrador')
-  const [tipoEntrega, setTipoEntrega] = useState<TipoEntrega>('retiro')
+  const [canalVenta, setCanalVenta] = useState<CanalVenta>(borrador?.canalVenta ?? 'mostrador')
+  const [tipoEntrega, setTipoEntrega] = useState<TipoEntrega>(borrador?.tipoEntrega ?? 'retiro')
   const [textoBusqueda, setTextoBusqueda] = useState('')
   const [articulosAgregados, setArticulosAgregados] = useState<ArticuloCarrito[]>([])
+  // Items de la venta editada que esperan al catalogo para tomar precio y stock vigentes; null si no hay nada pendiente
+  const [itemsPendientes, setItemsPendientes] = useState(borrador?.items ?? null)
+  const [avisosRepoblado, setAvisosRepoblado] = useState<string[]>([])
+
+  // Cuando llega el catalogo se repuebla una sola vez. Se ajusta durante el render, sin efecto aparte
+  if (itemsPendientes !== null && catalogoListo) {
+    const repoblado = repoblarArticulos(itemsPendientes, catalogo)
+    setItemsPendientes(null)
+    setArticulosAgregados(repoblado.articulos)
+    setAvisosRepoblado(repoblado.avisos)
+  }
 
   // --- CALCULOS ---
   const productosPorId = new Map(catalogo.map((producto) => [producto.idProducto, producto]))
@@ -170,5 +219,13 @@ export function useCarritoVenta(catalogo: ProductoCatalogo[]) {
       ),
   }
 
-  return { canalVenta, tipoEntrega, articulos, subtotalCentavos, propiedadesCarrito }
+  return {
+    canalVenta,
+    tipoEntrega,
+    articulos,
+    subtotalCentavos,
+    propiedadesCarrito,
+    avisosRepoblado,
+    descartarAvisosRepoblado: () => setAvisosRepoblado([]),
+  }
 }
