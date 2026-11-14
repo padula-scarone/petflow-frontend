@@ -20,6 +20,7 @@ export function RegistrarVentaCarrito({
   onCambiarEntrega,
   onAumentarCantidad,
   onDisminuirCantidad,
+  onCambiarPesoGranel,
   onEliminarArticulo,
   onContinuarACobro,
 }: RegistrarVentaCarritoProps) {
@@ -72,6 +73,7 @@ export function RegistrarVentaCarrito({
                   articulo={articulo}
                   onAumentarCantidad={onAumentarCantidad}
                   onDisminuirCantidad={onDisminuirCantidad}
+                  onCambiarPesoGranel={onCambiarPesoGranel}
                   onEliminarArticulo={onEliminarArticulo}
                 />
               </li>

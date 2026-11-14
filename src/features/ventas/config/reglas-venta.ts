@@ -13,6 +13,15 @@ export const MONTO_RECIBIDO_MAXIMO_CENTAVOS = 999_999_999_999
 /** Texto de respaldo para un descuento sin motivo guardado (solo ventas anteriores a que el motivo fuera obligatorio). */
 export const MOTIVO_DESCUENTO_NO_REGISTRADO = 'Sin motivo registrado'
 
+/** Peso minimo de un producto a granel, en gramos: el limite tecnico del back (1 g = 0,001 kg). El negocio puede definir uno mayor. */
+export const CANTIDAD_MINIMA_GRANEL_GRAMOS = 1
+
+/** Cuanto suman o restan los botones + y - de un producto a granel, en gramos. */
+export const PASO_GRANEL_GRAMOS = 100
+
+/** Peso con el que entra al carrito un producto a granel, en gramos (1 kg). */
+export const CANTIDAD_INICIAL_GRANEL_GRAMOS = 1000
+
 /** Cantidad maxima de coincidencias en el desplegable del buscador: mantiene liviana la lista. */
 export const CANTIDAD_MAXIMA_RESULTADOS_BUSQUEDA = 20
 

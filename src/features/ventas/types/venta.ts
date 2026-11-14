@@ -67,6 +67,8 @@ export interface RegistrarVentaCarritoProps {
   onCambiarEntrega: (tipoEntrega: TipoEntrega) => void
   onAumentarCantidad: (idProducto: string) => void
   onDisminuirCantidad: (idProducto: string) => void
+  /** Peso de un producto a granel, en gramos enteros y de al menos el minimo. */
+  onCambiarPesoGranel: (idProducto: string, gramos: number) => void
   onEliminarArticulo: (idProducto: string) => void
   onContinuarACobro: () => void
 }

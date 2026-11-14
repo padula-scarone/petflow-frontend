@@ -1,5 +1,10 @@
 import { useState } from 'react'
-import { CANTIDAD_MAXIMA_RESULTADOS_BUSQUEDA } from '@/features/ventas/config/reglas-venta'
+import {
+  CANTIDAD_INICIAL_GRANEL_GRAMOS,
+  CANTIDAD_MAXIMA_RESULTADOS_BUSQUEDA,
+  CANTIDAD_MINIMA_GRANEL_GRAMOS,
+  PASO_GRANEL_GRAMOS,
+} from '@/features/ventas/config/reglas-venta'
 import type { PropiedadesCarrito } from '@/features/ventas/types/contexto-registrar-venta'
 import type {
   ArticuloCarrito,
@@ -22,7 +27,12 @@ function recalcularArticulo(articulo: ArticuloCarrito, cantidad: number): Articu
   return { ...articulo, cantidad, montoTotal: convertirCentavosAPesos(subtotalCentavos) }
 }
 
+const GRAMOS_POR_KILO = 1000
+
 function crearArticulo(producto: ProductoCatalogo): ArticuloCarrito {
+  // Un producto a granel entra con su peso inicial; el resto, con una unidad
+  const cantidadInicial =
+    producto.formato === 'granel' ? CANTIDAD_INICIAL_GRANEL_GRAMOS / GRAMOS_POR_KILO : 1
   return recalcularArticulo(
     {
       idProducto: producto.idProducto,
@@ -35,7 +45,7 @@ function crearArticulo(producto: ProductoCatalogo): ArticuloCarrito {
       montoTotal: producto.precioUnitario,
       stockDisponible: producto.stockDisponible,
     },
-    1,
+    cantidadInicial,
   )
 }
 
@@ -87,11 +97,32 @@ export function useCarritoVenta(catalogo: ProductoCatalogo[]) {
           .slice(0, CANTIDAD_MAXIMA_RESULTADOS_BUSQUEDA)
 
   // --- ACCIONES ---
+  /** Un producto por unidad suma de a una; uno a granel, de a PASO_GRANEL_GRAMOS, sin bajar del minimo. */
+  const calcularCantidadNueva = (articulo: ArticuloCarrito, variacion: number) => {
+    if (articulo.formato === 'granel') {
+      const gramos = Math.round(articulo.cantidad * GRAMOS_POR_KILO) + variacion * PASO_GRANEL_GRAMOS
+      return Math.max(CANTIDAD_MINIMA_GRANEL_GRAMOS, gramos) / GRAMOS_POR_KILO
+    }
+    return Math.max(1, articulo.cantidad + variacion)
+  }
+
   const cambiarCantidad = (idProducto: string, variacion: number) =>
     setArticulosAgregados((actuales) =>
       actuales.map((articulo) =>
         articulo.idProducto === idProducto
-          ? recalcularArticulo(articulo, Math.max(1, articulo.cantidad + variacion))
+          ? recalcularArticulo(articulo, calcularCantidadNueva(articulo, variacion))
+          : articulo,
+      ),
+    )
+
+  const cambiarPesoGranel = (idProducto: string, gramos: number) =>
+    setArticulosAgregados((actuales) =>
+      actuales.map((articulo) =>
+        articulo.idProducto === idProducto && articulo.formato === 'granel'
+          ? recalcularArticulo(
+              articulo,
+              Math.max(CANTIDAD_MINIMA_GRANEL_GRAMOS, Math.round(gramos)) / GRAMOS_POR_KILO,
+            )
           : articulo,
       ),
     )
@@ -103,7 +134,7 @@ export function useCarritoVenta(catalogo: ProductoCatalogo[]) {
         actuales.some((articulo) => articulo.idProducto === idProducto)
           ? actuales.map((articulo) =>
               articulo.idProducto === idProducto
-                ? recalcularArticulo(articulo, articulo.cantidad + 1)
+                ? recalcularArticulo(articulo, calcularCantidadNueva(articulo, 1))
                 : articulo,
             )
           : [...actuales, crearArticulo(producto)],
@@ -127,6 +158,7 @@ export function useCarritoVenta(catalogo: ProductoCatalogo[]) {
     onCambiarEntrega: setTipoEntrega,
     onAumentarCantidad: (idProducto) => cambiarCantidad(idProducto, 1),
     onDisminuirCantidad: (idProducto) => cambiarCantidad(idProducto, -1),
+    onCambiarPesoGranel: cambiarPesoGranel,
     onEliminarArticulo: (idProducto) =>
       setArticulosAgregados((actuales) =>
         actuales.filter((articulo) => articulo.idProducto !== idProducto),
