@@ -1,4 +1,5 @@
 import { formatearFechaCalendario } from '@/features/ventas/utils/calcular-periodo-rapido'
+import { coincideFiltroMedioPago } from '@/features/ventas/utils/coincide-filtro-medio-pago'
 import type {
   FiltrosHistorial,
   PaginacionHistorial,
@@ -37,11 +38,7 @@ function cumpleFiltros(venta: VentaDetalle, filtros: FiltrosHistorial) {
       venta.items.some((item) => item.idProducto === filtros.productoSeleccionado?.idProducto)) &&
     (filtros.estado === null || venta.estado === filtros.estado) &&
     (filtros.origen === null || venta.origen === filtros.origen) &&
-    // Mixto = mas de un medio de pago en la misma venta
-    (filtros.medioPago === null ||
-      (filtros.medioPago === 'MIXTO'
-        ? venta.pagos.length >= 2
-        : venta.pagos.some((pago) => pago.idMedioPago === filtros.medioPago))) &&
+    coincideFiltroMedioPago(venta.pagos, filtros.medioPago) &&
     (textoCliente === '' ||
       normalizarTexto(venta.clienteReferencia ?? '').includes(textoCliente)) &&
     (textoComprobante === '' || normalizarTexto(venta.numeroComprobante).includes(textoComprobante))
