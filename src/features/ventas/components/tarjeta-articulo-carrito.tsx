@@ -2,7 +2,9 @@ import { Minus, Plus, Trash2, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatearMoneda } from '@/lib/formatear-moneda'
+import { CampoPesoGranel } from '@/features/ventas/components/campo-peso-granel'
 import { ImagenProducto } from '@/features/ventas/components/imagen-producto'
+import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
 import type { ArticuloCarrito } from '@/features/ventas/types/venta'
 
 /** Props de la tarjeta de un articulo del carrito. */
@@ -10,6 +12,7 @@ interface TarjetaArticuloCarritoProps {
   articulo: ArticuloCarrito
   onAumentarCantidad: (idProducto: string) => void
   onDisminuirCantidad: (idProducto: string) => void
+  onCambiarPesoGranel: (idProducto: string, gramos: number) => void
   onEliminarArticulo: (idProducto: string) => void
 }
 
@@ -17,9 +20,12 @@ export function TarjetaArticuloCarrito({
   articulo,
   onAumentarCantidad,
   onDisminuirCantidad,
+  onCambiarPesoGranel,
   onEliminarArticulo,
 }: TarjetaArticuloCarritoProps) {
   const excedeStock = articulo.cantidad > articulo.stockDisponible
+  // Un producto a granel se vende por kilo: las etiquetas lo dicen para que no se confunda con una unidad
+  const esGranel = articulo.formato === 'granel'
 
   return (
     // En mobile se apila en dos filas; desde lg los bloques pasan a una sola fila
@@ -43,7 +49,11 @@ export function TarjetaArticuloCarrito({
             >
               <TriangleAlert aria-hidden="true" className="size-4 shrink-0" />
               <span className="tabular-nums">
-                Supera el stock disponible ({articulo.stockDisponible})
+                Supera el stock disponible (
+                {esGranel
+                  ? formatearCantidad(articulo.stockDisponible, 'granel')
+                  : articulo.stockDisponible}
+                )
               </span>
             </p>
           )}
@@ -66,41 +76,53 @@ export function TarjetaArticuloCarrito({
       {/* En pantallas angostas el total baja a su propia linea en lugar de desbordar */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 xl:contents">
         <div className="flex flex-col xl:w-28">
-          <span className="text-xs whitespace-nowrap text-texto-suave">Precio unidad</span>
+          <span className="text-xs whitespace-nowrap text-texto-suave">
+            {esGranel ? 'Precio por kg' : 'Precio unidad'}
+          </span>
           <span className="tabular-nums">
             {formatearMoneda(articulo.precioUnitario)}
           </span>
         </div>
 
-        <div className="flex items-center rounded-grande border">
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={`Disminuir cantidad de ${articulo.nombreProducto}`}
-            className="size-11"
-            disabled={articulo.cantidad <= 1}
-            onClick={() => onDisminuirCantidad(articulo.idProducto)}
-          >
-            <Minus />
-          </Button>
-          <span
-            aria-live="polite"
-            className="min-w-8 text-center font-medium tabular-nums"
-          >
-            {articulo.cantidad}
-          </span>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            aria-label={`Aumentar cantidad de ${articulo.nombreProducto}`}
-            className="size-11"
-            onClick={() => onAumentarCantidad(articulo.idProducto)}
-          >
-            <Plus />
-          </Button>
-        </div>
+        {esGranel ? (
+          <CampoPesoGranel
+            nombreProducto={articulo.nombreProducto}
+            gramos={Math.round(articulo.cantidad * 1000)}
+            onCambiarGramos={(gramos) => onCambiarPesoGranel(articulo.idProducto, gramos)}
+            onAumentar={() => onAumentarCantidad(articulo.idProducto)}
+            onDisminuir={() => onDisminuirCantidad(articulo.idProducto)}
+          />
+        ) : (
+          <div className="flex items-center rounded-grande border">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={`Disminuir cantidad de ${articulo.nombreProducto}`}
+              className="size-11"
+              disabled={articulo.cantidad <= 1}
+              onClick={() => onDisminuirCantidad(articulo.idProducto)}
+            >
+              <Minus />
+            </Button>
+            <span
+              aria-live="polite"
+              className="min-w-8 text-center font-medium tabular-nums"
+            >
+              {articulo.cantidad}
+            </span>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              aria-label={`Aumentar cantidad de ${articulo.nombreProducto}`}
+              className="size-11"
+              onClick={() => onAumentarCantidad(articulo.idProducto)}
+            >
+              <Plus />
+            </Button>
+          </div>
+        )}
 
         <span className="ml-auto min-w-20 text-right font-bold tabular-nums xl:ml-0 xl:w-28">
           {formatearMoneda(articulo.montoTotal)}

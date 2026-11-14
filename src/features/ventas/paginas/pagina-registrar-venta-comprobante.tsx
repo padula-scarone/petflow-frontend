@@ -1,38 +1,44 @@
 import { Navigate } from 'react-router'
+import { ComprobanteSinDetalle } from '@/features/ventas/components/comprobante-sin-detalle'
 import { RegistrarVentaComprobante } from '@/features/ventas/components/registrar-venta-comprobante'
 import { RUTAS_REGISTRAR_VENTA } from '@/features/ventas/config/rutas-registrar-venta'
 import { useContextoRegistrarVenta } from '@/features/ventas/hooks/use-contexto-registrar-venta'
 import { useNavegacionRegistrarVenta } from '@/features/ventas/hooks/use-navegacion-registrar-venta'
-import {
-  construirEnlaceMail,
-  construirEnlaceWhatsApp,
-} from '@/features/ventas/utils/construir-enlaces-comprobante'
-
-// Tiempo que dura la ventana para editar una venta, segun SSOT.md
-const MINUTOS_EDICION = 15
 
 export function PaginaRegistrarVentaComprobante() {
-  const { comprobante, iniciarNuevaVenta } = useContextoRegistrarVenta()
-  const { irAlCarrito } = useNavegacionRegistrarVenta()
+  const { estadoComprobante, onReintentarComprobante, iniciarNuevaVenta } =
+    useContextoRegistrarVenta()
+  const { irAlCarrito, irAEditarEnHistorial } = useNavegacionRegistrarVenta()
 
-  // Acceso directo invalido (ej. recargar): sin venta confirmada no hay comprobante que mostrar
-  if (!comprobante) return <Navigate to={RUTAS_REGISTRAR_VENTA.carrito} replace />
+  // Acceso directo invalido (ej. recargar): sin venta registrada no hay comprobante que mostrar
+  if (!estadoComprobante) return <Navigate to={RUTAS_REGISTRAR_VENTA.carrito} replace />
+
+  const empezarNuevaVenta = () => {
+    // Reinicia sin llamar al back; el reinicio vuelve a pedir el catalogo porque el stock cambio
+    iniciarNuevaVenta()
+    irAlCarrito()
+  }
+
+  // Con la venta ya registrada, aunque el detalle todavia no haya llegado o haya fallado
+  if (estadoComprobante.fase !== 'listo') {
+    return (
+      <ComprobanteSinDetalle
+        estado={estadoComprobante}
+        onReintentar={onReintentarComprobante}
+        onNuevaVenta={empezarNuevaVenta}
+      />
+    )
+  }
 
   return (
     <RegistrarVentaComprobante
-      comprobante={comprobante}
-      enlaceWhatsApp={construirEnlaceWhatsApp(comprobante)}
-      enlaceMail={construirEnlaceMail(comprobante)}
-      // Temporal: con ?edicionVencida en la URL se prueba el plazo vencido
-      edicionDisponible={!window.location.search.includes('edicionVencida')}
-      fechaHoraLimiteEdicion={new Date(
-        new Date(comprobante.fechaHora).getTime() + MINUTOS_EDICION * 60 * 1000,
-      ).toISOString()}
-      onEditarVenta={irAlCarrito}
-      onNuevaVenta={() => {
-        irAlCarrito()
-        iniciarNuevaVenta()
-      }}
+      comprobante={estadoComprobante.comprobante}
+      enlaceWhatsApp={estadoComprobante.enlaceWhatsApp}
+      enlaceMail={estadoComprobante.enlaceMail}
+      edicionDisponible={estadoComprobante.edicionDisponible}
+      fechaHoraLimiteEdicion={estadoComprobante.fechaHoraLimiteEdicion}
+      onEditarVenta={() => irAEditarEnHistorial(estadoComprobante.comprobante.idVenta)}
+      onNuevaVenta={empezarNuevaVenta}
     />
   )
 }

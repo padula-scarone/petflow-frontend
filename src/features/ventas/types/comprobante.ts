@@ -1,3 +1,4 @@
+import type { RegistroVenta } from '@/features/ventas/types/registro-venta'
 import type { CanalVenta, FormatoArticulo, TipoEntrega } from '@/features/ventas/types/venta'
 
 /** Renglon de producto del comprobante. */
@@ -33,11 +34,13 @@ interface PagoComprobanteBase {
   montoFinal: number
 }
 
-/** Pago con un medio que admite vuelto (efectivo): el monto recibido y el vuelto son obligatorios. */
+/** Pago con un medio que admite vuelto (efectivo). Sin "Paga con" el back no registra recibido ni vuelto. */
 export interface PagoConVueltoComprobante extends PagoComprobanteBase {
   admiteVuelto: true
-  montoRecibido: number
-  vuelto: number
+  /** null si no se informo con cuanto pago el cliente. */
+  montoRecibido: number | null
+  /** null siempre que montoRecibido sea null. */
+  vuelto: number | null
 }
 
 /** Pago con un medio que no admite vuelto (tarjeta, transferencia, QR). */
@@ -80,6 +83,24 @@ export interface ComprobanteFiado extends ComprobanteBase {
 
 /** Comprobante de una venta registrada. */
 export type Comprobante = ComprobanteCobrado | ComprobanteFiado
+
+/** Estado del comprobante de la venta recien registrada; la venta ya existe en las tres fases. */
+export type EstadoComprobanteVenta =
+  | { fase: 'cargando'; registro: RegistroVenta }
+  /** Fallo solo el pedido del detalle: se reintenta ese pedido, nunca el alta. */
+  | { fase: 'error'; registro: RegistroVenta; mensaje: string }
+  | {
+      fase: 'listo'
+      comprobante: Comprobante
+      /** Enlace wa.me con el texto del comprobante. */
+      enlaceWhatsApp: string
+      /** Enlace mailto: con el asunto y el texto del comprobante. */
+      enlaceMail: string
+      /** Falso cuando ya vencio la ventana de 15 minutos para editar. */
+      edicionDisponible: boolean
+      /** Hasta cuando se puede editar, en formato ISO 8601. */
+      fechaHoraLimiteEdicion: string
+    }
 
 /** Props del componente presentacional de la Seccion 3 de Registrar Venta. */
 export interface RegistrarVentaComprobanteProps {

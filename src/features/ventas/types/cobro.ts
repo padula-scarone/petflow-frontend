@@ -1,4 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
+import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
+import type { EstadoEnvioVenta } from '@/features/ventas/types/envio-venta'
 
 /** Forma de cobro. 'fiado' es excluyente: no se combina con otros medios. */
 export type FormaPago = 'unico' | 'mixto' | 'fiado'
@@ -79,13 +81,9 @@ export interface EstadoCobro {
   motivoNoConfirmable?: string
 }
 
-/** Props del componente presentacional de la Seccion 2 de Registrar Venta. */
-export interface RegistrarVentaCobroProps {
+/** Props del cobro sin la navegacion, que decide cada pagina de ruta. Las comparten Registrar Venta y Liquidar fiado. */
+export interface PropiedadesCobro {
   estadoCobro: EstadoCobro
-  // --- Navegacion y cierre ---
-  onVolverAlCarrito: () => void
-  onCancelarVenta: () => void
-  onConfirmarCobro: () => void
   // --- Forma y medios de pago ---
   onCambiarFormaPago: (formaPago: FormaPago) => void
   onSeleccionarMedioPago: (idMedioPago: number) => void
@@ -109,8 +107,18 @@ export interface RegistrarVentaCobroProps {
   onCambiarNombreClienteFiado: (nombreCliente: string) => void
 }
 
-/** Props del cobro sin la navegacion, que decide cada pagina de ruta. */
-export type PropiedadesCobro = Omit<
-  RegistrarVentaCobroProps,
-  'onVolverAlCarrito' | 'onCancelarVenta' | 'onConfirmarCobro'
->
+/** Lo que agrega el cobro de Registrar Venta: medios que vienen del back y envio de la venta. */
+export interface PropiedadesCobroRegistrarVenta extends PropiedadesCobro {
+  /** Carga de los medios de pago: sin ellos solo se puede registrar un fiado. */
+  estadoMediosPago: EstadoCargaRecurso
+  onReintentarMediosPago: () => void
+  estadoEnvio: EstadoEnvioVenta
+}
+
+/** Props del componente presentacional de la Seccion 2 de Registrar Venta. */
+export interface RegistrarVentaCobroProps extends PropiedadesCobroRegistrarVenta {
+  // --- Navegacion y cierre ---
+  onVolverAlCarrito: () => void
+  onCancelarVenta: () => void
+  onConfirmarCobro: () => void
+}

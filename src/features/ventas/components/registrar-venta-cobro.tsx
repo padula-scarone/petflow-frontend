@@ -4,6 +4,8 @@ import { formatearMoneda } from '@/lib/formatear-moneda'
 import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-venta'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
 import { EstadoCobertura } from '@/features/ventas/components/estado-cobertura'
+import { EstadoEnvioCobro } from '@/features/ventas/components/estado-envio-cobro'
+import { EstadoMediosPago } from '@/features/ventas/components/estado-medios-pago'
 import { PanelFormaPago } from '@/features/ventas/components/panel-forma-pago'
 import { PanelResumenCobro } from '@/features/ventas/components/panel-resumen-cobro'
 import { TarjetaDescuentoManual } from '@/features/ventas/components/tarjeta-descuento-manual'
@@ -30,8 +32,13 @@ export function RegistrarVentaCobro({
   onAplicarDescuento,
   onQuitarDescuento,
   onCambiarNombreClienteFiado,
+  estadoMediosPago,
+  onReintentarMediosPago,
+  estadoEnvio,
 }: RegistrarVentaCobroProps) {
   const { resumen, formaPago, puedeConfirmar, motivoNoConfirmable } = estadoCobro
+  // Mientras la venta viaja no se puede volver ni cancelar: la venta puede registrarse en ese momento
+  const enviando = estadoEnvio.fase === 'enviando'
 
   return (
     <section className="flex min-h-full flex-col gap-6">
@@ -41,6 +48,7 @@ export function RegistrarVentaCobro({
           type="button"
           variant="ghost"
           className="-ml-3 h-11 gap-2 px-3"
+          disabled={enviando}
           onClick={onVolverAlCarrito}
         >
           <ArrowLeft />
@@ -59,6 +67,11 @@ export function RegistrarVentaCobro({
             onCerrarFormulario={onCerrarFormularioDescuento}
             onAplicar={onAplicarDescuento}
             onQuitar={onQuitarDescuento}
+          />
+          <EstadoMediosPago
+            estadoMediosPago={estadoMediosPago}
+            cantidadMedios={estadoCobro.mediosDisponibles.length}
+            onReintentar={onReintentarMediosPago}
           />
           <PanelFormaPago
             estadoCobro={estadoCobro}
@@ -80,6 +93,7 @@ export function RegistrarVentaCobro({
           formaPago={formaPago}
           puedeConfirmar={puedeConfirmar}
           motivoNoConfirmable={motivoNoConfirmable}
+          estadoEnvio={estadoEnvio}
           onConfirmarCobro={onConfirmarCobro}
           onCancelarVenta={onCancelarVenta}
           onAjustarMontosAutomaticamente={onAjustarMontosAutomaticamente}
@@ -89,7 +103,11 @@ export function RegistrarVentaCobro({
       {/* --- CANCELAR (MOBILE) --- */}
       {/* Al final del contenido, lejos del pulgar, para evitar toques accidentales */}
       <div className="xl:hidden">
-        <BotonCancelarVenta etiqueta="Cancelar venta" onCancelarVenta={onCancelarVenta} />
+        <BotonCancelarVenta
+          etiqueta="Cancelar venta"
+          onCancelarVenta={onCancelarVenta}
+          deshabilitado={enviando}
+        />
       </div>
 
       {/* --- FOOTER CONFIRMAR (MOBILE) --- */}
@@ -103,6 +121,7 @@ export function RegistrarVentaCobro({
             onAjustarAutomaticamente={onAjustarMontosAutomaticamente}
           />
         )}
+        <EstadoEnvioCobro estadoEnvio={estadoEnvio} />
         {motivoNoConfirmable && !puedeConfirmar && (
           <p role="status" className="text-xs text-amber-700 tabular-nums">
             {motivoNoConfirmable}
@@ -116,6 +135,7 @@ export function RegistrarVentaCobro({
           <BotonConfirmarCobro
             formaPago={formaPago}
             habilitado={puedeConfirmar}
+            enviando={enviando}
             onConfirmarCobro={onConfirmarCobro}
             className="flex-1 sm:flex-none"
           />

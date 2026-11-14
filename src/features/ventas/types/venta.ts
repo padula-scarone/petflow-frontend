@@ -1,3 +1,5 @@
+import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
+
 /** Origen de la venta. */
 export type CanalVenta = 'mostrador' | 'digital'
 
@@ -12,6 +14,7 @@ export interface ArticuloCarrito {
   /** Identificador del producto en el catalogo. */
   idProducto: string
   nombreProducto: string
+  /** Nombre de la categoria del producto, tal como lo manda el back. */
   categoria: string
   formato: FormatoArticulo
   /** URL de la imagen; si falta, se muestra un marcador de posicion. */
@@ -34,6 +37,12 @@ export interface ResultadoBusqueda {
   stockDisponible: number
 }
 
+/** Producto del catalogo del back: lo que se necesita para buscarlo y sumarlo al carrito. */
+export interface ProductoCatalogo extends ResultadoBusqueda {
+  categoria: string
+  formato: FormatoArticulo
+}
+
 /** Estado de la venta en curso; la vista solo lo renderiza. */
 export interface EstadoVentaEnCurso {
   canalVenta: CanalVenta
@@ -49,12 +58,17 @@ export interface RegistrarVentaCarritoProps {
   textoBusqueda: string
   /** Coincidencias a mostrar en el desplegable; vacio si no hay texto buscado. */
   resultadosBusqueda: ResultadoBusqueda[]
+  /** Carga del catalogo de productos: mientras no este listo no hay nada que buscar. */
+  estadoCatalogo: EstadoCargaRecurso
+  onReintentarCatalogo: () => void
   onBuscarProducto: (textoBusqueda: string) => void
   onAgregarProducto: (idProducto: string) => void
   onCambiarCanal: (canalVenta: CanalVenta) => void
   onCambiarEntrega: (tipoEntrega: TipoEntrega) => void
   onAumentarCantidad: (idProducto: string) => void
   onDisminuirCantidad: (idProducto: string) => void
+  /** Peso de un producto a granel, en gramos enteros y de al menos el minimo. */
+  onCambiarPesoGranel: (idProducto: string, gramos: number) => void
   onEliminarArticulo: (idProducto: string) => void
   onContinuarACobro: () => void
 }

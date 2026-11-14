@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router'
-import { useRegistrarVentaEjemplo } from '@/features/ventas/hooks/use-registrar-venta-ejemplo'
+import { useRegistrarVenta } from '@/features/ventas/hooks/use-registrar-venta'
 
 interface CuerpoVentaProps {
-  iniciarVacia: boolean
   alIniciarNuevaVenta: () => void
 }
 
-/** Dueno del estado de una venta; al remontarse (otra key) todo vuelve a su valor inicial. */
-function CuerpoVenta({ iniciarVacia, alIniciarNuevaVenta }: CuerpoVentaProps) {
-  const contextoVenta = useRegistrarVentaEjemplo({ iniciarVacia, alIniciarNuevaVenta })
+/** Dueno del estado de una venta; al remontarse (otra key) todo vuelve a su valor inicial y se vuelve a pedir el catalogo. */
+function CuerpoVenta({ alIniciarNuevaVenta }: CuerpoVentaProps) {
+  const contextoVenta = useRegistrarVenta({ alIniciarNuevaVenta })
 
   return (
     <div className="mx-auto w-full max-w-6xl flex-1">
@@ -23,11 +22,8 @@ export function LayoutRegistrarVenta() {
   const [numeroVenta, setNumeroVenta] = useState(0)
 
   return (
-    // Cambiar la key descarta carrito, descuento, medio de pago y comprobante de la venta anterior
-    <CuerpoVenta
-      key={numeroVenta}
-      iniciarVacia={numeroVenta > 0}
-      alIniciarNuevaVenta={() => setNumeroVenta(numeroVenta + 1)}
-    />
+    // Cambiar la key descarta carrito, descuento, medio de pago y comprobante de la venta anterior,
+    // y vuelve a pedir catalogo y medios: el stock pudo cambiar
+    <CuerpoVenta key={numeroVenta} alIniciarNuevaVenta={() => setNumeroVenta(numeroVenta + 1)} />
   )
 }
