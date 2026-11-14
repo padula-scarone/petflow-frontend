@@ -28,7 +28,7 @@ interface DialogoConfirmarAccionCambioProps {
 function describirReversion(confirmacion: ConfirmacionAccionCambio) {
   const { productoDevuelto, productoEntregado, saldoResultante } = confirmacion.fila
   const entrada = productoDevuelto.esBolsaAbierta
-    ? `se descuentan ${describirPesoKg(productoDevuelto.cantidad)} del stock a granel (bolsa abierta de «${productoDevuelto.nombreProducto}»)`
+    ? `se descuentan ${describirPesoKg(productoDevuelto.pesoDevueltoKg ?? 0)} del stock a granel (bolsa abierta de «${productoDevuelto.nombreProducto}»)`
     : `se descuenta lo que entró del stock de «${productoDevuelto.nombreProducto}»`
   const salida = `se reintegra lo entregado de «${productoEntregado.nombreProducto}»`
   const caja = saldoResultante > 0 ? ` y se restan ${formatearMoneda(saldoResultante)} de la caja` : ''

@@ -2,9 +2,10 @@ import { useEffect, useRef } from 'react'
 import { TriangleAlert } from 'lucide-react'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
+import type { CodigoErrorCambio } from '@/features/ventas/cambios-mercaderia/types/api-cambios'
 import type { ErrorAccionCambio } from '@/features/ventas/cambios-mercaderia/types/cambio'
 
-const TITULO_POR_CODIGO: Record<ErrorAccionCambio['codigo'], string> = {
+const TITULO_POR_CODIGO: Record<CodigoErrorCambio, string> = {
   DATOS_INVALIDOS: 'El servidor rechazó el cambio',
   SALDO_NEGATIVO: 'El saldo no puede ser negativo',
   PLAZO_VENCIDO: 'Se venció el plazo',
@@ -17,6 +18,9 @@ const TITULO_POR_CODIGO: Record<ErrorAccionCambio['codigo'], string> = {
   CAMBIO_YA_ANULADO: 'El cambio ya estaba anulado',
   STOCK_INSUFICIENTE_PARA_REVERTIR: 'No se puede revertir el stock',
 }
+
+/** Titulo cuando el back no informa el caso (permiso, sin respuesta o un cambio que no se guardo). */
+const TITULO_SIN_CODIGO = 'No se pudo registrar el cambio'
 
 /** Props del aviso de rechazo del servidor al confirmar un cambio. */
 interface AlertaErrorCambioProps {
@@ -41,10 +45,10 @@ export function AlertaErrorCambio({ error, onElegirOtraVenta, onReintentar }: Al
     <div ref={referencia}>
       <Alert variant="destructive">
         <TriangleAlert aria-hidden="true" />
-        <AlertTitle>{TITULO_POR_CODIGO[error.codigo]}</AlertTitle>
+        <AlertTitle>{error.codigo === null ? TITULO_SIN_CODIGO : TITULO_POR_CODIGO[error.codigo]}</AlertTitle>
         <AlertDescription>
           <p>{error.mensaje}</p>
-          {error.codigo === 'VENTA_NO_ENCONTRADA' && (
+          {(error.codigo === 'VENTA_NO_ENCONTRADA' || error.codigo === 'VENTA_NO_VINCULABLE') && (
             <Button
               type="button"
               variant="outline"
@@ -64,9 +68,10 @@ export function AlertaErrorCambio({ error, onElegirOtraVenta, onReintentar }: Al
               Reintentar
             </Button>
           )}
-          {error.codigo !== 'VENTA_NO_ENCONTRADA' && error.codigo !== 'SIN_CAJA_ABIERTA' && (
-            <p className="text-xs">Volvé al paso anterior para corregirlo.</p>
-          )}
+          {error.codigo !== null &&
+            error.codigo !== 'VENTA_NO_ENCONTRADA' &&
+            error.codigo !== 'VENTA_NO_VINCULABLE' &&
+            error.codigo !== 'SIN_CAJA_ABIERTA' && <p className="text-xs">Volvé al paso anterior para corregirlo.</p>}
         </AlertDescription>
       </Alert>
     </div>

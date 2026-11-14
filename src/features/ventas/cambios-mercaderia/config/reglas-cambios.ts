@@ -15,6 +15,9 @@ export function esVentaVinculable(estado: EstadoVentaHistorial) {
   return ESTADOS_VENTA_VINCULABLES.includes(estado)
 }
 
+/** Ventas por pagina en la busqueda del alta: pocas, porque se muestran en un modal. */
+export const CANTIDAD_VENTAS_POR_PAGINA_BUSQUEDA = 5
+
 /** Texto que explica el bloqueo cuando el producto entregado vale menos que el devuelto. */
 export const MENSAJE_PRECIO_IGUAL_O_MAYOR = 'Solo se puede cambiar por un producto de igual o mayor valor'
 

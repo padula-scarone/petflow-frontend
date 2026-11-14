@@ -1,16 +1,15 @@
 import { AltaCambio } from '@/features/ventas/cambios-mercaderia/components/alta-cambio'
-import { useAltaCambioEjemplo } from '@/features/ventas/cambios-mercaderia/hooks/use-alta-cambio-ejemplo'
-import type { BorradorCambio, CambioMercaderiaDetalle } from '@/features/ventas/cambios-mercaderia/types/cambio'
-import type { VentaDetalle } from '@/features/ventas/types/historial'
+import { useAltaCambio } from '@/features/ventas/cambios-mercaderia/hooks/use-alta-cambio'
+import type { AltaRepoblada, CambioMercaderiaDetalle } from '@/features/ventas/cambios-mercaderia/types/cambio'
 
 /** Props del contenedor que conecta el hook del alta con su modal. */
 interface ContenedorAltaCambioProps {
-  ventas: VentaDetalle[]
-  cambios: CambioMercaderiaDetalle[]
   /** Datos con los que se reabre el alta al editar un cambio; null en un alta nueva. */
-  borradorInicial: BorradorCambio | null
+  altaRepoblada: AltaRepoblada | null
+  desfaseServidorMilisegundos: number
   onCambioRegistrado: (cambio: CambioMercaderiaDetalle) => void
   onVerDetalleCambio: (idCambio: number) => void
+  onActualizarLista: () => void
   onCerrar: () => void
 }
 
@@ -19,6 +18,6 @@ interface ContenedorAltaCambioProps {
  * (el mismo patron que el cobro de un fiado en el Historial).
  */
 export function ContenedorAltaCambio(props: ContenedorAltaCambioProps) {
-  const propiedadesAlta = useAltaCambioEjemplo(props)
+  const propiedadesAlta = useAltaCambio(props)
   return <AltaCambio {...propiedadesAlta} />
 }

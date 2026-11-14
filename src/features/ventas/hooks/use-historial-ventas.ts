@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { convertirDetalleApiAVentaDetalle } from '@/features/ventas/api/convertir-detalle-api-a-venta-detalle'
 import { MENSAJE_DETALLE_ILEGIBLE } from '@/features/ventas/config/mensajes-error-venta'
-import { CANTIDAD_MAXIMA_RESULTADOS_BUSQUEDA } from '@/features/ventas/config/reglas-venta'
 import { useCatalogoProductos } from '@/features/ventas/hooks/use-catalogo-productos'
 import { useDetalleVenta } from '@/features/ventas/hooks/use-detalle-venta'
 import { useListaHistorial } from '@/features/ventas/hooks/use-lista-historial'
@@ -21,7 +20,7 @@ import type { ProductoCatalogo } from '@/features/ventas/types/venta'
 import { crearFilaHistorial } from '@/features/ventas/utils/calcular-plazo-modificacion'
 import { contarFiltrosActivos, contarFiltrosAdicionales } from '@/features/ventas/utils/contar-filtros-activos'
 import { detectarPeriodoRapido } from '@/features/ventas/utils/detectar-periodo-rapido'
-import { normalizarTextoBusqueda } from '@/features/ventas/utils/normalizar-texto-busqueda'
+import { filtrarProductosCatalogo } from '@/features/ventas/utils/filtrar-productos-catalogo'
 import { traducirErrorConsulta } from '@/features/ventas/utils/traducir-error-venta'
 
 // Listas vacias estables: un recurso todavia sin cargar no cambia de identidad en cada render
@@ -125,18 +124,7 @@ export function useHistorialVentas() {
   }
 
   // --- CALCULOS: FILTROS ---
-  const textoProductoNormalizado = normalizarTextoBusqueda(textoBusquedaProducto)
-  // El catalogo se pide una vez y se filtra en el dispositivo: no hay un pedido por tecla (RNF-GENERAL-02)
-  const productosCoincidentes: ProductoFiltro[] =
-    textoProductoNormalizado === ''
-      ? []
-      : (catalogo.datos ?? SIN_PRODUCTOS)
-          .filter((producto) => normalizarTextoBusqueda(producto.nombreProducto).includes(textoProductoNormalizado))
-          .slice(0, CANTIDAD_MAXIMA_RESULTADOS_BUSQUEDA)
-          .map((producto) => ({
-            idProducto: Number(producto.idProducto),
-            nombreProducto: producto.nombreProducto,
-          }))
+  const productosCoincidentes = filtrarProductosCatalogo(catalogo.datos ?? SIN_PRODUCTOS, textoBusquedaProducto)
 
   // --- EDITAR Y ANULAR ---
   const modificacion = useModificarVenta({

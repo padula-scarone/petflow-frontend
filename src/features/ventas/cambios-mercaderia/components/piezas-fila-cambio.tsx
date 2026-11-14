@@ -56,7 +56,7 @@ export function ArticuloDevueltoFila({ fila, className }: { fila: FilaCambio; cl
       descripcionCantidad={describirDevolucion(
         productoDevuelto.cantidad,
         productoDevuelto.formatoVenta,
-        productoDevuelto.esBolsaAbierta,
+        productoDevuelto.pesoDevueltoKg,
       )}
       className={className}
     />

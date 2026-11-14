@@ -7,6 +7,6 @@ import type { ResultadoApi } from '@/lib/cliente-http.types'
 export function crearFalloRespuestaInvalida(estado: number): ResultadoApi<never> {
   return {
     exitoso: false,
-    error: { tipo: 'RESPUESTA_NO_JSON', estado, mensaje: null, errores: [] },
+    error: { tipo: 'RESPUESTA_NO_JSON', estado, mensaje: null, codigo: null, errores: [] },
   }
 }

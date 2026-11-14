@@ -1,24 +1,26 @@
-import { useState } from 'react'
-import { LATENCIA_REGISTRO_CAMBIO_MILISEGUNDOS } from '@/features/ventas/cambios-mercaderia/config/simulacion-cambios'
-import { useBusquedaVentaEjemplo } from '@/features/ventas/cambios-mercaderia/hooks/use-busqueda-venta-ejemplo'
+import { useMemo, useState } from 'react'
+import { useBusquedaVentaVinculable } from '@/features/ventas/cambios-mercaderia/hooks/use-busqueda-venta-vinculable'
+import { useEnvioCambio } from '@/features/ventas/cambios-mercaderia/hooks/use-envio-cambio'
 import { useSaldoCambio } from '@/features/ventas/cambios-mercaderia/hooks/use-saldo-cambio'
 import type {
   AccionesAltaCambio,
   AltaCambioProps,
+  AltaRepoblada,
   ArticuloDevueltoCargado,
   ArticuloEntregadoCargado,
   BorradorCambio,
   CambioMercaderiaDetalle,
   CodigoMotivoCambio,
-  EstadoEnvioCambio,
   PasoAltaCambio,
   VentaVinculada,
 } from '@/features/ventas/cambios-mercaderia/types/cambio'
 import {
-  buscarProductosCambioEjemplo,
+  buscarProductosCatalogoCambio,
+  convertirProductoACatalogoCambio,
   sugerirProductosEntrega,
-} from '@/features/ventas/cambios-mercaderia/utils/catalogo-cambios-ejemplo'
+} from '@/features/ventas/cambios-mercaderia/utils/catalogo-cambios'
 import { calcularValorDevuelto } from '@/features/ventas/cambios-mercaderia/utils/calcular-resumen-saldo'
+import { construirCuerpoRegistrarCambio } from '@/features/ventas/cambios-mercaderia/utils/construir-cuerpo-registrar-cambio'
 import {
   aplicarBolsaAbierta,
   calcularCantidadDisponible,
@@ -27,60 +29,90 @@ import {
   crearArticuloEntregado,
 } from '@/features/ventas/cambios-mercaderia/utils/crear-articulos-cambio'
 import { BORRADOR_CAMBIO_VACIO } from '@/features/ventas/cambios-mercaderia/utils/estados-iniciales-cambio'
-import {
-  construirBodyRegistrarCambio,
-  construirCambioRegistrado,
-  simularRegistroCambio,
-} from '@/features/ventas/cambios-mercaderia/utils/simular-servidor-cambios-ejemplo'
 import { CODIGO_MOTIVO_OTRO } from '@/features/ventas/config/motivos-venta'
-import { MEDIOS_EJEMPLO } from '@/features/ventas/hooks/use-cobro-venta-ejemplo'
-import type { VentaDetalle } from '@/features/ventas/types/historial'
-
-// Hook temporal del alta de un cambio: se reemplaza por el hook real de la accion Alta de Cambio.
-// Errores del servidor simulados al confirmar (ver la tabla en use-cambios-posventa-ejemplo.ts).
+import { useCatalogoProductos } from '@/features/ventas/hooks/use-catalogo-productos'
+import { useMediosPago } from '@/features/ventas/hooks/use-medios-pago'
+import type { MedioPago } from '@/features/ventas/types/cobro'
+import type { ProductoCatalogo } from '@/features/ventas/types/venta'
+import { convertirPesosACentavos } from '@/features/ventas/utils/calcular-centavos'
 
 // El motivo va primero: es lo que explica por que el cliente viene a cambiar
 const ORDEN_PASOS: PasoAltaCambio[] = ['MOTIVO', 'VENTA_ORIGINAL', 'ARTICULOS', 'COBRO']
 
+// Listas vacias estables: un recurso todavia sin cargar no cambia de identidad en cada render
+const SIN_MEDIOS: MedioPago[] = []
+const SIN_PRODUCTOS: ProductoCatalogo[] = []
+
+/** Lo que necesita el hook del alta. */
 interface ParametrosAltaCambio {
-  /** Base de ventas de ejemplo: de ahi salen la busqueda y el detalle de la venta a vincular. */
-  ventas: VentaDetalle[]
-  /** Base de cambios de ejemplo: de ahi sale lo ya devuelto por venta. */
-  cambios: CambioMercaderiaDetalle[]
-  /** Datos con los que se reabre el alta al editar un cambio. */
-  borradorInicial: BorradorCambio | null
-  /** El cambio quedo registrado: la lista lo suma a su base. */
+  /** Datos con los que se reabre el alta al editar un cambio; null en un alta nueva. */
+  altaRepoblada: AltaRepoblada | null
+  /** Hora del servidor menos hora local, de la ultima respuesta de la lista. */
+  desfaseServidorMilisegundos: number
+  /** El cambio quedo registrado: la lista se vuelve a pedir. */
   onCambioRegistrado: (cambio: CambioMercaderiaDetalle) => void
   onVerDetalleCambio: (idCambio: number) => void
+  /** Se cierra el alta sin saber si el cambio se guardo: la lista se vuelve a pedir para que el usuario lo revise. */
+  onActualizarLista: () => void
   onCerrar: () => void
 }
 
-export function useAltaCambioEjemplo({
-  ventas,
-  cambios,
-  borradorInicial,
+/**
+ * Alta de un cambio contra el back: pasos, busqueda y vinculo de la venta, articulos (productos y medios de pago
+ * del back), saldo en centavos, envio y pantalla de exito. Las partes con mas logica viven en sus hooks:
+ * `useBusquedaVentaVinculable`, `useSaldoCambio` y `useEnvioCambio`.
+ */
+export function useAltaCambio({
+  altaRepoblada,
+  desfaseServidorMilisegundos,
   onCambioRegistrado,
   onVerDetalleCambio,
+  onActualizarLista,
   onCerrar,
 }: ParametrosAltaCambio) {
+  // --- DATOS DEL BACK ---
+  // Se piden al montar el alta, asi el stock esta fresco cada vez que se abre
+  const mediosPago = useMediosPago()
+  const medios = mediosPago.datos ?? SIN_MEDIOS
+  const catalogo = useCatalogoProductos()
+  const catalogoCambio = useMemo(
+    () => (catalogo.datos ?? SIN_PRODUCTOS).map(convertirProductoACatalogoCambio),
+    [catalogo.datos],
+  )
+
   // --- ESTADOS ---
-  const [paso, setPaso] = useState<PasoAltaCambio>(borradorInicial ? 'ARTICULOS' : 'MOTIVO')
-  const [borrador, setBorrador] = useState<BorradorCambio>(borradorInicial ?? BORRADOR_CAMBIO_VACIO)
+  const [paso, setPaso] = useState<PasoAltaCambio>(altaRepoblada ? 'ARTICULOS' : 'MOTIVO')
+  const [borrador, setBorrador] = useState<BorradorCambio>(altaRepoblada?.borrador ?? BORRADOR_CAMBIO_VACIO)
   const [textoBusquedaDevuelto, setTextoBusquedaDevuelto] = useState('')
   const [textoBusquedaEntregado, setTextoBusquedaEntregado] = useState('')
-  const [estadoEnvio, setEstadoEnvio] = useState<EstadoEnvioCambio>({ tipo: 'inactivo' })
   const [confirmandoDescarte, setConfirmandoDescarte] = useState(false)
 
+  // --- ENVIO ---
+  const envio = useEnvioCambio({
+    desfaseServidorMilisegundos,
+    alRegistrar: onCambioRegistrado,
+    // Un rechazo por stock o por un producto o medio inexistente sugiere que catalogo o medios cambiaron
+    alRechazar: (error) => {
+      if (error.codigo === 'STOCK_INSUFICIENTE' || (error.estadoHttp === 404 && error.codigo === 'DATOS_INVALIDOS')) {
+        catalogo.recargar()
+        mediosPago.recargar()
+      }
+    },
+  })
+  const { estadoEnvio } = envio
+
   // --- DERIVADOS ---
-  const { medioSeleccionado, resumenSaldo, validacion } = useSaldoCambio(borrador, MEDIOS_EJEMPLO, paso)
+  const { medioSeleccionado, resumenSaldo, validacion } = useSaldoCambio(borrador, medios, paso)
   const hayDatosCargados =
     borrador.ventaVinculada !== null ||
     borrador.articuloDevuelto !== null ||
     borrador.articuloEntregado !== null ||
     borrador.codigoMotivo !== null
 
+  const resultadosDevuelto = buscarProductosCatalogoCambio(catalogoCambio, textoBusquedaDevuelto)
+  const resultadosEntregado = buscarProductosCatalogoCambio(catalogoCambio, textoBusquedaEntregado)
   // Productos de igual o mayor valor que lo devuelto, para no obligar a saber los precios de memoria
-  const sugerenciasEntregado = sugerirProductosEntrega(calcularValorDevuelto(borrador.articuloDevuelto))
+  const sugerenciasEntregado = sugerirProductosEntrega(catalogoCambio, calcularValorDevuelto(borrador.articuloDevuelto))
 
   // --- AUXILIARES ---
   const actualizarBorrador = (cambios: Partial<BorradorCambio>) =>
@@ -96,16 +128,12 @@ export function useAltaCambioEjemplo({
       actual.articuloEntregado ? { ...actual, articuloEntregado: transformar(actual.articuloEntregado) } : actual,
     )
 
-  /** Cualquier cambio en lo cargado descarta un rechazo anterior del servidor: ya no corresponde. */
-  const descartarErrorEnvio = () => {
-    if (estadoEnvio.tipo === 'error') setEstadoEnvio({ tipo: 'inactivo' })
-  }
-
   // --- BUSQUEDA DE VENTA ---
-  const busquedaVenta = useBusquedaVentaEjemplo({
-    ventas,
-    cambios,
-    onVentaVinculada: (venta: VentaVinculada) => {
+  const busquedaVenta = useBusquedaVentaVinculable({
+    medios,
+    catalogo: catalogo.datos,
+    alVincularVenta: (venta: VentaVinculada) => {
+      envio.descartarRechazo()
       // Cambiar de venta invalida el articulo elegido de la anterior
       setBorrador((actual) => ({ ...actual, ventaVinculada: venta, articuloDevuelto: null }))
       setPaso('ARTICULOS')
@@ -117,42 +145,42 @@ export function useAltaCambioEjemplo({
     const item = borrador.ventaVinculada?.items.find((candidato) => candidato.idProducto === idProducto)
     // Sin nada disponible el renglon no se puede elegir (la vista lo muestra deshabilitado)
     if (!item || calcularCantidadDisponible(item) <= 0) return
-    descartarErrorEnvio()
+    envio.descartarRechazo()
     actualizarBorrador({ articuloDevuelto: crearArticuloDevueltoDesdeItem(item) })
   }
 
   const seleccionarProductoDevuelto = (idProducto: number) => {
-    const producto = buscarProductosCambioEjemplo(textoBusquedaDevuelto).find((candidato) => candidato.idProducto === idProducto)
+    const producto = resultadosDevuelto.find((candidato) => candidato.idProducto === idProducto)
     if (!producto) return
-    descartarErrorEnvio()
+    envio.descartarRechazo()
     actualizarBorrador({ articuloDevuelto: crearArticuloDevueltoDesdeCatalogo(producto) })
     setTextoBusquedaDevuelto('')
   }
 
   const seleccionarProductoEntregado = (idProducto: number) => {
     // Sale del buscador o de las sugerencias; sin stock no se puede elegir (el buscador ya lo muestra deshabilitado)
-    const producto = [...buscarProductosCambioEjemplo(textoBusquedaEntregado), ...sugerenciasEntregado].find(
+    const producto = [...resultadosEntregado, ...sugerenciasEntregado].find(
       (candidato) => candidato.idProducto === idProducto,
     )
     if (!producto || producto.stockDisponible <= 0) return
-    descartarErrorEnvio()
+    envio.descartarRechazo()
     actualizarBorrador({ articuloEntregado: crearArticuloEntregado(producto) })
     setTextoBusquedaEntregado('')
   }
 
   // --- ACCIONES: VINCULO ---
   const desvincularVenta = () => {
-    descartarErrorEnvio()
+    envio.descartarRechazo()
     actualizarBorrador({ ventaVinculada: null, articuloDevuelto: null })
   }
 
   const elegirOtraVenta = () => {
     desvincularVenta()
-    setEstadoEnvio({ tipo: 'inactivo' })
+    envio.descartarRechazo()
     setPaso('VENTA_ORIGINAL')
   }
 
-  // --- ACCIONES: COBRO Y MOTIVO ---
+  // --- ACCIONES: MOTIVO ---
   const seleccionarMotivo = (codigoMotivo: string) =>
     setBorrador((actual) => ({
       ...actual,
@@ -163,7 +191,8 @@ export function useAltaCambioEjemplo({
 
   // --- ACCIONES: PASOS ---
   const irAlPaso = (destino: PasoAltaCambio) => {
-    setEstadoEnvio({ tipo: 'inactivo' })
+    // Un rechazo anterior del servidor se descarta al moverse; un resultado incierto no: sigue pendiente
+    envio.descartarRechazo()
     setPaso(destino)
   }
 
@@ -180,38 +209,31 @@ export function useAltaCambioEjemplo({
 
   // --- ACCIONES: CONFIRMAR ---
   const confirmarCambio = () => {
-    if (!validacion.puedeConfirmar || estadoEnvio.tipo === 'enviando') return
-    const body = construirBodyRegistrarCambio(borrador, medioSeleccionado?.admiteVuelto ?? false, resumenSaldo.saldo)
-    if (body === null) return
-    setEstadoEnvio({ tipo: 'enviando' })
-
-    setTimeout(() => {
-      // El servidor manda: puede rechazar aunque el front haya validado todo
-      const error = simularRegistroCambio(body)
-      if (error) {
-        setEstadoEnvio({ tipo: 'error', error })
-        return
-      }
-      const idCambio = cambios.reduce((mayor, cambio) => Math.max(mayor, cambio.idCambio), 0) + 1
-      const cambio = construirCambioRegistrado(borrador, resumenSaldo, medioSeleccionado, idCambio, Date.now())
-      if (cambio === null) return
-      onCambioRegistrado(cambio)
-      setEstadoEnvio({ tipo: 'exito', cambio })
-    }, LATENCIA_REGISTRO_CAMBIO_MILISEGUNDOS)
+    // Una vez enviado, registrado o con resultado incierto no se vuelve a enviar
+    if (!validacion.puedeConfirmar || estadoEnvio.tipo === 'enviando' || estadoEnvio.tipo === 'incierto') return
+    if (estadoEnvio.tipo === 'exito') return
+    const cuerpo = construirCuerpoRegistrarCambio(borrador, resumenSaldo, medioSeleccionado)
+    if (cuerpo === null) return
+    void envio.enviarCambio(cuerpo, convertirPesosACentavos(resumenSaldo.saldo))
   }
 
   const cargarOtroCambio = () => {
     setBorrador(BORRADOR_CAMBIO_VACIO)
     setTextoBusquedaDevuelto('')
     setTextoBusquedaEntregado('')
-    setEstadoEnvio({ tipo: 'inactivo' })
+    envio.reiniciar()
     setPaso('MOTIVO')
   }
 
   // --- ACCIONES: CIERRE ---
   const solicitarCierre = () => {
     // Mientras el servidor responde no se puede cerrar: el cambio ya esta en camino
-    if (estadoEnvio.tipo === 'enviando') return
+    if (estadoEnvio.tipo === 'enviando' || (estadoEnvio.tipo === 'incierto' && estadoEnvio.verificando)) return
+    if (estadoEnvio.tipo === 'incierto') {
+      // Sin saber si se guardo, se vuelve a pedir la lista para que el usuario lo revise ahi
+      onActualizarLista()
+      return onCerrar()
+    }
     if (estadoEnvio.tipo === 'exito' || !hayDatosCargados) return onCerrar()
     setConfirmandoDescarte(true)
   }
@@ -223,29 +245,29 @@ export function useAltaCambioEjemplo({
     onBuscarProductoDevuelto: setTextoBusquedaDevuelto,
     onSeleccionarProductoDevuelto: seleccionarProductoDevuelto,
     onCambiarCantidadDevuelta: (cantidad) => {
-      descartarErrorEnvio()
+      envio.descartarRechazo()
       actualizarArticuloDevuelto((articulo) => ({ ...articulo, cantidad }))
     },
     onCambiarBolsaAbierta: (esBolsaAbierta) => {
-      descartarErrorEnvio()
+      envio.descartarRechazo()
       actualizarArticuloDevuelto((articulo) => aplicarBolsaAbierta(articulo, esBolsaAbierta))
     },
     onCambiarPesoDevuelto: (pesoKg) => {
-      descartarErrorEnvio()
+      envio.descartarRechazo()
       actualizarArticuloDevuelto((articulo) => ({ ...articulo, pesoDevueltoKg: pesoKg }))
     },
     onQuitarProductoDevuelto: () => {
-      descartarErrorEnvio()
+      envio.descartarRechazo()
       actualizarBorrador({ articuloDevuelto: null })
     },
     onQuitarProductoEntregado: () => {
-      descartarErrorEnvio()
+      envio.descartarRechazo()
       actualizarBorrador({ articuloEntregado: null })
     },
     onBuscarProductoEntregado: setTextoBusquedaEntregado,
     onSeleccionarProductoEntregado: seleccionarProductoEntregado,
     onCambiarCantidadEntregada: (cantidad) => {
-      descartarErrorEnvio()
+      envio.descartarRechazo()
       actualizarArticuloEntregado((articulo) => ({ ...articulo, cantidad }))
     },
     // Cambiar de medio reinicia "Paga con": el monto de otro medio no corresponde
@@ -256,6 +278,7 @@ export function useAltaCambioEjemplo({
     onSiguientePaso: siguientePaso,
     onPasoAnterior: pasoAnterior,
     onConfirmarCambio: confirmarCambio,
+    onVerificarEnvio: () => void envio.verificar(),
     onCargarOtroCambio: cargarOtroCambio,
     onVerDetalleCambioCreado: () => {
       if (estadoEnvio.tipo !== 'exito') return
@@ -277,10 +300,15 @@ export function useAltaCambioEjemplo({
     busquedaVenta,
     textoBusquedaDevuelto,
     textoBusquedaEntregado,
-    resultadosDevuelto: buscarProductosCambioEjemplo(textoBusquedaDevuelto),
-    resultadosEntregado: buscarProductosCambioEjemplo(textoBusquedaEntregado),
+    resultadosDevuelto,
+    resultadosEntregado,
     sugerenciasEntregado,
-    mediosPago: MEDIOS_EJEMPLO,
+    mediosPago: medios,
+    estadoCatalogo: catalogo.estado,
+    estadoMediosPago: mediosPago.estado,
+    onReintentarCatalogo: catalogo.recargar,
+    onReintentarMediosPago: mediosPago.recargar,
+    avisosRepoblado: altaRepoblada?.avisos ?? [],
     resumenSaldo,
     validacion,
     estadoEnvio,

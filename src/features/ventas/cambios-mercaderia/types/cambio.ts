@@ -1,3 +1,5 @@
+import type { CodigoErrorCambio } from '@/features/ventas/cambios-mercaderia/types/api-cambios'
+import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import type { MedioPago } from '@/features/ventas/types/cobro'
 import type { PaginacionResultados, RangoFechasFiltro } from '@/features/ventas/types/compartidos'
 import type {
@@ -9,7 +11,7 @@ import type {
   PeriodoRapido,
   ProductoFiltro,
   VentaDetalle,
-  VentaHistorial,
+  VentaHistorialConsultada,
 } from '@/features/ventas/types/historial'
 
 // --- ENUMS DEL BACK ---
@@ -23,7 +25,10 @@ export type AccionCambio = 'EDITAR' | 'ANULAR'
 /** Filtro: el cambio tiene venta original o no. */
 export type VinculoCambio = 'VINCULADO' | 'DESVINCULADO'
 
-/** Motivos de un cambio. OTRO exige un detalle escrito. Lista a validar con el negocio. */
+/**
+ * Motivos de un cambio. OTRO exige un detalle escrito. Lista a validar con el negocio. Son solo opciones de
+ * la pantalla: el back no guarda codigos, guarda el texto que se arma con construirTextoMotivo.
+ */
 export type CodigoMotivoCambio =
   | 'PRODUCTO_DEFECTUOSO'
   | 'NO_LE_GUSTO_A_LA_MASCOTA'
@@ -64,12 +69,14 @@ export interface ProductoCambioListado {
   idProducto: number
   nombreProducto: string
   formatoVenta: FormatoVenta
-  /** En un articulo devuelto con bolsa abierta es el peso en kg (se reutiliza cantidadDevuelta). */
+  /** Unidades, o kg si el formato es GRANEL. En un devuelto con bolsa abierta son bolsas enteras. */
   cantidad: number
 }
 
 export interface ProductoDevueltoListado extends ProductoCambioListado {
   esBolsaAbierta: boolean
+  /** Kilos que entraron al granel; solo con bolsa abierta (entonces `cantidad` son bolsas enteras). */
+  pesoDevueltoKg: number | null
 }
 
 /** Cambio tal como lo devuelve la grilla. */
@@ -87,10 +94,7 @@ export interface CambioMercaderiaListado {
   /** null cuando no hubo saldo que cobrar. */
   idMedioPago: number | null
   nombreMedioPago: string | null
-  /**
-   * Pendiente de pedir al back. Hasta cuando se puede editar o anular, en ISO 8601:
-   * 15 minutos desde la fecha y hora del cambio. null si esta anulado.
-   */
+  /** Hasta cuando se puede editar o anular, en ISO 8601; lo calcula el back. null si esta anulado. */
   fechaHoraLimiteModificacion: string | null
 }
 
@@ -132,15 +136,18 @@ export interface ArticuloCambioDetalle {
   idProducto: number
   nombreProducto: string
   formatoVenta: FormatoVenta
-  /** En un articulo devuelto con bolsa abierta es el peso en kg. */
+  /** Unidades, o kg si el formato es GRANEL. En un devuelto con bolsa abierta son bolsas enteras. */
   cantidad: number
-  /** En un articulo devuelto con bolsa abierta es el precio por kg. */
+  /** En un articulo devuelto con bolsa abierta es el precio de la BOLSA. */
   precioUnitario: number
+  /** En un articulo devuelto con bolsa abierta es el credito de la fraccion devuelta. */
   subtotal: number
 }
 
 export interface ArticuloDevueltoDetalle extends ArticuloCambioDetalle {
   esBolsaAbierta: boolean
+  /** Kilos que entraron al granel; solo con bolsa abierta. */
+  pesoDevueltoKg: number | null
   /** Producto que recibio el stock: el granel si fue bolsa abierta, el mismo producto si no. */
   idProductoStockIngresado: number
   nombreProductoStockIngresado: string
@@ -155,20 +162,14 @@ export interface PagoSaldoCambio {
   vuelto: number | null
 }
 
-/** Motivo con el que se cargo el cambio. */
-export interface MotivoCambio {
-  codigoMotivo: CodigoMotivoCambio
-  /** Solo con OTRO. */
-  detalleMotivo: string | null
-}
-
-/** Quien anulo el cambio, por que y cuando. Usuario y fecha y hora los asigna el servidor. */
+/**
+ * Quien anulo el cambio, por que y cuando. Usuario y fecha y hora los asigna el servidor. El back no guarda
+ * codigos de motivo ni distingue una baja de una edicion: guarda el texto que armo el front.
+ */
 export interface DatosAnulacionCambio {
-  /** ANULAR, o EDITAR cuando es la anulacion interna de una edicion. */
-  accion: AccionCambio
-  codigoMotivo: CodigoMotivoAccionCambio
-  /** Solo con OTRO. */
-  detalleMotivo: string | null
+  /** Texto libre de 1 a 200 caracteres, tal como se guardo. */
+  motivo: string
+  idUsuario: number
   nombreUsuario: string
   /** ISO 8601. */
   fechaHora: string
@@ -191,7 +192,8 @@ export interface CambioMercaderiaDetalle
   valorEntregado: number
   /** null si no hubo saldo. */
   pagoSaldo: PagoSaldoCambio | null
-  motivo: MotivoCambio
+  /** Texto libre con el que se cargo el cambio; null en cambios anteriores a que se guardara. */
+  motivoCambio: string | null
   vendedor: { idUsuario: number; nombre: string }
   /** null mientras el cambio este ACTIVO. */
   anulacion: DatosAnulacionCambio | null
@@ -203,63 +205,24 @@ export type EstadoDetalleCambio =
   | { tipo: 'error'; idCambio: number; mensaje: string }
   | { tipo: 'listo'; cambio: CambioMercaderiaDetalle; fila: FilaCambio }
 
-// --- ERRORES DEL SERVIDOR (SIMULADOS) ---
+// --- ERRORES DE UNA ACCION ---
 
-/** Identifica el caso del rechazo. El front lo pide al back: sin el habria que leer el texto del mensaje. */
-export type CodigoErrorCambio =
-  | 'DATOS_INVALIDOS'
-  | 'SALDO_NEGATIVO'
-  | 'PLAZO_VENCIDO'
-  | 'VENTA_NO_ENCONTRADA'
-  | 'CAMBIO_NO_ENCONTRADO'
-  | 'SIN_CAJA_ABIERTA'
-  | 'STOCK_INSUFICIENTE'
-  | 'VENTA_NO_VINCULABLE'
-  | 'CANTIDAD_EXCEDE_VENTA'
-  | 'CAMBIO_YA_ANULADO'
-  | 'STOCK_INSUFICIENTE_PARA_REVERTIR'
-
-/** Rechazo del servidor a una accion sobre un cambio. */
+/** Por que fallo una accion sobre un cambio (alta, anulacion o edicion). El texto es propio, nunca el del back. */
 export interface ErrorAccionCambio {
-  /** 400: datos o regla invalidos. 403: ventana vencida. 404: no existe. 409: conflicto de estado, caja o stock. */
-  estadoHttp: 400 | 403 | 404 | 409
-  codigo: CodigoErrorCambio
+  /**
+   * 400: datos o regla invalidos. 403: ventana vencida (o sin permiso). 404: no existe. 409: conflicto de
+   * estado, caja o stock. null: no hubo respuesta del servidor y no se pudo confirmar el resultado.
+   */
+  estadoHttp: 400 | 403 | 404 | 409 | null
+  /** Caso del rechazo segun el back; null si el back no lo informa (permiso, sin respuesta). */
+  codigo: CodigoErrorCambio | null
+  /** Texto para la vista; nunca el mensaje tecnico del back. */
   mensaje: string
+  /** true si no se sabe si la accion se aplico: no se reenvia a ciegas. */
+  incierto: boolean
+  /** false cuando repetir la accion no tiene sentido (el cambio no existe o ya lo resolvio otra persona). */
+  reintentable: boolean
 }
-
-// --- BODIES (SIMULADOS) ---
-
-/** Body de POST /api/cambios-mercaderia. Precios, saldo, vuelto y stock ingresado los calcula el servidor. */
-export interface RegistrarCambioBody {
-  idVentaOriginal: number | null
-  idProductoDevuelto: number
-  /** Con esBolsaAbierta es el peso devuelto en kg: se reutiliza el campo. */
-  cantidadDevuelta: number
-  esBolsaAbierta: boolean
-  idProductoEntregado: number
-  cantidadEntregada: number
-  /** Obligatorio solo si el saldo es mayor a 0. */
-  idMedioPago: number | null
-  /** Solo efectivo; el servidor calcula el vuelto. */
-  montoRecibido: number | null
-  codigoMotivo: CodigoMotivoCambio
-  /** Solo con OTRO: de 1 a 200 caracteres sin contar espacios de los extremos. */
-  detalleMotivo: string | null
-}
-
-/** Body de POST /api/cambios-mercaderia/:idCambio/anulacion, para ANULAR y para EDITAR. */
-export interface AnularCambioBody {
-  accion: AccionCambio
-  codigoMotivo: CodigoMotivoAccionCambio
-  detalleMotivo: string | null
-}
-
-export type ResultadoRegistrarCambio =
-  | { tipo: 'exito'; cambio: CambioMercaderiaDetalle }
-  | { tipo: 'error'; error: ErrorAccionCambio }
-
-/** Funcion que simula el endpoint de alta de un cambio. */
-export type RegistrarCambioServidor = (body: RegistrarCambioBody) => Promise<ResultadoRegistrarCambio>
 
 // --- CONFIRMACION DE EDITAR / ANULAR ---
 
@@ -279,19 +242,21 @@ export interface ConfirmacionAccionCambio {
 
 // --- ALTA: VENTA VINCULABLE ---
 
-/** Venta que aparece en la busqueda de vinculacion. Solo llegan COMPLETADA (config/reglas-cambios.ts). */
-export interface VentaVinculable extends VentaHistorial {
-  /** Pendiente de pedir al back: cuantos cambios ACTIVOS tiene ya esta venta. */
-  cantidadCambiosActivos: number
-}
+/**
+ * Venta que aparece en la busqueda de vinculacion, con la cantidad de cambios ACTIVOS que ya tiene.
+ * Solo llegan COMPLETADA (config/reglas-cambios.ts).
+ */
+export type VentaVinculable = VentaHistorialConsultada
 
 /** Renglon de la venta vinculada, con lo ya devuelto por cambios ACTIVOS anteriores. */
 export interface ItemVentaVinculable extends ItemVentaDetalle {
-  /** En unidades (o kg si el renglon es GRANEL). Una bolsa abierta cuenta como 1 unidad. */
+  /** En unidades (o kg si el renglon es GRANEL), de cambios ACTIVOS. Una bolsa abierta cuenta como 1 unidad. */
   cantidadYaDevuelta: number
+  /** Granel vinculado y peso por bolsa: salen del catalogo (el detalle de la venta no los trae). */
   idProductoGranel: number | null
   nombreProductoGranel: string | null
   pesoNominalKg: number | null
+  pesoNominalMilesimas: number | null
 }
 
 /** Venta elegida para vincular. Nunca se modifica: solo se consulta para elegir el articulo. */
@@ -306,7 +271,12 @@ export interface OpcionBolsaAbierta {
   idProductoGranel: number
   nombreProductoGranel: string
   pesoNominalKg: number
-  /** Con venta: precio pagado de la bolsa / peso nominal. Sin venta: precio actual de la bolsa / peso nominal. Nunca el precio suelto del granel. */
+  /** El mismo peso en milesimas de kg: el calculo del saldo se hace con enteros. */
+  pesoNominalMilesimas: number
+  /**
+   * Solo para MOSTRAR: precio de la bolsa (el del renglon de la venta, o el vigente sin venta) dividido su peso.
+   * El credito no se calcula con este numero sino con el precio de la bolsa, para redondear una sola vez como el back.
+   */
   precioPorKg: number
 }
 
@@ -338,7 +308,7 @@ export interface ArticuloDevueltoCargado {
   /** null: sin variante a granel, no se muestra el interruptor. */
   opcionBolsaAbierta: OpcionBolsaAbierta | null
   esBolsaAbierta: boolean
-  /** Solo con bolsa abierta; precargado con el peso nominal. Viaja como cantidadDevuelta. */
+  /** Solo con bolsa abierta; precargado con el peso nominal. Viaja como pesoDevuelto (cantidadDevuelta es 1). */
   pesoDevueltoKg: number | null
 }
 
@@ -365,13 +335,20 @@ export interface BorradorCambio {
   detalleMotivo: string
 }
 
+/** Alta repoblada al editar un cambio, con lo que no se pudo repoblar. */
+export interface AltaRepoblada {
+  borrador: BorradorCambio
+  /** Por ejemplo "La venta vinculada ya no se puede vincular": se repuebla el resto sin bloquear. */
+  avisos: string[]
+}
+
 /** Resultado de comparar lo que entra con lo que sale. */
 export type SituacionSaldo = 'INCOMPLETO' | 'A_COBRAR' | 'SIN_DIFERENCIA' | 'NEGATIVO'
 
 export interface ResumenSaldoCambio {
   valorDevuelto: number
   valorEntregado: number
-  /** Valor entregado menos valor devuelto, redondeado a pesos enteros. */
+  /** Valor entregado menos valor devuelto, calculado en centavos como el back. */
   saldo: number
   situacion: SituacionSaldo
   /** Solo en efectivo con monto recibido suficiente. */
@@ -416,6 +393,11 @@ export type EstadoEnvioCambio =
   | { tipo: 'inactivo' }
   | { tipo: 'enviando' }
   | { tipo: 'error'; error: ErrorAccionCambio }
+  /**
+   * No se sabe si el cambio se guardo (sin red, tiempo agotado, 5xx o respuesta ilegible). No se reenvia:
+   * se puede volver a verificar o revisar la lista.
+   */
+  | { tipo: 'incierto'; mensaje: string; verificando: boolean }
   | { tipo: 'exito'; cambio: CambioMercaderiaDetalle }
 
 // --- PROPS ---
@@ -521,6 +503,8 @@ export interface AccionesAltaCambio {
   onPasoAnterior: () => void
   /** Confirma el alta (ya con resumen previo y saldo validado). */
   onConfirmarCambio: () => void
+  /** Despues de un resultado incierto: vuelve a consultar la lista para saber si el cambio se guardo. */
+  onVerificarEnvio: () => void
   onCargarOtroCambio: () => void
   onVerDetalleCambioCreado: () => void
   /** Si hay datos cargados pide confirmar el descarte; si no, cierra. */
@@ -542,6 +526,13 @@ export interface AltaCambioProps {
   /** Productos de igual o mayor valor que lo devuelto, para ofrecer sin que el vendedor deba buscarlos. */
   sugerenciasEntregado: ProductoCatalogoCambio[]
   mediosPago: MedioPago[]
+  /** Carga del catalogo de productos y de los medios de pago: sin ellos no se puede cargar el cambio. */
+  estadoCatalogo: EstadoCargaRecurso
+  estadoMediosPago: EstadoCargaRecurso
+  onReintentarCatalogo: () => void
+  onReintentarMediosPago: () => void
+  /** Lo que no se pudo repoblar al editar un cambio; vacio en un alta nueva. */
+  avisosRepoblado: string[]
   resumenSaldo: ResumenSaldoCambio
   validacion: ValidacionCambio
   estadoEnvio: EstadoEnvioCambio
