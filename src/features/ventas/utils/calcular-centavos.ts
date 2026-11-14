@@ -36,3 +36,32 @@ export function calcularMontoFinalCentavos(baseCentavos: number, ajusteBasisPoin
 export function calcularDescuentoPorcentajeCentavos(subtotalCentavos: number, porcentaje: number) {
   return Math.round((subtotalCentavos * porcentaje) / 100)
 }
+
+// --- CAMBIOS: IMPORTES CON REDONDEO EXACTO ---
+// El back calcula los cambios con Decimal exacto y redondea UNA vez a centavos, la mitad hacia arriba. Estas
+// cuentas usan BigInt para el producto intermedio: con montos grandes un entero de JS dejaria de ser exacto.
+
+/** Divide dos enteros positivos y redondea la mitad hacia arriba (ROUND_HALF_UP del back). */
+function dividirRedondeandoMitadArriba(numerador: bigint, denominador: bigint) {
+  return Number((2n * numerador + denominador) / (2n * denominador))
+}
+
+/** Importe de un renglon de un cambio: precio por cantidad (en milesimas), redondeado una vez a centavos. */
+export function calcularImporteCentavos(precioCentavos: number, cantidadMilesimas: number) {
+  return dividirRedondeandoMitadArriba(BigInt(precioCentavos) * BigInt(cantidadMilesimas), 1000n)
+}
+
+/**
+ * Credito de una bolsa abierta: precio de la BOLSA por la fraccion devuelta (peso devuelto sobre peso unitario),
+ * redondeado una vez a centavos. Nunca se usa el precio del granel.
+ */
+export function calcularCreditoBolsaAbiertaCentavos(
+  precioBolsaCentavos: number,
+  pesoDevueltoMilesimas: number,
+  pesoUnitarioMilesimas: number,
+) {
+  return dividirRedondeandoMitadArriba(
+    BigInt(precioBolsaCentavos) * BigInt(pesoDevueltoMilesimas),
+    BigInt(pesoUnitarioMilesimas),
+  )
+}
