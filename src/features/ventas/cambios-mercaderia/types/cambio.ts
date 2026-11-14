@@ -306,7 +306,7 @@ export interface OpcionBolsaAbierta {
   idProductoGranel: number
   nombreProductoGranel: string
   pesoNominalKg: number
-  /** Con venta: precio pagado de la bolsa / peso nominal. Sin venta: precio actual del granel. */
+  /** Con venta: precio pagado de la bolsa / peso nominal. Sin venta: precio actual de la bolsa / peso nominal. Nunca el precio suelto del granel. */
   precioPorKg: number
 }
 

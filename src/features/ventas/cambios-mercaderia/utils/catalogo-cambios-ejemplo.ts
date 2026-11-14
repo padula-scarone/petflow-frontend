@@ -72,7 +72,11 @@ export function obtenerProductoCambioEjemplo(idProducto: number): ProductoCambio
   return producto
 }
 
-/** Datos de bolsa abierta de un producto, al precio actual del granel; null si no tiene variante a granel. */
+/**
+ * Datos de bolsa abierta de un producto; null si no tiene variante a granel. El kilo se valua al precio actual
+ * de la bolsa dividido su peso nominal, no al precio suelto del granel: este suele ser mas caro y devolver una
+ * bolsa entera acreditaria mas de lo que cuesta.
+ */
 export function crearOpcionBolsaAbiertaDeCatalogo(producto: ProductoCambioEjemplo): OpcionBolsaAbierta | null {
   if (producto.idProductoGranel === null || producto.pesoNominalKg === null) return null
   const granel = obtenerProductoCambioEjemplo(producto.idProductoGranel)
@@ -80,7 +84,7 @@ export function crearOpcionBolsaAbiertaDeCatalogo(producto: ProductoCambioEjempl
     idProductoGranel: granel.idProducto,
     nombreProductoGranel: granel.nombreProducto,
     pesoNominalKg: producto.pesoNominalKg,
-    precioPorKg: granel.precioUnitario,
+    precioPorKg: producto.precioUnitario / producto.pesoNominalKg,
   }
 }
 

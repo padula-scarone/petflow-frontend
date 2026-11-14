@@ -105,7 +105,7 @@ export function FormularioArticuloDevuelto({
                 admiteDecimales
                 unidad="kg"
                 error={erroresCampo.pesoDevuelto}
-                ayuda={`Pesaje real de lo que quedó en la bolsa. Máximo ${describirCantidadArticulo(articulo.opcionBolsaAbierta.pesoNominalKg, 'GRANEL')}, el peso de la bolsa cerrada. Se valúa a ${formatearMoneda(articulo.opcionBolsaAbierta.precioPorKg)} el kg.`}
+                ayuda={`Peso real de lo que quedó en la bolsa (máximo ${describirCantidadArticulo(articulo.opcionBolsaAbierta.pesoNominalKg, 'GRANEL')}). Se valúa a ${formatearMoneda(articulo.opcionBolsaAbierta.precioPorKg)} el kg: precio de la bolsa dividido su peso.`}
                 onCambiar={acciones.onCambiarPesoDevuelto}
               />
             </>
