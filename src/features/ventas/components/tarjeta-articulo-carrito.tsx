@@ -20,6 +20,8 @@ export function TarjetaArticuloCarrito({
   onEliminarArticulo,
 }: TarjetaArticuloCarritoProps) {
   const excedeStock = articulo.cantidad > articulo.stockDisponible
+  // Un producto a granel se vende por kilo: las etiquetas lo dicen para que no se confunda con una unidad
+  const esGranel = articulo.formato === 'granel'
 
   return (
     // En mobile se apila en dos filas; desde lg los bloques pasan a una sola fila
@@ -66,7 +68,9 @@ export function TarjetaArticuloCarrito({
       {/* En pantallas angostas el total baja a su propia linea en lugar de desbordar */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 xl:contents">
         <div className="flex flex-col xl:w-28">
-          <span className="text-xs whitespace-nowrap text-texto-suave">Precio unidad</span>
+          <span className="text-xs whitespace-nowrap text-texto-suave">
+            {esGranel ? 'Precio por kg' : 'Precio unidad'}
+          </span>
           <span className="tabular-nums">
             {formatearMoneda(articulo.precioUnitario)}
           </span>
@@ -89,6 +93,7 @@ export function TarjetaArticuloCarrito({
             className="min-w-8 text-center font-medium tabular-nums"
           >
             {articulo.cantidad}
+            {esGranel && ' kg'}
           </span>
           <Button
             type="button"
