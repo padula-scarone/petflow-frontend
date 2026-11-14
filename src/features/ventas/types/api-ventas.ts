@@ -32,6 +32,15 @@ export interface ProductoApi {
   /** Texto con 3 decimales, por ejemplo "12.000". */
   stockFisico: string
   formatoVenta: FormatoVentaApi
+  // Datos de "bolsa abierta" (para Cambios). Opcionales para no romper si el back no los manda: sin ellos
+  // el producto simplemente no admite bolsa abierta.
+  /** true si el producto se puede devolver como bolsa abierta (la regla la decide el back). */
+  permiteBolsaAbierta?: boolean
+  /** Producto a granel vinculado; se informa aunque ese granel este inactivo. */
+  idProductoGranel?: number | null
+  nombreProductoGranel?: string | null
+  /** Kilos por unidad, texto con 3 decimales ("15.000"). */
+  pesoUnitario?: string | null
 }
 
 /** Respuesta 200 de GET /api/productos. */

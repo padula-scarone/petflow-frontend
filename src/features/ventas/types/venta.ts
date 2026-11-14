@@ -37,10 +37,20 @@ export interface ResultadoBusqueda {
   stockDisponible: number
 }
 
+/** Datos con los que un producto en unidades se puede devolver como "bolsa abierta" (los usa Cambios). */
+export interface DatosBolsaAbierta {
+  idProductoGranel: number
+  nombreProductoGranel: string
+  /** Kilos por unidad, en milesimas de kg (15 kg = 15000). */
+  pesoUnitarioMilesimas: number
+}
+
 /** Producto del catalogo del back: lo que se necesita para buscarlo y sumarlo al carrito. */
 export interface ProductoCatalogo extends ResultadoBusqueda {
   categoria: string
   formato: FormatoArticulo
+  /** null o ausente: el producto no admite bolsa abierta. */
+  bolsaAbierta?: DatosBolsaAbierta | null
 }
 
 /** Estado de la venta en curso; la vista solo lo renderiza. */

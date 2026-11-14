@@ -21,7 +21,7 @@ import type {
 import type {
   FiltrosHistorial,
   PaginacionHistorial,
-  VentaHistorial,
+  VentaHistorialConsultada,
 } from '@/features/ventas/types/historial'
 import { convertirCentavosAPesos } from '@/features/ventas/utils/calcular-centavos'
 
@@ -29,7 +29,7 @@ const RUTA_HISTORIAL_API = '/api/ventas'
 
 /** Una pagina del historial ya traducida, con el desfase entre el reloj del servidor y el del dispositivo. */
 export interface PaginaHistorialConsultada {
-  ventas: VentaHistorial[]
+  ventas: VentaHistorialConsultada[]
   paginacion: PaginacionHistorial
   /** Hora del servidor menos hora local, en milisegundos, medida al recibir la respuesta. */
   desfaseServidorMilisegundos: number
@@ -104,7 +104,7 @@ function esConsultarHistorialResponse(valor: unknown): valor is ConsultarHistori
   )
 }
 
-function convertirVentaHistorialApi(venta: VentaHistorialApi): VentaHistorial | null {
+function convertirVentaHistorialApi(venta: VentaHistorialApi): VentaHistorialConsultada | null {
   const montoTotalCentavos = convertirTextoACentavos(venta.montoTotal)
   if (montoTotalCentavos === null) return null
   return {
@@ -117,6 +117,7 @@ function convertirVentaHistorialApi(venta: VentaHistorialApi): VentaHistorial | 
     origen: venta.origen,
     modalidadEntrega: venta.modalidadEntrega,
     fechaHoraLimiteModificacion: venta.fechaHoraLimiteModificacion,
+    cantidadCambiosActivos: venta.cantidadCambiosActivos,
   }
 }
 
