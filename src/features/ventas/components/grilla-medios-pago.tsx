@@ -48,10 +48,11 @@ export function GrillaMediosPago({
             <ToggleGroupItem
               key={medio.idMedioPago}
               value={String(medio.idMedioPago)}
-              className="h-auto min-h-24 w-full flex-col gap-1 rounded-grande border bg-fondo-tarjeta px-3 py-4"
+              // whitespace-normal: el boton base no corta lineas y un nombre largo ("Transferencia (demo)") se salia de la tarjeta
+              className="h-auto min-h-24 w-full flex-col gap-1 rounded-grande border bg-fondo-tarjeta px-3 py-4 whitespace-normal"
             >
               <Icono className="size-6" />
-              <span className="font-medium">{medio.nombre}</span>
+              <span className="text-center font-medium wrap-break-word">{medio.nombre}</span>
               {mostrarAjustes && (
                 <span className="text-sm font-normal text-texto-suave tabular-nums">
                   {describirAjusteMedio(medio)}
