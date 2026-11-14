@@ -2,6 +2,7 @@ import { esObjeto } from '@/lib/es-objeto'
 import type { ClienteHttp, ResultadoApi } from '@/lib/cliente-http.types'
 import { crearFalloRespuestaInvalida } from '@/features/ventas/api/crear-fallo-respuesta-invalida'
 import { convertirTextoACentavos } from '@/features/ventas/api/conversores-numericos'
+import { convertirPagosACuerpo } from '@/features/ventas/api/convertir-pagos-a-cuerpo'
 import {
   convertirCanalAOrigen,
   convertirEntregaAModalidad,
@@ -32,13 +33,7 @@ export function convertirSolicitudACuerpo(solicitud: SolicitudVenta): RegistrarV
       idProducto: Number(item.idProducto),
       cantidad: item.cantidad,
     })),
-    pagos: solicitud.pagos.map((pago) => ({
-      idMedioPago: pago.idMedioPago,
-      monto: convertirCentavosAPesos(pago.montoBaseCentavos),
-      ...(pago.montoRecibidoCentavos !== null && {
-        montoRecibido: convertirCentavosAPesos(pago.montoRecibidoCentavos),
-      }),
-    })),
+    pagos: convertirPagosACuerpo(solicitud.pagos),
     ...(solicitud.descuentoManual !== null && {
       descuentoManual: convertirCentavosAPesos(solicitud.descuentoManual.montoCentavos),
       motivoDescuento: solicitud.descuentoManual.motivo,
