@@ -10,7 +10,8 @@ export const MODULOS_MENU: ModuloMenu[] = [
     secciones: [
       { idSeccion: 'registrar-venta', etiqueta: 'Registrar venta' },
       { idSeccion: 'historial', etiqueta: 'Historial' },
-      { idSeccion: 'medios-de-pago', etiqueta: 'Medios de pago' },
+      // Oculta: la seccion no va en la demo. Para volver a mostrarla, descomentar la linea
+      // { idSeccion: 'medios-de-pago', etiqueta: 'Medios de pago' },
       { idSeccion: 'cambios-posventa', etiqueta: 'Cambios posventa' },
     ],
   },
