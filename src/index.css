@@ -4,6 +4,18 @@
 /* El modo oscuro solo se activa con la clase .dark, no con la preferencia del sistema */
 @custom-variant dark (&:is(.dark *));
 
+/* Solo claro por ahora: sin esto el navegador (Edge) puede aplicar su propio oscurecido o repintado a los fondos.
+   Al sumar el modo oscuro, cambiar a "light dark" aca y en la meta color-scheme de index.html. */
+:root {
+  color-scheme: light;
+}
+
+/* Edge agrega su propio ojo de mostrar contrasena y la cruz de borrar: la app ya tiene el suyo */
+input::-ms-reveal,
+input::-ms-clear {
+  display: none;
+}
+
 /* --- TOKENS DE DISENO --- */
 /* Cada token --color-X genera las clases bg-X, text-X y border-X. */
 @theme {
@@ -19,6 +31,16 @@
   /* Estados de elementos interactivos: el hover es mas claro que el seleccionado */
   --color-fondo-hover: #f1efff;
   --color-fondo-seleccion: #e9e6ff;
+  /* Esqueleto de carga: #e9e6ff al 70 % sobre blanco, pero solido (la transparencia se repintaba en amarillo en Edge) */
+  --color-esqueleto: #f0eeff;
+
+  /* Pulso del esqueleto: solo anima la opacidad, un poco mas suave que el de Tailwind */
+  --animate-pulso-suave: pulso-suave 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  @keyframes pulso-suave {
+    50% {
+      opacity: 0.6;
+    }
+  }
 
   /* Textos */
   --color-texto-principal: var(--color-slate-900);
