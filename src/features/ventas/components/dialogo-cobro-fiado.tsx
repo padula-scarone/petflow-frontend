@@ -10,17 +10,24 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { Skeleton } from '@/components/ui/skeleton'
 import { formatearMoneda, formatearMonedaConSigno } from '@/lib/formatear-moneda'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
 import { BotonesEnvioComprobante } from '@/features/ventas/components/botones-envio-comprobante'
 import { EncabezadoExitoVenta } from '@/features/ventas/components/encabezado-exito-venta'
 import { EstadoCobertura } from '@/features/ventas/components/estado-cobertura'
+import { EstadoErrorLista } from '@/features/ventas/components/estado-error-lista'
+import { EstadoMediosPago } from '@/features/ventas/components/estado-medios-pago'
 import { PanelFormaPago } from '@/features/ventas/components/panel-forma-pago'
 import type { CobroFiadoProps } from '@/features/ventas/types/historial'
 
 export function DialogoCobroFiado({
   fila,
+  estadoImporte,
+  onReintentarImporte,
   importeAdeudado,
+  estadoMediosPago,
+  onReintentarMediosPago,
   propiedadesCobro,
   enviando,
   error,
@@ -67,13 +74,16 @@ export function DialogoCobroFiado({
                   </dd>
                 </div>
               </dl>
-              <div className="flex gap-2">
-                <BotonesEnvioComprobante
-                  enlaceWhatsApp={recibo.enlaceWhatsApp}
-                  enlaceMail={recibo.enlaceMail}
-                  variante="compacta"
-                />
-              </div>
+              {/* Sin comprobante (el pedido del detalle fallo) no hay enlaces; "Ver recibo" lo vuelve a pedir */}
+              {recibo.enlaceWhatsApp !== null && recibo.enlaceMail !== null && (
+                <div className="flex gap-2">
+                  <BotonesEnvioComprobante
+                    enlaceWhatsApp={recibo.enlaceWhatsApp}
+                    enlaceMail={recibo.enlaceMail}
+                    variante="compacta"
+                  />
+                </div>
+              )}
             </DialogBody>
             <DialogFooter>
               <Button type="button" variant="outline" className="h-11 px-6" onClick={onCerrar}>
@@ -95,75 +105,107 @@ export function DialogoCobroFiado({
             </DialogHeader>
 
             <DialogBody>
-              <div className="rounded-grande border bg-fondo-suave p-4">
-                <p className="text-sm text-texto-suave">Importe adeudado</p>
-                <p className="text-3xl font-bold tabular-nums">{formatearMoneda(importeAdeudado)}</p>
-              </div>
-
-              {/* Sin descuento manual y sin la opcion de fiado: el SSOT no lo admite al cobrar un fiado */}
-              <PanelFormaPago
-                estadoCobro={estadoCobro}
-                permiteFiado={false}
-                onCambiarFormaPago={propiedadesCobro.onCambiarFormaPago}
-                onSeleccionarMedioPago={propiedadesCobro.onSeleccionarMedioPago}
-                onCambiarPagaCon={propiedadesCobro.onCambiarPagaCon}
-                onAgregarLineaPago={propiedadesCobro.onAgregarLineaPago}
-                onQuitarLineaPago={propiedadesCobro.onQuitarLineaPago}
-                onCambiarMontoLinea={propiedadesCobro.onCambiarMontoLinea}
-                onCambiarPagaConLinea={propiedadesCobro.onCambiarPagaConLinea}
-                onCompletarConRestante={propiedadesCobro.onCompletarConRestante}
-                onCambiarNombreClienteFiado={propiedadesCobro.onCambiarNombreClienteFiado}
-              />
-
-              {/* --- TOTAL ESTIMADO --- */}
-              <section aria-label="Total estimado" className="flex flex-col gap-3 rounded-grande border p-4">
-                <dl className="flex flex-col gap-2 text-sm">
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-texto-suave">Importe adeudado</dt>
-                    <dd className="font-medium tabular-nums">{formatearMoneda(importeAdeudado)}</dd>
-                  </div>
-                  <div className="flex justify-between gap-3">
-                    <dt className="text-texto-suave">Descuento o recargo del medio de pago</dt>
-                    <dd className="font-medium whitespace-nowrap tabular-nums">
-                      {formatearMonedaConSigno(resumen.montoAjusteMediosPago)}
-                    </dd>
-                  </div>
-                </dl>
-                <p className="flex items-baseline justify-between gap-3 border-t pt-3">
-                  <span className="font-bold">Total estimado</span>
-                  <span className="text-2xl font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
-                </p>
-                <p className="text-xs text-texto-suave">
-                  Es un estimado: el total final lo calcula el servidor con los recargos y descuentos
-                  vigentes al confirmar.
-                </p>
-                {formaPago === 'mixto' && (
-                  <EstadoCobertura
-                    faltaCubrir={resumen.faltaCubrir}
-                    excedente={resumen.excedente}
-                    onAjustarAutomaticamente={propiedadesCobro.onAjustarMontosAutomaticamente}
-                    className="border-t pt-3"
-                  />
-                )}
-              </section>
-
-              {/* --- RECHAZO DEL SERVIDOR --- */}
-              {error && (
-                <Alert variant="destructive">
-                  <TriangleAlert aria-hidden="true" />
-                  <AlertTitle>
-                    {error.estadoHttp === 404 ? 'La venta ya no existe' : 'No se pudo cobrar el fiado'}
-                  </AlertTitle>
-                  <AlertDescription>
-                    <p>{error.mensaje}</p>
-                  </AlertDescription>
-                </Alert>
+              {/* --- CARGA DEL IMPORTE: SALE DEL DETALLE DE LA VENTA --- */}
+              {estadoImporte.fase === 'cargando' && (
+                <div role="status" aria-busy="true" className="flex flex-col gap-4">
+                  <span className="sr-only">Cargando los datos de la venta</span>
+                  <Skeleton className="h-20 w-full" />
+                  <Skeleton className="h-28 w-full" />
+                  <Skeleton className="h-24 w-full" />
+                </div>
               )}
 
-              {!estadoCobro.puedeConfirmar && estadoCobro.motivoNoConfirmable && (
-                <p role="status" className="text-center text-sm text-texto-suave">
-                  {estadoCobro.motivoNoConfirmable}
-                </p>
+              {estadoImporte.fase === 'error' && (
+                <EstadoErrorLista
+                  titulo="No se pudo preparar el cobro"
+                  mensaje={estadoImporte.mensajeError ?? ''}
+                  onReintentar={onReintentarImporte}
+                />
+              )}
+
+              {estadoImporte.fase === 'listo' && (
+                <>
+                  <div className="rounded-grande border bg-fondo-suave p-4">
+                    <p className="text-sm text-texto-suave">Importe adeudado</p>
+                    <p className="text-3xl font-bold tabular-nums">{formatearMoneda(importeAdeudado)}</p>
+                  </div>
+
+                  <EstadoMediosPago
+                    estadoMediosPago={estadoMediosPago}
+                    cantidadMedios={estadoCobro.mediosDisponibles.length}
+                    onReintentar={onReintentarMediosPago}
+                  />
+
+                  {/* Sin descuento manual y sin la opcion de fiado: el SSOT no lo admite al cobrar un fiado */}
+                  <PanelFormaPago
+                    estadoCobro={estadoCobro}
+                    permiteFiado={false}
+                    onCambiarFormaPago={propiedadesCobro.onCambiarFormaPago}
+                    onSeleccionarMedioPago={propiedadesCobro.onSeleccionarMedioPago}
+                    onCambiarPagaCon={propiedadesCobro.onCambiarPagaCon}
+                    onAgregarLineaPago={propiedadesCobro.onAgregarLineaPago}
+                    onQuitarLineaPago={propiedadesCobro.onQuitarLineaPago}
+                    onCambiarMontoLinea={propiedadesCobro.onCambiarMontoLinea}
+                    onCambiarPagaConLinea={propiedadesCobro.onCambiarPagaConLinea}
+                    onCompletarConRestante={propiedadesCobro.onCompletarConRestante}
+                    onCambiarNombreClienteFiado={propiedadesCobro.onCambiarNombreClienteFiado}
+                  />
+
+                  {/* --- TOTAL ESTIMADO --- */}
+                  <section aria-label="Total estimado" className="flex flex-col gap-3 rounded-grande border p-4">
+                    <dl className="flex flex-col gap-2 text-sm">
+                      <div className="flex justify-between gap-3">
+                        <dt className="text-texto-suave">Importe adeudado</dt>
+                        <dd className="font-medium tabular-nums">{formatearMoneda(importeAdeudado)}</dd>
+                      </div>
+                      <div className="flex justify-between gap-3">
+                        <dt className="text-texto-suave">Descuento o recargo del medio de pago</dt>
+                        <dd className="font-medium whitespace-nowrap tabular-nums">
+                          {formatearMonedaConSigno(resumen.montoAjusteMediosPago)}
+                        </dd>
+                      </div>
+                    </dl>
+                    <p className="flex items-baseline justify-between gap-3 border-t pt-3">
+                      <span className="font-bold">Total estimado</span>
+                      <span className="text-2xl font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
+                    </p>
+                    <p className="text-xs text-texto-suave">
+                      Es un estimado: el total final lo calcula el servidor con los recargos y descuentos
+                      vigentes al confirmar.
+                    </p>
+                    {formaPago === 'mixto' && (
+                      <EstadoCobertura
+                        faltaCubrir={resumen.faltaCubrir}
+                        excedente={resumen.excedente}
+                        onAjustarAutomaticamente={propiedadesCobro.onAjustarMontosAutomaticamente}
+                        className="border-t pt-3"
+                      />
+                    )}
+                  </section>
+
+                  {/* --- RECHAZO DEL SERVIDOR --- */}
+                  {error && (
+                    <Alert variant="destructive">
+                      <TriangleAlert aria-hidden="true" />
+                      <AlertTitle>
+                        {error.estadoHttp === 404
+                          ? 'La venta ya no existe'
+                          : error.incierto
+                            ? 'No pudimos confirmar el resultado'
+                            : 'No se pudo cobrar el fiado'}
+                      </AlertTitle>
+                      <AlertDescription>
+                        <p>{error.mensaje}</p>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
+                  {!estadoCobro.puedeConfirmar && estadoCobro.motivoNoConfirmable && (
+                    <p role="status" className="text-center text-sm text-texto-suave">
+                      {estadoCobro.motivoNoConfirmable}
+                    </p>
+                  )}
+                </>
               )}
             </DialogBody>
 
@@ -183,8 +225,8 @@ export function DialogoCobroFiado({
                   Cancelar
                 </Button>
               )}
-              {/* Tras un 404 ya no hay nada que cobrar; tras un 409 sin caja se puede reintentar */}
-              {error?.estadoHttp !== 404 && (
+              {/* Si la venta ya no existe o la resolvio otra persona, no hay nada que cobrar; el resto se puede reintentar */}
+              {estadoImporte.fase === 'listo' && (error === null || error.reintentable) && (
                 <BotonConfirmarCobro
                   formaPago={formaPago}
                   habilitado={estadoCobro.puedeConfirmar && !enviando}

@@ -25,6 +25,14 @@ export function usePlazoModificacionVenta(
   }, null)
 
   // --- EFECTOS ---
+  // Cuando llega una respuesta nueva (otro desfase u otras fechas), se resincroniza el reloj: sin esto
+  // "ahoraLocal" solo avanza al vencer una ventana y, en una pantalla abierta por horas, quedaria atrasado
+  const claveFechasLimite = fechasLimite.join('|')
+  useEffect(() => {
+    const temporizador = setTimeout(() => setAhoraLocalMilisegundos(Date.now()), 0)
+    return () => clearTimeout(temporizador)
+  }, [desfaseServidorMilisegundos, claveFechasLimite])
+
   // Un temporizador por vencimiento: al dispararse se recalcula y se programa el siguiente
   useEffect(() => {
     if (proximoVencimiento === null) return

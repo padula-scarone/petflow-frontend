@@ -3,6 +3,8 @@ import { MOTIVOS_ANULACION, MOTIVOS_EDICION } from '@/features/ventas/config/mot
 import type { CodigoMotivo, ConfirmacionAccionVenta } from '@/features/ventas/types/historial'
 
 const TITULO_ERROR: Record<number, string> = {
+  0: 'No pudimos confirmar el resultado',
+  400: 'El motivo no es válido',
   403: 'Se venció el plazo',
   404: 'La venta ya no existe',
   409: 'No se pudo completar la acción',
