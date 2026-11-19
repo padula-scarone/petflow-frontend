@@ -3,6 +3,7 @@ import {
   CANTIDAD_INICIAL_GRANEL_GRAMOS,
   CANTIDAD_MAXIMA_RESULTADOS_BUSQUEDA,
   CANTIDAD_MINIMA_GRANEL_GRAMOS,
+  CANTIDAD_MINIMA_UNIDADES,
   PASO_GRANEL_GRAMOS,
 } from '@/features/ventas/config/reglas-venta'
 import type { BorradorRepoblado } from '@/features/ventas/types/borrador-repoblado'
@@ -181,6 +182,15 @@ export function useCarritoVenta(
       ),
     )
 
+  const cambiarUnidades = (idProducto: string, unidades: number) =>
+    setArticulosAgregados((actuales) =>
+      actuales.map((articulo) =>
+        articulo.idProducto === idProducto && articulo.formato === 'unidad'
+          ? recalcularArticulo(articulo, Math.max(CANTIDAD_MINIMA_UNIDADES, Math.round(unidades)))
+          : articulo,
+      ),
+    )
+
   const agregarProducto = (idProducto: string) => {
     const producto = productosPorId.get(idProducto)
     if (producto !== undefined) {
@@ -213,6 +223,7 @@ export function useCarritoVenta(
     onAumentarCantidad: (idProducto) => cambiarCantidad(idProducto, 1),
     onDisminuirCantidad: (idProducto) => cambiarCantidad(idProducto, -1),
     onCambiarPesoGranel: cambiarPesoGranel,
+    onCambiarUnidades: cambiarUnidades,
     onEliminarArticulo: (idProducto) =>
       setArticulosAgregados((actuales) =>
         actuales.filter((articulo) => articulo.idProducto !== idProducto),

@@ -66,6 +66,8 @@ export function CampoPesoGranel({
           aria-label={`Peso en gramos de ${nombreProducto}`}
           className="h-11 w-20 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0"
           value={borrador ?? String(gramos)}
+          // Con el peso seleccionado, tipear lo reemplaza en lugar de sumarse a el (un 1000 + un 5 daria 10005)
+          onFocus={(evento) => evento.target.select()}
           onChange={(evento) => cambiarTexto(evento.target.value)}
           onBlur={() => setBorrador(null)}
         />

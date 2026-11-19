@@ -1,7 +1,8 @@
-import { Minus, Plus, Trash2, TriangleAlert } from 'lucide-react'
+import { Trash2, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatearMoneda } from '@/lib/formatear-moneda'
+import { CampoCantidadUnidades } from '@/features/ventas/components/campo-cantidad-unidades'
 import { CampoPesoGranel } from '@/features/ventas/components/campo-peso-granel'
 import { ImagenProducto } from '@/features/ventas/components/imagen-producto'
 import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
@@ -13,6 +14,7 @@ interface TarjetaArticuloCarritoProps {
   onAumentarCantidad: (idProducto: string) => void
   onDisminuirCantidad: (idProducto: string) => void
   onCambiarPesoGranel: (idProducto: string, gramos: number) => void
+  onCambiarUnidades: (idProducto: string, unidades: number) => void
   onEliminarArticulo: (idProducto: string) => void
 }
 
@@ -21,6 +23,7 @@ export function TarjetaArticuloCarrito({
   onAumentarCantidad,
   onDisminuirCantidad,
   onCambiarPesoGranel,
+  onCambiarUnidades,
   onEliminarArticulo,
 }: TarjetaArticuloCarritoProps) {
   const excedeStock = articulo.cantidad > articulo.stockDisponible
@@ -93,35 +96,13 @@ export function TarjetaArticuloCarrito({
             onDisminuir={() => onDisminuirCantidad(articulo.idProducto)}
           />
         ) : (
-          <div className="flex items-center rounded-grande border">
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={`Disminuir cantidad de ${articulo.nombreProducto}`}
-              className="size-11"
-              disabled={articulo.cantidad <= 1}
-              onClick={() => onDisminuirCantidad(articulo.idProducto)}
-            >
-              <Minus />
-            </Button>
-            <span
-              aria-live="polite"
-              className="min-w-8 text-center font-medium tabular-nums"
-            >
-              {articulo.cantidad}
-            </span>
-            <Button
-              type="button"
-              variant="ghost"
-              size="icon"
-              aria-label={`Aumentar cantidad de ${articulo.nombreProducto}`}
-              className="size-11"
-              onClick={() => onAumentarCantidad(articulo.idProducto)}
-            >
-              <Plus />
-            </Button>
-          </div>
+          <CampoCantidadUnidades
+            nombreProducto={articulo.nombreProducto}
+            unidades={articulo.cantidad}
+            onCambiarUnidades={(unidades) => onCambiarUnidades(articulo.idProducto, unidades)}
+            onAumentar={() => onAumentarCantidad(articulo.idProducto)}
+            onDisminuir={() => onDisminuirCantidad(articulo.idProducto)}
+          />
         )}
 
         <span className="ml-auto min-w-20 text-right font-bold tabular-nums xl:ml-0 xl:w-28">

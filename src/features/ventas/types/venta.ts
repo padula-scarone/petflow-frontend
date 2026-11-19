@@ -79,6 +79,8 @@ export interface RegistrarVentaCarritoProps {
   onDisminuirCantidad: (idProducto: string) => void
   /** Peso de un producto a granel, en gramos enteros y de al menos el minimo. */
   onCambiarPesoGranel: (idProducto: string, gramos: number) => void
+  /** Cantidad de un producto por unidad, entera y de al menos el minimo. */
+  onCambiarUnidades: (idProducto: string, unidades: number) => void
   onEliminarArticulo: (idProducto: string) => void
   /** Cosas que no se pudieron cargar al repoblar la venta editada (producto sin stock o dado de baja, medio o descuento que ya no sirven). */
   avisosRepoblado: string[]
