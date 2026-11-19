@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 import { CANTIDAD_MINIMA_UNIDADES } from '@/features/ventas/config/reglas-venta'
 
 /** Largo maximo de la cantidad tipeada: 4 cifras son hasta 9.999 unidades, mas que cualquier stock real. */
@@ -9,6 +10,8 @@ const CIFRAS_MAXIMAS_UNIDADES = 4
 
 /** Props del campo donde se carga la cantidad de un producto que se vende por unidad. */
 interface CampoCantidadUnidadesProps {
+  /** Lugar del campo en su contenedor; en mobile el campo se estira a todo el ancho que le den. */
+  className?: string
   nombreProducto: string
   /** Cantidad actual del carrito; nunca es menor al minimo. */
   unidades: number
@@ -24,6 +27,7 @@ interface CampoCantidadUnidadesProps {
  * informa una cantidad valida y al salir del campo vuelve a la ultima cantidad valida.
  */
 export function CampoCantidadUnidades({
+  className,
   nombreProducto,
   unidades,
   onCambiarUnidades,
@@ -42,7 +46,7 @@ export function CampoCantidadUnidades({
   }
 
   return (
-    <div className="flex items-center rounded-grande border">
+    <div className={cn('flex items-center rounded-grande border', className)}>
       <Button
         type="button"
         variant="ghost"
@@ -62,7 +66,8 @@ export function CampoCantidadUnidades({
         inputMode="numeric"
         autoComplete="off"
         aria-label={`Cantidad de ${nombreProducto}`}
-        className="h-11 w-14 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0"
+        // Con espacio de sobra (mobile) el numero ocupa el centro entre los botones; si no, queda de ancho fijo
+        className="h-11 min-w-0 flex-1 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0 sm:w-14 sm:flex-none"
         value={borrador ?? String(unidades)}
         // Con la cantidad seleccionada, tipear la reemplaza en lugar de sumarse a ella (un 1 + un 5 daria 15)
         onFocus={(evento) => evento.target.select()}
