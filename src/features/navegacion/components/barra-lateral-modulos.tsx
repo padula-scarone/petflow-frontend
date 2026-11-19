@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/button'
+import { IndicadorCaja } from '@/features/caja/components/indicador-caja'
 import { MenuUsuario } from '@/features/navegacion/components/menu-usuario'
 import { cn } from '@/lib/utils'
 import type { ModuloMenu } from '@/features/navegacion/types/menu'
@@ -8,6 +9,7 @@ interface BarraLateralModulosProps {
   modulos: ModuloMenu[]
   idModuloActivo: string
   nombreUsuario: string
+  cajaAbierta: boolean
   onSeleccionarModulo: (idModulo: string) => void
   onAbrirMiPerfil: () => void
   onCerrarSesion: () => void
@@ -17,6 +19,7 @@ export function BarraLateralModulos({
   modulos,
   idModuloActivo,
   nombreUsuario,
+  cajaAbierta,
   onSeleccionarModulo,
   onAbrirMiPerfil,
   onCerrarSesion,
@@ -50,15 +53,19 @@ export function BarraLateralModulos({
         })}
       </nav>
 
-      {/* --- USUARIO --- */}
-      <MenuUsuario
-        nombreUsuario={nombreUsuario}
-        ladoMenu="top"
-        alineacionMenu="start"
-        anchoCompleto
-        onAbrirMiPerfil={onAbrirMiPerfil}
-        onCerrarSesion={onCerrarSesion}
-      />
+      {/* --- ESTADO DE LA CAJA Y USUARIO --- */}
+      <div className="flex flex-col gap-3">
+        {/* px-4 lo alinea con el icono del boton de usuario y con los de los modulos */}
+        <IndicadorCaja cajaAbierta={cajaAbierta} className="px-4" />
+        <MenuUsuario
+          nombreUsuario={nombreUsuario}
+          ladoMenu="top"
+          alineacionMenu="start"
+          anchoCompleto
+          onAbrirMiPerfil={onAbrirMiPerfil}
+          onCerrarSesion={onCerrarSesion}
+        />
+      </div>
     </aside>
   )
 }

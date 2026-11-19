@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router'
 import { useCerrarSesion } from '@/features/auth/hooks/use-cerrar-sesion'
 import { useUsuarioSesion } from '@/features/auth/hooks/use-usuario-sesion'
+import { useEstadoCaja } from '@/features/caja/hooks/use-estado-caja'
 import { MenuDoble } from '@/features/navegacion/components/menu-doble'
 import { MODULOS_MENU } from '@/features/navegacion/config/modulos-menu'
 import { useMenuDoble } from '@/features/navegacion/hooks/use-menu-doble'
@@ -11,6 +12,7 @@ export function LayoutMenu() {
     useMenuDoble(MODULOS_MENU)
   const { cerrarSesion } = useCerrarSesion()
   const usuario = useUsuarioSesion()
+  const { cajaAbierta } = useEstadoCaja()
   const { pathname } = useLocation()
 
   return (
@@ -19,6 +21,7 @@ export function LayoutMenu() {
       idModuloActivo={idModuloActivo}
       idSeccionActiva={idSeccionActiva}
       nombreUsuario={usuario.nombre}
+      cajaAbierta={cajaAbierta}
       onSeleccionarModulo={seleccionarModulo}
       onSeleccionarSeccion={seleccionarSeccion}
       onAbrirMiPerfil={abrirMiPerfil}

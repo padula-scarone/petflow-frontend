@@ -1,5 +1,6 @@
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
+import { IndicadorCaja } from '@/features/caja/components/indicador-caja'
 import { useCabeceraDesplazable } from '@/features/navegacion/hooks/use-cabecera-desplazable'
 import { BarraInferiorModulos } from '@/features/navegacion/components/barra-inferior-modulos'
 import { BarraLateralModulos } from '@/features/navegacion/components/barra-lateral-modulos'
@@ -12,6 +13,7 @@ export function MenuDoble({
   idModuloActivo,
   idSeccionActiva,
   nombreUsuario,
+  cajaAbierta,
   onSeleccionarModulo,
   onSeleccionarSeccion,
   onAbrirMiPerfil,
@@ -42,6 +44,7 @@ export function MenuDoble({
         modulos={modulos}
         idModuloActivo={idModuloActivo}
         nombreUsuario={nombreUsuario}
+        cajaAbierta={cajaAbierta}
         onSeleccionarModulo={onSeleccionarModulo}
         onAbrirMiPerfil={onAbrirMiPerfil}
         onCerrarSesion={onCerrarSesion}
@@ -81,7 +84,13 @@ export function MenuDoble({
           )}
         >
           <div className="flex items-center justify-between gap-3 border-b bg-fondo-tarjeta px-4 py-3">
-            <p className="text-2xl font-bold">PetFlow</p>
+            {/* Logo con interlineado ajustado y el estado de la caja debajo, separado para que no se
+                lea como parte del logo: 24 + 8 + 12 = 44 px, justo el alto del boton de usuario,
+                asi que la cabecera no crece */}
+            <div className="flex shrink-0 flex-col gap-2">
+              <p className="text-2xl leading-none font-bold">PetFlow</p>
+              <IndicadorCaja cajaAbierta={cajaAbierta} />
+            </div>
             {/* El menu sale hacia abajo y se alinea al borde derecho del boton */}
             <MenuUsuario
               nombreUsuario={nombreUsuario}
