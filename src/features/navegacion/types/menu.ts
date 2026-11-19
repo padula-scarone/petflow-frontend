@@ -41,6 +41,8 @@ export interface MenuDobleProps {
   idModuloActivo: string
   idSeccionActiva: string
   nombreUsuario: string
+  /** Estado de la caja que se muestra bajo el logo. */
+  cajaAbierta: boolean
   onSeleccionarModulo: (idModulo: string) => void
   onSeleccionarSeccion: (idSeccion: string) => void
   onAbrirMiPerfil: () => void
