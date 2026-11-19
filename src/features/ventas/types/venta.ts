@@ -69,7 +69,7 @@ export interface RegistrarVentaCarritoProps {
   /** Texto actual del buscador (componente controlado). */
   textoBusqueda: string
   /** Coincidencias a mostrar en el desplegable; vacio si no hay texto buscado. */
-  resultadosBusqueda: ResultadoBusqueda[]
+  resultadosBusqueda: ProductoCatalogo[]
   /** Carga del catalogo de productos: mientras no este listo no hay nada que buscar. */
   estadoCatalogo: EstadoCargaRecurso
   onReintentarCatalogo: () => void

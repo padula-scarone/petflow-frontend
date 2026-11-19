@@ -12,8 +12,23 @@ export interface ResultadoBuscadorProducto<Identificador extends string | number
   nombreProducto: string
   /** URL de la miniatura del producto; conviene que sea una version chica, no la original. */
   urlImagen?: string
+  /** Si viene, se muestra bajo el nombre. */
+  categoria?: string
+  /** Si viene, se muestra bajo el nombre como "Unidad" o "Granel". */
+  formato?: 'unidad' | 'granel'
   precioUnitario: number
   stockDisponible: number
+}
+
+const ETIQUETA_FORMATO = { unidad: 'Unidad', granel: 'Granel' } as const
+
+/** "Categoria · Unidad", o lo que haya de eso; vacio si el resultado no trae ninguno de los dos datos. */
+function describirProducto<Identificador extends string | number>(
+  resultado: ResultadoBuscadorProducto<Identificador>,
+) {
+  return [resultado.categoria, resultado.formato && ETIQUETA_FORMATO[resultado.formato]]
+    .filter(Boolean)
+    .join(' · ')
 }
 
 /** Props del buscador de productos con desplegable de coincidencias. */
@@ -146,6 +161,7 @@ export function BuscadorProductos<Identificador extends string | number>({
           ) : (
             resultadosVisibles.map((resultado, indiceResultado) => {
               const resultadoSinStock = sinStock(resultado)
+              const detalleProducto = describirProducto(resultado)
               return (
               <li key={resultado.idProducto} role="presentation">
                 <button
@@ -160,8 +176,12 @@ export function BuscadorProductos<Identificador extends string | number>({
                       urlImagen={resultado.urlImagen}
                       className="size-10"
                     />
-                    <span className="truncate font-medium tabular-nums">
-                      {resultado.nombreProducto}
+                    {/* Nada se corta con puntos suspensivos: lo que no entra pasa al renglon siguiente */}
+                    <span className="flex min-w-0 flex-col">
+                      <span className="font-medium tabular-nums">{resultado.nombreProducto}</span>
+                      {detalleProducto !== '' && (
+                        <span className="text-xs text-texto-suave">{detalleProducto}</span>
+                      )}
                     </span>
                   </span>
                   <span className="flex shrink-0 flex-col items-end text-xs tabular-nums sm:flex-row sm:gap-4">
