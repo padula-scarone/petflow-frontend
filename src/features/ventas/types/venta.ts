@@ -59,6 +59,8 @@ export interface EstadoVentaEnCurso {
   tipoEntrega: TipoEntrega
   articulos: ArticuloCarrito[]
   subtotal: number
+  /** true si algun articulo supera su stock disponible: mientras sea asi no se puede cobrar. */
+  algunArticuloSuperaStock: boolean
 }
 
 /** Props del componente presentacional de la Seccion 1 de Registrar Venta. */

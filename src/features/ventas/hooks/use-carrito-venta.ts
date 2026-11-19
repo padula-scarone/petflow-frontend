@@ -21,6 +21,7 @@ import {
 } from '@/features/ventas/utils/calcular-centavos'
 import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
 import { normalizarTextoBusqueda } from '@/features/ventas/utils/normalizar-texto-busqueda'
+import { superaStockDisponible } from '@/features/ventas/utils/superar-stock'
 
 function recalcularArticulo(articulo: ArticuloCarrito, cantidad: number): ArticuloCarrito {
   const subtotalCentavos = calcularSubtotalLineaCentavos(
@@ -213,6 +214,7 @@ export function useCarritoVenta(
       tipoEntrega,
       articulos,
       subtotal: convertirCentavosAPesos(subtotalCentavos),
+      algunArticuloSuperaStock: articulos.some(superaStockDisponible),
     },
     textoBusqueda,
     resultadosBusqueda,
