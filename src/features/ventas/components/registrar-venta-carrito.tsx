@@ -22,12 +22,13 @@ export function RegistrarVentaCarrito({
   onAumentarCantidad,
   onDisminuirCantidad,
   onCambiarPesoGranel,
+  onCambiarUnidades,
   onEliminarArticulo,
   avisosRepoblado,
   onCerrarAvisosRepoblado,
   onContinuarACobro,
 }: RegistrarVentaCarritoProps) {
-  const { canalVenta, tipoEntrega, articulos, subtotal } = estadoVenta
+  const { canalVenta, tipoEntrega, articulos, subtotal, algunArticuloSuperaStock } = estadoVenta
   const carritoVacio = articulos.length === 0
 
   return (
@@ -100,6 +101,7 @@ export function RegistrarVentaCarrito({
                   onAumentarCantidad={onAumentarCantidad}
                   onDisminuirCantidad={onDisminuirCantidad}
                   onCambiarPesoGranel={onCambiarPesoGranel}
+                  onCambiarUnidades={onCambiarUnidades}
                   onEliminarArticulo={onEliminarArticulo}
                 />
               </li>
@@ -121,7 +123,8 @@ export function RegistrarVentaCarrito({
           type="button"
           variant="exito"
           className="h-12 min-w-0 flex-1 px-5 text-base sm:px-8 font-bold tracking-wide shadow-md sm:flex-none xl:h-14 xl:min-w-56 xl:text-lg"
-          disabled={carritoVacio}
+          // Un articulo por encima del stock se corrige antes de cobrar: el back lo rechazaria igual
+          disabled={carritoVacio || algunArticuloSuperaStock}
           onClick={onContinuarACobro}
         >
           COBRAR

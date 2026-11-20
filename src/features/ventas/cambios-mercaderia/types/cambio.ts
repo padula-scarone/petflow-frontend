@@ -2,6 +2,7 @@ import type { CodigoErrorCambio } from '@/features/ventas/cambios-mercaderia/typ
 import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import type { MedioPago } from '@/features/ventas/types/cobro'
 import type { PaginacionResultados, RangoFechasFiltro } from '@/features/ventas/types/compartidos'
+import type { FormatoArticulo } from '@/features/ventas/types/venta'
 import type {
   FiltroMedioPago,
   FormatoVenta,
@@ -284,7 +285,11 @@ export interface OpcionBolsaAbierta {
 export interface ProductoCatalogoCambio {
   idProducto: number
   nombreProducto: string
+  /** Nombre de la categoria, tal como lo manda el back. Es para mostrar en el buscador. */
+  categoria: string
   formatoVenta: FormatoVenta
+  /** El mismo dato que formatoVenta, con la forma que usa el catalogo de Registrar Venta: es lo que lee el buscador. */
+  formato: FormatoArticulo
   precioUnitario: number
   stockDisponible: number
   urlImagen?: string

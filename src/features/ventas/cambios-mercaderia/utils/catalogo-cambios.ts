@@ -34,7 +34,9 @@ export function convertirProductoACatalogoCambio(producto: ProductoCatalogo): Pr
   return {
     idProducto: Number(producto.idProducto),
     nombreProducto: producto.nombreProducto,
+    categoria: producto.categoria,
     formatoVenta: esUnidad ? 'UNIDAD' : 'GRANEL',
+    formato: producto.formato,
     precioUnitario: producto.precioUnitario,
     stockDisponible: producto.stockDisponible,
     urlImagen: producto.urlImagen,

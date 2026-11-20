@@ -2,6 +2,7 @@ import { Search, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { EtiquetaFiltro, type VarianteFiltro } from '@/features/ventas/components/etiqueta-filtro'
+import { useNavegacionSugerencias } from '@/features/ventas/hooks/use-navegacion-sugerencias'
 import type { ProductoFiltro } from '@/features/ventas/types/historial'
 
 /** Props del filtro por producto. */
@@ -26,6 +27,12 @@ export function FiltroProducto({
 }: FiltroProductoProps) {
   const idLista = `${idCampo}-resultados`
   const desplegableVisible = textoBusqueda.trim() !== ''
+  const navegacion = useNavegacionSugerencias({
+    idLista,
+    listaVisible: desplegableVisible,
+    opcionesHabilitadas: desplegableVisible ? productosCoincidentes.map(() => true) : [],
+    alElegir: (indiceOpcion) => onSeleccionarProducto(productosCoincidentes[indiceOpcion]),
+  })
 
   return (
     <div className="flex min-w-0 flex-col gap-1.5">
@@ -65,28 +72,34 @@ export function FiltroProducto({
             aria-label={variante === 'barra' ? 'Producto' : undefined}
             className="h-11 bg-fondo-tarjeta pl-10"
             value={textoBusqueda}
-            aria-controls={desplegableVisible ? idLista : undefined}
-            onChange={(evento) => onBuscarProducto(evento.target.value)}
-            // Escape cierra el desplegable sin elegir nada
+            {...navegacion.propiedadesCampo}
+            onChange={(evento) => {
+              // Otro texto, otra lista: se empieza de nuevo sin nada resaltado
+              navegacion.reiniciar()
+              onBuscarProducto(evento.target.value)
+            }}
+            // Escape cierra el desplegable sin elegir nada; las flechas y Enter los maneja la navegacion
             onKeyDown={(evento) => {
               if (evento.key === 'Escape') onBuscarProducto('')
+              else navegacion.propiedadesCampo.onKeyDown(evento)
             }}
           />
 
           {/* --- COINCIDENCIAS --- */}
           {desplegableVisible && (
             <ul
-              id={idLista}
+              {...navegacion.propiedadesLista}
               className="absolute inset-x-0 top-full z-20 mt-1 max-h-60 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md"
             >
               {productosCoincidentes.length === 0 ? (
                 <li className="px-3 py-3 text-sm text-texto-suave">Sin resultados</li>
               ) : (
-                productosCoincidentes.map((producto) => (
-                  <li key={producto.idProducto}>
+                productosCoincidentes.map((producto, indiceProducto) => (
+                  <li key={producto.idProducto} role="presentation">
                     <button
                       type="button"
-                      className="flex min-h-11 w-full items-center rounded-mediano px-3 py-2 text-left text-sm hover:bg-fondo-hover focus-visible:bg-fondo-hover focus-visible:outline-none"
+                      {...navegacion.propiedadesOpcion(indiceProducto)}
+                      className="flex min-h-11 w-full items-center rounded-mediano px-3 py-2 text-left text-sm aria-selected:bg-fondo-seleccion focus-visible:outline-none"
                       onClick={() => onSeleccionarProducto(producto)}
                     >
                       {producto.nombreProducto}

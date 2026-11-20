@@ -16,6 +16,9 @@ export const MOTIVO_DESCUENTO_NO_REGISTRADO = 'Sin motivo registrado'
 /** Peso minimo de un producto a granel, en gramos: el limite tecnico del back (1 g = 0,001 kg). El negocio puede definir uno mayor. */
 export const CANTIDAD_MINIMA_GRANEL_GRAMOS = 1
 
+/** Cantidad minima de un producto que se vende por unidad. */
+export const CANTIDAD_MINIMA_UNIDADES = 1
+
 /** Cuanto suman o restan los botones + y - de un producto a granel, en gramos. */
 export const PASO_GRANEL_GRAMOS = 100
 

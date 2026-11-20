@@ -59,6 +59,8 @@ export interface EstadoVentaEnCurso {
   tipoEntrega: TipoEntrega
   articulos: ArticuloCarrito[]
   subtotal: number
+  /** true si algun articulo supera su stock disponible: mientras sea asi no se puede cobrar. */
+  algunArticuloSuperaStock: boolean
 }
 
 /** Props del componente presentacional de la Seccion 1 de Registrar Venta. */
@@ -67,7 +69,7 @@ export interface RegistrarVentaCarritoProps {
   /** Texto actual del buscador (componente controlado). */
   textoBusqueda: string
   /** Coincidencias a mostrar en el desplegable; vacio si no hay texto buscado. */
-  resultadosBusqueda: ResultadoBusqueda[]
+  resultadosBusqueda: ProductoCatalogo[]
   /** Carga del catalogo de productos: mientras no este listo no hay nada que buscar. */
   estadoCatalogo: EstadoCargaRecurso
   onReintentarCatalogo: () => void
@@ -79,6 +81,8 @@ export interface RegistrarVentaCarritoProps {
   onDisminuirCantidad: (idProducto: string) => void
   /** Peso de un producto a granel, en gramos enteros y de al menos el minimo. */
   onCambiarPesoGranel: (idProducto: string, gramos: number) => void
+  /** Cantidad de un producto por unidad, entera y de al menos el minimo. */
+  onCambiarUnidades: (idProducto: string, unidades: number) => void
   onEliminarArticulo: (idProducto: string) => void
   /** Cosas que no se pudieron cargar al repoblar la venta editada (producto sin stock o dado de baja, medio o descuento que ya no sirven). */
   avisosRepoblado: string[]

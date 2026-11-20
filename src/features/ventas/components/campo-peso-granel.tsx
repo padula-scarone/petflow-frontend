@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Minus, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { cn } from '@/lib/utils'
 import { CANTIDAD_MINIMA_GRANEL_GRAMOS } from '@/features/ventas/config/reglas-venta'
 import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
 
@@ -10,6 +11,8 @@ const CIFRAS_MAXIMAS_GRAMOS = 7
 
 /** Props del campo donde se carga el peso de un producto a granel. */
 interface CampoPesoGranelProps {
+  /** Lugar del campo en su contenedor; en mobile el campo se estira a todo el ancho que le den. */
+  className?: string
   nombreProducto: string
   /** Peso actual del carrito, en gramos enteros; nunca es menor al minimo. */
   gramos: number
@@ -25,6 +28,7 @@ interface CampoPesoGranelProps {
  * se informa un peso valido y al salir del campo vuelve al ultimo peso valido.
  */
 export function CampoPesoGranel({
+  className,
   nombreProducto,
   gramos,
   onCambiarGramos,
@@ -43,7 +47,7 @@ export function CampoPesoGranel({
   }
 
   return (
-    <div className="flex flex-col gap-1">
+    <div className={cn('flex flex-col gap-1', className)}>
       <div className="flex items-center rounded-grande border">
         <Button
           type="button"
@@ -59,19 +63,24 @@ export function CampoPesoGranel({
         >
           <Minus />
         </Button>
-        <Input
-          type="text"
-          inputMode="numeric"
-          autoComplete="off"
-          aria-label={`Peso en gramos de ${nombreProducto}`}
-          className="h-11 w-20 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0"
-          value={borrador ?? String(gramos)}
-          onChange={(evento) => cambiarTexto(evento.target.value)}
-          onBlur={() => setBorrador(null)}
-        />
-        <span aria-hidden="true" className="pr-1 text-sm text-texto-suave">
-          g
-        </span>
+        {/* Peso y "g" juntos: con espacio de sobra (mobile) el grupo ocupa el centro entre los botones */}
+        <div className="flex min-w-0 flex-1 items-center justify-center sm:flex-none">
+          <Input
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            aria-label={`Peso en gramos de ${nombreProducto}`}
+            className="h-11 w-20 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0"
+            value={borrador ?? String(gramos)}
+            // Con el peso seleccionado, tipear lo reemplaza en lugar de sumarse a el (un 1000 + un 5 daria 10005)
+            onFocus={(evento) => evento.target.select()}
+            onChange={(evento) => cambiarTexto(evento.target.value)}
+            onBlur={() => setBorrador(null)}
+          />
+          <span aria-hidden="true" className="pr-1 text-sm text-texto-suave">
+            g
+          </span>
+        </div>
         <Button
           type="button"
           variant="ghost"
