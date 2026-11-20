@@ -22,6 +22,8 @@ interface SelectorMotivoProps {
   deshabilitado: boolean
   /** Distingue los ids si hay mas de un selector en pantalla. */
   idPrefijo: string
+  /** Texto de ayuda del detalle de "Otro"; cada flujo lo adapta a su contexto. */
+  placeholderDetalle?: string
   onSeleccionarMotivo: (codigoMotivo: string) => void
   onCambiarDetalleMotivo: (detalleMotivo: string) => void
 }
@@ -32,6 +34,7 @@ export function SelectorMotivo({
   detalleMotivo,
   deshabilitado,
   idPrefijo,
+  placeholderDetalle = 'Contá brevemente qué pasó',
   onSeleccionarMotivo,
   onCambiarDetalleMotivo,
 }: SelectorMotivoProps) {
@@ -74,7 +77,7 @@ export function SelectorMotivo({
             autoFocus
             rows={3}
             maxLength={LONGITUD_MAXIMA_DETALLE_MOTIVO}
-            placeholder="Contá brevemente qué pasó"
+            placeholder={placeholderDetalle}
             disabled={deshabilitado}
             aria-describedby={idContador}
             value={detalleMotivo}
