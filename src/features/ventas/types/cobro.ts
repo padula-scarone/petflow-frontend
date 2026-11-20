@@ -77,7 +77,7 @@ export interface EstadoCobro {
   descuentoManual: DescuentoManual | null
   resumen: ResumenCobro
   puedeConfirmar: boolean
-  /** Por que no se puede confirmar, ej. "Falta cubrir $ 2.000". */
+  /** Por que no se puede confirmar, ej. "Falta cubrir $ 2.000,00". */
   motivoNoConfirmable?: string
 }
 

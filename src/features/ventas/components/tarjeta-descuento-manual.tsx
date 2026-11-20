@@ -5,6 +5,7 @@ import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { formatearMoneda } from '@/lib/formatear-moneda'
+import { formatearMontoParaCampo } from '@/features/ventas/utils/texto-monto'
 import type {
   DatosDescuentoManual,
   DescuentoManual,
@@ -44,7 +45,8 @@ export function TarjetaDescuentoManual({
     onAplicar({
       motivo: String(datos.get('motivo')).trim(),
       tipo: datos.get('tipo') as TipoDescuentoManual,
-      valor: Number(datos.get('valor')),
+      // Sin decimales se entiende ",00"; se acepta coma o punto como separador
+      valor: Number(String(datos.get('valor')).replace(',', '.')),
     })
   }
 
@@ -116,10 +118,15 @@ export function TarjetaDescuentoManual({
                 id="valor-descuento"
                 name="valor"
                 required
-                inputMode="numeric"
-                pattern="[0-9]*"
+                inputMode="decimal"
+                pattern="[0-9]+([,.][0-9]{1,2})?"
+                title="Ingresá un número, con hasta 2 decimales (por ejemplo 1500 o 1500,50)"
                 autoComplete="off"
-                defaultValue={descuentoManual?.valor}
+                defaultValue={
+                  descuentoManual?.tipo === 'monto'
+                    ? formatearMontoParaCampo(descuentoManual.valor)
+                    : descuentoManual?.valor.toString().replace('.', ',')
+                }
                 className="h-11 bg-fondo-tarjeta tabular-nums"
               />
             </div>
