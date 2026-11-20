@@ -44,7 +44,8 @@ export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialP
 
       {/* --- TOTAL, Y COBRAR AL LADO SOLO EN UN FIADO --- */}
       <div className="mt-auto flex items-center justify-between gap-3 border-t pt-3">
-        <p className="flex flex-col">
+        {/* El total va a la derecha, como en la tabla; en un fiado el boton Cobrar pasa a su izquierda */}
+        <p className="order-2 ml-auto flex flex-col items-end">
           <span className="text-xs text-texto-suave">Total</span>
           <span
             className={cn(
@@ -55,7 +56,9 @@ export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialP
             {formatearMoneda(fila.montoTotal)}
           </span>
         </p>
-        <BotonCobrarFiado fila={fila} onCobrarFiado={acciones.onCobrarFiado} />
+        <div className="order-1">
+          <BotonCobrarFiado fila={fila} onCobrarFiado={acciones.onCobrarFiado} />
+        </div>
       </div>
 
       <AccionesVentaHistorial fila={fila} acciones={acciones} variante="tarjeta" />

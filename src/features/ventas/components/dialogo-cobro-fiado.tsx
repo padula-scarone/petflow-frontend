@@ -125,7 +125,7 @@ export function DialogoCobroFiado({
 
               {estadoImporte.fase === 'listo' && (
                 <>
-                  <div className="rounded-grande border bg-fondo-suave p-4">
+                  <div className="flex items-baseline justify-between gap-3 rounded-grande border bg-fondo-suave p-4">
                     <p className="text-sm text-texto-suave">Importe adeudado</p>
                     <p className="text-3xl font-bold tabular-nums">{formatearMoneda(importeAdeudado)}</p>
                   </div>
