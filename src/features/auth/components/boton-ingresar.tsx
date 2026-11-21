@@ -12,7 +12,7 @@ export function BotonIngresar({ enviando }: BotonIngresarProps) {
     <Button
       type="submit"
       size="lg"
-      className="w-full tracking-wide shadow-md"
+      className="w-full tracking-wide"
       disabled={enviando}
     >
       {enviando ? (

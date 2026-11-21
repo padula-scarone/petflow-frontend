@@ -81,7 +81,7 @@ export function TarjetaArticuloCarrito({
   return (
     // En mobile se apila en dos bloques, separados por bloque: el producto arriba y la cuenta (precio, cantidad y
     // subtotal) debajo. Desde xl todo va en una sola fila
-    <Card className="flex flex-col gap-bloque p-contorno shadow-none xl:flex-row xl:items-center">
+    <Card className="flex flex-col gap-bloque p-contorno xl:flex-row xl:items-center">
       {/* --- PRODUCTO: IMAGEN, DATOS, ELIMINAR Y AVISO DE STOCK --- */}
       <div className="flex flex-col gap-interno xl:contents">
         <div className="flex items-start gap-interno xl:contents">

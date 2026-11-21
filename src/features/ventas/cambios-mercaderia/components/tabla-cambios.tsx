@@ -29,7 +29,7 @@ const CLASE_FILA = 'col-span-full grid grid-cols-subgrid items-center border-b p
 
 export function TablaCambios({ filas, acciones }: TablaCambiosProps) {
   return (
-    <Card className="gap-0 overflow-hidden p-0 shadow-none">
+    <Card className="gap-0 overflow-hidden p-0">
       <div
         role="table"
         aria-label="Cambios registrados, del más nuevo al más viejo"

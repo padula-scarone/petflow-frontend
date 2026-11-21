@@ -17,7 +17,7 @@ interface ResumenVentaVinculadaProps {
 /** Comprobante, fecha, origen y total de la venta elegida, con la salida para quitar el vinculo. */
 export function ResumenVentaVinculada({ venta, onDesvincularVenta, etiquetaQuitar }: ResumenVentaVinculadaProps) {
   return (
-    <Card className="flex-col gap-interno p-contorno shadow-none sm:flex-row sm:items-center sm:justify-between">
+    <Card className="flex-col gap-interno p-contorno sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
         <p className="text-auxiliar text-texto-suave">Venta vinculada</p>
         <p className="font-bold tabular-nums">{venta.numeroComprobante}</p>

@@ -30,7 +30,7 @@ export function FilaPagoMixto({
   const Icono = medio.icono ?? CreditCard
 
   return (
-    <Card className="gap-bloque p-contorno shadow-none">
+    <Card className="gap-bloque p-contorno">
       {/* --- MEDIO Y AJUSTE --- */}
       <div className="flex items-center gap-interno">
         <Icono aria-hidden="true" className="size-5 shrink-0" />

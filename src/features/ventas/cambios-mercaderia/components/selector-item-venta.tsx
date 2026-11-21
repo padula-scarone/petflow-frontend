@@ -32,7 +32,7 @@ export function SelectorItemVenta({ venta, idProductoSeleccionado, onSeleccionar
           <label
             key={item.idProducto}
             className={cn(
-              'flex min-h-control cursor-pointer items-start gap-interno rounded-grande border bg-fondo-tarjeta px-3 py-3 text-cuerpo has-[[data-state=checked]]:border-texto-principal has-[[data-state=checked]]:bg-fondo-seleccion',
+              'flex min-h-control cursor-pointer items-start gap-interno rounded-grande border border-borde-campo bg-fondo-tarjeta px-3 py-3 text-cuerpo has-[[data-state=checked]]:border-texto-principal has-[[data-state=checked]]:bg-fondo-seleccion',
               agotado && 'cursor-not-allowed opacity-70',
             )}
           >

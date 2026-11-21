@@ -17,7 +17,7 @@ export function TarjetaVentaVinculable({ venta, idVentaVinculando, onVincularVen
   const vinculando = idVentaVinculando === venta.idVenta
 
   return (
-    <Card className="min-w-0 flex-col gap-interno p-contorno shadow-none sm:flex-row sm:items-center sm:justify-between">
+    <Card className="min-w-0 flex-col gap-interno p-contorno sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
         <p className="font-bold tabular-nums">{venta.numeroComprobante}</p>
         <p className="text-cuerpo text-texto-suave tabular-nums">

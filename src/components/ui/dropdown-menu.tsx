@@ -42,7 +42,7 @@ function DropdownMenuContent({
           onPointerDownOutside?.(evento)
         }}
         className={cn(
-          "z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 overflow-x-hidden overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md",
+          "z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 overflow-x-hidden overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-flotante",
           className
         )}
         {...props}

@@ -17,7 +17,7 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
   const cobrada = comprobante.estado === 'completada'
 
   return (
-    <Card className="gap-bloque p-contorno shadow-none">
+    <Card className="gap-bloque p-contorno">
       {/* --- ENCABEZADO --- */}
       <div className="flex flex-col gap-bloque">
         <div className="flex flex-wrap items-center justify-between gap-2">

@@ -90,7 +90,7 @@ export function FiltroProducto({
           {desplegableVisible && (
             <ul
               {...navegacion.propiedadesLista}
-              className="absolute inset-x-0 top-full z-20 mt-1 max-h-60 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md"
+              className="absolute inset-x-0 top-full z-20 mt-1 max-h-60 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-flotante"
             >
               {productosCoincidentes.length === 0 ? (
                 <li className="px-3 py-3 text-cuerpo text-texto-suave">Sin resultados</li>

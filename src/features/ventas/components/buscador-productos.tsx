@@ -139,7 +139,7 @@ export function BuscadorProductos<Identificador extends string | number>({
           // Tocar un sugerido no debe sacar el foco del campo antes del clic: si no, la lista se cierra y el clic se pierde
           onMouseDown={(evento) => evento.preventDefault()}
           className={cn(
-            'max-h-72 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md',
+            'max-h-72 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-flotante',
             modoResultados === 'flotante' ? 'absolute inset-x-0 top-full z-20 mt-1' : 'mt-2',
           )}
         >

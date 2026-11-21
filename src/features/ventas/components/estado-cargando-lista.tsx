@@ -19,7 +19,7 @@ export function EstadoCargandoLista({ textoAccesible }: EstadoCargandoListaProps
       <ul className="grid grid-cols-1 gap-interno md:grid-cols-2 xl:hidden">
         {Array.from({ length: CANTIDAD_ESQUELETOS }, (_, indice) => (
           <li key={indice} className="min-w-0">
-            <Card className="gap-interno p-contorno shadow-none">
+            <Card className="gap-interno p-contorno">
               <div className="flex justify-between gap-interno">
                 <Skeleton className="h-10 w-32" />
                 <Skeleton className="h-7 w-28 rounded-full" />
@@ -33,7 +33,7 @@ export function EstadoCargandoLista({ textoAccesible }: EstadoCargandoListaProps
       </ul>
 
       {/* --- FILAS --- */}
-      <Card className="hidden gap-0 p-0 shadow-none xl:flex">
+      <Card className="hidden gap-0 p-0 xl:flex">
         {Array.from({ length: CANTIDAD_ESQUELETOS }, (_, indice) => (
           <div key={indice} className="flex items-center gap-bloque border-b px-3 py-4 last:border-b-0">
             <Skeleton className="h-10 w-36" />

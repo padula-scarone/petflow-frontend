@@ -14,7 +14,7 @@ const buttonVariants = cva(
         destructive:
           "bg-peligro text-white hover:bg-peligro/90 focus-visible:ring-peligro/20",
         outline:
-          "border bg-fondo-pagina shadow-xs hover:bg-fondo-hover hover:text-texto-principal",
+          "border border-borde-campo bg-fondo-pagina hover:bg-fondo-hover hover:text-texto-principal",
         secondary:
           "bg-fondo-secundario text-texto-sobre-secundario hover:bg-fondo-hover",
         ghost:

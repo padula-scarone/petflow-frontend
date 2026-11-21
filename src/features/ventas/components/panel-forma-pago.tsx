@@ -5,7 +5,7 @@ import { GrillaMediosPago } from '@/features/ventas/components/grilla-medios-pag
 import { ListaPagoMixto } from '@/features/ventas/components/lista-pago-mixto'
 import type { EstadoCobro, FormaPago } from '@/features/ventas/types/cobro'
 
-const CLASE_GRUPO = 'w-full rounded-grande border bg-fondo-tarjeta sm:w-fit'
+const CLASE_GRUPO = 'w-full rounded-grande border border-borde-campo bg-fondo-tarjeta sm:w-fit'
 const CLASE_OPCION = 'flex-1 px-4 sm:flex-none sm:min-w-28'
 
 /** Props del panel donde se elige la forma de pago y se completa segun ella. */
@@ -40,7 +40,7 @@ export function PanelFormaPago({
   const { formaPago } = estadoCobro
 
   return (
-    <Card className="gap-bloque p-contorno shadow-none">
+    <Card className="gap-bloque p-contorno">
       {/* --- SELECTOR DE FORMA DE PAGO --- */}
       <div className="flex flex-col gap-interno sm:flex-row sm:items-center">
         <span id="etiqueta-forma-pago" className="text-cuerpo font-medium">

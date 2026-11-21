@@ -23,7 +23,7 @@ export function ListaVentasVinculables({ propiedades }: ListaVentasVinculablesPr
       <div role="status" aria-busy="true" className="flex flex-col gap-2">
         <span className="sr-only">Buscando ventas</span>
         {[0, 1, 2].map((indice) => (
-          <Card key={indice} className="gap-2 p-contorno shadow-none">
+          <Card key={indice} className="gap-2 p-contorno">
             <Skeleton className="h-5 w-40" />
             <Skeleton className="h-4 w-56" />
             <Skeleton className="h-4 w-24" />
@@ -41,7 +41,7 @@ export function ListaVentasVinculables({ propiedades }: ListaVentasVinculablesPr
 
   if (estado.tipo === 'sin-resultados') {
     return (
-      <Card className="items-center gap-interno px-contorno py-8 text-center shadow-none">
+      <Card className="items-center gap-interno px-contorno py-8 text-center">
         <div className="flex max-w-sm flex-col gap-1">
           <h3 className="text-titulo-seccion font-bold">No encontramos ventas con estos filtros</h3>
           {/* La regla que explica por que falta una venta: solo se vinculan las completadas */}

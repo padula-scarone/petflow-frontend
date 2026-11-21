@@ -14,7 +14,7 @@ interface EstadoVacioListaProps {
 /** Tarjeta centrada con icono, texto y una salida. Cada lista elige los textos de sus dos vacios. */
 export function EstadoVacioLista({ icono: Icono, titulo, descripcion, accion }: EstadoVacioListaProps) {
   return (
-    <Card className="items-center gap-bloque px-contorno py-12 text-center shadow-none">
+    <Card className="items-center gap-bloque px-contorno py-12 text-center">
       <span className="flex size-14 items-center justify-center rounded-full bg-fondo-suave text-texto-suave">
         <Icono aria-hidden="true" className="size-7" />
       </span>

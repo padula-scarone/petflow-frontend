@@ -46,7 +46,7 @@ export function CampoCantidadUnidades({
   }
 
   return (
-    <div className={cn('flex items-center rounded-grande border', className)}>
+    <div className={cn('flex items-center rounded-grande border border-borde-campo', className)}>
       <Button
         type="button"
         variant="ghost"
@@ -67,7 +67,7 @@ export function CampoCantidadUnidades({
         autoComplete="off"
         aria-label={`Cantidad de ${nombreProducto}`}
         // Con espacio de sobra (mobile) el numero ocupa el centro entre los botones; si no, queda de ancho fijo
-        className="min-w-0 flex-1 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0 sm:w-14 sm:flex-none"
+        className="min-w-0 flex-1 rounded-none border-0 px-1 text-center font-medium tabular-nums focus-visible:ring-0 sm:w-14 sm:flex-none"
         value={borrador ?? String(unidades)}
         // Con la cantidad seleccionada, tipear la reemplaza en lugar de sumarse a ella (un 1 + un 5 daria 15)
         onFocus={(evento) => evento.target.select()}

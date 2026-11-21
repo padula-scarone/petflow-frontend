@@ -1,7 +1,7 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import type { OrigenVenta } from '@/features/ventas/types/historial'
 
-const CLASE_OPCION = 'h-control rounded-mediano border bg-fondo-tarjeta px-2 text-cuerpo'
+const CLASE_OPCION = 'h-control rounded-mediano border border-borde-campo bg-fondo-tarjeta px-2 text-cuerpo'
 
 /** Props del filtro por origen de la venta. */
 interface SelectorFiltroOrigenProps {

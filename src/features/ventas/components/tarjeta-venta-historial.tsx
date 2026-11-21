@@ -18,7 +18,7 @@ interface TarjetaVentaHistorialProps {
 export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialProps) {
   return (
     // h-full + mt-auto en el total: las tarjetas de una misma fila de la grilla igualan alto
-    <Card className="h-full min-w-0 gap-interno p-contorno shadow-none">
+    <Card className="h-full min-w-0 gap-interno p-contorno">
       {/* --- COMPROBANTE, CLIENTE (SI EXISTE) Y ESTADO --- */}
       {/* flex-wrap: en 320 px el estado baja a su propia linea en vez de cortarse */}
       <div className="flex flex-wrap items-start justify-between gap-2">

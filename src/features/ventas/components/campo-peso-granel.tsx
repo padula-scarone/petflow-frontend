@@ -48,7 +48,7 @@ export function CampoPesoGranel({
 
   return (
     <div className={cn('flex flex-col gap-1', className)}>
-      <div className="flex items-center rounded-grande border">
+      <div className="flex items-center rounded-grande border border-borde-campo">
         <Button
           type="button"
           variant="ghost"
@@ -70,7 +70,7 @@ export function CampoPesoGranel({
             inputMode="numeric"
             autoComplete="off"
             aria-label={`Peso en gramos de ${nombreProducto}`}
-            className="w-20 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0"
+            className="w-20 rounded-none border-0 px-1 text-center font-medium tabular-nums focus-visible:ring-0"
             value={borrador ?? String(gramos)}
             // Con el peso seleccionado, tipear lo reemplaza en lugar de sumarse a el (un 1000 + un 5 daria 10005)
             onFocus={(evento) => evento.target.select()}

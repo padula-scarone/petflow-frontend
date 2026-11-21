@@ -45,7 +45,7 @@ function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "relative z-[60] max-h-72 min-w-[8rem] overflow-hidden rounded-grande border bg-fondo-desplegable text-texto-desplegable shadow-md data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+          "relative z-[60] max-h-72 min-w-[8rem] overflow-hidden rounded-grande border bg-fondo-desplegable text-texto-desplegable shadow-flotante data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
           position === "popper" && "data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
           className
         )}

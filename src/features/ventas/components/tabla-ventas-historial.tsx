@@ -26,7 +26,7 @@ const CLASE_FILA = 'col-span-full grid grid-cols-subgrid items-center border-b p
 
 export function TablaVentasHistorial({ filas, acciones }: TablaVentasHistorialProps) {
   return (
-    <Card className="gap-0 overflow-hidden p-0 shadow-none">
+    <Card className="gap-0 overflow-hidden p-0">
       <div
         role="table"
         aria-label="Ventas registradas, de la más nueva a la más vieja"

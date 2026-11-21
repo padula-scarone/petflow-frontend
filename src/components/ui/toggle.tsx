@@ -10,7 +10,7 @@ const toggleVariants = cva(
       variant: {
         default: "bg-transparent",
         outline:
-          "border border-borde-campo bg-transparent shadow-xs hover:bg-fondo-hover hover:text-texto-principal",
+          "border border-borde-campo bg-transparent hover:bg-fondo-hover hover:text-texto-principal",
       },
       size: {
         // Una sola altura: toda opcion que se toca mide lo mismo que un control

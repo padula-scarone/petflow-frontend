@@ -32,7 +32,7 @@ export function PestanasSecciones({
             variant="ghost"
             aria-current={activa ? 'page' : undefined}
             className={cn(
-              'shrink-0 rounded-full border',
+              'shrink-0 rounded-full border border-borde-campo',
               activa ? 'bg-fondo-seleccion font-medium hover:bg-fondo-seleccion' : 'bg-fondo-tarjeta font-normal',
             )}
             onClick={() => onSeleccionarSeccion(seccion.idSeccion)}

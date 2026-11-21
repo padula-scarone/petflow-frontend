@@ -62,6 +62,19 @@ Para consultar el modelo de datos relacional, los Casos de Uso Base (CUB) y las 
   - Los componentes base de `src/components/ui/` ya traen estos tamaños por defecto: no hace falta repetirlos en cada uso.
   - Los **tamaños** (letra, espacios, alturas) cambian en `lg`. El **reordenamiento de columnas** de una pantalla (por ejemplo pasar a dos columnas) depende del ancho del contenido, no del de la ventana: la barra lateral ocupa 240 px desde `lg`, así que a 1024 px el contenido mide unos 736 px. Por eso esos cambios de diseño usan `xl:` y no `lg:`.
 
+# Sombras y Bordes (Diseño)
+- **Una sombra significa que algo flota sobre la página.** Todo lo que está apoyado en ella va plano, sin sombra: tarjetas, campos, selectores, toggles y todos los botones, incluida la acción principal. Se distinguen por borde y color.
+- **Las únicas sombras** (en `src/index.css`):
+
+  | Clase | Uso |
+  |---|---|
+  | `shadow-flotante` | Lo que se despliega sobre el contenido: menús, sugerencias del buscador, calendario, lista del selector, popover |
+  | `shadow-superpuesto` | Lo que tapa la pantalla: diálogos y hoja de filtros |
+  | `shadow-perilla` | Solo la perilla del interruptor, que es parte de su dibujo |
+
+- La escala de Tailwind (`shadow-sm`, `shadow-md`...) está desactivada: usarla no genera ningún estilo. Un componente nuevo no lleva sombra salvo que flote o tape.
+- **Bordes:** los controles (botones de contorno, campos, pestañas, toggles, selectores, pasos de cantidad) usan `border-borde-campo`; los contenedores (tarjetas, paneles, avisos, listas desplegables) usan `border`, que toma el color por defecto, más oscuro.
+
 # Control de Versiones (Git)
 - **Ramas:** `tipo/id-nombre-tarea` (ej. `feat/1-alta-venta`, `fix/15-calculo-total`).
 - **Commits (Conventional Commits):** `tipo(alcance): accion en imperativo y minuscula`.

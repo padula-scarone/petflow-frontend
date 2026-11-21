@@ -20,7 +20,7 @@ export function ResumenCambio({ borrador, resumenSaldo }: ResumenCambioProps) {
     : describirCantidadArticulo(articuloDevuelto.cantidad ?? 0, articuloDevuelto.formatoVenta)
 
   return (
-    <Card className="gap-interno p-contorno shadow-none" aria-labelledby="titulo-resumen-cambio">
+    <Card className="gap-interno p-contorno" aria-labelledby="titulo-resumen-cambio">
       <h2 id="titulo-resumen-cambio" className="text-titulo-seccion font-bold">
         Resumen del cambio
       </h2>

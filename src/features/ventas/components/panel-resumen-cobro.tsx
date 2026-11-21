@@ -32,7 +32,7 @@ export function PanelResumenCobro({
   const enviando = estadoEnvio.fase === 'enviando'
 
   return (
-    <Card className="gap-bloque p-contorno shadow-none xl:sticky xl:top-0">
+    <Card className="gap-bloque p-contorno xl:sticky xl:top-0">
       {/* --- DESGLOSE --- */}
       <dl className="flex flex-col gap-interno text-cuerpo">
         <div className="flex justify-between gap-interno">

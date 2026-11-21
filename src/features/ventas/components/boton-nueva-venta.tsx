@@ -14,7 +14,7 @@ export function BotonNuevaVenta({ onNuevaVenta, className }: BotonNuevaVentaProp
     <Button
       type="button"
       size="lg"
-      className={cn('min-w-0 px-4 tracking-wide shadow-md', className)}
+      className={cn('min-w-0 px-4 tracking-wide', className)}
       onClick={onNuevaVenta}
     >
       NUEVA VENTA

@@ -70,6 +70,17 @@ input::-ms-clear {
   --radius-grande: 0.5rem;
   --radius-extragrande: 0.75rem;
 
+  /* Sombras. Solo hay tres y significan una cosa: algo flota sobre la pagina. Todo lo que esta apoyado en ella
+     (tarjetas, campos, selectores, toggles y botones, incluida la accion principal) va plano y se distingue por
+     borde y color. Se quita la escala de Tailwind (shadow-sm, shadow-md...): una sombra suelta ya no compila. */
+  --shadow-*: initial;
+  /* flotante: lo que se despliega sobre el contenido (menus, sugerencias, calendario, lista del selector). */
+  --shadow-flotante: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  /* superpuesto: lo que tapa la pantalla (dialogos y hoja de filtros). */
+  --shadow-superpuesto: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* perilla: solo la perilla del interruptor, que es parte de su dibujo. */
+  --shadow-perilla: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+
   /* --- SISTEMA DE TAMANOS --- */
   /* Cada rol tiene un valor para celular (aca) y otro para PC (mas abajo, desde lg). Los componentes usan
      el nombre del rol y no repiten el cambio de tamano. El punto de cambio es lg (1024 px), el mismo donde el

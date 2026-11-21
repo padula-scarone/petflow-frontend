@@ -103,7 +103,7 @@ function FormularioDescuentoManual({ descuentoManual, error, onCerrar, onAplicar
       <div className="grid grid-cols-[auto_1fr] items-end gap-interno">
         <fieldset className="flex flex-col gap-1.5">
           <legend className="mb-1.5 text-cuerpo text-texto-suave">Tipo</legend>
-          <div className="flex rounded-grande border bg-fondo-tarjeta">
+          <div className="flex rounded-grande border border-borde-campo bg-fondo-tarjeta">
             {OPCIONES_TIPO.map((opcion) => (
               <label
                 key={opcion.valor}
@@ -172,7 +172,7 @@ export function TarjetaDescuentoManual({
   onQuitar,
 }: TarjetaDescuentoManualProps) {
   return (
-    <Card className="gap-bloque p-contorno shadow-none">
+    <Card className="gap-bloque p-contorno">
       {/* --- ENCABEZADO --- */}
       <div className="flex items-center gap-interno">
         <h2 className="text-titulo-seccion font-bold">Descuento</h2>

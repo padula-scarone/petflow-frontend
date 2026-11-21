@@ -43,7 +43,7 @@ function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed inset-0 z-50 flex flex-col bg-fondo-tarjeta shadow-lg duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 sm:inset-auto sm:top-[50%] sm:left-[50%] sm:max-h-[calc(100dvh-4rem)] sm:w-full sm:max-w-xl sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-grande sm:border",
+          "fixed inset-0 z-50 flex flex-col bg-fondo-tarjeta shadow-superpuesto duration-200 outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0 sm:inset-auto sm:top-[50%] sm:left-[50%] sm:max-h-[calc(100dvh-4rem)] sm:w-full sm:max-w-xl sm:translate-x-[-50%] sm:translate-y-[-50%] sm:rounded-grande sm:border",
           className
         )}
         {...props}

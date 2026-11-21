@@ -28,7 +28,7 @@ export function BotonConfirmarCobro({
       type="button"
       variant={esFiado ? 'default' : 'exito'}
       size="lg"
-      className={cn('min-w-0 px-4 tracking-wide shadow-md', className)}
+      className={cn('min-w-0 px-4 tracking-wide', className)}
       disabled={!habilitado}
       onClick={onConfirmarCobro}
     >

@@ -58,7 +58,7 @@ export function SelectorMotivo({
         {opciones.map((opcion) => (
           <label
             key={opcion.codigo}
-            className="flex min-h-control cursor-pointer items-center gap-interno rounded-grande border bg-fondo-tarjeta px-3 py-2 text-cuerpo has-[[data-state=checked]]:border-texto-principal has-[[data-state=checked]]:bg-fondo-seleccion has-[button:disabled]:cursor-not-allowed"
+            className="flex min-h-control cursor-pointer items-center gap-interno rounded-grande border border-borde-campo bg-fondo-tarjeta px-3 py-2 text-cuerpo has-[[data-state=checked]]:border-texto-principal has-[[data-state=checked]]:bg-fondo-seleccion has-[button:disabled]:cursor-not-allowed"
           >
             <RadioGroupItem value={opcion.codigo} />
             <span>{opcion.etiqueta}</span>

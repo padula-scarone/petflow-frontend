@@ -41,7 +41,7 @@ export function ComprobanteSinDetalle({
 
       {estado.fase === 'cargando' ? (
         // --- CARGANDO EL DETALLE ---
-        <Card role="status" aria-busy="true" className="gap-bloque p-contorno shadow-none">
+        <Card role="status" aria-busy="true" className="gap-bloque p-contorno">
           <span className="sr-only">Cargando el comprobante</span>
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-24 w-full" />

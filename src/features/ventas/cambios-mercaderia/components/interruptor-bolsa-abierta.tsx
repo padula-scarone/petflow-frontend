@@ -14,7 +14,7 @@ interface InterruptorBolsaAbiertaProps {
  */
 export function InterruptorBolsaAbierta({ opcion, activado, onCambiar }: InterruptorBolsaAbiertaProps) {
   return (
-    <label className="flex min-h-control cursor-pointer items-center justify-between gap-interno rounded-grande border bg-fondo-tarjeta px-3 py-2 has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-foco/50">
+    <label className="flex min-h-control cursor-pointer items-center justify-between gap-interno rounded-grande border border-borde-campo bg-fondo-tarjeta px-3 py-2 has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-foco/50">
       <span className="flex min-w-0 flex-col">
         <span className="text-cuerpo font-medium">Bolsa abierta</span>
         <span id="descripcion-bolsa-abierta" className="text-auxiliar text-texto-suave">

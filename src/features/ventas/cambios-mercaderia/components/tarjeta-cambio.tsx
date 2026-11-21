@@ -20,7 +20,7 @@ interface TarjetaCambioProps {
 export function TarjetaCambio({ fila, acciones }: TarjetaCambioProps) {
   return (
     // h-full + mt-auto en el saldo: las tarjetas de una misma fila de la grilla igualan alto
-    <Card className="h-full min-w-0 gap-interno p-contorno shadow-none">
+    <Card className="h-full min-w-0 gap-interno p-contorno">
       {/* --- FECHA Y HORA, VENTA VINCULADA Y ESTADO --- */}
       {/* flex-wrap: en 320 px el estado baja a su propia linea en vez de cortarse */}
       <div className="flex flex-wrap items-start justify-between gap-2">

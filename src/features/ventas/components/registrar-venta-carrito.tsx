@@ -123,7 +123,7 @@ export function RegistrarVentaCarrito({
           type="button"
           variant="exito"
           size="lg"
-          className="min-w-0 flex-1 px-4 tracking-wide shadow-md sm:flex-none xl:min-w-56"
+          className="min-w-0 flex-1 px-4 tracking-wide sm:flex-none xl:min-w-56"
           // Un articulo por encima del stock se corrige antes de cobrar: el back lo rechazaria igual
           disabled={carritoVacio || algunArticuloSuperaStock}
           onClick={onContinuarACobro}

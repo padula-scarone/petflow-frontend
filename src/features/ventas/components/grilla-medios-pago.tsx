@@ -49,7 +49,7 @@ export function GrillaMediosPago({
               key={medio.idMedioPago}
               value={String(medio.idMedioPago)}
               // whitespace-normal: el boton base no corta lineas y un nombre largo ("Transferencia (demo)") se salia de la tarjeta
-              className="h-auto min-h-24 w-full flex-col gap-1 rounded-grande border bg-fondo-tarjeta p-contorno whitespace-normal"
+              className="h-auto min-h-24 w-full flex-col gap-1 rounded-grande border border-borde-campo bg-fondo-tarjeta p-contorno whitespace-normal"
             >
               <Icono className="size-6" />
               <span className="text-center font-medium wrap-break-word">{medio.nombre}</span>

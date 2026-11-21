@@ -39,7 +39,7 @@ export function RegistrarVentaComprobante({
         <TarjetaComprobante comprobante={comprobante} />
 
         {/* --- ACCIONES (ESCRITORIO) --- */}
-        <Card className="hidden gap-bloque p-contorno shadow-none xl:sticky xl:top-0 xl:flex">
+        <Card className="hidden gap-bloque p-contorno xl:sticky xl:top-0 xl:flex">
           <AccionesComprobante {...propiedadesAcciones} variante="completa" />
           <Separator />
           <BotonNuevaVenta onNuevaVenta={onNuevaVenta} className="w-full" />

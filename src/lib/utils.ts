@@ -29,6 +29,7 @@ const combinarClasesTailwind = extendTailwindMerge({
         'borde-campo',
       ],
       radius: ['chico', 'mediano', 'grande', 'extragrande'],
+      shadow: ['flotante', 'superpuesto', 'perilla'],
       // Sistema de tamanos: sin esto p-contorno o text-cuerpo se confundirian con otros valores y no se resolverian
       spacing: ['contorno', 'bloque', 'interno', 'control', 'accion'],
       text: [

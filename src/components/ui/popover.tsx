@@ -29,7 +29,7 @@ function PopoverContent({
         collisionPadding={8}
         className={cn(
           // z-60: tiene que quedar por encima de un Sheet (z-50) cuando se abre desde adentro
-          "z-[60] max-w-[calc(100vw-1rem)] rounded-grande border bg-fondo-desplegable p-contorno text-texto-desplegable shadow-md outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
+          "z-[60] max-w-[calc(100vw-1rem)] rounded-grande border bg-fondo-desplegable p-contorno text-texto-desplegable shadow-flotante outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0",
           className
         )}
         {...props}

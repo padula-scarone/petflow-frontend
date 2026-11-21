@@ -19,7 +19,7 @@ export function TarjetaSaldoCambio({ resumen }: TarjetaSaldoCambioProps) {
   const { valorDevuelto, valorEntregado, saldo, situacion } = resumen
 
   return (
-    <Card className="gap-interno p-contorno shadow-none" aria-label="Saldo del cambio">
+    <Card className="gap-interno p-contorno" aria-label="Saldo del cambio">
       <dl className="grid gap-1.5 text-cuerpo">
         <div className="flex justify-between gap-interno">
           <dt className="text-texto-suave">Valor entregado</dt>
