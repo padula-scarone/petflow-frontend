@@ -52,7 +52,7 @@ export function MenuDoble({
 
       {/* --- CABECERA DE ESCRITORIO: SOLO LAS SECCIONES, SIEMPRE A LA VISTA --- */}
       {/* El logo y el usuario viven en la barra lateral; en mobile la cabecera esta dentro del contenido */}
-      <header className="hidden shrink-0 lg:ml-60 lg:flex lg:h-[73px] lg:flex-col lg:justify-center">
+      <header className="hidden shrink-0 lg:ml-60 lg:flex lg:flex-col lg:pt-contorno">
         {seccionesDelModulo.length > 0 && (
           <PestanasSecciones
             secciones={seccionesDelModulo}
@@ -68,7 +68,7 @@ export function MenuDoble({
         // Las pantallas con elementos fijos arriba (como los filtros del Historial) se acomodan debajo
         // de la cabecera con esta variable: vale su alto mientras se ve y 0 cuando se oculta
         style={{ '--alto-cabecera': `${cabeceraVisible ? altoCabecera : 0}px` } as CSSProperties}
-        className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4 lg:ml-60 xl:p-8"
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto p-contorno lg:ml-60"
       >
         {/* --- CABECERA DE MOBILE: LOGO, USUARIO Y SECCIONES --- */}
         {/* Va dentro del area con scroll y se oculta al bajar; reaparece apenas se sube un poco.
@@ -79,16 +79,16 @@ export function MenuDoble({
           ref={cabeceraRef}
           inert={!cabeceraVisible}
           className={cn(
-            'sticky -top-4 z-30 -mx-4 -mt-4 mb-4 shrink-0 bg-fondo-pagina transition-transform duration-200 motion-reduce:transition-none lg:hidden',
+            'sticky -top-contorno z-30 -mx-contorno -mt-contorno mb-contorno shrink-0 bg-fondo-pagina transition-transform duration-200 motion-reduce:transition-none lg:hidden',
             !cabeceraVisible && '-translate-y-full',
           )}
         >
-          <div className="flex items-center justify-between gap-3 border-b bg-fondo-tarjeta px-4 py-2">
+          <div className="flex items-center justify-between gap-interno border-b bg-fondo-tarjeta p-contorno">
             {/* Logo con interlineado ajustado y el estado de la caja debajo, separado para que no se
-                lea como parte del logo: 24 + 8 + 12 = 44 px, justo el alto del boton de usuario,
-                asi que la cabecera no crece */}
-            <div className="flex shrink-0 flex-col gap-2">
-              <p className="text-2xl leading-none font-bold">PetFlow</p>
+                lea como parte del logo: 24 + 4 + 12 = 40 px, justo el alto del boton de usuario
+                (un control), asi que la cabecera no crece */}
+            <div className="flex shrink-0 flex-col gap-1">
+              <p className="text-logo font-bold">PetFlow</p>
               <IndicadorCaja cajaAbierta={cajaAbierta} />
             </div>
             {/* El menu sale hacia abajo y se alinea al borde derecho del boton */}
@@ -101,7 +101,7 @@ export function MenuDoble({
             />
           </div>
           {seccionesDelModulo.length > 0 && (
-            <div className="pt-2">
+            <div className="pt-contorno">
               <PestanasSecciones
                 secciones={seccionesDelModulo}
                 idSeccionActiva={idSeccionActiva}

@@ -40,6 +40,8 @@ const combinarClasesTailwind = extendTailwindMerge({
         'campo',
         'cuerpo',
         'auxiliar',
+        'logo',
+        'decorativo',
       ],
     },
   },

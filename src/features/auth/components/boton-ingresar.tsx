@@ -11,7 +11,8 @@ export function BotonIngresar({ enviando }: BotonIngresarProps) {
     // Deshabilitado mientras envia: frena el doble tap y tambien el Enter del formulario
     <Button
       type="submit"
-      className="h-12 w-full px-3 text-base font-bold tracking-wide shadow-md"
+      size="lg"
+      className="w-full tracking-wide shadow-md"
       disabled={enviando}
     >
       {enviando ? (

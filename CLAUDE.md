@@ -49,6 +49,8 @@ Para consultar el modelo de datos relacional, los Casos de Uso Base (CUB) y las 
   | `campo` | 16 | 14 | Texto dentro de un campo (en celular 16 px para que Safari no haga zoom) |
   | `cuerpo` | 14 | 14 | Contenido, etiquetas, botones, pestañas, valores de listas |
   | `auxiliar` | 12 | 12 | Ayudas, metadatos, contadores |
+| `logo` | 24 | 24 | Solo la marca "PetFlow" (barras y acceso) |
+| `decorativo` | 60 | 60 | Solo el "404" |
 
 - **Pesos:** solo tres. `font-normal` para texto corrido, `font-medium` para etiquetas y énfasis leve, `font-bold` para títulos y cifras. No usar `font-semibold`.
 - **Reglas:**

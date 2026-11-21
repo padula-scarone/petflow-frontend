@@ -113,7 +113,7 @@ export function RegistrarVentaCobro({
 
       {/* --- FOOTER CONFIRMAR (MOBILE) --- */}
       {/* Mismo patron que la Seccion 1: pegado al borde inferior del area con scroll */}
-      <footer className="sticky -bottom-4 z-10 mt-auto -mx-4 -mb-4 flex flex-col gap-2 border-t bg-fondo-tarjeta px-4 py-3 xl:hidden">
+      <footer className="sticky -bottom-contorno z-10 mt-auto -mx-contorno -mb-contorno flex flex-col gap-interno border-t bg-fondo-tarjeta p-contorno xl:hidden">
         {/* El estado va en su propia linea: dentro de la columna del total ensancharia y desbordaria el boton */}
         {formaPago === 'mixto' && (
           <EstadoCobertura

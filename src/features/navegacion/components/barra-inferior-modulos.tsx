@@ -16,7 +16,7 @@ export function BarraInferiorModulos({
   return (
     <nav
       aria-label="Modulos"
-      className="sin-barra-desplazamiento flex h-14 shrink-0 overflow-x-auto border-t bg-fondo-tarjeta lg:hidden"
+      className="sin-barra-desplazamiento flex shrink-0 overflow-x-auto border-t bg-fondo-tarjeta py-interno lg:hidden"
     >
       {modulos.map((modulo) => {
         const Icono = modulo.icono
@@ -26,12 +26,12 @@ export function BarraInferiorModulos({
             key={modulo.idModulo}
             type="button"
             aria-current={activo ? 'page' : undefined}
-            className="flex min-h-11 min-w-11 flex-auto flex-col items-center justify-center gap-0.5 px-0.5 text-[11px] outline-none focus-visible:bg-fondo-hover sm:flex-1 sm:text-xs"
+            className="flex h-control min-w-control flex-auto flex-col items-center justify-center gap-1 px-0.5 text-auxiliar leading-none outline-none focus-visible:bg-fondo-hover sm:flex-1"
             onClick={() => onSeleccionarModulo(modulo.idModulo)}
           >
             <span
               className={cn(
-                'flex h-7 w-11 items-center justify-center rounded-full sm:w-14',
+                'flex h-6 w-11 items-center justify-center rounded-full sm:w-14',
                 activo && 'bg-primario text-texto-sobre-primario',
               )}
             >

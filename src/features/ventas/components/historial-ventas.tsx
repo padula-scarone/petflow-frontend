@@ -34,7 +34,7 @@ export function HistorialVentas({
           El top negativo compensa ese mismo padding: sticky se mide desde el borde interno, no desde el borde real */}
       {/* En mobile el top suma el alto de la cabecera mientras esta visible (--alto-cabecera, que define el
           layout), asi la barra queda debajo de ella cuando reaparece y sube a 0 cuando se oculta */}
-      <div className="sticky top-[calc(var(--alto-cabecera,0px)-1rem)] z-20 -mx-4 -mt-4 bg-fondo-pagina px-4 pt-2 pb-2 transition-[top] lg:pt-4 lg:pb-3 duration-200 motion-reduce:transition-none lg:-top-4 xl:-top-8 xl:-mx-8 xl:-mt-8 xl:px-8 xl:pt-8">
+      <div className="sticky top-[calc(var(--alto-cabecera,0px)-var(--spacing-contorno))] z-20 -mx-contorno -mt-contorno bg-fondo-pagina px-contorno pt-contorno pb-interno transition-[top] duration-200 motion-reduce:transition-none">
         <PanelFiltrosHistorial propiedades={propiedadesFiltros} estadoLista={estadoLista} />
       </div>
 

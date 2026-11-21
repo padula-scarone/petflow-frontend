@@ -14,7 +14,7 @@ export function IndicadorCaja({ cajaAbierta, className }: IndicadorCajaProps) {
   return (
     <p
       className={cn(
-        'flex items-center gap-1.5 text-xs leading-none font-medium whitespace-nowrap text-texto-suave',
+        'flex items-center gap-1.5 text-auxiliar leading-none font-medium whitespace-nowrap text-texto-suave',
         className,
       )}
     >

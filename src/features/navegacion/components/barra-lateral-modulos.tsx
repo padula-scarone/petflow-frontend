@@ -25,12 +25,12 @@ export function BarraLateralModulos({
   onCerrarSesion,
 }: BarraLateralModulosProps) {
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-6 border-r bg-fondo-tarjeta p-4 lg:flex">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 flex-col gap-bloque border-r bg-fondo-tarjeta p-contorno lg:flex">
       {/* --- LOGO --- */}
-      <p className="px-2 pt-1 text-center text-2xl font-bold">PetFlow</p>
+      <p className="px-2 pt-1 text-center text-logo font-bold">PetFlow</p>
 
       {/* --- MODULOS --- */}
-      <nav aria-label="Modulos" className="flex flex-1 flex-col gap-2 overflow-y-auto">
+      <nav aria-label="Modulos" className="flex flex-1 flex-col gap-interno overflow-y-auto">
         {modulos.map((modulo) => {
           const Icono = modulo.icono
           const activo = modulo.idModulo === idModuloActivo
@@ -41,7 +41,7 @@ export function BarraLateralModulos({
               variant="ghost"
               aria-current={activo ? 'page' : undefined}
               className={cn(
-                'h-11 justify-start gap-3 rounded-full px-4',
+                'justify-start gap-interno rounded-full has-[>svg]:px-4',
                 activo ? 'bg-primario text-texto-sobre-primario font-medium hover:bg-primario' : 'font-normal',
               )}
               onClick={() => onSeleccionarModulo(modulo.idModulo)}
@@ -54,7 +54,7 @@ export function BarraLateralModulos({
       </nav>
 
       {/* --- ESTADO DE LA CAJA Y USUARIO --- */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-interno">
         {/* px-4 lo alinea con el icono del boton de usuario y con los de los modulos */}
         <IndicadorCaja cajaAbierta={cajaAbierta} className="px-4" />
         <MenuUsuario

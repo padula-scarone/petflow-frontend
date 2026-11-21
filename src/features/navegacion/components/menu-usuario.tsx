@@ -33,7 +33,7 @@ export function MenuUsuario({
           type="button"
           variant="outline"
           aria-label={`Menú de ${nombreUsuario}`}
-          className={cn('h-11 min-w-0 gap-2 rounded-full', anchoCompleto ? 'w-full gap-3' : 'px-5')}
+          className={cn('min-w-0 gap-2 rounded-full', anchoCompleto && 'w-full gap-interno has-[>svg]:px-4')}
         >
           <User />
           <span className="truncate">{nombreUsuario}</span>

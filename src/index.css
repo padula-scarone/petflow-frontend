@@ -115,6 +115,12 @@ input::-ms-clear {
   /* auxiliar: ayudas, metadatos, contadores. Normal. */
   --text-auxiliar: 0.75rem;
   --text-auxiliar--line-height: 1rem;
+  /* logo: la marca "PetFlow". Negrita. Igual en celular y en PC. */
+  --text-logo: 1.5rem;
+  --text-logo--line-height: 1;
+  /* decorativo: el "404". Negrita. Igual en celular y en PC. */
+  --text-decorativo: 3.75rem;
+  --text-decorativo--line-height: 1;
 }
 
 /* Valores de PC de los roles que cambian. Control, accion, cuerpo y auxiliar son iguales en celular y en PC:

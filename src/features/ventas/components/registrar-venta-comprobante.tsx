@@ -48,7 +48,7 @@ export function RegistrarVentaComprobante({
 
       {/* --- FOOTER NUEVA VENTA (MOBILE) --- */}
       {/* Mismo patron que las secciones anteriores: pegado al borde inferior del area con scroll */}
-      <footer className="sticky -bottom-4 z-10 mt-auto -mx-4 -mb-4 border-t bg-fondo-tarjeta px-4 py-3 xl:hidden">
+      <footer className="sticky -bottom-contorno z-10 mt-auto -mx-contorno -mb-contorno border-t bg-fondo-tarjeta p-contorno xl:hidden">
         <BotonNuevaVenta onNuevaVenta={onNuevaVenta} className="w-full" />
       </footer>
     </section>

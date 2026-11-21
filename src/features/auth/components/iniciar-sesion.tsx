@@ -26,22 +26,22 @@ export function IniciarSesion({
 
   return (
     // Pantalla independiente, sin menu de modulos. min-h-dvh (no h-dvh) deja hacer scroll con el teclado abierto
-    <main className="flex min-h-dvh items-center justify-center bg-fondo-pagina px-4 py-8">
-      <Card className="w-full max-w-sm sm:py-8">
+    <main className="flex min-h-dvh items-center justify-center bg-fondo-pagina p-contorno">
+      <Card className="w-full max-w-sm">
         {/* --- MARCA Y TITULO --- */}
-        <CardHeader className="items-center justify-items-center text-center sm:px-8">
+        <CardHeader className="items-center justify-items-center text-center">
           {/* Solo texto: el logotipo con su propio icono se incorporara mas adelante */}
-          <p className="text-2xl font-bold">PetFlow</p>
+          <p className="text-logo font-bold">PetFlow</p>
           {/* h1 propio: CardTitle es un div y la pantalla necesita un encabezado semantico */}
-          <h1 className="mt-2 text-xl leading-none font-semibold">Iniciar sesión</h1>
+          <h1 className="text-titulo-pagina font-bold">Iniciar sesión</h1>
         </CardHeader>
 
         {/* --- FORMULARIO --- */}
-        <CardContent className="sm:px-8">
+        <CardContent>
           <form
             noValidate
             aria-busy={enviando}
-            className="flex flex-col gap-4"
+            className="flex flex-col gap-bloque"
             onSubmit={manejarEnvio}
           >
             <CampoUsuario
