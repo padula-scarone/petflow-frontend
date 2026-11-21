@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react'
 import { Trash2, TriangleAlert } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -11,12 +12,6 @@ import { superaStockDisponible } from '@/features/ventas/utils/superar-stock'
 import type { ArticuloCarrito } from '@/features/ventas/types/venta'
 
 /**
- * Lugar del campo de cantidad: en mobile baja a su propia fila, debajo de stock, precio y subtotal. Ocupa todo el
- * ancho menos el del boton de eliminar (44 px) y su separacion (12 px), que lo acompana en esa fila.
- */
-const CLASES_CANTIDAD = 'order-4 basis-[calc(100%-3.5rem)] sm:order-0 sm:basis-auto'
-
-/**
  * Aviso de que la cantidad supera el stock. Se dibuja en dos lugares segun el ancho de pantalla y solo uno se ve
  * (el otro queda en display none, que tambien lo saca del lector de pantalla), asi que se anuncia una sola vez.
  * Todo el estilo vive aca: quien lo usa solo decide donde va, para que se vea igual en PC y en celular.
@@ -27,13 +22,36 @@ function AvisoSuperaStock({ className }: { className: string }) {
     <p
       role="alert"
       className={cn(
-        'flex w-fit items-center gap-2 rounded-mediano bg-amber-50 px-3 py-2 text-sm font-medium text-amber-800',
+        'flex w-fit items-center gap-2 rounded-mediano bg-amber-50 px-3 py-2 text-cuerpo font-medium text-amber-800',
         className,
       )}
     >
       <TriangleAlert aria-hidden="true" className="size-4 shrink-0" />
       Supera el stock disponible
     </p>
+  )
+}
+
+/** Props de un dato de la cuenta del articulo. */
+interface DatoCuentaProps {
+  etiqueta: string
+  /** Lugar del dato en la tarjeta: ancho, alineacion y margenes. */
+  className?: string
+  /** Estilo del renglon del valor: alto y alineacion. */
+  claseValor?: string
+  children: ReactNode
+}
+
+/**
+ * Un dato de la cuenta (precio o subtotal): la etiqueta arriba y el valor pegado debajo. Nunca van separados a los
+ * extremos: con mas ancho, etiqueta y valor seguirian lejos y se leerian como cosas distintas.
+ */
+function DatoCuenta({ etiqueta, className, claseValor, children }: DatoCuentaProps) {
+  return (
+    <div className={cn('flex flex-col', className)}>
+      <span className="text-auxiliar whitespace-nowrap text-texto-suave">{etiqueta}</span>
+      <div className={cn('flex items-center', claseValor)}>{children}</div>
+    </div>
   )
 }
 
@@ -60,91 +78,99 @@ export function TarjetaArticuloCarrito({
   const esGranel = articulo.formato === 'granel'
 
   return (
-    // En mobile se apila en dos filas; desde lg los bloques pasan a una sola fila
-    <Card className="flex flex-col gap-3 p-3 shadow-none xl:flex-row xl:items-center xl:gap-6 xl:p-4">
-      {/* --- IMAGEN Y DATOS --- */}
-      <div className="flex items-start gap-3 xl:contents">
-        <ImagenProducto
-          urlImagen={articulo.urlImagen}
-          className="size-16 xl:size-26"
-        />
+    // En mobile se apila en dos bloques, separados por bloque: el producto arriba y la cuenta (precio, cantidad y
+    // subtotal) debajo. Desde xl todo va en una sola fila
+    <Card className="flex flex-col gap-bloque p-contorno shadow-none xl:flex-row xl:items-center">
+      {/* --- PRODUCTO: IMAGEN, DATOS, ELIMINAR Y AVISO DE STOCK --- */}
+      <div className="flex flex-col gap-interno xl:contents">
+        <div className="flex items-start gap-interno xl:contents">
+          {/* 80 px: el alto de cuatro renglones de texto (nombre en dos, categoria y stock), asi la foto y los datos
+              terminan a la misma altura */}
+          <ImagenProducto urlImagen={articulo.urlImagen} className="size-20 xl:size-26" />
 
-        <div className="min-w-0 flex-1">
-          {/* Nada se corta con puntos suspensivos: lo que no entra en un renglon pasa al siguiente */}
-          <p className="font-bold tabular-nums">{articulo.nombreProducto}</p>
-          <p className="mt-1 text-sm text-texto-suave">
-            {articulo.categoria} · {esGranel ? 'Granel' : 'Unidad'}
-          </p>
-          {/* Solo en PC: ahi el bloque del nombre es ancho. En mobile el aviso va en su propia fila, abajo */}
-          {excedeStock && <AvisoSuperaStock className="mt-2 hidden xl:flex" />}
+          <div className="min-w-0 flex-1">
+            {/* Nada se corta con puntos suspensivos: lo que no entra en un renglon pasa al siguiente. La presentacion
+                va con el nombre y no con la categoria: son datos distintos */}
+            <p className="font-bold tabular-nums">
+              {articulo.nombreProducto}
+              <span className="font-normal whitespace-nowrap"> | {esGranel ? 'Granel' : 'Unidad'}</span>
+            </p>
+            <p className="text-cuerpo text-texto-suave">{articulo.categoria}</p>
+            {/* El stock es un dato del producto, no de la cuenta: va con el producto y siempre a la vista, asi se sabe
+                cuanto se puede agregar antes de que salte el aviso */}
+            <p className="text-cuerpo text-texto-suave tabular-nums">
+              Stock: {formatearCantidad(articulo.stockDisponible, articulo.formato)}
+            </p>
+            {/* Solo en PC: ahi el bloque del nombre es ancho. En mobile el aviso va en su propia fila, abajo */}
+            {excedeStock && <AvisoSuperaStock className="mt-2 hidden xl:flex" />}
+          </div>
+
+          {/* En una esquina, lejos de los botones de la cantidad: un toque de mas no borra el articulo. En PC pasa
+              al final de la fila */}
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label={`Eliminar ${articulo.nombreProducto}`}
+            className="-mt-2 -mr-2 shrink-0 text-slate-500 xl:order-last xl:m-0"
+            onClick={() => onEliminarArticulo(articulo.idProducto)}
+          >
+            <Trash2 />
+          </Button>
         </div>
+
+        {/* --- AVISO DE STOCK (MOBILE Y TABLET) --- */}
+        {/* En una fila propia entra en un renglon; dentro del bloque del nombre se partia en dos */}
+        {excedeStock && <AvisoSuperaStock className="self-start xl:hidden" />}
       </div>
 
-      {/* --- AVISO DE STOCK (MOBILE Y TABLET) --- */}
-      {/* En una fila propia entra en un renglon; dentro del bloque del nombre se partia en dos */}
-      {excedeStock && <AvisoSuperaStock className="self-start xl:hidden" />}
-
-      {/* --- PRECIO, CANTIDAD Y TOTAL --- */}
-      {/* En mobile, una fila con stock, precio y subtotal repartidos de punta a punta, y la cantidad debajo a todo
-          el ancho. Es el mismo orden que en PC. Desde sm todo vuelve a ir en una fila (el orden del DOM) */}
-      <div className="flex flex-wrap justify-between gap-x-3 gap-y-3 sm:items-center sm:justify-start sm:gap-y-2 xl:contents">
-        {/* El stock siempre a la vista: asi se sabe cuanto se puede agregar antes de que salte el aviso */}
-        {/* Desde xl stock y precio son columnas de cifras: van a la derecha, con su etiqueta */}
-        <div className="order-1 flex flex-col sm:order-0 xl:w-24 xl:items-end">
-          <span className="text-xs whitespace-nowrap text-texto-suave">Stock</span>
-          <span className="tabular-nums">
-            {formatearCantidad(articulo.stockDisponible, articulo.formato)}
-          </span>
-        </div>
-
-        <div className="order-2 flex flex-col sm:order-0 xl:w-28 xl:items-end">
-          <span className="text-xs whitespace-nowrap text-texto-suave">
-            {esGranel ? 'Precio por kg' : 'Precio unidad'}
-          </span>
-          <span className="tabular-nums">
-            {formatearMoneda(articulo.precioUnitario)}
-          </span>
-        </div>
-
-        {esGranel ? (
-          <CampoPesoGranel
-            className={CLASES_CANTIDAD}
-            nombreProducto={articulo.nombreProducto}
-            gramos={Math.round(articulo.cantidad * 1000)}
-            onCambiarGramos={(gramos) => onCambiarPesoGranel(articulo.idProducto, gramos)}
-            onAumentar={() => onAumentarCantidad(articulo.idProducto)}
-            onDisminuir={() => onDisminuirCantidad(articulo.idProducto)}
-          />
-        ) : (
-          <CampoCantidadUnidades
-            className={CLASES_CANTIDAD}
-            nombreProducto={articulo.nombreProducto}
-            unidades={articulo.cantidad}
-            onCambiarUnidades={(unidades) => onCambiarUnidades(articulo.idProducto, unidades)}
-            onAumentar={() => onAumentarCantidad(articulo.idProducto)}
-            onDisminuir={() => onDisminuirCantidad(articulo.idProducto)}
-          />
-        )}
-
-        {/* Etiqueta arriba, como la del precio: sin ella el monto no dice a que corresponde */}
-        <div className="order-3 flex min-w-20 flex-col items-end sm:order-0 sm:ml-auto xl:ml-0 xl:w-28">
-          <span className="text-xs whitespace-nowrap text-texto-suave">Subtotal producto</span>
-          <span className="font-bold tabular-nums">{formatearMoneda(articulo.montoTotal)}</span>
-        </div>
-
-        {/* --- ELIMINAR --- */}
-        {/* En mobile acompana a la cantidad, asi el bloque del nombre usa todo el ancho junto a la imagen. Va
-            ultimo en el DOM: en sm y xl queda al final de la fila, lejos de los botones de la cantidad */}
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          aria-label={`Eliminar ${articulo.nombreProducto}`}
-          className="order-5 size-11 shrink-0 self-start text-slate-500 sm:order-0 sm:self-auto"
-          onClick={() => onEliminarArticulo(articulo.idProducto)}
+      {/* --- CUENTA: PRECIO, CANTIDAD Y SUBTOTAL --- */}
+      {/* Se leen como una cuenta: precio, cantidad y el resultado. En mobile el precio y la cantidad comparten fila
+          (si no entran, la cantidad baja a su propia fila a todo el ancho) y el subtotal cierra debajo. Desde sm
+          los tres van en una fila. Desde xl siguen siendo un solo bloque, centrado en la tarjeta, para que sus
+          etiquetas queden a la misma altura aunque el campo de cantidad sea mas alto (el "1 kg" del granel) */}
+      <div className="flex flex-wrap items-start gap-x-bloque gap-y-interno xl:flex-nowrap">
+        {/* Desde xl el precio es una columna de cifras: va a la derecha, con su etiqueta */}
+        <DatoCuenta
+          etiqueta={esGranel ? 'Precio por kg' : 'Precio unidad'}
+          className="xl:min-w-28 xl:items-end"
+          claseValor="h-control xl:justify-end"
         >
-          <Trash2 />
-        </Button>
+          <span className="tabular-nums">{formatearMoneda(articulo.precioUnitario)}</span>
+        </DatoCuenta>
+
+        <div className="flex min-w-36 flex-1 flex-col gap-1 sm:flex-none">
+          <span aria-hidden="true" className="text-auxiliar text-texto-suave">
+            Cantidad
+          </span>
+          {esGranel ? (
+            <CampoPesoGranel
+              nombreProducto={articulo.nombreProducto}
+              gramos={Math.round(articulo.cantidad * 1000)}
+              onCambiarGramos={(gramos) => onCambiarPesoGranel(articulo.idProducto, gramos)}
+              onAumentar={() => onAumentarCantidad(articulo.idProducto)}
+              onDisminuir={() => onDisminuirCantidad(articulo.idProducto)}
+            />
+          ) : (
+            <CampoCantidadUnidades
+              nombreProducto={articulo.nombreProducto}
+              unidades={articulo.cantidad}
+              onCambiarUnidades={(unidades) => onCambiarUnidades(articulo.idProducto, unidades)}
+              onAumentar={() => onAumentarCantidad(articulo.idProducto)}
+              onDisminuir={() => onDisminuirCantidad(articulo.idProducto)}
+            />
+          )}
+        </div>
+
+        {/* El resultado de la cuenta. En mobile cierra la tarjeta, separado por una linea, como el total de un
+            ticket; desde sm queda a la derecha de la fila */}
+        <DatoCuenta
+          etiqueta="Subtotal producto"
+          className="min-w-20 basis-full items-end border-t pt-interno sm:ml-auto sm:basis-auto sm:border-t-0 sm:pt-0 xl:ml-0 xl:min-w-28"
+          claseValor="justify-end sm:h-control"
+        >
+          <span className="text-cifra-secundaria font-bold tabular-nums">{formatearMoneda(articulo.montoTotal)}</span>
+        </DatoCuenta>
       </div>
     </Card>
   )

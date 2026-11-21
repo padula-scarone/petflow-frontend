@@ -27,12 +27,12 @@ export function AccionesComprobante({
   const compacta = variante === 'compacta'
   const claseBoton = cn(
     'bg-fondo-tarjeta',
-    compacta ? 'h-16 min-w-0 flex-1 flex-col gap-1 px-2 text-xs' : 'h-11 w-full justify-start gap-3 px-4',
+    compacta ? 'h-16 min-w-0 flex-1 flex-col gap-1 px-2 text-auxiliar' : 'w-full justify-start gap-interno',
   )
 
   return (
     <div className="flex flex-col gap-2">
-      <div className={cn('flex gap-2', !compacta && 'flex-col gap-3')}>
+      <div className={cn('flex gap-2', !compacta && 'flex-col gap-interno')}>
         {/* --- ENVIOS: ENLACES NATIVOS, PARA QUE EL NAVEGADOR NO LOS BLOQUEE --- */}
         <BotonesEnvioComprobante
           enlaceWhatsApp={enlaceWhatsApp}
@@ -54,7 +54,7 @@ export function AccionesComprobante({
       </div>
 
       {/* --- PLAZO DE EDICION --- */}
-      <p className="text-xs text-texto-suave tabular-nums">
+      <p className="text-auxiliar text-texto-suave tabular-nums">
         {edicionDisponible
           ? `Podés editarla hasta las ${formatearHora(fechaHoraLimiteEdicion)}`
           : 'Venció el plazo de 15 minutos para editar'}

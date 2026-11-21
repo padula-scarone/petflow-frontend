@@ -130,7 +130,7 @@ export function BuscadorProductos<Identificador extends string | number>({
         autoComplete="off"
         aria-label={etiquetaAccesible}
         placeholder={placeholder}
-        className="h-11 bg-fondo-tarjeta pl-10"
+        className="bg-fondo-tarjeta pl-10"
         value={textoBusqueda}
         {...navegacion.propiedadesCampo}
         onChange={(evento) => {
@@ -152,10 +152,10 @@ export function BuscadorProductos<Identificador extends string | number>({
           )}
         >
           {mostrarSugerencias && tituloSugerencias && (
-            <li className="px-3 pt-2 pb-1 text-xs font-medium text-texto-suave">{tituloSugerencias}</li>
+            <li className="px-3 pt-2 pb-1 text-auxiliar font-medium text-texto-suave">{tituloSugerencias}</li>
           )}
           {resultadosVisibles.length === 0 ? (
-            <li className="px-3 py-3 text-sm text-texto-suave">
+            <li className="px-3 py-3 text-cuerpo text-texto-suave">
               Sin resultados
             </li>
           ) : (
@@ -168,10 +168,10 @@ export function BuscadorProductos<Identificador extends string | number>({
                   type="button"
                   disabled={resultadoSinStock}
                   {...navegacion.propiedadesOpcion(indiceResultado)}
-                  className="flex min-h-11 w-full items-center justify-between gap-3 rounded-mediano px-3 py-2 text-left text-sm aria-selected:bg-fondo-seleccion focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex min-h-control w-full items-center justify-between gap-interno rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
                   onClick={() => elegirResultado(resultado)}
                 >
-                  <span className="flex min-w-0 items-center gap-3">
+                  <span className="flex min-w-0 items-center gap-interno">
                     <ImagenProducto
                       urlImagen={resultado.urlImagen}
                       className="size-10"
@@ -180,11 +180,11 @@ export function BuscadorProductos<Identificador extends string | number>({
                     <span className="flex min-w-0 flex-col">
                       <span className="font-medium tabular-nums">{resultado.nombreProducto}</span>
                       {detalleProducto !== '' && (
-                        <span className="text-xs text-texto-suave">{detalleProducto}</span>
+                        <span className="text-auxiliar text-texto-suave">{detalleProducto}</span>
                       )}
                     </span>
                   </span>
-                  <span className="flex shrink-0 flex-col items-end text-xs tabular-nums sm:flex-row sm:gap-4">
+                  <span className="flex shrink-0 flex-col items-end text-auxiliar tabular-nums sm:flex-row sm:gap-interno">
                     <span className="font-medium">
                       {formatearMoneda(resultado.precioUnitario)}
                     </span>

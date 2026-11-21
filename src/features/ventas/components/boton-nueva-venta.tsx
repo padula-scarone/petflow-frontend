@@ -13,14 +13,12 @@ export function BotonNuevaVenta({ onNuevaVenta, className }: BotonNuevaVentaProp
     // Morado: es una accion de navegacion, no de dinero
     <Button
       type="button"
-      className={cn(
-        'h-12 min-w-0 px-5 text-base font-bold tracking-wide shadow-md xl:h-14 xl:text-lg',
-        className,
-      )}
+      size="lg"
+      className={cn('min-w-0 px-4 tracking-wide shadow-md', className)}
       onClick={onNuevaVenta}
     >
       NUEVA VENTA
-      <Plus className="size-5 xl:size-6" />
+      <Plus className="size-5 lg:size-6" />
     </Button>
   )
 }

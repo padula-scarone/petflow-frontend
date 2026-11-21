@@ -25,14 +25,14 @@ export function ComprobanteSinDetalle({
   const { registro } = estado
 
   return (
-    <section className="flex min-h-full flex-col gap-6">
+    <section className="flex min-h-full flex-col gap-bloque">
       {/* --- ENCABEZADO: LO QUE CONFIRMO EL ALTA --- */}
-      <header className="flex items-center gap-4">
+      <header className="flex items-center gap-bloque">
         <span className="flex size-14 shrink-0 items-center justify-center rounded-full bg-exito text-texto-sobre-exito">
           <CircleCheck aria-hidden="true" className="size-8" />
         </span>
         <div className="min-w-0">
-          <h1 className="text-2xl font-bold">Venta registrada</h1>
+          <h1 className="text-titulo-pagina font-bold">Venta registrada</h1>
           <p className="text-texto-suave tabular-nums">
             {registro.numeroComprobante} · {formatearMoneda(registro.montoTotal)}
           </p>
@@ -41,7 +41,7 @@ export function ComprobanteSinDetalle({
 
       {estado.fase === 'cargando' ? (
         // --- CARGANDO EL DETALLE ---
-        <Card role="status" aria-busy="true" className="gap-4 p-4 shadow-none sm:p-6">
+        <Card role="status" aria-busy="true" className="gap-bloque p-contorno shadow-none">
           <span className="sr-only">Cargando el comprobante</span>
           <Skeleton className="h-8 w-48" />
           <Skeleton className="h-24 w-full" />

@@ -18,18 +18,18 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
   const cobrada = comprobante.estado === 'completada'
 
   return (
-    <Card className="gap-5 p-4 shadow-none sm:p-6">
+    <Card className="gap-bloque p-contorno shadow-none">
       {/* --- ENCABEZADO --- */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-bloque">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="min-w-0">
-            <p className="text-sm text-texto-suave">Comprobante</p>
-            <p className="text-xl font-bold tabular-nums">{comprobante.numeroComprobante}</p>
+            <p className="text-cuerpo text-texto-suave">Comprobante</p>
+            <p className="text-titulo-pagina font-bold tabular-nums">{comprobante.numeroComprobante}</p>
           </div>
           <Badge
             variant="outline"
             className={cn(
-              'h-7 px-3 text-sm',
+              'h-7 px-3 text-cuerpo',
               cobrada ? 'text-green-700' : 'text-amber-700',
             )}
           >
@@ -37,7 +37,7 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
           </Badge>
         </div>
 
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
+        <dl className="grid grid-cols-2 gap-x-bloque gap-y-interno text-cuerpo sm:grid-cols-3">
           <div>
             <dt className="text-texto-suave">Fecha y hora</dt>
             <dd className="font-medium tabular-nums">{formatearFechaHora(comprobante.fechaHora)}</dd>

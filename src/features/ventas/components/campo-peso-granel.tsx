@@ -54,7 +54,7 @@ export function CampoPesoGranel({
           variant="ghost"
           size="icon"
           aria-label={`Disminuir cantidad de ${nombreProducto}`}
-          className="size-11"
+          className="size-control"
           disabled={gramos <= CANTIDAD_MINIMA_GRANEL_GRAMOS}
           onClick={() => {
             setBorrador(null)
@@ -70,14 +70,14 @@ export function CampoPesoGranel({
             inputMode="numeric"
             autoComplete="off"
             aria-label={`Peso en gramos de ${nombreProducto}`}
-            className="h-11 w-20 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0"
+            className="w-20 rounded-none border-0 px-1 text-center font-medium tabular-nums shadow-none focus-visible:ring-0"
             value={borrador ?? String(gramos)}
             // Con el peso seleccionado, tipear lo reemplaza en lugar de sumarse a el (un 1000 + un 5 daria 10005)
             onFocus={(evento) => evento.target.select()}
             onChange={(evento) => cambiarTexto(evento.target.value)}
             onBlur={() => setBorrador(null)}
           />
-          <span aria-hidden="true" className="pr-1 text-sm text-texto-suave">
+          <span aria-hidden="true" className="pr-1 text-cuerpo text-texto-suave">
             g
           </span>
         </div>
@@ -86,7 +86,7 @@ export function CampoPesoGranel({
           variant="ghost"
           size="icon"
           aria-label={`Aumentar cantidad de ${nombreProducto}`}
-          className="size-11"
+          className="size-control"
           onClick={() => {
             setBorrador(null)
             onAumentar()
@@ -96,7 +96,7 @@ export function CampoPesoGranel({
         </Button>
       </div>
       {/* El peso en kilos, que es en lo que esta el precio */}
-      <span aria-live="polite" className="text-xs text-texto-suave tabular-nums">
+      <span aria-live="polite" className="text-auxiliar text-texto-suave tabular-nums">
         {formatearCantidad(gramos / 1000, 'granel')}
       </span>
     </div>

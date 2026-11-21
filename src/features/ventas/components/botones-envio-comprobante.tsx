@@ -19,7 +19,7 @@ export function BotonesEnvioComprobante({
   const compacta = variante === 'compacta'
   const claseBoton = cn(
     'bg-fondo-tarjeta',
-    compacta ? 'h-16 min-w-0 flex-1 flex-col gap-1 px-2 text-xs' : 'h-11 w-full justify-start gap-3 px-4',
+    compacta ? 'h-16 min-w-0 flex-1 flex-col gap-1 px-2 text-auxiliar' : 'w-full justify-start gap-interno',
   )
 
   return (

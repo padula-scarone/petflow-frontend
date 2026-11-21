@@ -14,7 +14,7 @@ export function EncabezadoExitoVenta({ estado, titulo }: EncabezadoExitoVentaPro
   const Icono = cobrada ? CircleCheck : NotebookPen
 
   return (
-    <header className="flex items-center gap-4">
+    <header className="flex items-center gap-bloque">
       {/* Verde cuando entra dinero; morado en el fiado, igual que el boton de la Seccion 2 */}
       <span
         className={cn(
@@ -27,7 +27,7 @@ export function EncabezadoExitoVenta({ estado, titulo }: EncabezadoExitoVentaPro
         <Icono aria-hidden="true" className="size-8" />
       </span>
       <div className="min-w-0">
-        <h1 className="text-2xl font-bold">{titulo ?? (cobrada ? 'Venta confirmada' : 'Fiado registrado')}</h1>
+        <h1 className="text-titulo-pagina font-bold">{titulo ?? (cobrada ? 'Venta confirmada' : 'Fiado registrado')}</h1>
         <p className="text-texto-suave">Comprobante emitido</p>
       </div>
     </header>

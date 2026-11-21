@@ -21,19 +21,19 @@ export function AjustesComprobante({ comprobante }: AjustesComprobanteProps) {
   const hayAjustes = descuentoManual !== null || ajustesMedios.length > 0
 
   return (
-    <section aria-labelledby="titulo-ajustes" className="flex flex-col gap-3">
-      <h2 id="titulo-ajustes" className="text-base font-bold">
+    <section aria-labelledby="titulo-ajustes" className="flex flex-col gap-interno">
+      <h2 id="titulo-ajustes" className="text-titulo-seccion font-bold">
         Descuentos y recargos
       </h2>
 
       {!hayAjustes && <p className="text-texto-suave">Sin descuentos ni recargos</p>}
 
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-interno">
         {descuentoManual && (
-          <li className="flex items-baseline justify-between gap-3">
+          <li className="flex items-baseline justify-between gap-interno">
             <div className="min-w-0">
               <p className="font-medium">Descuento manual</p>
-              <p className="text-sm text-texto-suave">{descuentoManual.motivo}</p>
+              <p className="text-cuerpo text-texto-suave">{descuentoManual.motivo}</p>
             </div>
             <span className="shrink-0 font-bold whitespace-nowrap tabular-nums">
               {formatearMonedaConSigno(-descuentoManual.monto)}
@@ -41,12 +41,12 @@ export function AjustesComprobante({ comprobante }: AjustesComprobanteProps) {
           </li>
         )}
         {ajustesMedios.map((pago) => (
-          <li key={pago.idMedioPago} className="flex items-baseline justify-between gap-3">
+          <li key={pago.idMedioPago} className="flex items-baseline justify-between gap-interno">
             <div className="min-w-0">
               <p className="font-medium">
                 {pago.montoAjuste < 0 ? 'Descuento' : 'Recargo'} {pago.nombreMedioPago}
               </p>
-              <p className="text-sm text-texto-suave tabular-nums">
+              <p className="text-cuerpo text-texto-suave tabular-nums">
                 {describirPorcentaje(pago.porcentajeAjuste)}
               </p>
             </div>

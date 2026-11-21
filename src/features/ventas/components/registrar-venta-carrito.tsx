@@ -32,9 +32,9 @@ export function RegistrarVentaCarrito({
   const carritoVacio = articulos.length === 0
 
   return (
-    <section className="flex min-h-full flex-col gap-6">
+    <section className="flex min-h-full flex-col gap-bloque">
       {/* --- HEADER Y CONFIGURACION --- */}
-      <header className="flex flex-col gap-4 rounded-grande border bg-fondo-tarjeta p-4">
+      <header className="flex flex-col gap-bloque rounded-grande border bg-fondo-tarjeta p-contorno">
         <SelectorConfiguracionVenta
           canalVenta={canalVenta}
           tipoEntrega={tipoEntrega}
@@ -57,7 +57,7 @@ export function RegistrarVentaCarrito({
             <Button
               type="button"
               variant="outline"
-              className="mt-2 h-11 bg-fondo-tarjeta px-6 text-texto-principal"
+              className="mt-2 bg-fondo-tarjeta text-texto-principal"
               onClick={onCerrarAvisosRepoblado}
             >
               Entendido
@@ -80,20 +80,20 @@ export function RegistrarVentaCarrito({
       )}
 
       {/* --- LISTA DE PRODUCTOS --- */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-interno">
         <div className="flex items-center gap-2">
-          <h2 className="text-lg font-bold">Artículos agregados</h2>
+          <h2 className="text-titulo-seccion font-bold">Artículos agregados</h2>
           <Badge variant="outline" className="bg-fondo-tarjeta tabular-nums">
             {articulos.length}
           </Badge>
         </div>
 
         {carritoVacio ? (
-          <p className="rounded-grande border border-dashed bg-fondo-tarjeta px-4 py-10 text-center text-texto-suave">
+          <p className="rounded-grande border border-dashed bg-fondo-tarjeta px-contorno py-10 text-center text-texto-suave">
             Todavía no agregaste artículos
           </p>
         ) : (
-          <ul className="flex flex-col gap-3">
+          <ul className="flex flex-col gap-interno">
             {articulos.map((articulo) => (
               <li key={articulo.idProducto}>
                 <TarjetaArticuloCarrito
@@ -112,23 +112,24 @@ export function RegistrarVentaCarrito({
 
       {/* --- FOOTER COBRO --- */}
       {/* En mobile queda pegado al borde inferior del area con scroll; -bottom-contorno y los margenes negativos compensan el padding del contenedor */}
-      <footer className="sticky -bottom-contorno z-10 mt-auto xl:mt-0 -mx-contorno -mb-contorno flex items-center justify-between gap-3 border-t bg-fondo-tarjeta p-contorno xl:static xl:mx-0 xl:mb-0 xl:justify-end xl:gap-6 xl:border-0 xl:bg-transparent xl:p-0">
+      <footer className="sticky -bottom-contorno z-10 mt-auto xl:mt-0 -mx-contorno -mb-contorno flex items-center justify-between gap-interno border-t bg-fondo-tarjeta p-contorno xl:static xl:mx-0 xl:mb-0 xl:justify-end xl:gap-bloque xl:border-0 xl:bg-transparent xl:p-0">
         <p className="flex flex-col xl:flex-row xl:items-baseline xl:gap-2">
-          <span className="text-sm text-texto-suave">Subtotal:</span>
-          <span className="text-xl font-bold tabular-nums xl:text-2xl">
+          <span className="text-cuerpo text-texto-suave">Subtotal:</span>
+          <span className="text-cifra-secundaria font-bold tabular-nums">
             {formatearMoneda(subtotal)}
           </span>
         </p>
         <Button
           type="button"
           variant="exito"
-          className="h-12 min-w-0 flex-1 px-5 text-base sm:px-8 font-bold tracking-wide shadow-md sm:flex-none xl:h-14 xl:min-w-56 xl:text-lg"
+          size="lg"
+          className="min-w-0 flex-1 px-4 tracking-wide shadow-md sm:flex-none xl:min-w-56"
           // Un articulo por encima del stock se corrige antes de cobrar: el back lo rechazaria igual
           disabled={carritoVacio || algunArticuloSuperaStock}
           onClick={onContinuarACobro}
         >
           COBRAR
-          <HandCoins className="size-5 xl:size-6" />
+          <HandCoins className="size-5 lg:size-6" />
         </Button>
       </footer>
     </section>

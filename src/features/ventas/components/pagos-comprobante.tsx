@@ -10,20 +10,20 @@ export function PagosComprobante({ comprobante }: PagosComprobanteProps) {
   // --- FIADO: NO HAY PAGOS, QUEDA UNA DEUDA ---
   if (comprobante.estado === 'pendiente-pago') {
     return (
-      <section aria-labelledby="titulo-deuda" className="flex flex-col gap-3">
-        <h2 id="titulo-deuda" className="text-base font-bold">
+      <section aria-labelledby="titulo-deuda" className="flex flex-col gap-interno">
+        <h2 id="titulo-deuda" className="text-titulo-seccion font-bold">
           Deuda
         </h2>
-        <p className="flex items-baseline justify-between gap-3">
+        <p className="flex items-baseline justify-between gap-interno">
           <span className="min-w-0">
-            <span className="block text-sm text-texto-suave">A nombre de</span>
+            <span className="block text-cuerpo text-texto-suave">A nombre de</span>
             <span className="block truncate font-medium">{comprobante.clienteReferencia}</span>
           </span>
-          <span className="shrink-0 text-xl font-bold tabular-nums">
+          <span className="shrink-0 text-cifra-secundaria font-bold tabular-nums">
             {formatearMoneda(comprobante.montoTotal)}
           </span>
         </p>
-        <p className="text-sm text-texto-suave">
+        <p className="text-cuerpo text-texto-suave">
           No ingresó a la caja: queda pendiente hasta que el cliente la liquide.
         </p>
       </section>
@@ -32,19 +32,19 @@ export function PagosComprobante({ comprobante }: PagosComprobanteProps) {
 
   // --- VENTA COBRADA: UN RENGLON POR MEDIO DE PAGO ---
   return (
-    <section aria-labelledby="titulo-pagos" className="flex flex-col gap-3">
-      <h2 id="titulo-pagos" className="text-base font-bold">
+    <section aria-labelledby="titulo-pagos" className="flex flex-col gap-interno">
+      <h2 id="titulo-pagos" className="text-titulo-seccion font-bold">
         Medios de pago
       </h2>
-      <ul className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-interno">
         {comprobante.pagos.map((pago) => (
-          <li key={pago.idMedioPago} className="flex flex-col gap-1 rounded-grande border p-3">
-            <p className="flex items-baseline justify-between gap-3">
+          <li key={pago.idMedioPago} className="flex flex-col gap-1 rounded-grande border p-contorno">
+            <p className="flex items-baseline justify-between gap-interno">
               <span className="font-medium">{pago.nombreMedioPago}</span>
               <span className="font-bold tabular-nums">{formatearMoneda(pago.montoFinal)}</span>
             </p>
             {pago.montoAjuste !== 0 && (
-              <p className="flex justify-between gap-3 text-sm text-texto-suave">
+              <p className="flex justify-between gap-interno text-cuerpo text-texto-suave">
                 <span>Parte del total</span>
                 <span className="tabular-nums">{formatearMoneda(pago.montoBase)}</span>
               </p>
@@ -52,11 +52,11 @@ export function PagosComprobante({ comprobante }: PagosComprobanteProps) {
             {/* Sin "Paga con" el back no registra recibido ni vuelto: no hay nada que mostrar */}
             {pago.admiteVuelto && pago.montoRecibido !== null && pago.vuelto !== null && (
               <>
-                <p className="flex justify-between gap-3 text-sm text-texto-suave">
+                <p className="flex justify-between gap-interno text-cuerpo text-texto-suave">
                   <span>Recibido</span>
                   <span className="tabular-nums">{formatearMoneda(pago.montoRecibido)}</span>
                 </p>
-                <p className="flex justify-between gap-3 text-sm text-texto-suave">
+                <p className="flex justify-between gap-interno text-cuerpo text-texto-suave">
                   <span>Vuelto</span>
                   <span className="tabular-nums">{formatearMoneda(pago.vuelto)}</span>
                 </p>

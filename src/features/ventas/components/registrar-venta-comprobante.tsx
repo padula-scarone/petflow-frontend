@@ -24,7 +24,7 @@ export function RegistrarVentaComprobante({
   }
 
   return (
-    <section className="flex min-h-full flex-col gap-6">
+    <section className="flex min-h-full flex-col gap-bloque">
       {/* --- ENCABEZADO DE EXITO --- */}
       <EncabezadoExitoVenta estado={comprobante.estado} />
 
@@ -34,12 +34,12 @@ export function RegistrarVentaComprobante({
         <AccionesComprobante {...propiedadesAcciones} variante="compacta" />
       </div>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
+      <div className="grid gap-bloque xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
         {/* --- COMPROBANTE --- */}
         <TarjetaComprobante comprobante={comprobante} />
 
         {/* --- ACCIONES (ESCRITORIO) --- */}
-        <Card className="hidden gap-4 p-4 shadow-none xl:sticky xl:top-0 xl:flex">
+        <Card className="hidden gap-bloque p-contorno shadow-none xl:sticky xl:top-0 xl:flex">
           <AccionesComprobante {...propiedadesAcciones} variante="completa" />
           <Separator />
           <BotonNuevaVenta onNuevaVenta={onNuevaVenta} className="w-full" />

@@ -31,7 +31,7 @@ export function BotonCancelarVenta({
         <Button
           type="button"
           variant="outline"
-          className="h-11 w-full bg-fondo-tarjeta"
+          className="w-full bg-fondo-tarjeta"
           disabled={deshabilitado}
         >
           {etiqueta}
@@ -46,8 +46,8 @@ export function BotonCancelarVenta({
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="h-11">Seguir con la venta</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" className="h-11" onClick={onCancelarVenta}>
+          <AlertDialogCancel className="h-control">Seguir con la venta</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" className="h-control" onClick={onCancelarVenta}>
             Sí, cancelar venta
           </AlertDialogAction>
         </AlertDialogFooter>

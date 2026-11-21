@@ -27,19 +27,17 @@ export function BotonConfirmarCobro({
     <Button
       type="button"
       variant={esFiado ? 'default' : 'exito'}
-      className={cn(
-        'h-12 min-w-0 px-3 text-sm font-bold tracking-wide shadow-md sm:px-8 sm:text-base xl:h-14 xl:text-lg',
-        className,
-      )}
+      size="lg"
+      className={cn('min-w-0 px-4 tracking-wide shadow-md', className)}
       disabled={!habilitado}
       onClick={onConfirmarCobro}
     >
       {enviando ? 'REGISTRANDO…' : esFiado ? 'REGISTRAR FIADO' : 'CONFIRMAR'}
       {/* En pantallas muy angostas el icono se oculta para que el texto entre completo */}
       {esFiado ? (
-        <NotebookPen className="size-5 max-sm:hidden xl:size-6" />
+        <NotebookPen className="size-5 max-sm:hidden lg:size-6" />
       ) : (
-        <Check className="size-5 xl:size-6" />
+        <Check className="size-5 lg:size-6" />
       )}
     </Button>
   )

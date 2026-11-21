@@ -58,6 +58,7 @@ Para consultar el modelo de datos relacional, los Casos de Uso Base (CUB) y las 
   - Los espacios de hasta 8 px dentro de un mismo componente (icono y texto) usan la escala numérica de Tailwind: ahí el valor no debe crecer en PC.
   - Al agregar un token nuevo, sumarlo también a `src/lib/utils.ts` (configuración de `tailwind-merge`); si no, `cn()` no resuelve los conflictos con las clases nuevas.
   - Los componentes base de `src/components/ui/` ya traen estos tamaños por defecto: no hace falta repetirlos en cada uso.
+  - Los **tamaños** (letra, espacios, alturas) cambian en `lg`. El **reordenamiento de columnas** de una pantalla (por ejemplo pasar a dos columnas) depende del ancho del contenido, no del de la ventana: la barra lateral ocupa 240 px desde `lg`, así que a 1024 px el contenido mide unos 736 px. Por eso esos cambios de diseño usan `xl:` y no `lg:`.
 
 # Control de Versiones (Git)
 - **Ramas:** `tipo/id-nombre-tarea` (ej. `feat/1-alta-venta`, `fix/15-calculo-total`).

@@ -25,7 +25,7 @@ export function EstadoCatalogoProductos({
   return (
     <div role="status" aria-busy="true">
       <span className="sr-only">Cargando productos</span>
-      <Skeleton className="h-11 w-full" />
+      <Skeleton className="h-control w-full" />
     </div>
   )
 }
