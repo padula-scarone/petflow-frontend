@@ -25,8 +25,15 @@ export function PaginacionLista({ paginacion, onCambiarPagina }: PaginacionLista
         <ChevronLeft />
         Anterior
       </Button>
+      {/* "1/2" alcanza: entre Anterior y Siguiente no se lee de otra manera, y ocupa lo justo. Para el lector de
+          pantalla queda dicho completo */}
       <p className="text-cuerpo tabular-nums">
-        Página <span className="font-bold">{pagina}</span> de {totalPaginas}
+        <span className="sr-only">
+          Página {pagina} de {totalPaginas}
+        </span>
+        <span aria-hidden="true">
+          <span className="font-bold">{pagina}</span>/{totalPaginas}
+        </span>
       </p>
       <Button
         type="button"
