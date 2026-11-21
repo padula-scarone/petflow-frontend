@@ -55,6 +55,7 @@ Para consultar el modelo de datos relacional, los Casos de Uso Base (CUB) y las 
 - **Pesos:** solo tres. `font-normal` para texto corrido, `font-medium` para etiquetas y énfasis leve, `font-bold` para títulos y cifras. No usar `font-semibold`.
 - **Reglas:**
   - No usar números sueltos (`p-4`, `gap-3`, `h-11`, `text-sm`) para lo que ya tiene rol. Se usa el rol.
+  - La escala de texto de Tailwind (`text-xs`, `text-sm`, `text-base`, `text-lg`...) está desactivada: usarla no genera ningún estilo. Solo existen los roles de la tabla.
   - Los espacios de hasta 8 px dentro de un mismo componente (icono y texto) usan la escala numérica de Tailwind: ahí el valor no debe crecer en PC.
   - Al agregar un token nuevo, sumarlo también a `src/lib/utils.ts` (configuración de `tailwind-merge`); si no, `cn()` no resuelve los conflictos con las clases nuevas.
   - Los componentes base de `src/components/ui/` ya traen estos tamaños por defecto: no hace falta repetirlos en cada uso.

@@ -91,6 +91,9 @@ input::-ms-clear {
 
   /* Tipografia: tamano (--text-X) e interlineado (--text-X--line-height). El peso va aparte y solo hay tres:
      font-normal para texto corrido, font-medium para etiquetas y enfasis leve, font-bold para titulos y cifras. */
+  /* Se quita la escala de Tailwind (text-xs, text-sm, text-base...): solo valen los roles de abajo. Asi un tamano
+     suelto no compila en silencio y el sistema se hace cumplir solo. */
+  --text-*: initial;
   /* cifra-principal: el total que se cobra. Negrita. */
   --text-cifra-principal: 1.5rem;
   --text-cifra-principal--line-height: 2rem;
