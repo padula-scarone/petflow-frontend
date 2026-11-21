@@ -4,6 +4,13 @@ import { useEffect, useRef, useState, type RefObject } from 'react'
 const UMBRAL_OCULTAR = 12
 /** Cuanto hay que subir (en px) para que reaparezca: poco, para que se sienta inmediato. */
 const UMBRAL_MOSTRAR = 8
+/**
+ * Tiempo (en ms) que se ignora el scroll despues de un cambio de visibilidad. La barra inferior sale del layout y
+ * el area con scroll cambia de alto: si estaba al final, el navegador recorta su posicion contra el nuevo maximo y
+ * eso se leeria como un gesto hacia arriba, que la volveria a mostrar y empezaria un parpadeo. Un poco mas que la
+ * transicion de la barra (200 ms).
+ */
+const PAUSA_TRANSICION = 300
 
 /** Lo que devuelve el hook de la cabecera que se oculta al bajar y reaparece al subir. */
 interface CabeceraDesplazable {
@@ -15,8 +22,9 @@ interface CabeceraDesplazable {
 }
 
 /**
- * Cabecera de mobile que se esconde al desplazarse hacia abajo y reaparece apenas se sube un poco,
- * sin llegar hasta el principio. Siempre es visible cerca del principio del contenido.
+ * Cabecera y barra inferior de mobile que se esconden al desplazarse hacia abajo y reaparecen apenas se sube un
+ * poco, sin llegar hasta el principio. `visible` es una sola senal para las dos: se mueven juntas. Siempre es
+ * visible cerca del principio del contenido.
  * @param contenidoRef Elemento con el scroll.
  */
 export function useCabeceraDesplazable(
@@ -46,16 +54,30 @@ export function useCabeceraDesplazable(
     // de corrido en la misma direccion; un cambio de sentido reinicia la cuenta
     let posicionAnterior = contenido.scrollTop
     let desplazadoEnLaDireccion = 0
+    let visibleActual = true
+    let ignorarHasta = 0
+
+    // Solo avisa a React si cambia; y al cambiar abre una pausa (ver PAUSA_TRANSICION)
+    const cambiarVisibilidad = (nuevaVisibilidad: boolean) => {
+      if (nuevaVisibilidad === visibleActual) return
+      visibleActual = nuevaVisibilidad
+      desplazadoEnLaDireccion = 0
+      ignorarHasta = performance.now() + PAUSA_TRANSICION
+      setVisible(nuevaVisibilidad)
+    }
 
     const alDesplazar = () => {
       const posicionActual = contenido.scrollTop
       const variacion = posicionActual - posicionAnterior
       posicionAnterior = posicionActual
 
+      // Durante la pausa el scroll puede moverse solo por el cambio de alto del area: no es un gesto del usuario
+      if (performance.now() < ignorarHasta) return
+
       // Cerca del principio la cabecera esta en su lugar natural: siempre visible
       if (posicionActual <= (cabeceraRef.current?.offsetHeight ?? 0)) {
         desplazadoEnLaDireccion = 0
-        setVisible(true)
+        cambiarVisibilidad(true)
         return
       }
 
@@ -63,8 +85,8 @@ export function useCabeceraDesplazable(
         Math.sign(variacion) === Math.sign(desplazadoEnLaDireccion)
           ? desplazadoEnLaDireccion + variacion
           : variacion
-      if (desplazadoEnLaDireccion > UMBRAL_OCULTAR) setVisible(false)
-      else if (desplazadoEnLaDireccion < -UMBRAL_MOSTRAR) setVisible(true)
+      if (desplazadoEnLaDireccion > UMBRAL_OCULTAR) cambiarVisibilidad(false)
+      else if (desplazadoEnLaDireccion < -UMBRAL_MOSTRAR) cambiarVisibilidad(true)
     }
 
     contenido.addEventListener('scroll', alDesplazar, { passive: true })

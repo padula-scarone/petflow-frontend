@@ -119,6 +119,7 @@ export function MenuDoble({
         modulos={modulos}
         idModuloActivo={idModuloActivo}
         onSeleccionarModulo={onSeleccionarModulo}
+        visible={cabeceraVisible}
       />
     </div>
   )
