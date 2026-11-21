@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { ImagenProducto } from '@/features/ventas/components/imagen-producto'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { useNavegacionSugerencias } from '@/features/ventas/hooks/use-navegacion-sugerencias'
 
 /** Producto del catalogo que coincide con el texto buscado. */
@@ -20,16 +21,7 @@ export interface ResultadoBuscadorProducto<Identificador extends string | number
   stockDisponible: number
 }
 
-const ETIQUETA_FORMATO = { unidad: 'Unidad', granel: 'Granel' } as const
 
-/** "Categoria · Unidad", o lo que haya de eso; vacio si el resultado no trae ninguno de los dos datos. */
-function describirProducto<Identificador extends string | number>(
-  resultado: ResultadoBuscadorProducto<Identificador>,
-) {
-  return [resultado.categoria, resultado.formato && ETIQUETA_FORMATO[resultado.formato]]
-    .filter(Boolean)
-    .join(' · ')
-}
 
 /** Props del buscador de productos con desplegable de coincidencias. */
 interface BuscadorProductosProps<Identificador extends string | number> {
@@ -161,7 +153,6 @@ export function BuscadorProductos<Identificador extends string | number>({
           ) : (
             resultadosVisibles.map((resultado, indiceResultado) => {
               const resultadoSinStock = sinStock(resultado)
-              const detalleProducto = describirProducto(resultado)
               return (
               <li key={resultado.idProducto} role="presentation">
                 <button
@@ -178,9 +169,11 @@ export function BuscadorProductos<Identificador extends string | number>({
                     />
                     {/* Nada se corta con puntos suspensivos: lo que no entra pasa al renglon siguiente */}
                     <span className="flex min-w-0 flex-col">
-                      <span className="font-medium tabular-nums">{resultado.nombreProducto}</span>
-                      {detalleProducto !== '' && (
-                        <span className="text-auxiliar text-texto-suave">{detalleProducto}</span>
+                      <span className="font-medium tabular-nums">
+                        <NombreProducto nombre={resultado.nombreProducto} formato={resultado.formato} />
+                      </span>
+                      {resultado.categoria && (
+                        <span className="text-auxiliar text-texto-suave">{resultado.categoria}</span>
                       )}
                     </span>
                   </span>

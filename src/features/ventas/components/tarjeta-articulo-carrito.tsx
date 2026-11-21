@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils'
 import { CampoCantidadUnidades } from '@/features/ventas/components/campo-cantidad-unidades'
 import { CampoPesoGranel } from '@/features/ventas/components/campo-peso-granel'
 import { ImagenProducto } from '@/features/ventas/components/imagen-producto'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
 import { superaStockDisponible } from '@/features/ventas/utils/superar-stock'
 import type { ArticuloCarrito } from '@/features/ventas/types/venta'
@@ -92,8 +93,7 @@ export function TarjetaArticuloCarrito({
             {/* Nada se corta con puntos suspensivos: lo que no entra en un renglon pasa al siguiente. La presentacion
                 va con el nombre y no con la categoria: son datos distintos */}
             <p className="font-bold tabular-nums">
-              {articulo.nombreProducto}
-              <span className="font-normal whitespace-nowrap"> | {esGranel ? 'Granel' : 'Unidad'}</span>
+              <NombreProducto nombre={articulo.nombreProducto} formato={articulo.formato} />
             </p>
             <p className="text-cuerpo text-texto-suave">{articulo.categoria}</p>
             {/* El stock es un dato del producto, no de la cuenta: va con el producto y siempre a la vista, asi se sabe

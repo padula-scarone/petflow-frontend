@@ -1,7 +1,7 @@
 import { PRESENTACION_ESTADO_CAMBIO } from '@/features/ventas/cambios-mercaderia/config/estados-cambio'
 import type { PropiedadesFiltrosCambios } from '@/features/ventas/cambios-mercaderia/types/cambio'
 import type { ChipFiltro } from '@/features/ventas/types/compartidos'
-import { describirRangoFechas } from '@/features/ventas/utils/construir-chips-filtros-historial'
+import { describirProductoFiltro, describirRangoFechas } from '@/features/ventas/utils/construir-chips-filtros-historial'
 
 /**
  * Arma los chips de los filtros de la lista de cambios.
@@ -28,7 +28,7 @@ export function construirChipsFiltrosCambios(
     if (filtros.productoSeleccionado) {
       chips.push({
         clave: 'producto',
-        etiqueta: filtros.productoSeleccionado.nombreProducto,
+        etiqueta: describirProductoFiltro(filtros.productoSeleccionado),
         descripcion: 'el producto',
         onQuitar: () => onSeleccionarProducto(null),
       })

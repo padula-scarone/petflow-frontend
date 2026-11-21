@@ -1,4 +1,5 @@
 import { formatearMoneda } from '@/lib/formatear-moneda'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
 import type { DetalleComprobante } from '@/features/ventas/types/comprobante'
 
@@ -40,8 +41,7 @@ export function DetalleProductosComprobante({ detalles }: DetalleProductosCompro
             {/* La presentacion va con el nombre, como en el carrito: ahi se ve de un vistazo si se vendio por unidad o
                 a granel, sin repetirlo en cada cantidad */}
             <p className="col-span-3 font-medium tabular-nums sm:col-span-1">
-              {detalle.nombreProducto}
-              <span className="font-normal whitespace-nowrap"> | {detalle.formato === 'granel' ? 'Granel' : 'Unidad'}</span>
+              <NombreProducto nombre={detalle.nombreProducto} formato={detalle.formato} />
             </p>
             <p className="text-cuerpo tabular-nums sm:text-right">
               {formatearCantidad(detalle.cantidad, detalle.formato)}

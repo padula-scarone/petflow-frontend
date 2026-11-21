@@ -2,6 +2,7 @@ import { Search, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { EtiquetaFiltro, type VarianteFiltro } from '@/features/ventas/components/etiqueta-filtro'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { useNavegacionSugerencias } from '@/features/ventas/hooks/use-navegacion-sugerencias'
 import type { ProductoFiltro } from '@/features/ventas/types/historial'
 
@@ -45,7 +46,7 @@ export function FiltroProducto({
         <div className="flex h-control items-center justify-between gap-1 rounded-mediano border border-borde-campo bg-fondo-seleccion pl-3">
           <span id={idCampo} className="truncate text-cuerpo font-medium">
             <span className="sr-only">Producto: </span>
-            {productoSeleccionado.nombreProducto}
+            <NombreProducto nombre={productoSeleccionado.nombreProducto} formato={productoSeleccionado.formato} />
           </span>
           <Button
             type="button"
@@ -102,7 +103,7 @@ export function FiltroProducto({
                       className="flex min-h-control w-full items-center rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none"
                       onClick={() => onSeleccionarProducto(producto)}
                     >
-                      {producto.nombreProducto}
+                      <NombreProducto nombre={producto.nombreProducto} formato={producto.formato} />
                     </button>
                   </li>
                 ))
