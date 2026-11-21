@@ -32,7 +32,7 @@ export interface ProductoApi {
   /** Texto con 3 decimales, por ejemplo "12.000". */
   stockFisico: string
   formatoVenta: FormatoVentaApi
-  // Datos de "bolsa abierta" (para Cambios). Opcionales para no romper si el back no los manda: sin ellos
+  // Datos de "bolsa abierta" (para Devoluciones). Opcionales para no romper si el back no los manda: sin ellos
   // el producto simplemente no admite bolsa abierta.
   /** true si el producto se puede devolver como bolsa abierta (la regla la decide el back). */
   permiteBolsaAbierta?: boolean
@@ -121,7 +121,7 @@ export interface ItemDetalleApi {
   cantidad: string
   precioUnitario: string
   subtotal: string
-  /** Lo devuelto en cambios activos de la venta, texto con 3 decimales ("0.000" si nada). Es para Cambios. */
+  /** Lo devuelto en devoluciones activas de la venta, texto con 3 decimales ("0.000" si nada). Es para Devoluciones. */
   cantidadYaDevuelta: string
 }
 
@@ -215,7 +215,7 @@ export interface VentaHistorialApi {
   clienteReferencia: string | null
   origen: OrigenApi
   modalidadEntrega: ModalidadEntregaApi
-  /** Cambios de mercaderia activos vinculados a la venta. Es para Cambios. */
+  /** Devoluciones activas vinculadas a la venta. Es para Devoluciones. */
   cantidadCambiosActivos: number
 }
 

@@ -37,7 +37,7 @@ export interface ResultadoBusqueda {
   stockDisponible: number
 }
 
-/** Datos con los que un producto en unidades se puede devolver como "bolsa abierta" (los usa Cambios). */
+/** Datos con los que un producto en unidades se puede devolver como "bolsa abierta" (los usa Devoluciones). */
 export interface DatosBolsaAbierta {
   idProductoGranel: number
   nombreProductoGranel: string

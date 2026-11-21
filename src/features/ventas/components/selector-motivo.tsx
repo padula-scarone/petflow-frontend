@@ -12,7 +12,7 @@ export interface OpcionSelectorMotivo {
   etiqueta: string
 }
 
-/** Props de la lista de motivos de una anulacion, una edicion o un cambio. */
+/** Props de la lista de motivos de una anulacion, una edicion o una devolución. */
 interface SelectorMotivoProps {
   opciones: OpcionSelectorMotivo[]
   /** null hasta que se elige uno: no hay opcion preseleccionada. */

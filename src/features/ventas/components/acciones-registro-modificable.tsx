@@ -5,9 +5,9 @@ import { cn } from '@/lib/utils'
 
 /** Props de los botones Ver, Editar y Anular de un registro sujeto a la ventana de 15 minutos. */
 interface AccionesRegistroModificableProps {
-  /** Como se nombra el registro en los aria-label, por ejemplo "comprobante CMP-00001047" o "cambio 2012". */
+  /** Como se nombra el registro en los aria-label, por ejemplo "comprobante CMP-00001047" o "devolución 2012". */
   nombreRegistro: string
-  /** Para los textos cortos: "venta" o "cambio". */
+  /** Para los textos cortos: "venta" o "devolución". */
   sustantivo: string
   ventanaVigente: boolean
   onVerDetalle: () => void

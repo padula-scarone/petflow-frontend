@@ -16,7 +16,7 @@ Para consultar el modelo de datos relacional, los Casos de Uso Base (CUB) y las 
 
 # Estándares y Convenciones
 - **Regla de Oro:** CERO abreviaciones. Las variables deben ser explícitas en español (ej. `cantidadProducto`, no `cantProd`).
-- **Archivos y Carpetas:** `kebab-case` (ej. `/cambios-mercaderia`, `use-registrar-venta.ts`).
+- **Archivos y Carpetas:** `kebab-case` (ej. `/devoluciones`, `use-registrar-venta.ts`).
 - **Componentes React e Interfaces:** `PascalCase` (ej. `<GrillaVentas />`, `interface Venta`).
 - **Variables, Funciones y Hooks:** `camelCase` (ej. `montoTotal`, `calcularVuelto()`, `useRegistrarVenta()`).
 - **Comentarios y Documentación:**

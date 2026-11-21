@@ -10,7 +10,7 @@ interface PaginaConsultada {
 }
 
 /**
- * Como se conecta cada lista (Historial de ventas, Cambios posventa) con el hook. Las tres funciones se usan
+ * Como se conecta cada lista (Historial de ventas, Devoluciones) con el hook. Las tres funciones se usan
  * dentro de un efecto: deben ser estables (definidas a nivel de modulo, no dentro del componente).
  */
 export interface OpcionesListaPaginada<Filtros, Pagina extends PaginaConsultada> {

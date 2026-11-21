@@ -70,9 +70,9 @@ export interface VentaHistorial {
   fechaHoraLimiteModificacion: string | null
 }
 
-/** Fila de GET /api/ventas con el dato que solo necesita Cambios: cuantos cambios ACTIVOS tiene la venta. */
+/** Fila de GET /api/ventas con el dato que solo necesita Devoluciones: cuantas devoluciones ACTIVAS tiene la venta. */
 export interface VentaHistorialConsultada extends VentaHistorial {
-  cantidadCambiosActivos: number
+  cantidadDevolucionesActivas: number
 }
 
 /** Metadatos de paginacion de la respuesta. */

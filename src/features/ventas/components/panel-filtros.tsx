@@ -11,7 +11,7 @@ interface PanelFiltrosProps {
   textoCantidad: string
   cantidadFiltrosActivos: number
   onLimpiarFiltros: () => void
-  /** Boton principal de la lista (ej. "Cargar nuevo cambio") junto a la barra de escritorio. */
+  /** Boton principal de la lista (ej. "Cargar nueva devolución") junto a la barra de escritorio. */
   accionEscritorio?: ReactNode
   /** Version compacta de ese boton para la fila mobile. */
   accionMobile?: ReactNode

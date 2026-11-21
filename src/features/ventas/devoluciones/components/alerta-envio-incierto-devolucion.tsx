@@ -1,0 +1,36 @@
+import { TriangleAlert } from 'lucide-react'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+import { Button } from '@/components/ui/button'
+
+/** Props del aviso de un alta cuyo resultado no se conoce. */
+interface AlertaEnvioInciertoDevolucionProps {
+  mensaje: string
+  /** true mientras se consulta la lista para saber si la devolución se guardo. */
+  verificando: boolean
+  onVerificar: () => void
+}
+
+/**
+ * Se envio la devolución pero no se supo la respuesta (sin red, tiempo agotado o error del servidor). No se
+ * reenvia: se consulta la lista para ver si quedo guardado, y con la duda se pide revisarla antes de confirmar.
+ */
+export function AlertaEnvioInciertoDevolucion({ mensaje, verificando, onVerificar }: AlertaEnvioInciertoDevolucionProps) {
+  return (
+    <Alert role="alert">
+      <TriangleAlert aria-hidden="true" />
+      <AlertTitle>No sabemos si la devolución se guardó</AlertTitle>
+      <AlertDescription>
+        <p>{mensaje}</p>
+        <Button
+          type="button"
+          variant="outline"
+          className="mt-2 bg-fondo-tarjeta text-texto-principal"
+          disabled={verificando}
+          onClick={onVerificar}
+        >
+          {verificando ? 'Verificando…' : 'Verificar de nuevo'}
+        </Button>
+      </AlertDescription>
+    </Alert>
+  )
+}

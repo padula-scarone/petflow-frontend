@@ -5,7 +5,7 @@ import type { ChipFiltro } from '@/features/ventas/types/compartidos'
 
 /** Props del resumen que va entre los filtros y la lista. */
 interface ResumenResultadosProps {
-  /** Por ejemplo "Mostrando 1-10 de 47 cambios". */
+  /** Por ejemplo "Mostrando 1-10 de 47 devoluciones". */
   textoResultados: string
   cantidadFiltrosActivos: number
   /** Escritorio: solo lo escondido en "Mas filtros". */

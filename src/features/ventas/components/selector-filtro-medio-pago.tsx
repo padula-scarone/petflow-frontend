@@ -7,7 +7,7 @@ interface SelectorFiltroMedioPagoProps {
   idPrefijo: string
   medioPago: FiltroMedioPago
   medios: MedioPagoFiltro[]
-  /** Una venta puede pagarse con dos medios ("Mixto"); un cambio cobra su saldo con uno solo. */
+  /** Una venta puede pagarse con dos medios ("Mixto"); una devolución cobra su saldo con uno solo. */
   permiteMixto: boolean
   deshabilitado?: boolean
   /** Por que esta deshabilitado; se asocia al campo con aria-describedby. */

@@ -12,7 +12,7 @@ export const MODULOS_MENU: ModuloMenu[] = [
       { idSeccion: 'historial', etiqueta: 'Historial' },
       // Oculta: la seccion no va en la demo. Para volver a mostrarla, descomentar la linea
       // { idSeccion: 'medios-de-pago', etiqueta: 'Medios de pago' },
-      { idSeccion: 'cambios-posventa', etiqueta: 'Cambios posventa' },
+      { idSeccion: 'devoluciones', etiqueta: 'Devoluciones' },
     ],
   },
   {

@@ -38,7 +38,7 @@ export function calcularDescuentoPorcentajeCentavos(subtotalCentavos: number, po
 }
 
 // --- CAMBIOS: IMPORTES CON REDONDEO EXACTO ---
-// El back calcula los cambios con Decimal exacto y redondea UNA vez a centavos, la mitad hacia arriba. Estas
+// El back calcula las devoluciones con Decimal exacto y redondea UNA vez a centavos, la mitad hacia arriba. Estas
 // cuentas usan BigInt para el producto intermedio: con montos grandes un entero de JS dejaria de ser exacto.
 
 /** Divide dos enteros positivos y redondea la mitad hacia arriba (ROUND_HALF_UP del back). */
@@ -46,7 +46,7 @@ function dividirRedondeandoMitadArriba(numerador: bigint, denominador: bigint) {
   return Number((2n * numerador + denominador) / (2n * denominador))
 }
 
-/** Importe de un renglon de un cambio: precio por cantidad (en milesimas), redondeado una vez a centavos. */
+/** Importe de un renglon de una devolución: precio por cantidad (en milesimas), redondeado una vez a centavos. */
 export function calcularImporteCentavos(precioCentavos: number, cantidadMilesimas: number) {
   return dividirRedondeandoMitadArriba(BigInt(precioCentavos) * BigInt(cantidadMilesimas), 1000n)
 }

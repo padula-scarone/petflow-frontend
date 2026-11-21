@@ -13,7 +13,7 @@ interface GrillaMediosPagoProps {
   vuelto: number | null
   onSeleccionarMedioPago: (idMedioPago: number) => void
   onCambiarPagaCon: (monto: number | null) => void
-  /** false en un cambio: el saldo se cobra sin el recargo o descuento del medio, asi que no se muestra. */
+  /** false en una devolución: el saldo se cobra sin el recargo o descuento del medio, asi que no se muestra. */
   mostrarAjustes?: boolean
 }
 

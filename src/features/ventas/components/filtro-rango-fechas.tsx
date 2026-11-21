@@ -24,7 +24,7 @@ interface FiltroRangoFechasProps {
   fechaDesde: string | null
   fechaHasta: string | null
   periodoRapidoActivo: PeriodoRapido | null
-  /** Acepta cualquier funcion de filtros que contenga las dos fechas (Historial, Cambios, busqueda de venta). */
+  /** Acepta cualquier funcion de filtros que contenga las dos fechas (Historial, Devoluciones, busqueda de venta). */
   onCambiarFiltros: (cambios: Partial<RangoFechasFiltro>) => void
   onSeleccionarPeriodoRapido: (periodo: PeriodoRapido) => void
 }

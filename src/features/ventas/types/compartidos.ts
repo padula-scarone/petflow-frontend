@@ -1,6 +1,6 @@
 import type { LucideIcon } from 'lucide-react'
 
-// Tipos que comparten el Historial de ventas y Cambios posventa.
+// Tipos que comparten el Historial de ventas y Devoluciones.
 
 /** Metadatos de paginacion de cualquier listado. */
 export interface PaginacionResultados {
