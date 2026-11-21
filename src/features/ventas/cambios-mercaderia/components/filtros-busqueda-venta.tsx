@@ -37,7 +37,7 @@ export function FiltrosBusquedaVenta({ propiedades }: FiltrosBusquedaVentaProps)
   const cantidadSinComprobante = cantidadFiltros - (filtros.numeroComprobante.trim() !== '' ? 1 : 0)
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-interno">
       <div className="flex items-end gap-2">
         <div className="min-w-0 flex-1">
           <CampoFiltroComprobante
@@ -50,7 +50,7 @@ export function FiltrosBusquedaVenta({ propiedades }: FiltrosBusquedaVentaProps)
         <Button
           type="button"
           variant="outline"
-          className="h-11 shrink-0 gap-2 bg-fondo-tarjeta sm:hidden"
+          className="shrink-0 gap-2 bg-fondo-tarjeta sm:hidden"
           aria-expanded={desplegado}
           aria-controls="filtros-secundarios-busqueda-venta"
           onClick={() => setDesplegado(!desplegado)}
@@ -68,7 +68,7 @@ export function FiltrosBusquedaVenta({ propiedades }: FiltrosBusquedaVentaProps)
 
       <div
         id="filtros-secundarios-busqueda-venta"
-        className={desplegado ? 'grid gap-3 sm:grid-cols-2' : 'hidden gap-3 sm:grid sm:grid-cols-2'}
+        className={desplegado ? 'grid gap-interno sm:grid-cols-2' : 'hidden gap-interno sm:grid sm:grid-cols-2'}
       >
         <FiltroRangoFechas
           idCampo="busqueda-venta-fecha"
@@ -104,7 +104,7 @@ export function FiltrosBusquedaVenta({ propiedades }: FiltrosBusquedaVentaProps)
 
       {/* Solo cuando hay algo que limpiar */}
       {cantidadFiltros > 0 && (
-        <Button type="button" variant="ghost" className="h-11 gap-1.5 self-start px-3" onClick={onLimpiarFiltros}>
+        <Button type="button" variant="ghost" className="gap-1.5 self-start px-3" onClick={onLimpiarFiltros}>
           <FilterX />
           Limpiar filtros
         </Button>

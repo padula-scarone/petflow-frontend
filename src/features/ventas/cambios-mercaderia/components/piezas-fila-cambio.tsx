@@ -11,6 +11,8 @@ import {
 import { AccionesRegistroModificable } from '@/features/ventas/components/acciones-registro-modificable'
 import { AvisoVentanaModificacion } from '@/features/ventas/components/aviso-ventana-modificacion'
 import { InsigniaEstado } from '@/features/ventas/components/insignia-estado'
+import type { FormatoVenta } from '@/features/ventas/types/historial'
+import { describirPresentacion } from '@/features/ventas/utils/describir-presentacion'
 import { cn } from '@/lib/utils'
 
 // Piezas que comparten la tarjeta (mobile) y la tabla (escritorio) de un cambio.
@@ -31,18 +33,24 @@ export function TextoVentaVinculada({ fila, className }: { fila: FilaCambio; cla
 /** Props de un articulo del cambio en dos lineas: nombre y cantidad. */
 interface ArticuloListadoProps {
   nombreProducto: string
+  formatoVenta: FormatoVenta
   /** Ya descrita: "2 u", "2,5 kg" o "Bolsa abierta · 7,2 kg". */
   descripcionCantidad: string
   className?: string
 }
 
-export function ArticuloListado({ nombreProducto, descripcionCantidad, className }: ArticuloListadoProps) {
+export function ArticuloListado({ nombreProducto, formatoVenta, descripcionCantidad, className }: ArticuloListadoProps) {
+  const presentacion = describirPresentacion(formatoVenta)
+
   return (
     <div className={cn('min-w-0', className)}>
-      <p className="truncate font-medium" title={nombreProducto}>
-        {nombreProducto}
+      {/* El nombre se corta con puntos suspensivos y la presentacion queda afuera del corte: si no, seria lo primero
+          que se pierde en un nombre largo */}
+      <p className="flex min-w-0" title={`${nombreProducto} | ${presentacion}`}>
+        <span className="truncate font-medium">{nombreProducto}</span>
+        <span className="shrink-0 whitespace-nowrap">{`\u00a0| ${presentacion}`}</span>
       </p>
-      <p className="text-xs text-texto-suave tabular-nums">{descripcionCantidad}</p>
+      <p className="text-auxiliar text-texto-suave tabular-nums">{descripcionCantidad}</p>
     </div>
   )
 }
@@ -53,6 +61,7 @@ export function ArticuloDevueltoFila({ fila, className }: { fila: FilaCambio; cl
   return (
     <ArticuloListado
       nombreProducto={productoDevuelto.nombreProducto}
+      formatoVenta={productoDevuelto.formatoVenta}
       descripcionCantidad={describirDevolucion(
         productoDevuelto.cantidad,
         productoDevuelto.formatoVenta,
@@ -69,6 +78,7 @@ export function ArticuloEntregadoFila({ fila, className }: { fila: FilaCambio; c
   return (
     <ArticuloListado
       nombreProducto={productoEntregado.nombreProducto}
+      formatoVenta={productoEntregado.formatoVenta}
       descripcionCantidad={describirCantidadArticulo(productoEntregado.cantidad, productoEntregado.formatoVenta)}
       className={className}
     />

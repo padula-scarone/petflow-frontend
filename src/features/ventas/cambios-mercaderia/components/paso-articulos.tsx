@@ -42,7 +42,7 @@ export function PasoArticulos({
   const eligioLosDos = eligioDevuelto && borrador.articuloEntregado !== null
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-bloque">
       {/* Mientras el catalogo no esta listo los buscadores no tienen de donde sacar productos */}
       {estadoCatalogo.fase !== 'listo' && (
         <EstadoCatalogoProductos estadoCatalogo={estadoCatalogo} onReintentar={onReintentarCatalogo} />

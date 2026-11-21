@@ -35,7 +35,7 @@ export function PasoCobro({
   const errorMonto = validacion.erroresCampo.montoRecibido
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-bloque">
       {estadoEnvio.tipo === 'incierto' && (
         <AlertaEnvioInciertoCambio
           mensaje={estadoEnvio.mensaje}
@@ -54,8 +54,8 @@ export function PasoCobro({
       <ResumenCambio borrador={borrador} resumenSaldo={resumenSaldo} />
 
       {/* --- COBRO DE LA DIFERENCIA --- */}
-      <section aria-labelledby="titulo-cobro-cambio" className="flex flex-col gap-3">
-        <h2 id="titulo-cobro-cambio" className="text-base font-bold">
+      <section aria-labelledby="titulo-cobro-cambio" className="flex flex-col gap-interno">
+        <h2 id="titulo-cobro-cambio" className="text-titulo-seccion font-bold">
           Cobro de la diferencia
         </h2>
         {resumenSaldo.situacion === 'A_COBRAR' ? (
@@ -67,7 +67,7 @@ export function PasoCobro({
                 onReintentar={onReintentarMediosPago}
               />
             ) : mediosPago.length === 0 ? (
-              <p className="text-sm text-texto-suave">No hay medios de pago activos: no se puede cobrar la diferencia.</p>
+              <p className="text-cuerpo text-texto-suave">No hay medios de pago activos: no se puede cobrar la diferencia.</p>
             ) : (
               /* En un cambio el saldo se cobra sin recargo ni descuento del medio: no se muestran los ajustes */
               <GrillaMediosPago
@@ -80,10 +80,10 @@ export function PasoCobro({
                 onCambiarPagaCon={acciones.onCambiarMontoRecibido}
               />
             )}
-            {errorMonto && <p className="text-sm text-peligro">{errorMonto}</p>}
+            {errorMonto && <p className="text-cuerpo text-peligro">{errorMonto}</p>}
           </>
         ) : (
-          <p className="text-sm text-texto-suave">No hay diferencia para cobrar: este cambio no mueve la caja.</p>
+          <p className="text-cuerpo text-texto-suave">No hay diferencia para cobrar: este cambio no mueve la caja.</p>
         )}
       </section>
     </div>

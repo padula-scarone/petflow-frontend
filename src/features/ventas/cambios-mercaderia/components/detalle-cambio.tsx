@@ -27,6 +27,7 @@ import {
   describirDevolucion,
 } from '@/features/ventas/cambios-mercaderia/utils/describir-articulo-cambio'
 import { describirMotivoCambio } from '@/features/ventas/cambios-mercaderia/utils/describir-motivo-cambio'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 
@@ -55,15 +56,17 @@ function BloqueArticulo({
 }) {
   return (
     <section aria-label={titulo} className="flex flex-col gap-2">
-      <h2 className="text-base font-bold">{titulo}</h2>
-      <div className="flex items-start justify-between gap-3 rounded-grande border p-3">
+      <h2 className="text-titulo-seccion font-bold">{titulo}</h2>
+      <div className="flex items-start justify-between gap-interno rounded-grande border p-contorno">
         <div className="min-w-0">
-          <p className="font-medium wrap-break-word">{articulo.nombreProducto}</p>
-          <p className="text-sm text-texto-suave tabular-nums">
+          <p className="font-medium wrap-break-word">
+            <NombreProducto nombre={articulo.nombreProducto} formato={articulo.formatoVenta} />
+          </p>
+          <p className="text-cuerpo text-texto-suave tabular-nums">
             {cantidadTexto} × {precioTexto}
           </p>
           {notas.map((nota) => (
-            <p key={nota} className="text-sm text-texto-suave">
+            <p key={nota} className="text-cuerpo text-texto-suave">
               {nota}
             </p>
           ))}
@@ -108,7 +111,7 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
                   <Button
                     type="button"
                     variant="outline"
-                    className="mt-2 h-11 bg-fondo-tarjeta px-6 text-texto-principal"
+                    className="mt-2 bg-fondo-tarjeta text-texto-principal"
                     onClick={onReintentar}
                   >
                     Reintentar
@@ -130,10 +133,10 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
             <>
               <DialogBody>
                 {/* --- ENCABEZADO: VA DENTRO DEL SCROLL --- */}
-                {/* pr-10: no pisa la X, que es fija */}
-                <div className="flex flex-col gap-1 pr-10">
+                {/* pr-14: no pisa la X, que es fija */}
+                <div className="flex flex-col gap-1 pr-14">
                   <DialogDescription>Cambio</DialogDescription>
-                  <DialogTitle className="text-xl tabular-nums">N.º {cambio.idCambio}</DialogTitle>
+                  <DialogTitle className="text-titulo-pagina tabular-nums">N.º {cambio.idCambio}</DialogTitle>
                   <div className="pt-1">
                     <InsigniaEstadoCambio estado={cambio.estado} />
                   </div>
@@ -149,7 +152,7 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
                         cambio queda en la lista solo para consulta.
                       </p>
                       {cambio.anulacion && (
-                        <dl className="mt-1 grid gap-1.5 text-sm text-texto-principal">
+                        <dl className="mt-1 grid gap-1.5 text-cuerpo text-texto-principal">
                           <div>
                             <dt className="text-texto-suave">Motivo</dt>
                             <dd className="font-medium wrap-break-word">
@@ -169,7 +172,7 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
                 )}
 
                 {/* --- DATOS GENERALES --- */}
-                <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
+                <dl className="grid grid-cols-2 gap-x-bloque gap-y-interno text-cuerpo sm:grid-cols-3">
                   <div>
                     <dt className="text-texto-suave">Fecha y hora</dt>
                     <dd className="font-medium tabular-nums">{formatearFechaHora(cambio.fechaHora)}</dd>
@@ -215,36 +218,36 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
 
                 {/* --- SALDO Y COBRO --- */}
                 <section aria-labelledby="titulo-saldo-cambio" className="flex flex-col gap-2">
-                  <h2 id="titulo-saldo-cambio" className="text-base font-bold">
+                  <h2 id="titulo-saldo-cambio" className="text-titulo-seccion font-bold">
                     Saldo
                   </h2>
-                  <dl className="grid gap-1.5 text-sm">
-                    <div className="flex justify-between gap-3">
+                  <dl className="grid gap-1.5 text-cuerpo">
+                    <div className="flex justify-between gap-interno">
                       <dt className="text-texto-suave">Valor entregado</dt>
                       <dd className="tabular-nums">{formatearMoneda(cambio.valorEntregado)}</dd>
                     </div>
-                    <div className="flex justify-between gap-3">
+                    <div className="flex justify-between gap-interno">
                       <dt className="text-texto-suave">Valor devuelto</dt>
                       <dd className="tabular-nums">− {formatearMoneda(cambio.valorDevuelto)}</dd>
                     </div>
-                    <div className="flex justify-between gap-3 border-t pt-2 text-base font-bold">
-                      <dt>Saldo cobrado</dt>
-                      <dd className="tabular-nums">{formatearMoneda(cambio.saldoResultante)}</dd>
+                    <div className="flex items-baseline justify-between gap-interno pt-interno">
+                      <dt className="text-titulo-seccion font-bold">Saldo cobrado</dt>
+                      <dd className="text-cifra-secundaria font-bold tabular-nums">{formatearMoneda(cambio.saldoResultante)}</dd>
                     </div>
                   </dl>
                   {pago ? (
-                    <dl className="grid gap-1.5 text-sm">
-                      <div className="flex justify-between gap-3">
+                    <dl className="grid gap-1.5 text-cuerpo">
+                      <div className="flex justify-between gap-interno">
                         <dt className="text-texto-suave">Medio de pago</dt>
                         <dd className="font-medium">{pago.nombreMedioPago}</dd>
                       </div>
                       {pago.montoRecibido !== null && (
                         <>
-                          <div className="flex justify-between gap-3">
+                          <div className="flex justify-between gap-interno">
                             <dt className="text-texto-suave">Monto recibido</dt>
                             <dd className="tabular-nums">{formatearMoneda(pago.montoRecibido)}</dd>
                           </div>
-                          <div className="flex justify-between gap-3">
+                          <div className="flex justify-between gap-interno">
                             <dt className="text-texto-suave">Vuelto</dt>
                             <dd className="tabular-nums">{formatearMoneda(pago.vuelto ?? 0)}</dd>
                           </div>
@@ -252,7 +255,7 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
                       )}
                     </dl>
                   ) : (
-                    <p className="text-sm text-texto-suave">No hubo diferencia para cobrar.</p>
+                    <p className="text-cuerpo text-texto-suave">No hubo diferencia para cobrar.</p>
                   )}
                 </section>
 
@@ -260,10 +263,10 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
 
                 {/* --- MOTIVO --- */}
                 <section aria-labelledby="titulo-motivo-cambio" className="flex flex-col gap-1">
-                  <h2 id="titulo-motivo-cambio" className="text-base font-bold">
+                  <h2 id="titulo-motivo-cambio" className="text-titulo-seccion font-bold">
                     Motivo del cambio
                   </h2>
-                  <p className="text-sm wrap-break-word">
+                  <p className="text-cuerpo wrap-break-word">
                     {describirMotivoCambio(cambio.motivoCambio)}
                   </p>
                 </section>

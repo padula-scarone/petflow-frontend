@@ -52,7 +52,7 @@ export function AlertaErrorCambio({ error, onElegirOtraVenta, onReintentar }: Al
             <Button
               type="button"
               variant="outline"
-              className="mt-2 h-11 bg-fondo-tarjeta px-6 text-texto-principal"
+              className="mt-2 bg-fondo-tarjeta text-texto-principal"
               onClick={onElegirOtraVenta}
             >
               Elegir otra venta
@@ -62,7 +62,7 @@ export function AlertaErrorCambio({ error, onElegirOtraVenta, onReintentar }: Al
             <Button
               type="button"
               variant="outline"
-              className="mt-2 h-11 bg-fondo-tarjeta px-6 text-texto-principal"
+              className="mt-2 bg-fondo-tarjeta text-texto-principal"
               onClick={onReintentar}
             >
               Reintentar
@@ -71,7 +71,7 @@ export function AlertaErrorCambio({ error, onElegirOtraVenta, onReintentar }: Al
           {error.codigo !== null &&
             error.codigo !== 'VENTA_NO_ENCONTRADA' &&
             error.codigo !== 'VENTA_NO_VINCULABLE' &&
-            error.codigo !== 'SIN_CAJA_ABIERTA' && <p className="text-xs">Volvé al paso anterior para corregirlo.</p>}
+            error.codigo !== 'SIN_CAJA_ABIERTA' && <p className="text-auxiliar">Volvé al paso anterior para corregirlo.</p>}
         </AlertDescription>
       </Alert>
     </div>

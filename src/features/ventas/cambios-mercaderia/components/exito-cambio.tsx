@@ -29,7 +29,7 @@ export function ExitoCambio({ cambio, acciones }: ExitoCambioProps) {
       </DialogHeader>
 
       <DialogBody>
-        <ul className="flex flex-col gap-2 text-sm">
+        <ul className="flex flex-col gap-2 text-cuerpo">
           <li>
             <span className="text-texto-suave">Entró al stock: </span>
             <span className="font-medium tabular-nums">
@@ -63,13 +63,13 @@ export function ExitoCambio({ cambio, acciones }: ExitoCambioProps) {
       </DialogBody>
 
       <DialogFooter>
-        <Button type="button" variant="outline" className="h-11 bg-fondo-tarjeta px-6" onClick={acciones.onCargarOtroCambio}>
+        <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={acciones.onCargarOtroCambio}>
           Cargar otro cambio
         </Button>
-        <Button type="button" variant="outline" className="h-11 bg-fondo-tarjeta px-6" onClick={acciones.onVerDetalleCambioCreado}>
+        <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={acciones.onVerDetalleCambioCreado}>
           Ver detalle
         </Button>
-        <Button type="button" className="h-11 px-6" onClick={acciones.onSolicitarCierre}>
+        <Button type="button" onClick={acciones.onSolicitarCierre}>
           Cerrar
         </Button>
       </DialogFooter>

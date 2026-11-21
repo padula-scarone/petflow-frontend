@@ -2,6 +2,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import type { VentaVinculada } from '@/features/ventas/cambios-mercaderia/types/cambio'
 import { calcularCantidadDisponible } from '@/features/ventas/cambios-mercaderia/utils/crear-articulos-cambio'
 import { describirCantidadArticulo } from '@/features/ventas/cambios-mercaderia/utils/describir-articulo-cambio'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { cn } from '@/lib/utils'
 
@@ -31,21 +32,23 @@ export function SelectorItemVenta({ venta, idProductoSeleccionado, onSeleccionar
           <label
             key={item.idProducto}
             className={cn(
-              'flex min-h-11 cursor-pointer items-start gap-3 rounded-grande border bg-fondo-tarjeta px-3 py-3 text-sm has-[[data-state=checked]]:border-texto-principal has-[[data-state=checked]]:bg-fondo-seleccion',
+              'flex min-h-control cursor-pointer items-start gap-interno rounded-grande border bg-fondo-tarjeta px-3 py-3 text-cuerpo has-[[data-state=checked]]:border-texto-principal has-[[data-state=checked]]:bg-fondo-seleccion',
               agotado && 'cursor-not-allowed opacity-70',
             )}
           >
             <RadioGroupItem value={String(item.idProducto)} disabled={agotado} className="mt-0.5" />
             <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-              <span className="flex items-start justify-between gap-3">
-                <span className="font-medium wrap-break-word">{item.nombreProducto}</span>
+              <span className="flex items-start justify-between gap-interno">
+                <span className="font-medium wrap-break-word">
+                  <NombreProducto nombre={item.nombreProducto} formato={item.formatoVenta} />
+                </span>
                 <span className="shrink-0 tabular-nums">{formatearMoneda(item.precioUnitario)}</span>
               </span>
-              <span className="text-xs text-texto-suave tabular-nums">
+              <span className="text-auxiliar text-texto-suave tabular-nums">
                 Vendido: {describirCantidadArticulo(item.cantidad, item.formatoVenta)} · Ya devuelto:{' '}
                 {describirCantidadArticulo(item.cantidadYaDevuelta, item.formatoVenta)}
               </span>
-              <span className={cn('text-xs tabular-nums', agotado ? 'text-peligro' : 'text-texto-suave')}>
+              <span className={cn('text-auxiliar tabular-nums', agotado ? 'text-peligro' : 'text-texto-suave')}>
                 {agotado
                   ? 'Ya se devolvió todo lo que se vendió'
                   : `Disponible para devolver: ${describirCantidadArticulo(disponible, item.formatoVenta)}`}

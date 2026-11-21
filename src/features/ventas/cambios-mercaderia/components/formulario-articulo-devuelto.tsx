@@ -11,6 +11,7 @@ import type {
 } from '@/features/ventas/cambios-mercaderia/types/cambio'
 import { describirCantidadArticulo } from '@/features/ventas/cambios-mercaderia/utils/describir-articulo-cambio'
 import { BuscadorProductos } from '@/features/ventas/components/buscador-productos'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 
 /** Props del formulario del articulo que devuelve el cliente. */
@@ -36,8 +37,8 @@ export function FormularioArticuloDevuelto({
   const { ventaVinculada, articuloDevuelto: articulo } = borrador
 
   return (
-    <section aria-labelledby="titulo-articulo-devuelto" className="flex min-w-0 flex-col gap-3">
-      <h2 id="titulo-articulo-devuelto" className="text-base font-bold">
+    <section aria-labelledby="titulo-articulo-devuelto" className="flex min-w-0 flex-col gap-interno">
+      <h2 id="titulo-articulo-devuelto" className="text-titulo-seccion font-bold">
         Artículo que devuelve
       </h2>
 
@@ -62,11 +63,13 @@ export function FormularioArticuloDevuelto({
 
       {/* --- ARTICULO ELEGIDO: CANTIDAD, BOLSA ABIERTA Y PESO --- */}
       {articulo && (
-        <div className="flex flex-col gap-3 rounded-grande border bg-fondo-seleccion/40 p-3">
+        <div className="flex flex-col gap-interno rounded-grande border bg-fondo-seleccion/40 p-contorno">
           <div className="flex items-start justify-between gap-2">
-            <p className="min-w-0 font-medium wrap-break-word">{articulo.nombreProducto}</p>
+            <p className="min-w-0 font-medium wrap-break-word">
+              <NombreProducto nombre={articulo.nombreProducto} formato={articulo.formatoVenta} />
+            </p>
             <div className="-my-2 -mr-2 flex shrink-0 items-center gap-1">
-              <p className="text-sm tabular-nums text-texto-suave">
+              <p className="text-cuerpo tabular-nums text-texto-suave">
                 {formatearMoneda(articulo.precioUnitario)}
                 {articulo.formatoVenta === 'GRANEL' ? '/kg' : ''}
                 <span className="sr-only">{articulo.origen === 'VENTA' ? ', precio pagado' : ', precio actual'}</span>
@@ -78,7 +81,7 @@ export function FormularioArticuloDevuelto({
                   variant="ghost"
                   size="icon"
                   aria-label={`Quitar ${articulo.nombreProducto}`}
-                  className="size-11"
+                  className="size-control"
                   onClick={acciones.onQuitarProductoDevuelto}
                 >
                   <X />
@@ -97,7 +100,7 @@ export function FormularioArticuloDevuelto({
 
           {articulo.esBolsaAbierta && articulo.opcionBolsaAbierta ? (
             <>
-              <p className="text-sm text-texto-suave">Se devuelve 1 bolsa abierta.</p>
+              <p className="text-cuerpo text-texto-suave">Se devuelve 1 bolsa abierta.</p>
               <CampoCantidad
                 idCampo="peso-devuelto"
                 etiqueta="Peso devuelto (kg)"

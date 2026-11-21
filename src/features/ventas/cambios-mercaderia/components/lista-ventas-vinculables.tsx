@@ -23,7 +23,7 @@ export function ListaVentasVinculables({ propiedades }: ListaVentasVinculablesPr
       <div role="status" aria-busy="true" className="flex flex-col gap-2">
         <span className="sr-only">Buscando ventas</span>
         {[0, 1, 2].map((indice) => (
-          <Card key={indice} className="gap-2 p-3 shadow-none">
+          <Card key={indice} className="gap-2 p-contorno shadow-none">
             <Skeleton className="h-5 w-40" />
             <Skeleton className="h-4 w-56" />
             <Skeleton className="h-4 w-24" />
@@ -41,16 +41,16 @@ export function ListaVentasVinculables({ propiedades }: ListaVentasVinculablesPr
 
   if (estado.tipo === 'sin-resultados') {
     return (
-      <Card className="items-center gap-3 px-4 py-8 text-center shadow-none">
+      <Card className="items-center gap-interno px-contorno py-8 text-center shadow-none">
         <div className="flex max-w-sm flex-col gap-1">
-          <h3 className="text-base font-bold">No encontramos ventas con estos filtros</h3>
+          <h3 className="text-titulo-seccion font-bold">No encontramos ventas con estos filtros</h3>
           {/* La regla que explica por que falta una venta: solo se vinculan las completadas */}
-          <p className="text-sm text-texto-suave">
+          <p className="text-cuerpo text-texto-suave">
             Solo se pueden vincular ventas completadas: un fiado primero se cobra o se anula. Probá con otro filtro, o
             cargá el cambio sin vincular.
           </p>
         </div>
-        <Button type="button" variant="outline" className="h-11 bg-fondo-tarjeta px-6" onClick={onLimpiarFiltros}>
+        <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onLimpiarFiltros}>
           Limpiar filtros
         </Button>
       </Card>
@@ -58,7 +58,7 @@ export function ListaVentasVinculables({ propiedades }: ListaVentasVinculablesPr
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-interno">
       {errorVinculacion && (
         <Alert variant="destructive">
           <TriangleAlert aria-hidden="true" />

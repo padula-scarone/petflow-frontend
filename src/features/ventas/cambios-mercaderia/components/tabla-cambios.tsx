@@ -19,11 +19,13 @@ interface TablaCambiosProps {
 }
 
 // --- DISTRIBUCION ---
-// Misma idea que la tabla del Historial: grilla con subgrid, cada columna mide lo que su contenido y el
-// espacio sobrante se reparte en separaciones iguales. Los articulos llevan un ancho maximo y se cortan
-// con puntos suspensivos (el nombre completo queda en el title).
-// pl-4 / pr-1: el boton de icono ya trae 12 px de aire propio, asi el ultimo queda a 16 px del borde.
-const CLASE_FILA = 'col-span-full grid grid-cols-subgrid items-center border-b pr-1 pl-4'
+// Misma idea que la tabla del Historial: grilla con subgrid y cada columna mide lo que su contenido. Las dos de
+// articulos son la excepcion: tienen un minimo de 10 rem y se reparten el espacio sobrante, porque el nombre mas la
+// presentacion es lo mas largo de la fila. Si no entra se corta con puntos suspensivos (el nombre completo queda
+// en el title) y la presentacion siempre se ve. Entre columnas va interno: son elementos de un mismo grupo.
+// pl-contorno / pr-interno: el boton de icono ya trae 12 px de aire propio (= interno en PC, que es donde se ve la
+// tabla), asi el ultimo queda a un contorno del borde.
+const CLASE_FILA = 'col-span-full grid grid-cols-subgrid items-center border-b pr-interno pl-contorno'
 
 export function TablaCambios({ filas, acciones }: TablaCambiosProps) {
   return (
@@ -31,10 +33,10 @@ export function TablaCambios({ filas, acciones }: TablaCambiosProps) {
       <div
         role="table"
         aria-label="Cambios registrados, del más nuevo al más viejo"
-        className="grid grid-cols-[repeat(7,auto)] justify-between gap-x-4 text-sm"
+        className="grid grid-cols-[auto_auto_minmax(10rem,1fr)_minmax(10rem,1fr)_auto_auto_auto] gap-x-interno text-cuerpo"
       >
         {/* --- ENCABEZADO --- */}
-        <div role="row" className={cn(CLASE_FILA, 'min-h-11 font-medium text-texto-suave')}>
+        <div role="row" className={cn(CLASE_FILA, 'min-h-control font-medium text-texto-suave')}>
           <span role="columnheader">Fecha y hora</span>
           <span role="columnheader">Venta vinculada</span>
           <span role="columnheader">Devuelto</span>
@@ -57,15 +59,15 @@ export function TablaCambios({ filas, acciones }: TablaCambiosProps) {
           >
             <div role="cell" className="whitespace-nowrap tabular-nums">
               <p className="font-bold">{formatearFecha(fila.fechaHora)}</p>
-              <p className="text-xs text-texto-suave">{formatearHora(fila.fechaHora)}</p>
+              <p className="text-auxiliar text-texto-suave">{formatearHora(fila.fechaHora)}</p>
             </div>
             <div role="cell" className="whitespace-nowrap">
               <TextoVentaVinculada fila={fila} />
             </div>
-            <div role="cell" className="w-40">
+            <div role="cell" className="min-w-0">
               <ArticuloDevueltoFila fila={fila} />
             </div>
-            <div role="cell" className="w-40">
+            <div role="cell" className="min-w-0">
               <ArticuloEntregadoFila fila={fila} />
             </div>
             <div role="cell" className="flex flex-col items-start gap-1">
@@ -76,7 +78,7 @@ export function TablaCambios({ filas, acciones }: TablaCambiosProps) {
             {/* --- SALDO, A LA DERECHA, Y EL MEDIO DE PAGO DEBAJO --- */}
             <div role="cell" className="flex flex-col items-end gap-0.5 justify-self-end">
               <SaldoCambio saldo={fila.saldoResultante} anulado={fila.estado === 'ANULADO'} />
-              {fila.nombreMedioPago && <span className="text-xs text-texto-suave">{fila.nombreMedioPago}</span>}
+              {fila.nombreMedioPago && <span className="text-auxiliar text-texto-suave">{fila.nombreMedioPago}</span>}
             </div>
             <div role="cell">
               <AccionesCambio fila={fila} acciones={acciones} variante="tabla" />

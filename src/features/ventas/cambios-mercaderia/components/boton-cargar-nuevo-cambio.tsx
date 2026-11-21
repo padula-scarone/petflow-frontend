@@ -11,7 +11,7 @@ interface BotonCargarNuevoCambioProps {
 export function BotonCargarNuevoCambio({ variante, onCargarNuevoCambio }: BotonCargarNuevoCambioProps) {
   if (variante === 'escritorio') {
     return (
-      <Button type="button" className="h-11 gap-2 px-5" onClick={onCargarNuevoCambio}>
+      <Button type="button" className="gap-2" onClick={onCargarNuevoCambio}>
         <Plus />
         Cargar nuevo cambio
       </Button>
@@ -23,7 +23,7 @@ export function BotonCargarNuevoCambio({ variante, onCargarNuevoCambio }: BotonC
     <Button
       type="button"
       aria-label="Cargar nuevo cambio"
-      className="h-11 min-w-11 gap-1.5 px-0 sm:px-4"
+      className="min-w-control gap-1.5 px-0 sm:px-4"
       onClick={onCargarNuevoCambio}
     >
       <Plus />

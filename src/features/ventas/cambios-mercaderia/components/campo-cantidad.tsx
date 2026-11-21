@@ -66,7 +66,7 @@ export function CampoCantidad({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={idCampo} className="text-sm text-texto-suave">
+      <Label htmlFor={idCampo} className="text-cuerpo text-texto-suave">
         {etiqueta}
       </Label>
       <div className="relative">
@@ -77,7 +77,7 @@ export function CampoCantidad({
           autoComplete="off"
           aria-invalid={error ? true : undefined}
           aria-describedby={hayMensaje ? idMensaje : undefined}
-          className="h-11 bg-fondo-tarjeta pr-10 tabular-nums"
+          className="bg-fondo-tarjeta pr-10 tabular-nums"
           value={texto}
           onChange={(evento) => {
             const textoLimpio = limpiarTexto(evento.target.value, admiteDecimales)
@@ -89,13 +89,13 @@ export function CampoCantidad({
         />
         <span
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-sm text-texto-suave"
+          className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-cuerpo text-texto-suave"
         >
           {unidad}
         </span>
       </div>
       {hayMensaje && (
-        <p id={idMensaje} className={error ? 'text-xs text-peligro' : 'text-xs text-texto-suave'}>
+        <p id={idMensaje} className={error ? 'text-auxiliar text-peligro' : 'text-auxiliar text-texto-suave'}>
           {error ?? ayuda}
         </p>
       )}

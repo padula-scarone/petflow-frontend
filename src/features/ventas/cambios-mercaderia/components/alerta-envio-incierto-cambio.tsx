@@ -24,7 +24,7 @@ export function AlertaEnvioInciertoCambio({ mensaje, verificando, onVerificar }:
         <Button
           type="button"
           variant="outline"
-          className="mt-2 h-11 bg-fondo-tarjeta px-6 text-texto-principal"
+          className="mt-2 bg-fondo-tarjeta text-texto-principal"
           disabled={verificando}
           onClick={onVerificar}
         >

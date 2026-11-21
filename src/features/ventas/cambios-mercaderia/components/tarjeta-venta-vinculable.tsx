@@ -17,17 +17,17 @@ export function TarjetaVentaVinculable({ venta, idVentaVinculando, onVincularVen
   const vinculando = idVentaVinculando === venta.idVenta
 
   return (
-    <Card className="min-w-0 flex-col gap-3 p-3 shadow-none sm:flex-row sm:items-center sm:justify-between">
+    <Card className="min-w-0 flex-col gap-interno p-contorno shadow-none sm:flex-row sm:items-center sm:justify-between">
       <div className="min-w-0">
         <p className="font-bold tabular-nums">{venta.numeroComprobante}</p>
-        <p className="text-sm text-texto-suave tabular-nums">
+        <p className="text-cuerpo text-texto-suave tabular-nums">
           {formatearFechaHora(venta.fechaHora)} · {describirOrigen(venta.origen)}
         </p>
-        <p className="text-sm tabular-nums">
+        <p className="text-cuerpo tabular-nums">
           Total <span className="font-medium">{formatearMoneda(venta.montoTotal)}</span>
         </p>
         {venta.cantidadCambiosActivos > 0 && (
-          <p className="text-xs text-texto-suave">
+          <p className="text-auxiliar text-texto-suave">
             Ya tuvo {venta.cantidadCambiosActivos} {venta.cantidadCambiosActivos === 1 ? 'cambio' : 'cambios'}
           </p>
         )}
@@ -36,7 +36,7 @@ export function TarjetaVentaVinculable({ venta, idVentaVinculando, onVincularVen
         type="button"
         variant="outline"
         aria-label={`Vincular la venta ${venta.numeroComprobante}`}
-        className="h-11 shrink-0 bg-fondo-tarjeta px-6"
+        className="shrink-0 bg-fondo-tarjeta"
         disabled={idVentaVinculando !== null}
         onClick={() => onVincularVenta(venta.idVenta)}
       >

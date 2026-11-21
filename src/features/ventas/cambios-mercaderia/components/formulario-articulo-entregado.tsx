@@ -8,6 +8,7 @@ import type {
   ValidacionCambio,
 } from '@/features/ventas/cambios-mercaderia/types/cambio'
 import { BuscadorProductos } from '@/features/ventas/components/buscador-productos'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 
 /** Props del formulario del articulo que se lleva el cliente. */
@@ -36,13 +37,13 @@ export function FormularioArticuloEntregado({
   const articulo = borrador.articuloEntregado
 
   return (
-    <section aria-labelledby="titulo-articulo-entregado" className="flex min-w-0 flex-col gap-3">
+    <section aria-labelledby="titulo-articulo-entregado" className="flex min-w-0 flex-col gap-interno">
       {/* El valor de lo devuelto es el dato que guia la eleccion: va como texto principal, no como aclaracion */}
-      <p className="text-base">
+      <p>
         El cliente devuelve <span className="font-bold tabular-nums">{formatearMoneda(valorDevuelto)}</span>.{' '}
         Elegí un artículo de igual o mayor valor.
       </p>
-      <h2 id="titulo-articulo-entregado" className="text-base font-bold">
+      <h2 id="titulo-articulo-entregado" className="text-titulo-seccion font-bold">
         Artículo que se lleva
       </h2>
 
@@ -62,11 +63,13 @@ export function FormularioArticuloEntregado({
       />
 
       {articulo && (
-        <div className="flex flex-col gap-3 rounded-grande border bg-fondo-seleccion/40 p-3">
+        <div className="flex flex-col gap-interno rounded-grande border bg-fondo-seleccion/40 p-contorno">
           <div className="flex items-start justify-between gap-2">
-            <p className="min-w-0 font-medium wrap-break-word">{articulo.nombreProducto}</p>
+            <p className="min-w-0 font-medium wrap-break-word">
+              <NombreProducto nombre={articulo.nombreProducto} formato={articulo.formatoVenta} />
+            </p>
             <div className="-my-2 -mr-2 flex shrink-0 items-center gap-1">
-              <p className="text-sm tabular-nums text-texto-suave">
+              <p className="text-cuerpo tabular-nums text-texto-suave">
                 {formatearMoneda(articulo.precioUnitario)}
                 {articulo.formatoVenta === 'GRANEL' ? '/kg' : ''}
               </p>
@@ -75,7 +78,7 @@ export function FormularioArticuloEntregado({
                 variant="ghost"
                 size="icon"
                 aria-label={`Quitar ${articulo.nombreProducto}`}
-                className="size-11"
+                className="size-control"
                 onClick={acciones.onQuitarProductoEntregado}
               >
                 <X />

@@ -11,8 +11,8 @@ type PasoMotivoProps = Pick<AltaCambioProps, 'borrador' | 'acciones'>
  */
 export function PasoMotivo({ borrador, acciones }: PasoMotivoProps) {
   return (
-    <section aria-label="Motivo del cambio" className="flex flex-col gap-3">
-      <p className="text-sm text-texto-suave">¿Por qué cambia el cliente?</p>
+    <section aria-label="Motivo del cambio" className="flex flex-col gap-interno">
+      <p className="text-cuerpo text-texto-suave">¿Por qué cambia el cliente?</p>
       <SelectorMotivo
         idPrefijo="motivo-cambio"
         opciones={MOTIVOS_CAMBIO}

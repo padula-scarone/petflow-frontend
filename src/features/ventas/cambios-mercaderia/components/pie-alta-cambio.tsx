@@ -33,14 +33,14 @@ export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estado
         'Continuar'
 
   return (
-    <DialogFooter className="flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <DialogFooter className="flex-col gap-interno sm:flex-row sm:items-center sm:justify-between">
       <div className="flex min-w-0 flex-col gap-1">
         {mostrarSaldo && (
-          <p className="flex items-baseline gap-2 text-sm">
+          <p className="flex items-baseline gap-2 text-cuerpo">
             <span className="text-texto-suave">Saldo</span>
             <span
               className={cn(
-                'text-lg font-bold tabular-nums',
+                'text-cifra-secundaria font-bold tabular-nums',
                 resumenSaldo.situacion === 'NEGATIVO' && 'text-peligro',
               )}
             >
@@ -51,7 +51,7 @@ export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estado
         )}
         {/* Por que el boton esta deshabilitado */}
         {hayMotivoDeBloqueo && (
-          <p role="status" className="text-xs text-texto-suave">
+          <p role="status" className="text-auxiliar text-texto-suave">
             {validacion.motivoNoAvanzar}
           </p>
         )}
@@ -62,7 +62,7 @@ export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estado
           <Button
             type="button"
             variant="outline"
-            className="h-11 bg-fondo-tarjeta px-6"
+            className="bg-fondo-tarjeta"
             disabled={enviando}
             onClick={acciones.onPasoAnterior}
           >
@@ -71,7 +71,7 @@ export function PieAltaCambio({ paso, borrador, resumenSaldo, validacion, estado
         )}
         <Button
           type="button"
-          className="h-11 flex-1 px-6 sm:flex-none"
+          className="flex-1 sm:flex-none"
           disabled={!puedeContinuar || enviando}
           onClick={esUltimoPaso ? acciones.onConfirmarCambio : acciones.onSiguientePaso}
         >

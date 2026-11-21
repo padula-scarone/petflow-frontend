@@ -32,8 +32,8 @@ export function PasoVentaOriginal({
 }: PasoVentaOriginalProps) {
   if (borrador.ventaVinculada) {
     return (
-      <section aria-labelledby="titulo-venta-original" className="flex flex-col gap-3">
-        <h2 id="titulo-venta-original" className="text-base font-bold">
+      <section aria-labelledby="titulo-venta-original" className="flex flex-col gap-interno">
+        <h2 id="titulo-venta-original" className="text-titulo-seccion font-bold">
           Venta original
         </h2>
         <ResumenVentaVinculada
@@ -46,8 +46,8 @@ export function PasoVentaOriginal({
   }
 
   return (
-    <section aria-labelledby="titulo-venta-original" className="flex flex-col gap-4">
-      <h2 id="titulo-venta-original" className="text-base font-bold">
+    <section aria-labelledby="titulo-venta-original" className="flex flex-col gap-bloque">
+      <h2 id="titulo-venta-original" className="text-titulo-seccion font-bold">
         Venta original <span className="font-normal text-texto-suave">(opcional)</span>
       </h2>
       {estadoCatalogo.fase === 'listo' ? (

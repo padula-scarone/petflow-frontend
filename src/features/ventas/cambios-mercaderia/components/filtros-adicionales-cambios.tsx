@@ -14,7 +14,7 @@ export function FiltrosAdicionalesCambios({ propiedades, idPrefijo }: FiltrosAdi
   const { filtros, opciones, onCambiarFiltros } = propiedades
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-bloque">
       <FiltroVinculoCambio
         idCampo={`${idPrefijo}-vinculo`}
         vinculo={filtros.vinculo}

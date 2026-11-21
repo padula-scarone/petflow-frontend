@@ -48,7 +48,7 @@ export function ListaCambios({
         titulo="Todavía no hay cambios registrados"
         descripcion="Cuando un cliente cambie mercadería, lo vas a ver acá."
         accion={
-          <Button type="button" className="h-11 gap-2 px-6" onClick={onCargarNuevoCambio}>
+          <Button type="button" className="gap-2" onClick={onCargarNuevoCambio}>
             <Plus />
             Cargar nuevo cambio
           </Button>
@@ -63,7 +63,7 @@ export function ListaCambios({
         titulo="No encontramos cambios con estos filtros"
         descripcion="Probá con otro rango de fechas o quitá algún filtro."
         accion={
-          <Button type="button" variant="outline" className="h-11 bg-fondo-tarjeta px-6" onClick={onLimpiarFiltros}>
+          <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onLimpiarFiltros}>
             Limpiar filtros
           </Button>
         }
@@ -74,10 +74,10 @@ export function ListaCambios({
   const { filas, paginacion } = estadoLista
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-bloque">
       {/* --- TARJETAS (HASTA XL) --- */}
       {/* grid-cols-1 = minmax(0, 1fr): sin esto la columna crece al ancho del contenido y la tarjeta se corta */}
-      <ul className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:hidden">
+      <ul className="grid grid-cols-1 gap-interno md:grid-cols-2 xl:hidden">
         {filas.map((fila) => (
           <li key={fila.idCambio} className="min-w-0">
             <TarjetaCambio fila={fila} acciones={acciones} />

@@ -27,8 +27,8 @@ export function DialogoDescartarCambio({ abierto, onConfirmar, onCancelar }: Dia
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="h-11 px-6">Seguir cargando</AlertDialogCancel>
-          <AlertDialogAction variant="destructive" className="h-11 px-6" onClick={onConfirmar}>
+          <AlertDialogCancel>Seguir cargando</AlertDialogCancel>
+          <AlertDialogAction variant="destructive" onClick={onConfirmar}>
             Sí, descartar
           </AlertDialogAction>
         </AlertDialogFooter>
