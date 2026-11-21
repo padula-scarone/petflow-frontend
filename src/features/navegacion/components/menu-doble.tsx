@@ -76,12 +76,14 @@ export function MenuDoble({
         {/* Va dentro del area con scroll y se oculta al bajar; reaparece apenas se sube un poco.
             Los margenes negativos la llevan de borde a borde, sobre el padding del contenido; el top
             negativo compensa ese padding (sticky se mide desde el borde interno).
+            pb-contorno: el aire de abajo es de la cabecera y no un margen de afuera. Asi, al quedar fija, el contenido
+            que pasa por debajo no roza las pestanas: lo cubre el fondo de la cabecera.
             inert: oculta no recibe foco ni lee un lector de pantalla */}
         <div
           ref={cabeceraRef}
           inert={!cabeceraVisible}
           className={cn(
-            'sticky -top-contorno z-30 -mx-contorno -mt-contorno mb-contorno shrink-0 bg-fondo-pagina transition-transform duration-200 motion-reduce:transition-none lg:hidden',
+            'sticky -top-contorno z-30 -mx-contorno -mt-contorno shrink-0 bg-fondo-pagina pb-contorno transition-transform duration-200 motion-reduce:transition-none lg:hidden',
             !cabeceraVisible && '-translate-y-full',
           )}
         >
