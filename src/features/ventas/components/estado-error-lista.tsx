@@ -17,7 +17,7 @@ export function EstadoErrorLista({ titulo, mensaje, onReintentar }: EstadoErrorL
       <AlertTitle>{titulo}</AlertTitle>
       <AlertDescription>
         <p>{mensaje}</p>
-        <Button type="button" variant="outline" className="mt-2 h-11 bg-fondo-tarjeta px-6 text-texto-principal" onClick={onReintentar}>
+        <Button type="button" variant="outline" className="mt-2 bg-fondo-tarjeta text-texto-principal" onClick={onReintentar}>
           Reintentar
         </Button>
       </AlertDescription>

@@ -44,7 +44,7 @@ export function SelectorMotivo({
 
   return (
     <div className="flex flex-col gap-2">
-      <span id={idTitulo} className="text-sm font-medium">
+      <span id={idTitulo} className="text-cuerpo font-medium">
         Motivo
       </span>
 
@@ -58,7 +58,7 @@ export function SelectorMotivo({
         {opciones.map((opcion) => (
           <label
             key={opcion.codigo}
-            className="flex min-h-11 cursor-pointer items-center gap-3 rounded-grande border bg-fondo-tarjeta px-3 py-2 text-sm has-[[data-state=checked]]:border-texto-principal has-[[data-state=checked]]:bg-fondo-seleccion has-[button:disabled]:cursor-not-allowed"
+            className="flex min-h-control cursor-pointer items-center gap-interno rounded-grande border bg-fondo-tarjeta px-3 py-2 text-cuerpo has-[[data-state=checked]]:border-texto-principal has-[[data-state=checked]]:bg-fondo-seleccion has-[button:disabled]:cursor-not-allowed"
           >
             <RadioGroupItem value={opcion.codigo} />
             <span>{opcion.etiqueta}</span>
@@ -83,7 +83,7 @@ export function SelectorMotivo({
             value={detalleMotivo}
             onChange={(evento) => onCambiarDetalleMotivo(evento.target.value)}
           />
-          <p id={idContador} className="text-right text-xs text-texto-suave tabular-nums">
+          <p id={idContador} className="text-right text-auxiliar text-texto-suave tabular-nums">
             {detalleMotivo.length}/{LONGITUD_MAXIMA_DETALLE_MOTIVO}
           </p>
         </div>

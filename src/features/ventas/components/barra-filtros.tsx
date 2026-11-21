@@ -24,13 +24,13 @@ export function BarraFiltros({
 }: BarraFiltrosProps) {
   return (
     // auto-fit: los controles se reparten parejos y, si no entran, bajan alineados por columna
-    <div className="grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-3">
+    <div className="grid grid-cols-[repeat(auto-fit,minmax(11rem,1fr))] gap-interno">
       {children}
 
       {/* --- MAS FILTROS --- */}
       <Popover>
         <PopoverTrigger asChild>
-          <Button type="button" variant="outline" className="h-11 w-full gap-2 bg-fondo-tarjeta">
+          <Button type="button" variant="outline" className="w-full gap-2 bg-fondo-tarjeta">
             <SlidersHorizontal />
             Más filtros
             {cantidadFiltrosAdicionales > 0 && (
@@ -41,7 +41,7 @@ export function BarraFiltros({
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent align="end" className="w-80 p-4">
+        <PopoverContent align="end" className="w-80 p-contorno">
           {contenidoAdicional}
         </PopoverContent>
       </Popover>

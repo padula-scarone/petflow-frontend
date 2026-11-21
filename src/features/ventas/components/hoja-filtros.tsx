@@ -38,7 +38,7 @@ export function HojaFiltros({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button type="button" variant="outline" className="h-11 shrink-0 gap-2 bg-fondo-tarjeta px-4">
+        <Button type="button" variant="outline" className="shrink-0 gap-2 bg-fondo-tarjeta">
           <SlidersHorizontal />
           Filtros
           {cantidadFiltrosActivos > 0 && (
@@ -58,7 +58,7 @@ export function HojaFiltros({
         <SheetBody>{children}</SheetBody>
         <SheetFooter>
           <SheetClose asChild>
-            <Button type="button" className="h-12 text-base font-bold tabular-nums">
+            <Button type="button" size="lg" className="tabular-nums">
               {totalResultados === null
                 ? 'Ver resultados'
                 : `Ver ${totalResultados} ${totalResultados === 1 ? sustantivoSingular : sustantivoPlural}`}
@@ -66,7 +66,7 @@ export function HojaFiltros({
           </SheetClose>
           {/* Solo cuando hay algo que limpiar */}
           {cantidadFiltrosActivos > 0 && (
-            <Button type="button" variant="ghost" className="h-11 gap-2" onClick={onLimpiarFiltros}>
+            <Button type="button" variant="ghost" className="gap-2" onClick={onLimpiarFiltros}>
               <FilterX />
               Limpiar filtros
             </Button>

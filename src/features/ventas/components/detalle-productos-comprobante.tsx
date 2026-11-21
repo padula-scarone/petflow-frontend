@@ -37,7 +37,12 @@ export function DetalleProductosComprobante({ detalles }: DetalleProductosCompro
             key={detalle.idProducto}
             className={`${CLASE_COLUMNAS} items-baseline gap-y-0.5 py-interno`}
           >
-            <p className="col-span-3 font-medium tabular-nums sm:col-span-1">{detalle.nombreProducto}</p>
+            {/* La presentacion va con el nombre, como en el carrito: ahi se ve de un vistazo si se vendio por unidad o
+                a granel, sin repetirlo en cada cantidad */}
+            <p className="col-span-3 font-medium tabular-nums sm:col-span-1">
+              {detalle.nombreProducto}
+              <span className="font-normal whitespace-nowrap"> | {detalle.formato === 'granel' ? 'Granel' : 'Unidad'}</span>
+            </p>
             <p className="text-cuerpo tabular-nums sm:text-right">
               {formatearCantidad(detalle.cantidad, detalle.formato)}
             </p>

@@ -21,7 +21,7 @@ export function AvisoHistorial({ aviso, onCerrar }: AvisoHistorialProps) {
           variant="ghost"
           size="icon"
           aria-label="Cerrar el aviso"
-          className="-my-2 -mr-3 size-11 shrink-0"
+          className="-my-2 -mr-3 size-control shrink-0"
           onClick={onCerrar}
         >
           <X />

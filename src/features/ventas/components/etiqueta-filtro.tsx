@@ -18,7 +18,7 @@ interface EtiquetaFiltroProps {
 export function EtiquetaFiltro({ variante, idCampo, children }: EtiquetaFiltroProps) {
   if (variante === 'barra') return null
   return (
-    <Label htmlFor={idCampo} className="text-sm font-medium">
+    <Label htmlFor={idCampo} className="text-cuerpo font-medium">
       {children}
     </Label>
   )

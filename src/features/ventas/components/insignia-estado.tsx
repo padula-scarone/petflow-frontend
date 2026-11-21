@@ -13,7 +13,7 @@ export function InsigniaEstado({ presentacion, className }: InsigniaEstadoProps)
   const { etiqueta, icono: Icono, claseInsignia } = presentacion
 
   return (
-    <Badge variant="outline" className={cn('h-7 gap-1.5 px-3 text-sm', claseInsignia, className)}>
+    <Badge variant="outline" className={cn('h-7 gap-1.5 px-3 text-cuerpo', claseInsignia, className)}>
       <Icono aria-hidden="true" />
       {etiqueta}
     </Badge>

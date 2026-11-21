@@ -1,35 +1,12 @@
 import { formatearMoneda } from '@/lib/formatear-moneda'
-import type { Comprobante } from '@/features/ventas/types/comprobante'
+import type { ComprobanteCobrado } from '@/features/ventas/types/comprobante'
 
-/** Props de la seccion de pagos del comprobante, o de la deuda si la venta es un fiado. */
+/** Props de la seccion de pagos del comprobante. */
 interface PagosComprobanteProps {
-  comprobante: Comprobante
+  comprobante: ComprobanteCobrado
 }
 
 export function PagosComprobante({ comprobante }: PagosComprobanteProps) {
-  // --- FIADO: NO HAY PAGOS, QUEDA UNA DEUDA ---
-  if (comprobante.estado === 'pendiente-pago') {
-    return (
-      <section aria-labelledby="titulo-deuda" className="flex flex-col gap-interno">
-        <h2 id="titulo-deuda" className="text-titulo-seccion font-bold">
-          Deuda
-        </h2>
-        <p className="flex items-baseline justify-between gap-interno">
-          <span className="min-w-0">
-            <span className="block text-cuerpo text-texto-suave">A nombre de</span>
-            <span className="block truncate font-medium">{comprobante.clienteReferencia}</span>
-          </span>
-          <span className="shrink-0 text-cifra-secundaria font-bold tabular-nums">
-            {formatearMoneda(comprobante.montoTotal)}
-          </span>
-        </p>
-        <p className="text-cuerpo text-texto-suave">
-          No ingresó a la caja: queda pendiente hasta que el cliente la liquide.
-        </p>
-      </section>
-    )
-  }
-
   // --- VENTA COBRADA: UN RENGLON POR MEDIO DE PAGO ---
   return (
     <section aria-labelledby="titulo-pagos" className="flex flex-col gap-interno">

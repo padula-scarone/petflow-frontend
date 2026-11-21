@@ -1,7 +1,7 @@
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import type { OrigenVenta } from '@/features/ventas/types/historial'
 
-const CLASE_OPCION = 'h-11 rounded-mediano border bg-fondo-tarjeta px-2 text-sm'
+const CLASE_OPCION = 'h-control rounded-mediano border bg-fondo-tarjeta px-2 text-cuerpo'
 
 /** Props del filtro por origen de la venta. */
 interface SelectorFiltroOrigenProps {
@@ -15,7 +15,7 @@ interface SelectorFiltroOrigenProps {
 export function SelectorFiltroOrigen({ idPrefijo, origen, onCambiarOrigen }: SelectorFiltroOrigenProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <span id={`${idPrefijo}-origen`} className="text-sm font-medium">
+      <span id={`${idPrefijo}-origen`} className="text-cuerpo font-medium">
         Origen
       </span>
       <ToggleGroup

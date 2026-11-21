@@ -66,7 +66,7 @@ export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProp
           autoComplete="off"
           placeholder="Buscar cliente"
           aria-label="Cliente"
-          className="h-11 bg-fondo-tarjeta"
+          className="bg-fondo-tarjeta"
           value={filtros.textoCliente}
           onChange={(evento) => onCambiarFiltros({ textoCliente: evento.target.value })}
         />

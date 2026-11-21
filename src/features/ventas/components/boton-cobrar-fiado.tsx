@@ -19,7 +19,7 @@ export function BotonCobrarFiado({ fila, onCobrarFiado, className }: BotonCobrar
       type="button"
       variant="exito"
       aria-label={`Cobrar el fiado del comprobante ${fila.numeroComprobante}`}
-      className={cn('h-11 gap-1.5 px-4', className)}
+      className={cn('gap-1.5', className)}
       onClick={() => onCobrarFiado(fila.idVenta)}
     >
       <HandCoins />

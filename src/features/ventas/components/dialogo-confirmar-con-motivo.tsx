@@ -109,22 +109,21 @@ export function DialogoConfirmarConMotivo({
 
         {/* Por que el boton esta deshabilitado */}
         {!error && !motivoValido && (
-          <p role="status" className="text-xs text-texto-suave">
+          <p role="status" className="text-auxiliar text-texto-suave">
             {codigoMotivo === null ? 'Elegí un motivo para continuar.' : 'Escribí el motivo para continuar.'}
           </p>
         )}
 
         <AlertDialogFooter>
           {error ? (
-            <AlertDialogCancel className="h-11 px-6">Entendido</AlertDialogCancel>
+            <AlertDialogCancel>Entendido</AlertDialogCancel>
           ) : (
             <>
-              <AlertDialogCancel className="h-11 px-6" disabled={enviando}>
+              <AlertDialogCancel disabled={enviando}>
                 Volver
               </AlertDialogCancel>
               <AlertDialogAction
                 variant={esDestructiva ? 'destructive' : 'default'}
-                className="h-11 px-6"
                 disabled={enviando || !motivoValido}
                 // preventDefault: el dialogo queda abierto hasta que responda el servidor
                 onClick={(evento) => {

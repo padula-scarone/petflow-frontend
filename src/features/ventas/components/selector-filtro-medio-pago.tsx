@@ -29,7 +29,7 @@ export function SelectorFiltroMedioPago({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={idCampo} className="text-sm font-medium">
+      <Label htmlFor={idCampo} className="text-cuerpo font-medium">
         Medio de pago
       </Label>
       <Select
@@ -53,7 +53,7 @@ export function SelectorFiltroMedioPago({
         </SelectContent>
       </Select>
       {deshabilitado && textoAyuda && (
-        <p id={idAyuda} className="text-xs text-texto-suave">
+        <p id={idAyuda} className="text-auxiliar text-texto-suave">
           {textoAyuda}
         </p>
       )}

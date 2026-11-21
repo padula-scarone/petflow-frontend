@@ -14,24 +14,24 @@ export function PaginacionLista({ paginacion, onCambiarPagina }: PaginacionLista
   if (totalPaginas <= 1) return null
 
   return (
-    <nav aria-label="Paginación" className="flex items-center justify-between gap-3">
+    <nav aria-label="Paginación" className="flex items-center justify-between gap-interno">
       <Button
         type="button"
         variant="outline"
-        className="h-11 gap-1 bg-fondo-tarjeta px-4"
+        className="gap-1 bg-fondo-tarjeta"
         disabled={pagina <= 1}
         onClick={() => onCambiarPagina(pagina - 1)}
       >
         <ChevronLeft />
         Anterior
       </Button>
-      <p className="text-sm tabular-nums">
+      <p className="text-cuerpo tabular-nums">
         Página <span className="font-bold">{pagina}</span> de {totalPaginas}
       </p>
       <Button
         type="button"
         variant="outline"
-        className="h-11 gap-1 bg-fondo-tarjeta px-4"
+        className="gap-1 bg-fondo-tarjeta"
         disabled={pagina >= totalPaginas}
         onClick={() => onCambiarPagina(pagina + 1)}
       >

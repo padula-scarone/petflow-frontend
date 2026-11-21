@@ -22,7 +22,7 @@ interface AccionesRegistroModificableProps {
 
 // Editar y Anular, con texto: se reparten por mitades la fila que comparten (min-w-0 + shrink anulan
 // el shrink-0 del Button para que nunca desborden).
-const CLASE_BOTON_TEXTO = 'h-11 min-w-0 shrink flex-1 gap-1.5 bg-fondo-tarjeta px-2'
+const CLASE_BOTON_TEXTO = 'min-w-0 shrink flex-1 gap-1.5 bg-fondo-tarjeta px-2'
 
 /** Boton de solo icono de la tabla, con su tooltip y su aria-label. */
 function BotonIconoTabla({
@@ -45,7 +45,7 @@ function BotonIconoTabla({
           type="button"
           variant="ghost"
           aria-label={etiquetaAccesible}
-          className={cn('size-11', className)}
+          className={cn('size-control', className)}
           onClick={onClick}
         >
           <Icono className="size-5" />
@@ -146,7 +146,7 @@ export function AccionesRegistroModificable({
         type="button"
         variant="outline"
         aria-label={`Ver detalle del ${nombreRegistro}`}
-        className="h-11 w-full gap-1.5 bg-fondo-tarjeta px-2"
+        className="w-full gap-1.5 bg-fondo-tarjeta px-2"
         onClick={onVerDetalle}
       >
         <FileText />

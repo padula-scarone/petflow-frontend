@@ -25,7 +25,7 @@ export function HistorialVentas({
   onCambiarDetalleMotivo,
 }: HistorialVentasProps) {
   return (
-    <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4">
+    <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-bloque">
       {/* Sin titulo visible: la pestana de la seccion ya dice donde estamos */}
       <h1 className="sr-only">Historial de ventas</h1>
 

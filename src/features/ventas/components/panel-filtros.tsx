@@ -33,7 +33,7 @@ export function PanelFiltros({
 }: PanelFiltrosProps) {
   return (
     <>
-      <div className="hidden items-start gap-3 lg:flex">
+      <div className="hidden items-start gap-interno lg:flex">
         <div className="min-w-0 flex-1">{barra}</div>
         {/* La linea separa la accion principal de los filtros: no es un filtro mas */}
         {accionEscritorio && <div className="flex shrink-0 border-l pl-3">{accionEscritorio}</div>}
@@ -44,7 +44,7 @@ export function PanelFiltros({
         {hoja}
         <p
           role="status"
-          className="min-w-0 flex-1 truncate text-right text-sm text-texto-suave tabular-nums"
+          className="min-w-0 flex-1 truncate text-right text-cuerpo text-texto-suave tabular-nums"
         >
           {textoCantidad}
         </p>
@@ -53,7 +53,7 @@ export function PanelFiltros({
             type="button"
             variant="ghost"
             aria-label="Limpiar filtros"
-            className="h-11 shrink-0 px-3"
+            className="shrink-0 px-3"
             onClick={onLimpiarFiltros}
           >
             Limpiar

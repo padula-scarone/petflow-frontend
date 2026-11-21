@@ -18,7 +18,7 @@ export function FiltrosAdicionalesHistorial({
   const { filtros, opciones, onCambiarFiltros } = propiedades
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-bloque">
       <SelectorFiltroOrigen
         idPrefijo={idPrefijo}
         origen={filtros.origen}

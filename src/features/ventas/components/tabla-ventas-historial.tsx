@@ -20,9 +20,9 @@ interface TablaVentasHistorialProps {
 // separaciones iguales (justify-between). Una <table> a todo el ancho mete ese sobrante dentro de las
 // columnas y deja huecos desparejos, sobre todo entre una columna alineada a la izquierda y otra a la derecha.
 // Las filas usan subgrid para compartir las mismas columnas.
-// pl-4 / pr-1: el boton de icono ya trae 12 px de aire propio, asi el tacho queda a 16 px del borde,
-// igual que el numero de comprobante del otro lado.
-const CLASE_FILA = 'col-span-full grid grid-cols-subgrid items-center border-b pr-1 pl-4'
+// pl-contorno / pr-interno: el boton de icono ya trae 12 px de aire propio (= interno en PC, que es donde se ve
+// la tabla), asi el tacho queda a un contorno del borde, igual que el numero de comprobante del otro lado.
+const CLASE_FILA = 'col-span-full grid grid-cols-subgrid items-center border-b pr-interno pl-contorno'
 
 export function TablaVentasHistorial({ filas, acciones }: TablaVentasHistorialProps) {
   return (
@@ -30,10 +30,10 @@ export function TablaVentasHistorial({ filas, acciones }: TablaVentasHistorialPr
       <div
         role="table"
         aria-label="Ventas registradas, de la más nueva a la más vieja"
-        className="grid grid-cols-[repeat(7,auto)] justify-between text-sm"
+        className="grid grid-cols-[repeat(7,auto)] justify-between text-cuerpo"
       >
         {/* --- ENCABEZADO --- */}
-        <div role="row" className={cn(CLASE_FILA, 'min-h-11 font-medium text-texto-suave')}>
+        <div role="row" className={cn(CLASE_FILA, 'min-h-control font-medium text-texto-suave')}>
           <span role="columnheader">N.º de comprobante</span>
           <span role="columnheader">Fecha y hora</span>
           <span role="columnheader">Origen</span>
@@ -59,14 +59,14 @@ export function TablaVentasHistorial({ filas, acciones }: TablaVentasHistorialPr
             <div role="cell" className="min-w-0">
               <p className="font-bold whitespace-nowrap tabular-nums">{fila.numeroComprobante}</p>
               {fila.clienteReferencia !== null && (
-                <p className="max-w-40 truncate text-xs text-texto-suave">
+                <p className="max-w-40 truncate text-auxiliar text-texto-suave">
                   Cliente: {fila.clienteReferencia}
                 </p>
               )}
             </div>
             <div role="cell" className="whitespace-nowrap tabular-nums">
               <p>{formatearFecha(fila.fechaHora)}</p>
-              <p className="text-xs text-texto-suave">{formatearHora(fila.fechaHora)}</p>
+              <p className="text-auxiliar text-texto-suave">{formatearHora(fila.fechaHora)}</p>
             </div>
             <div role="cell">{describirOrigen(fila.origen)}</div>
             <div role="cell">{describirEntrega(fila.modalidadEntrega)}</div>
