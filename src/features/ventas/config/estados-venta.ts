@@ -16,10 +16,10 @@ export const PRESENTACION_ESTADO_VENTA: Record<EstadoVentaHistorial, Presentacio
     icono: Clock,
     claseInsignia: 'text-amber-700',
   },
-  // Gris y no rojo: el rojo queda para acciones destructivas
+  // Rojo y no gris: el gris se lee como algo neutral y una venta anulada no lo es
   ANULADA: {
     etiqueta: 'Anulada',
     icono: Ban,
-    claseInsignia: 'bg-fondo-suave text-texto-suave',
+    claseInsignia: 'text-red-700',
   },
 }

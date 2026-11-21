@@ -9,10 +9,10 @@ export const PRESENTACION_ESTADO_CAMBIO: Record<EstadoCambio, PresentacionEstado
     icono: CircleCheck,
     claseInsignia: 'text-green-700',
   },
-  // Gris y no rojo: el rojo queda para acciones destructivas
+  // Rojo y no gris: el gris se lee como algo neutral y un cambio anulado no lo es
   ANULADO: {
     etiqueta: 'Anulado',
     icono: Ban,
-    claseInsignia: 'bg-fondo-suave text-texto-suave',
+    claseInsignia: 'text-red-700',
   },
 }

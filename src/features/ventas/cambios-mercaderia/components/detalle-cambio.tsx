@@ -140,7 +140,7 @@ export function DetalleCambio({ detalle, acciones, onCerrar, onReintentar }: Det
                 </div>
 
                 {anulado && (
-                  <Alert role="status">
+                  <Alert role="status" className="text-red-700">
                     <Ban aria-hidden="true" />
                     <AlertTitle>Cambio anulado</AlertTitle>
                     <AlertDescription>
