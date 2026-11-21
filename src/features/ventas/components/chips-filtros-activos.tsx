@@ -21,7 +21,7 @@ export function ChipsFiltrosActivos({ chips, className }: ChipsFiltrosActivosPro
             type="button"
             variant="outline"
             aria-label={`Quitar el filtro de ${chip.descripcion}: ${chip.etiqueta}`}
-            className="h-11 max-w-full gap-1.5 rounded-full bg-fondo-seleccion px-4 text-sm"
+            className="max-w-full gap-1.5 rounded-full bg-fondo-seleccion text-cuerpo"
             onClick={chip.onQuitar}
           >
             <span className="truncate">{chip.etiqueta}</span>

@@ -85,7 +85,7 @@ function FormularioDescuentoManual({ descuentoManual, error, onCerrar, onAplicar
   }
 
   return (
-    <form className="flex flex-col gap-4" onSubmit={enviarFormulario}>
+    <form className="flex flex-col gap-bloque" onSubmit={enviarFormulario}>
       <SelectorMotivo
         idPrefijo="motivo-descuento"
         opciones={MOTIVOS_DESCUENTO}
@@ -100,14 +100,14 @@ function FormularioDescuentoManual({ descuentoManual, error, onCerrar, onAplicar
         }}
       />
 
-      <div className="grid grid-cols-[auto_1fr] items-end gap-3">
+      <div className="grid grid-cols-[auto_1fr] items-end gap-interno">
         <fieldset className="flex flex-col gap-1.5">
-          <legend className="mb-1.5 text-sm text-texto-suave">Tipo</legend>
-          <div className="flex rounded-grande border bg-fondo-tarjeta">
+          <legend className="mb-1.5 text-cuerpo text-texto-suave">Tipo</legend>
+          <div className="flex rounded-grande border border-borde-campo bg-fondo-tarjeta">
             {OPCIONES_TIPO.map((opcion) => (
               <label
                 key={opcion.valor}
-                className="flex h-11 min-w-12 cursor-pointer items-center justify-center px-4 text-sm font-medium first:rounded-l-grande last:rounded-r-grande hover:bg-fondo-hover has-[:checked]:bg-fondo-seleccion has-[:checked]:hover:bg-fondo-seleccion has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-foco/50"
+                className="flex h-control min-w-12 cursor-pointer items-center justify-center px-4 text-cuerpo font-medium first:rounded-l-grande last:rounded-r-grande hover:bg-fondo-hover has-[:checked]:bg-fondo-seleccion has-[:checked]:hover:bg-fondo-seleccion has-[:focus-visible]:ring-[3px] has-[:focus-visible]:ring-foco/50"
               >
                 <input
                   type="radio"
@@ -123,7 +123,7 @@ function FormularioDescuentoManual({ descuentoManual, error, onCerrar, onAplicar
         </fieldset>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="valor-descuento" className="text-sm text-texto-suave">
+          <Label htmlFor="valor-descuento" className="text-cuerpo text-texto-suave">
             Valor
           </Label>
           <Input
@@ -139,22 +139,22 @@ function FormularioDescuentoManual({ descuentoManual, error, onCerrar, onAplicar
                 ? formatearMontoParaCampo(descuentoManual.valor)
                 : descuentoManual?.valor.toString().replace('.', ',')
             }
-            className="h-11 bg-fondo-tarjeta tabular-nums"
+            className="bg-fondo-tarjeta tabular-nums"
           />
         </div>
       </div>
 
       {(errorMotivo ?? error) && (
-        <p role="alert" className="text-sm font-medium text-peligro">
+        <p role="alert" className="text-cuerpo font-medium text-peligro">
           {errorMotivo ?? error}
         </p>
       )}
 
       <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-        <Button type="button" variant="outline" className="h-11 bg-fondo-tarjeta px-6" onClick={onCerrar}>
+        <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onCerrar}>
           Cancelar
         </Button>
-        <Button type="submit" className="h-11 px-6">
+        <Button type="submit">
           Aplicar descuento
         </Button>
       </div>
@@ -172,17 +172,17 @@ export function TarjetaDescuentoManual({
   onQuitar,
 }: TarjetaDescuentoManualProps) {
   return (
-    <Card className="gap-4 p-4 shadow-none">
+    <Card className="gap-bloque p-contorno">
       {/* --- ENCABEZADO --- */}
-      <div className="flex items-center gap-3">
-        <h2 className="text-lg font-bold">Descuento</h2>
+      <div className="flex items-center gap-interno">
+        <h2 className="text-titulo-seccion font-bold">Descuento</h2>
         {!descuentoManual && !formularioAbierto && (
           <Button
             type="button"
             variant="outline"
             size="icon"
             aria-label="Agregar descuento manual"
-            className="size-11 rounded-full bg-fondo-tarjeta"
+            className="size-control rounded-full bg-fondo-tarjeta"
             onClick={onAbrirFormulario}
           >
             <Plus />
@@ -202,10 +202,10 @@ export function TarjetaDescuentoManual({
 
       {/* --- DESCUENTO APLICADO --- */}
       {descuentoManual && !formularioAbierto && (
-        <div className="flex items-center gap-3 rounded-grande border p-3">
+        <div className="flex items-center gap-interno rounded-grande border p-contorno">
           <div className="min-w-0 flex-1">
             <p className="line-clamp-2 font-bold">{descuentoManual.motivo}</p>
-            <p className="text-sm text-texto-suave tabular-nums">
+            <p className="text-cuerpo text-texto-suave tabular-nums">
               {descuentoManual.tipo === 'porcentaje'
                 ? `${descuentoManual.valor} % de descuento`
                 : `${formatearMoneda(descuentoManual.valor)} de descuento`}
@@ -220,7 +220,7 @@ export function TarjetaDescuentoManual({
             variant="ghost"
             size="icon"
             aria-label="Editar descuento"
-            className="size-11 shrink-0 text-slate-500"
+            className="size-control shrink-0 text-slate-500"
             onClick={onAbrirFormulario}
           >
             <Pencil />
@@ -230,7 +230,7 @@ export function TarjetaDescuentoManual({
             variant="ghost"
             size="icon"
             aria-label="Quitar descuento"
-            className="size-11 shrink-0 text-slate-500"
+            className="size-control shrink-0 text-slate-500"
             onClick={onQuitar}
           >
             <Trash2 />
@@ -239,7 +239,7 @@ export function TarjetaDescuentoManual({
       )}
 
       {!descuentoManual && !formularioAbierto && (
-        <p className="text-sm text-texto-suave">Sin descuento manual aplicado.</p>
+        <p className="text-cuerpo text-texto-suave">Sin descuento manual aplicado.</p>
       )}
     </Card>
   )

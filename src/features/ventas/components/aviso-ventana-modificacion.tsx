@@ -21,7 +21,7 @@ export function AvisoVentanaModificacion({
   if (!ventanaVigente || fechaHoraLimiteModificacion === null) return null
 
   return (
-    <p className={cn('text-xs text-texto-suave tabular-nums', className)}>
+    <p className={cn('text-auxiliar text-texto-suave tabular-nums', className)}>
       Se puede editar o anular hasta las {formatearHora(fechaHoraLimiteModificacion)}
     </p>
   )

@@ -21,7 +21,7 @@ export function EstadoMediosPago({
     return (
       <div role="status" aria-busy="true">
         <span className="sr-only">Cargando medios de pago</span>
-        <Skeleton className="h-11 w-full" />
+        <Skeleton className="h-control w-full" />
       </div>
     )
   }

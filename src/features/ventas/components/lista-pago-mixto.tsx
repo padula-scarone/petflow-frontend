@@ -31,7 +31,7 @@ export function ListaPagoMixto({
   )
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-interno">
       {/* --- AGREGAR MEDIO --- */}
       {mediosSinUsar.length > 0 && (
         <div className="flex flex-wrap gap-2">
@@ -40,7 +40,7 @@ export function ListaPagoMixto({
               key={medio.idMedioPago}
               type="button"
               variant="outline"
-              className="h-11 gap-2 rounded-full bg-fondo-tarjeta px-4"
+              className="gap-2 rounded-full bg-fondo-tarjeta"
               onClick={() => onAgregarLineaPago(medio.idMedioPago)}
             >
               <Plus />
@@ -52,7 +52,7 @@ export function ListaPagoMixto({
 
       {/* --- LINEAS --- */}
       {lineas.length === 0 && (
-        <p className="rounded-grande border border-dashed px-4 py-6 text-center text-texto-suave">
+        <p className="rounded-grande border border-dashed px-contorno py-6 text-center text-texto-suave">
           Agregá los medios de pago con los que se cobra la venta
         </p>
       )}

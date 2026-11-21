@@ -18,22 +18,22 @@ interface TarjetaVentaHistorialProps {
 export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialProps) {
   return (
     // h-full + mt-auto en el total: las tarjetas de una misma fila de la grilla igualan alto
-    <Card className="h-full min-w-0 gap-3 p-4 shadow-none">
+    <Card className="h-full min-w-0 gap-interno p-contorno">
       {/* --- COMPROBANTE, CLIENTE (SI EXISTE) Y ESTADO --- */}
       {/* flex-wrap: en 320 px el estado baja a su propia linea en vez de cortarse */}
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 max-w-full">
-          <p className="text-xs text-texto-suave">N.º de comprobante</p>
+          <p className="text-auxiliar text-texto-suave">N.º de comprobante</p>
           <p className="font-bold tabular-nums">{fila.numeroComprobante}</p>
           {fila.clienteReferencia !== null && (
-            <p className="truncate text-sm text-texto-suave">Cliente: {fila.clienteReferencia}</p>
+            <p className="truncate text-cuerpo text-texto-suave">Cliente: {fila.clienteReferencia}</p>
           )}
         </div>
         <InsigniaEstadoVenta estado={fila.estado} />
       </div>
 
       {/* --- FECHA, ORIGEN Y ENTREGA --- */}
-      <div className="flex flex-col gap-0.5 text-sm text-texto-suave tabular-nums">
+      <div className="flex flex-col gap-0.5 text-cuerpo text-texto-suave tabular-nums">
         <p>{formatearFechaHora(fila.fechaHora)}</p>
         <p>
           Origen: {describirOrigen(fila.origen)} · Entrega: {describirEntrega(fila.modalidadEntrega)}
@@ -43,13 +43,13 @@ export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialP
       <AvisoVentanaVenta fila={fila} />
 
       {/* --- TOTAL, Y COBRAR AL LADO SOLO EN UN FIADO --- */}
-      <div className="mt-auto flex items-center justify-between gap-3 border-t pt-3">
+      <div className="mt-auto flex items-center justify-between gap-interno border-t pt-interno">
         {/* El total va a la derecha, como en la tabla; en un fiado el boton Cobrar pasa a su izquierda */}
         <p className="order-2 ml-auto flex flex-col items-end">
-          <span className="text-xs text-texto-suave">Total</span>
+          <span className="text-auxiliar text-texto-suave">Total</span>
           <span
             className={cn(
-              'text-xl font-bold tabular-nums',
+              'text-cifra-secundaria font-bold tabular-nums',
               fila.estado === 'ANULADA' && 'font-normal text-texto-suave',
             )}
           >

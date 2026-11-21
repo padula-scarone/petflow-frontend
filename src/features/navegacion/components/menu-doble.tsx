@@ -1,7 +1,7 @@
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import { IndicadorCaja } from '@/features/caja/components/indicador-caja'
-import { useCabeceraDesplazable } from '@/features/navegacion/hooks/use-cabecera-desplazable'
+import { useBarrasDesplazables } from '@/features/navegacion/hooks/use-barras-desplazables'
 import { BarraInferiorModulos } from '@/features/navegacion/components/barra-inferior-modulos'
 import { BarraLateralModulos } from '@/features/navegacion/components/barra-lateral-modulos'
 import { MenuUsuario } from '@/features/navegacion/components/menu-usuario'
@@ -12,7 +12,7 @@ export function MenuDoble({
   modulos,
   idModuloActivo,
   idSeccionActiva,
-  nombreUsuario,
+  usuario,
   cajaAbierta,
   onSeleccionarModulo,
   onSeleccionarSeccion,
@@ -26,7 +26,7 @@ export function MenuDoble({
     cabeceraRef,
     visible: cabeceraVisible,
     altoCabecera,
-  } = useCabeceraDesplazable(contenidoRef)
+  } = useBarrasDesplazables(contenidoRef)
   const seccionesDelModulo =
     modulos.find((modulo) => modulo.idModulo === idModuloActivo)?.secciones ?? []
 
@@ -37,29 +37,34 @@ export function MenuDoble({
   }, [idModuloActivo, idSeccionActiva, claveContenido])
 
   return (
-    // La pantalla ocupa exactamente el alto visible: solo el contenido hace scroll
-    <div className="flex h-dvh flex-col overflow-hidden bg-fondo-pagina">
+    // La pantalla ocupa exactamente el alto visible: solo el contenido hace scroll. relative: lo que esta posicionado
+    // en absoluto (como los textos sr-only de las tablas) toma este contenedor como referencia; sin eso su
+    // referencia es la ventana, el overflow-hidden no lo recorta y alarga el documento: aparece una segunda barra
+    <div className="relative flex h-dvh flex-col overflow-hidden bg-fondo-pagina">
       {/* --- BARRA LATERAL (ESCRITORIO) --- */}
       <BarraLateralModulos
         modulos={modulos}
         idModuloActivo={idModuloActivo}
-        nombreUsuario={nombreUsuario}
-        cajaAbierta={cajaAbierta}
         onSeleccionarModulo={onSeleccionarModulo}
-        onAbrirMiPerfil={onAbrirMiPerfil}
-        onCerrarSesion={onCerrarSesion}
       />
 
-      {/* --- CABECERA DE ESCRITORIO: SOLO LAS SECCIONES, SIEMPRE A LA VISTA --- */}
-      {/* El logo y el usuario viven en la barra lateral; en mobile la cabecera esta dentro del contenido */}
-      <header className="hidden shrink-0 lg:ml-60 lg:flex lg:h-[73px] lg:flex-col lg:justify-center">
-        {seccionesDelModulo.length > 0 && (
-          <PestanasSecciones
-            secciones={seccionesDelModulo}
-            idSeccionActiva={idSeccionActiva}
-            onSeleccionarSeccion={onSeleccionarSeccion}
-          />
-        )}
+      {/* --- CABECERA DE ESCRITORIO: SECCIONES, ESTADO DE LA CAJA Y USUARIO, SIEMPRE A LA VISTA --- */}
+      {/* El logo vive en la barra lateral; la caja y el usuario van arriba a la derecha, en el mismo lugar que en
+          celular. En mobile la cabecera esta dentro del contenido */}
+      <header className="hidden shrink-0 lg:ml-60 lg:flex lg:items-center lg:pt-contorno lg:pr-contorno">
+        <div className="min-w-0 flex-1">
+          {seccionesDelModulo.length > 0 && (
+            <PestanasSecciones
+              secciones={seccionesDelModulo}
+              idSeccionActiva={idSeccionActiva}
+              onSeleccionarSeccion={onSeleccionarSeccion}
+            />
+          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-interno">
+          <IndicadorCaja cajaAbierta={cajaAbierta} />
+          <MenuUsuario usuario={usuario} onAbrirMiPerfil={onAbrirMiPerfil} onCerrarSesion={onCerrarSesion} />
+        </div>
       </header>
 
       {/* --- CONTENIDO (UNICA ZONA CON SCROLL) --- */}
@@ -68,40 +73,33 @@ export function MenuDoble({
         // Las pantallas con elementos fijos arriba (como los filtros del Historial) se acomodan debajo
         // de la cabecera con esta variable: vale su alto mientras se ve y 0 cuando se oculta
         style={{ '--alto-cabecera': `${cabeceraVisible ? altoCabecera : 0}px` } as CSSProperties}
-        className="flex min-h-0 flex-1 flex-col overflow-y-auto p-4 lg:ml-60 xl:p-8"
+        className="relative flex min-h-0 flex-1 flex-col overflow-y-auto p-contorno lg:ml-60"
       >
         {/* --- CABECERA DE MOBILE: LOGO, USUARIO Y SECCIONES --- */}
         {/* Va dentro del area con scroll y se oculta al bajar; reaparece apenas se sube un poco.
             Los margenes negativos la llevan de borde a borde, sobre el padding del contenido; el top
             negativo compensa ese padding (sticky se mide desde el borde interno).
+            pb-contorno: el aire de abajo es de la cabecera y no un margen de afuera. Asi, al quedar fija, el contenido
+            que pasa por debajo no roza las pestanas: lo cubre el fondo de la cabecera.
             inert: oculta no recibe foco ni lee un lector de pantalla */}
         <div
           ref={cabeceraRef}
           inert={!cabeceraVisible}
           className={cn(
-            'sticky -top-4 z-30 -mx-4 -mt-4 mb-4 shrink-0 bg-fondo-pagina transition-transform duration-200 motion-reduce:transition-none lg:hidden',
+            'sticky -top-contorno z-30 -mx-contorno -mt-contorno shrink-0 bg-fondo-pagina pb-contorno transition-transform duration-200 motion-reduce:transition-none lg:hidden',
             !cabeceraVisible && '-translate-y-full',
           )}
         >
-          <div className="flex items-center justify-between gap-3 border-b bg-fondo-tarjeta px-4 py-2">
-            {/* Logo con interlineado ajustado y el estado de la caja debajo, separado para que no se
-                lea como parte del logo: 24 + 8 + 12 = 44 px, justo el alto del boton de usuario,
-                asi que la cabecera no crece */}
-            <div className="flex shrink-0 flex-col gap-2">
-              <p className="text-2xl leading-none font-bold">PetFlow</p>
+          <div className="flex items-center justify-between gap-interno border-b bg-fondo-tarjeta p-contorno">
+            <p className="shrink-0 text-logo font-bold">PetFlow</p>
+            {/* El estado de la caja y el usuario juntos, igual que en PC: los dos son datos del puesto de trabajo */}
+            <div className="flex min-w-0 items-center gap-interno">
               <IndicadorCaja cajaAbierta={cajaAbierta} />
+              <MenuUsuario usuario={usuario} onAbrirMiPerfil={onAbrirMiPerfil} onCerrarSesion={onCerrarSesion} />
             </div>
-            {/* El menu sale hacia abajo y se alinea al borde derecho del boton */}
-            <MenuUsuario
-              nombreUsuario={nombreUsuario}
-              ladoMenu="bottom"
-              alineacionMenu="end"
-              onAbrirMiPerfil={onAbrirMiPerfil}
-              onCerrarSesion={onCerrarSesion}
-            />
           </div>
           {seccionesDelModulo.length > 0 && (
-            <div className="pt-2">
+            <div className="pt-contorno">
               <PestanasSecciones
                 secciones={seccionesDelModulo}
                 idSeccionActiva={idSeccionActiva}
@@ -119,6 +117,7 @@ export function MenuDoble({
         modulos={modulos}
         idModuloActivo={idModuloActivo}
         onSeleccionarModulo={onSeleccionarModulo}
+        visible={cabeceraVisible}
       />
     </div>
   )

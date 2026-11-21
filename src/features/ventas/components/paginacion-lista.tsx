@@ -14,24 +14,31 @@ export function PaginacionLista({ paginacion, onCambiarPagina }: PaginacionLista
   if (totalPaginas <= 1) return null
 
   return (
-    <nav aria-label="Paginación" className="flex items-center justify-between gap-3">
+    <nav aria-label="Paginación" className="flex items-center justify-between gap-interno">
       <Button
         type="button"
         variant="outline"
-        className="h-11 gap-1 bg-fondo-tarjeta px-4"
+        className="gap-1 bg-fondo-tarjeta"
         disabled={pagina <= 1}
         onClick={() => onCambiarPagina(pagina - 1)}
       >
         <ChevronLeft />
         Anterior
       </Button>
-      <p className="text-sm tabular-nums">
-        Página <span className="font-bold">{pagina}</span> de {totalPaginas}
+      {/* "1/2" alcanza: entre Anterior y Siguiente no se lee de otra manera, y ocupa lo justo. Para el lector de
+          pantalla queda dicho completo */}
+      <p className="text-cuerpo tabular-nums">
+        <span className="sr-only">
+          Página {pagina} de {totalPaginas}
+        </span>
+        <span aria-hidden="true">
+          <span className="font-bold">{pagina}</span>/{totalPaginas}
+        </span>
       </p>
       <Button
         type="button"
         variant="outline"
-        className="h-11 gap-1 bg-fondo-tarjeta px-4"
+        className="gap-1 bg-fondo-tarjeta"
         disabled={pagina >= totalPaginas}
         onClick={() => onCambiarPagina(pagina + 1)}
       >

@@ -30,13 +30,13 @@ export function FilaPagoMixto({
   const Icono = medio.icono ?? CreditCard
 
   return (
-    <Card className="gap-4 p-4 shadow-none">
+    <Card className="gap-bloque p-contorno">
       {/* --- MEDIO Y AJUSTE --- */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-interno">
         <Icono aria-hidden="true" className="size-5 shrink-0" />
         <div className="min-w-0 flex-1">
           <p className="font-bold">{medio.nombre}</p>
-          <p className="text-sm text-texto-suave tabular-nums">
+          <p className="text-cuerpo text-texto-suave tabular-nums">
             {describirAjusteMedio(medio)}
             {linea.montoAjuste !== 0 && ` · ${formatearMonedaConSigno(linea.montoAjuste)}`}
           </p>
@@ -46,7 +46,7 @@ export function FilaPagoMixto({
           variant="ghost"
           size="icon"
           aria-label={`Quitar ${medio.nombre}`}
-          className="size-11 shrink-0 text-slate-500"
+          className="size-control shrink-0 text-slate-500"
           onClick={() => onQuitar(medio.idMedioPago)}
         >
           <Trash2 />
@@ -54,7 +54,7 @@ export function FilaPagoMixto({
       </div>
 
       {/* --- MONTOS --- */}
-      <div className="grid gap-4 sm:grid-cols-2">
+      <div className="grid gap-bloque sm:grid-cols-2">
         <div className="flex flex-col gap-1">
           <CampoMonto
             idCampo={`monto-${medio.idMedioPago}`}
@@ -66,7 +66,7 @@ export function FilaPagoMixto({
             <Button
               type="button"
               variant="ghost"
-              className="h-11 self-start px-3 text-sm tabular-nums"
+              className="self-start px-3 text-cuerpo tabular-nums"
               onClick={() => onCompletarConRestante(medio.idMedioPago)}
             >
               Sumar el restante ({formatearMoneda(faltaCubrir)})
@@ -75,16 +75,16 @@ export function FilaPagoMixto({
         </div>
 
         {medio.admiteVuelto && (
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-bloque">
             <CampoMonto
               idCampo={`paga-con-${medio.idMedioPago}`}
               etiqueta="Paga con"
               valor={linea.pagaCon}
               onCambiar={(monto) => onCambiarPagaCon(medio.idMedioPago, monto)}
             />
-            <p className="flex items-baseline justify-between gap-3">
-              <span className="text-sm text-texto-suave">Vuelto</span>
-              <span className="text-lg font-bold tabular-nums">
+            <p className="flex items-baseline justify-between gap-interno">
+              <span className="text-cuerpo text-texto-suave">Vuelto</span>
+              <span className="text-cifra-secundaria font-bold tabular-nums">
                 {formatearMoneda(linea.vuelto ?? 0)}
               </span>
             </p>

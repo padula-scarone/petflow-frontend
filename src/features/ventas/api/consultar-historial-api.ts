@@ -59,7 +59,7 @@ export function convertirFiltrosAConsulta(
   }
 }
 
-/** Serializa una consulta como query string: todo texto, con "MIXTO" en mayusculas. Tambien la usa Cambios. */
+/** Serializa una consulta como query string: todo texto, con "MIXTO" en mayusculas. Tambien la usa Devoluciones. */
 export function convertirConsultaAParametros(consulta: object): Record<string, string> {
   return Object.fromEntries(
     Object.entries(consulta)
@@ -117,7 +117,7 @@ function convertirVentaHistorialApi(venta: VentaHistorialApi): VentaHistorialCon
     origen: venta.origen,
     modalidadEntrega: venta.modalidadEntrega,
     fechaHoraLimiteModificacion: venta.fechaHoraLimiteModificacion,
-    cantidadCambiosActivos: venta.cantidadCambiosActivos,
+    cantidadDevolucionesActivas: venta.cantidadCambiosActivos,
   }
 }
 

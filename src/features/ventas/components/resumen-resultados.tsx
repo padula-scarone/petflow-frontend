@@ -5,7 +5,7 @@ import type { ChipFiltro } from '@/features/ventas/types/compartidos'
 
 /** Props del resumen que va entre los filtros y la lista. */
 interface ResumenResultadosProps {
-  /** Por ejemplo "Mostrando 1-10 de 47 cambios". */
+  /** Por ejemplo "Mostrando 1-10 de 47 devoluciones". */
   textoResultados: string
   cantidadFiltrosActivos: number
   /** Escritorio: solo lo escondido en "Mas filtros". */
@@ -30,15 +30,15 @@ export function ResumenResultados({
   return (
     // Fragmento: cada pieza es hija directa de la seccion, asi lo que no se muestra no deja huecos
     <>
-      <div className="hidden min-h-11 items-center justify-between gap-3 lg:flex">
-        <p role="status" className="text-sm text-texto-suave tabular-nums">
+      <div className="hidden min-h-control items-center justify-between gap-interno lg:flex">
+        <p role="status" className="text-cuerpo text-texto-suave tabular-nums">
           {textoResultados}
         </p>
         {cantidadFiltrosActivos > 0 && (
           <Button
             type="button"
             variant="ghost"
-            className="h-11 shrink-0 gap-1.5 px-3"
+            className="shrink-0 gap-1.5 px-3"
             onClick={onLimpiarFiltros}
           >
             <FilterX />

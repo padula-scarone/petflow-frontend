@@ -2,6 +2,7 @@ import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import type { PropiedadesCobro } from '@/features/ventas/types/cobro'
 import type { Comprobante } from '@/features/ventas/types/comprobante'
 import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
+import type { FormatoArticulo } from '@/features/ventas/types/venta'
 
 // --- ENUMS DEL BACK ---
 
@@ -69,9 +70,9 @@ export interface VentaHistorial {
   fechaHoraLimiteModificacion: string | null
 }
 
-/** Fila de GET /api/ventas con el dato que solo necesita Cambios: cuantos cambios ACTIVOS tiene la venta. */
+/** Fila de GET /api/ventas con el dato que solo necesita Devoluciones: cuantas devoluciones ACTIVAS tiene la venta. */
 export interface VentaHistorialConsultada extends VentaHistorial {
-  cantidadCambiosActivos: number
+  cantidadDevolucionesActivas: number
 }
 
 /** Metadatos de paginacion de la respuesta. */
@@ -94,6 +95,8 @@ export interface FilaHistorial extends VentaHistorial {
 export interface ProductoFiltro {
   idProducto: number
   nombreProducto: string
+  /** Presentacion del producto; falta si el dato no la trae. */
+  formato?: FormatoArticulo
 }
 
 /** Medio de pago ofrecido como filtro. */

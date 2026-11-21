@@ -14,7 +14,6 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
 import { AccionesVentaHistorial } from '@/features/ventas/components/acciones-venta-historial'
-import { AjustesComprobante } from '@/features/ventas/components/ajustes-comprobante'
 import { BotonesEnvioComprobante } from '@/features/ventas/components/botones-envio-comprobante'
 import { DetalleProductosComprobante } from '@/features/ventas/components/detalle-productos-comprobante'
 import { AvisoVentanaVenta } from '@/features/ventas/components/aviso-ventana-venta'
@@ -81,7 +80,7 @@ export function DetalleVentaHistorial({
                   <Button
                     type="button"
                     variant="outline"
-                    className="mt-2 h-11 bg-fondo-tarjeta px-6 text-texto-principal"
+                    className="mt-2 bg-fondo-tarjeta text-texto-principal"
                     onClick={onReintentar}
                   >
                     Reintentar
@@ -102,17 +101,17 @@ export function DetalleVentaHistorial({
             <>
               <DialogBody>
                 {/* --- ENCABEZADO: VA DENTRO DEL SCROLL --- */}
-                {/* Se mueve con el contenido en lugar de quedar fijo y ocupar espacio. pr-10: no pisa la X, que si es fija */}
-                <div className="flex flex-col gap-1 pr-10">
+                {/* Se mueve con el contenido en lugar de quedar fijo y ocupar espacio. pr-14: no pisa la X, que si es fija */}
+                <div className="flex flex-col gap-1 pr-14">
                   <DialogDescription>Comprobante</DialogDescription>
-                  <DialogTitle className="text-xl tabular-nums">{venta.numeroComprobante}</DialogTitle>
+                  <DialogTitle className="text-titulo-pagina tabular-nums">{venta.numeroComprobante}</DialogTitle>
                   <div className="pt-1">
                     <InsigniaEstadoVenta estado={venta.estado} />
                   </div>
                 </div>
 
                 {anulada && (
-                  <Alert role="status">
+                  <Alert role="status" className="text-red-700">
                     <Ban aria-hidden="true" />
                     <AlertTitle>Venta anulada</AlertTitle>
                     <AlertDescription>
@@ -121,7 +120,7 @@ export function DetalleVentaHistorial({
                         en el historial solo para consulta.
                       </p>
                       {venta.anulacion && (
-                        <dl className="mt-1 grid gap-1.5 text-sm text-texto-principal">
+                        <dl className="mt-1 grid gap-1.5 text-cuerpo text-texto-principal">
                           <div>
                             <dt className="text-texto-suave">Motivo</dt>
                             <dd className="font-medium wrap-break-word">{venta.anulacion.motivo}</dd>
@@ -139,19 +138,18 @@ export function DetalleVentaHistorial({
                 )}
 
                 {/* --- DATOS GENERALES --- */}
-                <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
+                {/* Dos columnas fijas, una por lado de la venta: a la izquierda lo de quien vende (fecha, origen, vendedor) y a
+                    la derecha lo del cliente (pago, entrega, cliente). Con tres columnas esa lectura se perderia */}
+                <dl className="grid grid-cols-2 gap-x-bloque gap-y-interno text-cuerpo">
                   <div>
-                    <dt className="text-texto-suave">Fecha y hora de la venta</dt>
+                    <dt className="text-texto-suave">Fecha de la venta</dt>
                     <dd className="font-medium tabular-nums">{formatearFechaHora(venta.fechaHora)}</dd>
                   </div>
                   <div>
-                    <dt className="text-texto-suave">Fecha y hora del pago</dt>
+                    <dt className="text-texto-suave">Fecha del pago</dt>
                     <dd className="font-medium tabular-nums">
-                      {venta.fechaHoraPago
-                        ? formatearFechaHora(venta.fechaHoraPago)
-                        : anulada
-                          ? '—'
-                          : 'Pendiente de pago'}
+                      {/* Sin pago (fiado o anulada) alcanza un guion: el estado ya esta en la insignia */}
+                      {venta.fechaHoraPago ? formatearFechaHora(venta.fechaHoraPago) : '—'}
                     </dd>
                   </div>
                   <div>
@@ -163,46 +161,48 @@ export function DetalleVentaHistorial({
                     <dd className="font-medium">{describirEntrega(venta.modalidadEntrega)}</dd>
                   </div>
                   <div className="min-w-0">
-                    <dt className="text-texto-suave">Cliente</dt>
-                    <dd className="truncate font-medium">{venta.clienteReferencia ?? '—'}</dd>
-                  </div>
-                  <div className="min-w-0">
                     <dt className="text-texto-suave">Vendedor</dt>
                     <dd className="truncate font-medium">{venta.vendedor.nombre}</dd>
+                  </div>
+                  <div className="min-w-0">
+                    <dt className="text-texto-suave">Cliente</dt>
+                    <dd className="truncate font-medium">{venta.clienteReferencia ?? '—'}</dd>
                   </div>
                 </dl>
 
                 <Separator />
                 <DetalleProductosComprobante detalles={comprobante.detalles} />
                 <Separator />
-                <AjustesComprobante comprobante={comprobante} />
-                <Separator />
-                <TotalesComprobante
-                  subtotalProductos={comprobante.subtotalProductos}
-                  montoTotal={comprobante.montoTotal}
-                />
-                <Separator />
+                <TotalesComprobante comprobante={comprobante} anulada={anulada} />
 
-                {/* --- PAGOS --- */}
+                {/* --- PAGOS: UN FIADO PENDIENTE NO TIENE; SU DEUDA YA ESTA EN EL RESUMEN --- */}
                 {anuladaSinPagos ? (
-                  <section aria-labelledby="titulo-pagos-anulada" className="flex flex-col gap-2">
-                    <h2 id="titulo-pagos-anulada" className="text-base font-bold">
-                      Medios de pago
-                    </h2>
-                    <p className="text-texto-suave">
-                      Se anuló antes de cobrarse: no pasó por la caja.
-                    </p>
-                  </section>
+                  <>
+                    <Separator />
+                    <section aria-labelledby="titulo-pagos-anulada" className="flex flex-col gap-2">
+                      <h2 id="titulo-pagos-anulada" className="text-titulo-seccion font-bold">
+                        Medios de pago
+                      </h2>
+                      <p className="text-texto-suave">
+                        Se anuló antes de cobrarse: no pasó por la caja.
+                      </p>
+                    </section>
+                  </>
                 ) : (
-                  <PagosComprobante comprobante={comprobante} />
+                  comprobante.estado === 'completada' && (
+                    <>
+                      <Separator />
+                      <PagosComprobante comprobante={comprobante} />
+                    </>
+                  )
                 )}
 
                 {/* --- ENVIO DEL COMPROBANTE --- */}
                 {!anulada && (
                   <>
                     <Separator />
-                    <section aria-labelledby="titulo-envio" className="flex flex-col gap-3">
-                      <h2 id="titulo-envio" className="text-base font-bold">
+                    <section aria-labelledby="titulo-envio" className="flex flex-col gap-interno">
+                      <h2 id="titulo-envio" className="text-titulo-seccion font-bold">
                         Enviar comprobante
                       </h2>
                       <div className="flex gap-2">

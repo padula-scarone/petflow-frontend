@@ -23,8 +23,8 @@ export function CampoClave({
   onAlternarVisibilidadClave,
 }: CampoClaveProps) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor="campo-clave" className="text-sm text-texto-suave">
+    <div className="flex flex-col gap-interno">
+      <Label htmlFor="campo-clave" className="text-texto-suave">
         Contraseña
       </Label>
       <div className="relative">
@@ -41,15 +41,15 @@ export function CampoClave({
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? 'error-clave' : undefined}
           readOnly={enviando}
-          className="h-11 bg-fondo-tarjeta pr-11"
+          className="bg-fondo-tarjeta pr-control"
           value={clave}
           onChange={(evento) => onCambiarClave(evento.target.value)}
         />
-        {/* Tactil de 44px dentro del campo; type="button" para no enviar el formulario */}
+        {/* Tactil del alto de un control dentro del campo; type="button" para no enviar el formulario */}
         <Button
           type="button"
           variant="ghost"
-          className="absolute inset-y-0 right-0 size-11 text-texto-suave"
+          className="absolute inset-y-0 right-0 size-control text-texto-suave"
           aria-label={claveVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
           aria-pressed={claveVisible}
           aria-controls="campo-clave"
@@ -59,7 +59,7 @@ export function CampoClave({
         </Button>
       </div>
       {error && (
-        <p id="error-clave" className="text-sm font-medium text-peligro">
+        <p id="error-clave" className="text-cuerpo font-medium text-peligro">
           {error}
         </p>
       )}

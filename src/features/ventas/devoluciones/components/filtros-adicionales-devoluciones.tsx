@@ -1,0 +1,35 @@
+import { FiltroVinculoDevolucion } from '@/features/ventas/devoluciones/components/filtros-selectores-devoluciones'
+import type { PropiedadesFiltrosDevoluciones } from '@/features/ventas/devoluciones/types/devolucion'
+import { SelectorFiltroMedioPago } from '@/features/ventas/components/selector-filtro-medio-pago'
+
+/** Props de los filtros menos usados de la lista de devoluciones. */
+interface FiltrosAdicionalesDevolucionesProps {
+  propiedades: PropiedadesFiltrosDevoluciones
+  /** Prefijo de los ids: el popover de escritorio y la hoja mobile pueden coexistir en el DOM. */
+  idPrefijo: string
+}
+
+/** Vinculo con una venta y medio de pago del saldo. Cada control lleva su propia etiqueta. */
+export function FiltrosAdicionalesDevoluciones({ propiedades, idPrefijo }: FiltrosAdicionalesDevolucionesProps) {
+  const { filtros, opciones, onCambiarFiltros } = propiedades
+
+  return (
+    <div className="flex flex-col gap-bloque">
+      <FiltroVinculoDevolucion
+        idCampo={`${idPrefijo}-vinculo`}
+        vinculo={filtros.vinculo}
+        onCambiarVinculo={(vinculo) => onCambiarFiltros({ vinculo })}
+      />
+      {/* Una devolución cobra su saldo con un solo medio: no existe "Mixto" */}
+      <SelectorFiltroMedioPago
+        idPrefijo={idPrefijo}
+        medioPago={filtros.medioPago}
+        medios={opciones.mediosPago}
+        permiteMixto={false}
+        onCambiarMedioPago={(medioPago) =>
+          onCambiarFiltros({ medioPago: typeof medioPago === 'number' ? medioPago : null })
+        }
+      />
+    </div>
+  )
+}

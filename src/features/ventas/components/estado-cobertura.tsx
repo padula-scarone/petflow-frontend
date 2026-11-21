@@ -21,11 +21,11 @@ export function EstadoCobertura({
   if (excedente > 0) {
     return (
       <div
-        className={cn('flex flex-wrap items-center justify-between gap-x-3 gap-y-2', className)}
+        className={cn('flex flex-wrap items-center justify-between gap-x-interno gap-y-2', className)}
       >
         <p
           role="status"
-          className="flex items-center gap-1 text-sm font-medium text-peligro tabular-nums"
+          className="flex items-center gap-1 text-cuerpo font-medium text-peligro tabular-nums"
         >
           <TriangleAlert aria-hidden="true" className="size-4 shrink-0" />
           Excedido por {formatearMoneda(excedente)}
@@ -33,7 +33,7 @@ export function EstadoCobertura({
         <Button
           type="button"
           variant="outline"
-          className="h-11 bg-fondo-tarjeta px-4 text-sm"
+          className="bg-fondo-tarjeta text-cuerpo"
           onClick={onAjustarAutomaticamente}
         >
           Ajustar automáticamente
@@ -47,7 +47,7 @@ export function EstadoCobertura({
       <p
         role="status"
         className={cn(
-          'flex items-center justify-between gap-3 text-sm font-medium text-amber-700 tabular-nums',
+          'flex items-center justify-between gap-interno text-cuerpo font-medium text-amber-700 tabular-nums',
           className,
         )}
       >
@@ -60,7 +60,7 @@ export function EstadoCobertura({
   return (
     <p
       role="status"
-      className={cn('flex items-center gap-1 text-sm font-medium text-green-700', className)}
+      className={cn('flex items-center gap-1 text-cuerpo font-medium text-green-700', className)}
     >
       <Check aria-hidden="true" className="size-4 shrink-0" />
       Total cubierto

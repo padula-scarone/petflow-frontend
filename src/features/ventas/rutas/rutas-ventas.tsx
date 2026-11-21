@@ -4,8 +4,8 @@ import {
   ID_SECCION_REGISTRAR_VENTA,
 } from '@/features/ventas/config/rutas-registrar-venta'
 import { ID_SECCION_HISTORIAL } from '@/features/ventas/config/rutas-historial'
-import { ID_SECCION_CAMBIOS_POSVENTA } from '@/features/ventas/cambios-mercaderia/config/rutas-cambios-posventa'
-import { PaginaCambiosPosventa } from '@/features/ventas/cambios-mercaderia/paginas/pagina-cambios-posventa'
+import { ID_SECCION_DEVOLUCIONES } from '@/features/ventas/devoluciones/config/rutas-devoluciones'
+import { PaginaDevoluciones } from '@/features/ventas/devoluciones/paginas/pagina-devoluciones'
 import { PaginaHistorialVentas } from '@/features/ventas/paginas/pagina-historial-ventas'
 import { LayoutRegistrarVenta } from '@/features/ventas/paginas/layout-registrar-venta'
 import { PaginaRegistrarVentaCarrito } from '@/features/ventas/paginas/pagina-registrar-venta-carrito'
@@ -33,7 +33,7 @@ export const RUTAS_VENTAS: RutaSeccion[] = [
   },
   {
     idModulo: ID_MODULO_VENTAS,
-    idSeccion: ID_SECCION_CAMBIOS_POSVENTA,
-    ruta: { element: <PaginaCambiosPosventa /> },
+    idSeccion: ID_SECCION_DEVOLUCIONES,
+    ruta: { element: <PaginaDevoluciones /> },
   },
 ]

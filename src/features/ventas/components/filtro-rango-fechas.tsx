@@ -24,7 +24,7 @@ interface FiltroRangoFechasProps {
   fechaDesde: string | null
   fechaHasta: string | null
   periodoRapidoActivo: PeriodoRapido | null
-  /** Acepta cualquier funcion de filtros que contenga las dos fechas (Historial, Cambios, busqueda de venta). */
+  /** Acepta cualquier funcion de filtros que contenga las dos fechas (Historial, Devoluciones, busqueda de venta). */
   onCambiarFiltros: (cambios: Partial<RangoFechasFiltro>) => void
   onSeleccionarPeriodoRapido: (periodo: PeriodoRapido) => void
 }
@@ -69,7 +69,7 @@ export function FiltroRangoFechas({
             type="button"
             variant="outline"
             aria-label={variante === 'barra' ? `Fecha: ${descripcion}` : undefined}
-            className="h-11 w-full justify-start gap-2 bg-fondo-tarjeta px-3 font-normal"
+            className="w-full justify-start gap-2 bg-fondo-tarjeta px-3 font-normal"
           >
             <CalendarDays aria-hidden="true" className="text-texto-suave" />
             <span className="truncate tabular-nums">{descripcion}</span>
@@ -86,7 +86,7 @@ export function FiltroRangoFechas({
                     type="button"
                     variant={periodoRapidoActivo === periodo ? 'secondary' : 'ghost'}
                     aria-pressed={periodoRapidoActivo === periodo}
-                    className="h-11 justify-start px-3"
+                    className="justify-start px-3"
                     onClick={() => onSeleccionarPeriodoRapido(periodo)}
                   >
                     {etiqueta}
@@ -98,7 +98,7 @@ export function FiltroRangoFechas({
                   type="button"
                   variant={hayFechas ? 'ghost' : 'secondary'}
                   aria-pressed={!hayFechas}
-                  className="h-11 justify-start px-3"
+                  className="justify-start px-3"
                   onClick={() => onCambiarFiltros({ fechaDesde: null, fechaHasta: null })}
                 >
                   Todas las fechas

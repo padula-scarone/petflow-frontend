@@ -16,7 +16,7 @@ export function CampoFiltroComprobante({
 }: CampoFiltroComprobanteProps) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={idCampo} className="text-sm font-medium">
+      <Label htmlFor={idCampo} className="text-cuerpo font-medium">
         N.º de comprobante
       </Label>
       <Input
@@ -24,7 +24,7 @@ export function CampoFiltroComprobante({
         type="text"
         autoComplete="off"
         placeholder="Ej: CMP-00001040"
-        className="h-11 bg-fondo-tarjeta tabular-nums"
+        className="bg-fondo-tarjeta tabular-nums"
         value={numeroComprobante}
         onChange={(evento) => onCambiarNumeroComprobante(evento.target.value)}
       />

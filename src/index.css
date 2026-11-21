@@ -69,6 +69,100 @@ input::-ms-clear {
   --radius-mediano: 0.375rem;
   --radius-grande: 0.5rem;
   --radius-extragrande: 0.75rem;
+
+  /* Sombras. Solo hay tres y significan una cosa: algo flota sobre la pagina. Todo lo que esta apoyado en ella
+     (tarjetas, campos, selectores, toggles y botones, incluida la accion principal) va plano y se distingue por
+     borde y color. Se quita la escala de Tailwind (shadow-sm, shadow-md...): una sombra suelta ya no compila. */
+  --shadow-*: initial;
+  /* flotante: lo que se despliega sobre el contenido (menus, sugerencias, calendario, lista del selector). */
+  --shadow-flotante: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  /* superpuesto: lo que tapa la pantalla (dialogos y hoja de filtros). */
+  --shadow-superpuesto: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  /* perilla: solo la perilla del interruptor, que es parte de su dibujo. */
+  --shadow-perilla: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+
+  /* --- SISTEMA DE TAMANOS --- */
+  /* Cada rol tiene un valor para celular (aca) y otro para PC (mas abajo, desde lg). Los componentes usan
+     el nombre del rol y no repiten el cambio de tamano. El punto de cambio es lg (1024 px), el mismo donde el
+     menu pasa de barra inferior a barra lateral. */
+
+  /* Espaciado. Los nombres sirven en cualquier clase de espacio: p-contorno, gap-bloque, h-control, -mx-contorno.
+     Para espacios de hasta 8 px dentro de un mismo componente (icono y texto, filas muy juntas) se sigue usando
+     la escala numerica de Tailwind: ahi el valor no debe crecer en PC. */
+  /* contorno: relleno de todo contenedor (pagina, tarjeta, barra, dialogo). */
+  --spacing-contorno: 0.75rem;
+  /* bloque: separacion entre bloques hermanos (tarjetas, secciones de una pagina, de una tarjeta o de un dialogo). */
+  --spacing-bloque: 1rem;
+  /* interno: separacion entre elementos de un mismo grupo (etiqueta y control, filas de una lista, botones contiguos). */
+  --spacing-interno: 0.5rem;
+  /* control: alto de todo lo que se toca o se escribe (boton, pestana, toggle, campo, selector). */
+  --spacing-control: 2.5rem;
+  /* accion: alto de la accion principal de una pantalla (COBRAR, CONFIRMAR). */
+  --spacing-accion: 3rem;
+
+  /* Tipografia: tamano (--text-X) e interlineado (--text-X--line-height). El peso va aparte y solo hay tres:
+     font-normal para texto corrido, font-medium para etiquetas y enfasis leve, font-bold para titulos y cifras. */
+  /* Se quita la escala de Tailwind (text-xs, text-sm, text-base...): solo valen los roles de abajo. Asi un tamano
+     suelto no compila en silencio y el sistema se hace cumplir solo. */
+  --text-*: initial;
+  /* cifra-principal: el total que se cobra. Negrita. */
+  --text-cifra-principal: 1.5rem;
+  --text-cifra-principal--line-height: 2rem;
+  /* titulo-pagina: titulo de una pantalla. Negrita. */
+  --text-titulo-pagina: 1.25rem;
+  --text-titulo-pagina--line-height: 1.75rem;
+  /* cifra-secundaria: totales de tarjetas y pies, vuelto, saldo, subtotal. Negrita. */
+  --text-cifra-secundaria: 1.125rem;
+  --text-cifra-secundaria--line-height: 1.75rem;
+  /* titulo-seccion: titulo de una tarjeta, seccion o dialogo. Negrita. */
+  --text-titulo-seccion: 1rem;
+  --text-titulo-seccion--line-height: 1.5rem;
+  /* accion: texto de la accion principal. Negrita. */
+  --text-accion: 1rem;
+  --text-accion--line-height: 1.5rem;
+  /* campo: texto dentro de un campo. En celular 16 px: con menos, Safari de iPhone hace zoom al tocarlo. */
+  --text-campo: 1rem;
+  --text-campo--line-height: 1.5rem;
+  /* cuerpo: contenido, etiquetas, botones, pestanas, toggles y valores de listas. Normal o medio. */
+  --text-cuerpo: 0.875rem;
+  --text-cuerpo--line-height: 1.25rem;
+  /* auxiliar: ayudas, metadatos, contadores. Normal. */
+  --text-auxiliar: 0.75rem;
+  --text-auxiliar--line-height: 1rem;
+  /* logo: la marca "PetFlow". Negrita. Igual en celular y en PC. */
+  --text-logo: 1.5rem;
+  --text-logo--line-height: 1;
+  /* menu: las etiquetas de la barra inferior del celular. Mas chico que auxiliar a proposito: con seis modulos y
+     320 px de ancho, a 12 px o 11 px las etiquetas quedan pegadas. Solo se usa ahi. Igual en celular y en PC. */
+  --text-menu: 0.625rem;
+  --text-menu--line-height: 1;
+  /* decorativo: el "404". Negrita. Igual en celular y en PC. */
+  --text-decorativo: 3.75rem;
+  --text-decorativo--line-height: 1;
+}
+
+/* Valores de PC de los roles que cambian. Control, accion, cuerpo y auxiliar son iguales en celular y en PC:
+   con mouse y pantalla grande el contenido gana densidad, no tamano. Se redefinen en :root, sin capa, y por eso
+   pisan a los de @theme. */
+@media (min-width: 64rem) {
+  :root {
+    --spacing-contorno: 1.5rem;
+    --spacing-bloque: 1.5rem;
+    --spacing-interno: 0.75rem;
+
+    --text-cifra-principal: 1.875rem;
+    --text-cifra-principal--line-height: 2.25rem;
+    --text-titulo-pagina: 1.5rem;
+    --text-titulo-pagina--line-height: 2rem;
+    --text-cifra-secundaria: 1.25rem;
+    --text-cifra-secundaria--line-height: 1.75rem;
+    --text-titulo-seccion: 1.125rem;
+    --text-titulo-seccion--line-height: 1.75rem;
+    --text-accion: 1.125rem;
+    --text-accion--line-height: 1.75rem;
+    --text-campo: 0.875rem;
+    --text-campo--line-height: 1.25rem;
+  }
 }
 
 @layer base {
@@ -77,7 +171,8 @@ input::-ms-clear {
   }
 
   body {
-    @apply bg-fondo-pagina font-principal text-texto-principal antialiased;
+    /* text-cuerpo: el texto sin clase propia sigue la escala (14 px) y no el 16 px por defecto del navegador */
+    @apply bg-fondo-pagina font-principal text-cuerpo text-texto-principal antialiased;
   }
 
   /* Tailwind v4 ya no pone cursor de mano en los botones */

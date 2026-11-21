@@ -50,26 +50,26 @@ export function DialogoCobroFiado({
             <DialogDescription className="sr-only">
               El fiado de la venta {fila.numeroComprobante} se cobró y pasó a Completada.
             </DialogDescription>
-            <DialogBody className="gap-5 pt-6">
+            <DialogBody className="gap-bloque pt-bloque">
               <EncabezadoExitoVenta estado="completada" titulo="Fiado cobrado" />
               <dl className="flex flex-col gap-2">
-                <div className="flex justify-between gap-3">
+                <div className="flex justify-between gap-interno">
                   <dt className="text-texto-suave">Comprobante</dt>
                   <dd className="font-medium tabular-nums">{fila.numeroComprobante}</dd>
                 </div>
-                <div className="flex justify-between gap-3">
+                <div className="flex justify-between gap-interno">
                   <dt className="text-texto-suave">Cliente</dt>
                   <dd className="truncate font-medium">{fila.clienteReferencia}</dd>
                 </div>
                 {recibo.vuelto !== null && (
-                  <div className="flex justify-between gap-3">
+                  <div className="flex justify-between gap-interno">
                     <dt className="text-texto-suave">Vuelto</dt>
                     <dd className="font-medium tabular-nums">{formatearMoneda(recibo.vuelto)}</dd>
                   </div>
                 )}
-                <div className="flex items-baseline justify-between gap-3 border-t pt-3">
-                  <dt className="text-lg font-bold">Total cobrado</dt>
-                  <dd className="text-3xl font-bold tabular-nums">
+                <div className="flex items-baseline justify-between gap-interno border-t pt-interno">
+                  <dt className="text-titulo-seccion font-bold">Total cobrado</dt>
+                  <dd className="text-cifra-principal font-bold tabular-nums">
                     {formatearMoneda(recibo.montoTotalCobrado)}
                   </dd>
                 </div>
@@ -86,10 +86,10 @@ export function DialogoCobroFiado({
               )}
             </DialogBody>
             <DialogFooter>
-              <Button type="button" variant="outline" className="h-11 px-6" onClick={onCerrar}>
+              <Button type="button" variant="outline" onClick={onCerrar}>
                 Cerrar
               </Button>
-              <Button type="button" className="h-11 px-6" onClick={onVerRecibo}>
+              <Button type="button" onClick={onVerRecibo}>
                 Ver recibo
               </Button>
             </DialogFooter>
@@ -107,7 +107,7 @@ export function DialogoCobroFiado({
             <DialogBody>
               {/* --- CARGA DEL IMPORTE: SALE DEL DETALLE DE LA VENTA --- */}
               {estadoImporte.fase === 'cargando' && (
-                <div role="status" aria-busy="true" className="flex flex-col gap-4">
+                <div role="status" aria-busy="true" className="flex flex-col gap-bloque">
                   <span className="sr-only">Cargando los datos de la venta</span>
                   <Skeleton className="h-20 w-full" />
                   <Skeleton className="h-28 w-full" />
@@ -125,9 +125,9 @@ export function DialogoCobroFiado({
 
               {estadoImporte.fase === 'listo' && (
                 <>
-                  <div className="flex items-baseline justify-between gap-3 rounded-grande border bg-fondo-suave p-4">
-                    <p className="text-sm text-texto-suave">Importe adeudado</p>
-                    <p className="text-3xl font-bold tabular-nums">{formatearMoneda(importeAdeudado)}</p>
+                  <div className="flex items-baseline justify-between gap-interno rounded-grande border bg-fondo-suave p-contorno">
+                    <p className="text-cuerpo text-texto-suave">Importe adeudado</p>
+                    <p className="text-cifra-principal font-bold tabular-nums">{formatearMoneda(importeAdeudado)}</p>
                   </div>
 
                   <EstadoMediosPago
@@ -152,24 +152,24 @@ export function DialogoCobroFiado({
                   />
 
                   {/* --- TOTAL ESTIMADO --- */}
-                  <section aria-label="Total estimado" className="flex flex-col gap-3 rounded-grande border p-4">
-                    <dl className="flex flex-col gap-2 text-sm">
-                      <div className="flex justify-between gap-3">
+                  <section aria-label="Total estimado" className="flex flex-col gap-interno rounded-grande border p-contorno">
+                    <dl className="flex flex-col gap-2 text-cuerpo">
+                      <div className="flex justify-between gap-interno">
                         <dt className="text-texto-suave">Importe adeudado</dt>
                         <dd className="font-medium tabular-nums">{formatearMoneda(importeAdeudado)}</dd>
                       </div>
-                      <div className="flex justify-between gap-3">
+                      <div className="flex justify-between gap-interno">
                         <dt className="text-texto-suave">Descuento o recargo del medio de pago</dt>
                         <dd className="font-medium whitespace-nowrap tabular-nums">
                           {formatearMonedaConSigno(resumen.montoAjusteMediosPago)}
                         </dd>
                       </div>
                     </dl>
-                    <p className="flex items-baseline justify-between gap-3 border-t pt-3">
+                    <p className="flex items-baseline justify-between gap-interno border-t pt-interno">
                       <span className="font-bold">Total estimado</span>
-                      <span className="text-2xl font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
+                      <span className="text-cifra-secundaria font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
                     </p>
-                    <p className="text-xs text-texto-suave">
+                    <p className="text-auxiliar text-texto-suave">
                       Es un estimado: el total final lo calcula el servidor con los recargos y descuentos
                       vigentes al confirmar.
                     </p>
@@ -178,7 +178,7 @@ export function DialogoCobroFiado({
                         faltaCubrir={resumen.faltaCubrir}
                         excedente={resumen.excedente}
                         onAjustarAutomaticamente={propiedadesCobro.onAjustarMontosAutomaticamente}
-                        className="border-t pt-3"
+                        className="border-t pt-interno"
                       />
                     )}
                   </section>
@@ -201,7 +201,7 @@ export function DialogoCobroFiado({
                   )}
 
                   {!estadoCobro.puedeConfirmar && estadoCobro.motivoNoConfirmable && (
-                    <p role="status" className="text-center text-sm text-texto-suave">
+                    <p role="status" className="text-center text-cuerpo text-texto-suave">
                       {estadoCobro.motivoNoConfirmable}
                     </p>
                   )}
@@ -211,14 +211,13 @@ export function DialogoCobroFiado({
 
             <DialogFooter className="sm:items-center">
               {error ? (
-                <Button type="button" variant="outline" className="h-11 px-6" onClick={onActualizarListado}>
+                <Button type="button" variant="outline" onClick={onActualizarListado}>
                   Actualizar listado
                 </Button>
               ) : (
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-11 px-6"
                   disabled={enviando}
                   onClick={onCerrar}
                 >
@@ -231,7 +230,6 @@ export function DialogoCobroFiado({
                   formaPago={formaPago}
                   habilitado={estadoCobro.puedeConfirmar && !enviando}
                   onConfirmarCobro={onConfirmarCobro}
-                  className="sm:px-10"
                 />
               )}
             </DialogFooter>

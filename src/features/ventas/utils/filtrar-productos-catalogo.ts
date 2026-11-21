@@ -16,5 +16,6 @@ export function filtrarProductosCatalogo(catalogo: ProductoCatalogo[], textoBusq
     .map((producto) => ({
       idProducto: Number(producto.idProducto),
       nombreProducto: producto.nombreProducto,
+      formato: producto.formato,
     }))
 }

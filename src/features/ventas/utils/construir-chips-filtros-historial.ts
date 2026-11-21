@@ -1,7 +1,8 @@
 import { PRESENTACION_ESTADO_VENTA } from '@/features/ventas/config/estados-venta'
 import type { ChipFiltro } from '@/features/ventas/types/compartidos'
-import type { PropiedadesFiltrosHistorial } from '@/features/ventas/types/historial'
+import type { ProductoFiltro, PropiedadesFiltrosHistorial } from '@/features/ventas/types/historial'
 import { describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
+import { describirPresentacion } from '@/features/ventas/utils/describir-presentacion'
 import { formatearFechaCalendarioLegible } from '@/features/ventas/utils/formatear-fecha-calendario-legible'
 
 /** Texto de un rango de fechas: un dia, "d – h", "Desde d" o "Hasta h". */
@@ -37,7 +38,7 @@ export function construirChipsFiltrosHistorial(
     if (filtros.productoSeleccionado) {
       chips.push({
         clave: 'producto',
-        etiqueta: filtros.productoSeleccionado.nombreProducto,
+        etiqueta: describirProductoFiltro(filtros.productoSeleccionado),
         descripcion: 'el producto',
         onQuitar: () => onSeleccionarProducto(null),
       })
@@ -91,4 +92,11 @@ export function construirChipsFiltrosHistorial(
   }
 
   return chips
+}
+
+/** "Nombre | Presentacion" del producto elegido como filtro; solo el nombre si el dato no trae la presentacion. */
+export function describirProductoFiltro(producto: ProductoFiltro) {
+  return producto.formato
+    ? `${producto.nombreProducto} | ${describirPresentacion(producto.formato)}`
+    : producto.nombreProducto
 }

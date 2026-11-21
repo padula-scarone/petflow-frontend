@@ -42,13 +42,13 @@ export function RegistrarVentaCobro({
   const enviando = estadoEnvio.fase === 'enviando'
 
   return (
-    <section className="flex min-h-full flex-col gap-6">
+    <section className="flex min-h-full flex-col gap-bloque">
       {/* --- ENCABEZADO --- */}
       <header>
         <Button
           type="button"
           variant="ghost"
-          className="-ml-3 h-11 gap-2 px-3"
+          className="-ml-3 gap-2 px-3"
           disabled={enviando}
           onClick={onVolverAlCarrito}
         >
@@ -57,9 +57,9 @@ export function RegistrarVentaCobro({
         </Button>
       </header>
 
-      <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
+      <div className="grid gap-bloque xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
         {/* --- DESCUENTO Y FORMA DE PAGO --- */}
-        <div className="flex min-w-0 flex-col gap-6">
+        <div className="flex min-w-0 flex-col gap-bloque">
           <TarjetaDescuentoManual
             descuentoManual={estadoCobro.descuentoManual}
             formularioAbierto={formularioDescuentoAbierto}
@@ -113,7 +113,7 @@ export function RegistrarVentaCobro({
 
       {/* --- FOOTER CONFIRMAR (MOBILE) --- */}
       {/* Mismo patron que la Seccion 1: pegado al borde inferior del area con scroll */}
-      <footer className="sticky -bottom-4 z-10 mt-auto -mx-4 -mb-4 flex flex-col gap-2 border-t bg-fondo-tarjeta px-4 py-3 xl:hidden">
+      <footer className="sticky -bottom-contorno z-10 mt-auto -mx-contorno -mb-contorno flex flex-col gap-interno border-t bg-fondo-tarjeta p-contorno xl:hidden">
         {/* El estado va en su propia linea: dentro de la columna del total ensancharia y desbordaria el boton */}
         {formaPago === 'mixto' && (
           <EstadoCobertura
@@ -125,14 +125,14 @@ export function RegistrarVentaCobro({
         <EstadoEnvioCobro estadoEnvio={estadoEnvio} />
         {/* Sin medio elegido el boton bloqueado ya lo dice: el texto solo estorba en la pantalla chica */}
         {motivoNoConfirmable && motivoNoConfirmable !== MOTIVO_ELEGIR_MEDIO_PAGO && !puedeConfirmar && (
-          <p role="status" className="text-xs text-amber-700 tabular-nums">
+          <p role="status" className="text-auxiliar text-amber-700 tabular-nums">
             {motivoNoConfirmable}
           </p>
         )}
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center justify-between gap-interno">
           <p className="flex min-w-0 flex-col">
-            <span className="text-sm text-texto-suave">Total</span>
-            <span className="text-xl font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
+            <span className="text-cuerpo text-texto-suave">Total</span>
+            <span className="text-cifra-secundaria font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
           </p>
           <BotonConfirmarCobro
             formaPago={formaPago}

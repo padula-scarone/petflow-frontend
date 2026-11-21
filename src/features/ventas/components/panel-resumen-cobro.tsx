@@ -32,21 +32,21 @@ export function PanelResumenCobro({
   const enviando = estadoEnvio.fase === 'enviando'
 
   return (
-    <Card className="gap-4 p-4 shadow-none xl:sticky xl:top-0">
+    <Card className="gap-bloque p-contorno xl:sticky xl:top-0">
       {/* --- DESGLOSE --- */}
-      <dl className="flex flex-col gap-3 text-sm">
-        <div className="flex justify-between gap-3">
+      <dl className="flex flex-col gap-interno text-cuerpo">
+        <div className="flex justify-between gap-interno">
           <dt className="text-texto-suave">Subtotal productos</dt>
           <dd className="shrink-0 font-medium whitespace-nowrap tabular-nums">{formatearMoneda(resumen.subtotalProductos)}</dd>
         </div>
-        <div className="flex justify-between gap-3">
+        <div className="flex justify-between gap-interno">
           <dt className="text-texto-suave">Descuento manual</dt>
           <dd className="shrink-0 font-medium whitespace-nowrap tabular-nums">
             {formatearMonedaConSigno(-resumen.montoDescuentoManual)}
           </dd>
         </div>
         {formaPago !== 'fiado' && (
-          <div className="flex justify-between gap-3">
+          <div className="flex justify-between gap-interno">
             <dt className="text-texto-suave">Descuento/recargo medio de pago</dt>
             <dd className="shrink-0 font-medium whitespace-nowrap tabular-nums">
               {formatearMonedaConSigno(resumen.montoAjusteMediosPago)}
@@ -56,9 +56,9 @@ export function PanelResumenCobro({
       </dl>
 
       {/* --- TOTAL --- */}
-      <p className="flex items-baseline justify-between gap-3 border-t pt-4">
-        <span className="text-sm text-texto-suave">Total</span>
-        <span className="text-3xl font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
+      <p className="flex items-baseline justify-between gap-interno border-t pt-bloque">
+        <span className="text-cuerpo text-texto-suave">Total</span>
+        <span className="text-cifra-principal font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
       </p>
 
       {/* --- ESTADO DE COBERTURA (SOLO PAGO MIXTO) --- */}
@@ -67,12 +67,12 @@ export function PanelResumenCobro({
           faltaCubrir={resumen.faltaCubrir}
           excedente={resumen.excedente}
           onAjustarAutomaticamente={onAjustarMontosAutomaticamente}
-          className="border-t pt-4"
+          className="border-t pt-bloque"
         />
       )}
 
       {/* --- ACCIONES (ESCRITORIO) --- */}
-      <div className="hidden flex-col gap-3 border-t pt-4 xl:flex">
+      <div className="hidden flex-col gap-interno border-t pt-bloque xl:flex">
         <EstadoEnvioCobro estadoEnvio={estadoEnvio} />
         <BotonConfirmarCobro
           formaPago={formaPago}
@@ -82,7 +82,7 @@ export function PanelResumenCobro({
           className="w-full"
         />
         {!puedeConfirmar && motivoNoConfirmable && (
-          <p role="status" className="text-center text-sm text-texto-suave tabular-nums">
+          <p role="status" className="text-center text-cuerpo text-texto-suave tabular-nums">
             {motivoNoConfirmable}
           </p>
         )}

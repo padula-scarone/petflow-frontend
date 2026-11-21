@@ -24,7 +24,7 @@ export function EstadoEnvioCobro({ estadoEnvio, className }: EstadoEnvioCobroPro
 
     return (
       <div role="status" className={cn('flex flex-col gap-2', className)}>
-        <p className="text-sm font-medium tabular-nums">
+        <p className="text-cuerpo font-medium tabular-nums">
           Registrando la venta… {segundosTranscurridos} s
         </p>
         <div
@@ -41,7 +41,7 @@ export function EstadoEnvioCobro({ estadoEnvio, className }: EstadoEnvioCobroPro
           />
         </div>
         {segundosTranscurridos >= SEGUNDOS_ENVIO_LENTO && (
-          <p className="text-xs text-amber-700">
+          <p className="text-auxiliar text-amber-700">
             Está tardando más de lo normal. No cierres ni toques nada.
           </p>
         )}

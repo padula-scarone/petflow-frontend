@@ -36,7 +36,7 @@ export function CampoMonto({
 
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
-      <Label htmlFor={idCampo} className="text-sm text-texto-suave">
+      <Label htmlFor={idCampo} className="text-cuerpo text-texto-suave">
         {etiqueta}
       </Label>
       <div className="relative">
@@ -51,7 +51,7 @@ export function CampoMonto({
           type="text"
           inputMode="decimal"
           autoComplete="off"
-          className="h-11 bg-fondo-tarjeta pl-7 tabular-nums"
+          className="bg-fondo-tarjeta pl-7 tabular-nums"
           value={texto}
           onChange={(evento) => {
             const textoLimpio = limpiarTextoMonto(evento.target.value)

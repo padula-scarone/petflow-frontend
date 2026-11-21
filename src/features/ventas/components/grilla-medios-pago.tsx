@@ -13,7 +13,7 @@ interface GrillaMediosPagoProps {
   vuelto: number | null
   onSeleccionarMedioPago: (idMedioPago: number) => void
   onCambiarPagaCon: (monto: number | null) => void
-  /** false en un cambio: el saldo se cobra sin el recargo o descuento del medio, asi que no se muestra. */
+  /** false en una devolución: el saldo se cobra sin el recargo o descuento del medio, asi que no se muestra. */
   mostrarAjustes?: boolean
 }
 
@@ -29,7 +29,7 @@ export function GrillaMediosPago({
   const medioSeleccionado = medios.find((medio) => medio.idMedioPago === idMedioSeleccionado)
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-bloque">
       {/* --- MEDIOS --- */}
       <ToggleGroup
         type="single"
@@ -49,12 +49,12 @@ export function GrillaMediosPago({
               key={medio.idMedioPago}
               value={String(medio.idMedioPago)}
               // whitespace-normal: el boton base no corta lineas y un nombre largo ("Transferencia (demo)") se salia de la tarjeta
-              className="h-auto min-h-24 w-full flex-col gap-1 rounded-grande border bg-fondo-tarjeta px-3 py-4 whitespace-normal"
+              className="h-auto min-h-24 w-full flex-col gap-1 rounded-grande border border-borde-campo bg-fondo-tarjeta p-contorno whitespace-normal"
             >
               <Icono className="size-6" />
               <span className="text-center font-medium wrap-break-word">{medio.nombre}</span>
               {mostrarAjustes && (
-                <span className="text-sm font-normal text-texto-suave tabular-nums">
+                <span className="text-cuerpo font-normal text-texto-suave tabular-nums">
                   {describirAjusteMedio(medio)}
                 </span>
               )}
@@ -65,16 +65,16 @@ export function GrillaMediosPago({
 
       {/* --- PAGA CON Y VUELTO (SOLO EFECTIVO) --- */}
       {medioSeleccionado?.admiteVuelto && (
-        <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
+        <div className="grid gap-bloque sm:grid-cols-2 sm:items-end">
           <CampoMonto
             idCampo="paga-con"
             etiqueta="Paga con"
             valor={pagaCon}
             onCambiar={onCambiarPagaCon}
           />
-          <p className="flex items-baseline justify-between gap-3">
-            <span className="text-sm text-texto-suave">Vuelto</span>
-            <span className="text-2xl font-bold tabular-nums">
+          <p className="flex items-baseline justify-between gap-interno">
+            <span className="text-cuerpo text-texto-suave">Vuelto</span>
+            <span className="text-cifra-secundaria font-bold tabular-nums">
               {formatearMoneda(vuelto ?? 0)}
             </span>
           </p>

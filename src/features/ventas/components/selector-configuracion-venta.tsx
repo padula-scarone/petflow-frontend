@@ -4,8 +4,8 @@ import type {
   TipoEntrega,
 } from '@/features/ventas/types/venta'
 
-const CLASE_GRUPO = 'rounded-grande border bg-fondo-tarjeta'
-const CLASE_OPCION = 'h-11 flex-1 px-5 sm:flex-none sm:min-w-28'
+const CLASE_GRUPO = 'rounded-grande border border-borde-campo bg-fondo-tarjeta'
+const CLASE_OPCION = 'flex-1 px-4 sm:flex-none sm:min-w-28'
 
 /** Props del selector de canal de venta y tipo de entrega. */
 interface SelectorConfiguracionVentaProps {
@@ -22,10 +22,10 @@ export function SelectorConfiguracionVenta({
   onCambiarEntrega,
 }: SelectorConfiguracionVentaProps) {
   return (
-    <div className="flex flex-col gap-4 md:flex-row md:items-center md:gap-8">
+    <div className="flex flex-col gap-bloque md:flex-row md:items-center">
       {/* --- CANAL --- */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-        <span id="etiqueta-canal" className="text-sm font-medium">
+      <div className="flex flex-col gap-interno sm:flex-row sm:items-center">
+        <span id="etiqueta-canal" className="text-cuerpo font-medium">
           Canal:
         </span>
         <ToggleGroup
@@ -48,8 +48,8 @@ export function SelectorConfiguracionVenta({
       </div>
 
       {/* --- ENTREGA --- */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
-        <span id="etiqueta-entrega" className="text-sm font-medium">
+      <div className="flex flex-col gap-interno sm:flex-row sm:items-center">
+        <span id="etiqueta-entrega" className="text-cuerpo font-medium">
           Entrega:
         </span>
         <ToggleGroup

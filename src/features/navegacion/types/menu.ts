@@ -15,20 +15,20 @@ export interface ModuloMenu {
   secciones: SeccionMenu[]
 }
 
-/** Lado desde el que se despliega el menu de usuario respecto de su boton. */
-export type LadoMenuUsuario = 'top' | 'bottom'
+/** Datos del usuario conectado que muestra el menu de usuario. */
+export interface UsuarioMenu {
+  nombre: string
+  /** Nombre de usuario con el que inicia sesion. */
+  username: string
+  /** Rol ya descrito para mostrar, por ejemplo "Gerente". */
+  rol: string
+  /** Foto de perfil. El back todavia no la tiene: mientras falte se muestran las iniciales. */
+  urlFoto?: string | null
+}
 
-/** Borde del boton con el que se alinea el menu de usuario. */
-export type AlineacionMenuUsuario = 'start' | 'end'
-
-/** Props del menu de usuario: boton con el nombre y menu desplegable. */
+/** Props del menu de usuario: circulo con foto o iniciales y menu desplegable. */
 export interface MenuUsuarioProps {
-  nombreUsuario: string
-  /** Escritorio: 'top' (el boton esta al pie). Mobile: 'bottom' (el boton esta arriba). */
-  ladoMenu: LadoMenuUsuario
-  alineacionMenu: AlineacionMenuUsuario
-  /** El boton ocupa todo el ancho de su contenedor y el menu iguala ese ancho (barra lateral). */
-  anchoCompleto?: boolean
+  usuario: UsuarioMenu
   /** Lleva a la pantalla de perfil del usuario. */
   onAbrirMiPerfil: () => void
   /** Sin confirmacion: se dispara de inmediato. La sesion y la navegacion las resuelve quien lo recibe. */
@@ -40,8 +40,8 @@ export interface MenuDobleProps {
   modulos: ModuloMenu[]
   idModuloActivo: string
   idSeccionActiva: string
-  nombreUsuario: string
-  /** Estado de la caja que se muestra bajo el logo. */
+  usuario: UsuarioMenu
+  /** Estado de la caja: un chip al lado del usuario, arriba a la derecha en celular y en PC. */
   cajaAbierta: boolean
   onSeleccionarModulo: (idModulo: string) => void
   onSeleccionarSeccion: (idSeccion: string) => void

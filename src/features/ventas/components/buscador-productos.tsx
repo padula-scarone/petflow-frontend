@@ -4,7 +4,9 @@ import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { ImagenProducto } from '@/features/ventas/components/imagen-producto'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { useNavegacionSugerencias } from '@/features/ventas/hooks/use-navegacion-sugerencias'
+import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
 
 /** Producto del catalogo que coincide con el texto buscado. */
 export interface ResultadoBuscadorProducto<Identificador extends string | number> {
@@ -20,16 +22,7 @@ export interface ResultadoBuscadorProducto<Identificador extends string | number
   stockDisponible: number
 }
 
-const ETIQUETA_FORMATO = { unidad: 'Unidad', granel: 'Granel' } as const
 
-/** "Categoria · Unidad", o lo que haya de eso; vacio si el resultado no trae ninguno de los dos datos. */
-function describirProducto<Identificador extends string | number>(
-  resultado: ResultadoBuscadorProducto<Identificador>,
-) {
-  return [resultado.categoria, resultado.formato && ETIQUETA_FORMATO[resultado.formato]]
-    .filter(Boolean)
-    .join(' · ')
-}
 
 /** Props del buscador de productos con desplegable de coincidencias. */
 interface BuscadorProductosProps<Identificador extends string | number> {
@@ -130,7 +123,7 @@ export function BuscadorProductos<Identificador extends string | number>({
         autoComplete="off"
         aria-label={etiquetaAccesible}
         placeholder={placeholder}
-        className="h-11 bg-fondo-tarjeta pl-10"
+        className="bg-fondo-tarjeta pl-10"
         value={textoBusqueda}
         {...navegacion.propiedadesCampo}
         onChange={(evento) => {
@@ -147,49 +140,53 @@ export function BuscadorProductos<Identificador extends string | number>({
           // Tocar un sugerido no debe sacar el foco del campo antes del clic: si no, la lista se cierra y el clic se pierde
           onMouseDown={(evento) => evento.preventDefault()}
           className={cn(
-            'max-h-72 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md',
+            'max-h-72 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-flotante',
             modoResultados === 'flotante' ? 'absolute inset-x-0 top-full z-20 mt-1' : 'mt-2',
           )}
         >
           {mostrarSugerencias && tituloSugerencias && (
-            <li className="px-3 pt-2 pb-1 text-xs font-medium text-texto-suave">{tituloSugerencias}</li>
+            <li className="px-3 pt-2 pb-1 text-auxiliar font-medium text-texto-suave">{tituloSugerencias}</li>
           )}
           {resultadosVisibles.length === 0 ? (
-            <li className="px-3 py-3 text-sm text-texto-suave">
+            <li className="px-3 py-3 text-cuerpo text-texto-suave">
               Sin resultados
             </li>
           ) : (
             resultadosVisibles.map((resultado, indiceResultado) => {
               const resultadoSinStock = sinStock(resultado)
-              const detalleProducto = describirProducto(resultado)
               return (
               <li key={resultado.idProducto} role="presentation">
                 <button
                   type="button"
                   disabled={resultadoSinStock}
                   {...navegacion.propiedadesOpcion(indiceResultado)}
-                  className="flex min-h-11 w-full items-center justify-between gap-3 rounded-mediano px-3 py-2 text-left text-sm aria-selected:bg-fondo-seleccion focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
+                  className="flex min-h-control w-full items-center justify-between gap-interno rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60"
                   onClick={() => elegirResultado(resultado)}
                 >
-                  <span className="flex min-w-0 items-center gap-3">
+                  <span className="flex min-w-0 items-center gap-interno">
                     <ImagenProducto
                       urlImagen={resultado.urlImagen}
                       className="size-10"
                     />
                     {/* Nada se corta con puntos suspensivos: lo que no entra pasa al renglon siguiente */}
                     <span className="flex min-w-0 flex-col">
-                      <span className="font-medium tabular-nums">{resultado.nombreProducto}</span>
-                      {detalleProducto !== '' && (
-                        <span className="text-xs text-texto-suave">{detalleProducto}</span>
+                      <span className="font-medium tabular-nums">
+                        <NombreProducto nombre={resultado.nombreProducto} formato={resultado.formato} />
+                      </span>
+                      {resultado.categoria && (
+                        <span className="text-auxiliar text-texto-suave">{resultado.categoria}</span>
                       )}
                     </span>
                   </span>
-                  <span className="flex shrink-0 flex-col items-end text-xs tabular-nums sm:flex-row sm:gap-4">
+                  <span className="flex shrink-0 flex-col items-end text-auxiliar tabular-nums sm:flex-row sm:gap-interno">
                     <span className="font-medium">
                       {formatearMoneda(resultado.precioUnitario)}
                     </span>
                     <span className={resultadoSinStock ? 'font-medium text-peligro' : 'text-texto-suave'}>
-                      {resultadoSinStock ? 'Sin stock' : `Stock: ${resultado.stockDisponible}`}
+                      {/* Con el formato conocido el stock lleva su unidad ("89 u", "73,445 kg"), igual que en el carrito */}
+                      {resultadoSinStock
+                        ? 'Sin stock'
+                        : `Stock: ${resultado.formato ? formatearCantidad(resultado.stockDisponible, resultado.formato) : resultado.stockDisponible}`}
                     </span>
                   </span>
                 </button>

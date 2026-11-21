@@ -5,7 +5,7 @@ import type { CodigoMotivo } from '@/features/ventas/types/historial'
  * Arma el texto de un motivo (1 a 200 caracteres) para el back, que no guarda codigos: con un motivo de la
  * lista se envia su etiqueta y con "Otro" el detalle escrito, recortado. Nunca supera 200: las etiquetas son
  * fijas y cortas, y el detalle ya esta acotado a 200 por el formulario (`esMotivoValido`).
- * Lo usan Ventas (anulacion) y Cambios (alta y anulacion), cada uno con su catalogo de etiquetas.
+ * Lo usan Ventas (anulacion) y Devoluciones (alta y anulacion), cada uno con su catalogo de etiquetas.
  */
 export function construirTextoMotivoConEtiquetas(
   codigoMotivo: string,

@@ -61,7 +61,7 @@ export function HojaFiltrosHistorial({ propiedades }: HojaFiltrosHistorialProps)
       />
       {filtros.estado === 'PENDIENTE_PAGO' && (
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="hoja-cliente" className="text-sm font-medium">
+          <Label htmlFor="hoja-cliente" className="text-cuerpo font-medium">
             Cliente
           </Label>
           <Input
@@ -69,7 +69,7 @@ export function HojaFiltrosHistorial({ propiedades }: HojaFiltrosHistorialProps)
             type="text"
             autoComplete="off"
             placeholder="Buscar por nombre"
-            className="h-11 bg-fondo-tarjeta"
+            className="bg-fondo-tarjeta"
             value={filtros.textoCliente}
             onChange={(evento) => onCambiarFiltros({ textoCliente: evento.target.value })}
           />

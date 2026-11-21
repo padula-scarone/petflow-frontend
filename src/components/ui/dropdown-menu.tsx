@@ -42,7 +42,7 @@ function DropdownMenuContent({
           onPointerDownOutside?.(evento)
         }}
         className={cn(
-          "z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 overflow-x-hidden overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md",
+          "z-50 max-h-(--radix-dropdown-menu-content-available-height) min-w-32 overflow-x-hidden overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-flotante",
           className
         )}
         {...props}
@@ -59,7 +59,7 @@ function DropdownMenuItem({
     <DropdownMenuPrimitive.Item
       data-slot="dropdown-menu-item"
       className={cn(
-        "relative flex min-h-11 cursor-pointer items-center gap-3 whitespace-nowrap rounded-mediano px-3 text-sm outline-none select-none data-disabled:pointer-events-none data-disabled:text-texto-suave data-highlighted:bg-fondo-hover [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        "relative flex min-h-control cursor-pointer items-center gap-interno whitespace-nowrap rounded-mediano px-3 text-cuerpo outline-none select-none data-disabled:pointer-events-none data-disabled:text-texto-suave data-highlighted:bg-fondo-hover [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       {...props}

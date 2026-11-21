@@ -2,6 +2,7 @@ import { Search, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { EtiquetaFiltro, type VarianteFiltro } from '@/features/ventas/components/etiqueta-filtro'
+import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { useNavegacionSugerencias } from '@/features/ventas/hooks/use-navegacion-sugerencias'
 import type { ProductoFiltro } from '@/features/ventas/types/historial'
 
@@ -42,17 +43,17 @@ export function FiltroProducto({
 
       {/* --- PRODUCTO ELEGIDO --- */}
       {productoSeleccionado ? (
-        <div className="flex h-11 items-center justify-between gap-1 rounded-mediano border border-borde-campo bg-fondo-seleccion pl-3">
-          <span id={idCampo} className="truncate text-sm font-medium">
+        <div className="flex h-control items-center justify-between gap-1 rounded-mediano border border-borde-campo bg-fondo-seleccion pl-3">
+          <span id={idCampo} className="truncate text-cuerpo font-medium">
             <span className="sr-only">Producto: </span>
-            {productoSeleccionado.nombreProducto}
+            <NombreProducto nombre={productoSeleccionado.nombreProducto} formato={productoSeleccionado.formato} />
           </span>
           <Button
             type="button"
             variant="ghost"
             size="icon"
             aria-label="Quitar el filtro por producto"
-            className="size-11 shrink-0"
+            className="size-control shrink-0"
             onClick={() => onSeleccionarProducto(null)}
           >
             <X />
@@ -70,7 +71,7 @@ export function FiltroProducto({
             autoComplete="off"
             placeholder="Buscar producto"
             aria-label={variante === 'barra' ? 'Producto' : undefined}
-            className="h-11 bg-fondo-tarjeta pl-10"
+            className="bg-fondo-tarjeta pl-10"
             value={textoBusqueda}
             {...navegacion.propiedadesCampo}
             onChange={(evento) => {
@@ -89,20 +90,20 @@ export function FiltroProducto({
           {desplegableVisible && (
             <ul
               {...navegacion.propiedadesLista}
-              className="absolute inset-x-0 top-full z-20 mt-1 max-h-60 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-md"
+              className="absolute inset-x-0 top-full z-20 mt-1 max-h-60 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-flotante"
             >
               {productosCoincidentes.length === 0 ? (
-                <li className="px-3 py-3 text-sm text-texto-suave">Sin resultados</li>
+                <li className="px-3 py-3 text-cuerpo text-texto-suave">Sin resultados</li>
               ) : (
                 productosCoincidentes.map((producto, indiceProducto) => (
                   <li key={producto.idProducto} role="presentation">
                     <button
                       type="button"
                       {...navegacion.propiedadesOpcion(indiceProducto)}
-                      className="flex min-h-11 w-full items-center rounded-mediano px-3 py-2 text-left text-sm aria-selected:bg-fondo-seleccion focus-visible:outline-none"
+                      className="flex min-h-control w-full items-center rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none"
                       onClick={() => onSeleccionarProducto(producto)}
                     >
-                      {producto.nombreProducto}
+                      <NombreProducto nombre={producto.nombreProducto} formato={producto.formato} />
                     </button>
                   </li>
                 ))

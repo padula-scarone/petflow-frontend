@@ -13,8 +13,8 @@ interface CampoUsuarioProps {
 
 export function CampoUsuario({ username, enviando, error, onCambiarUsername }: CampoUsuarioProps) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor="campo-username" className="text-sm text-texto-suave">
+    <div className="flex flex-col gap-interno">
+      <Label htmlFor="campo-username" className="text-texto-suave">
         Usuario
       </Label>
       <Input
@@ -32,12 +32,12 @@ export function CampoUsuario({ username, enviando, error, onCambiarUsername }: C
         aria-invalid={error ? true : undefined}
         aria-describedby={error ? 'error-username' : undefined}
         readOnly={enviando}
-        className="h-11 bg-fondo-tarjeta"
+        className="bg-fondo-tarjeta"
         value={username}
         onChange={(evento) => onCambiarUsername(evento.target.value)}
       />
       {error && (
-        <p id="error-username" className="text-sm font-medium text-peligro">
+        <p id="error-username" className="text-cuerpo font-medium text-peligro">
           {error}
         </p>
       )}

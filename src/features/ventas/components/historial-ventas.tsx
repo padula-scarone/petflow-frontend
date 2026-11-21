@@ -25,7 +25,7 @@ export function HistorialVentas({
   onCambiarDetalleMotivo,
 }: HistorialVentasProps) {
   return (
-    <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-4">
+    <section className="mx-auto flex w-full max-w-6xl flex-1 flex-col gap-bloque">
       {/* Sin titulo visible: la pestana de la seccion ya dice donde estamos */}
       <h1 className="sr-only">Historial de ventas</h1>
 
@@ -34,7 +34,10 @@ export function HistorialVentas({
           El top negativo compensa ese mismo padding: sticky se mide desde el borde interno, no desde el borde real */}
       {/* En mobile el top suma el alto de la cabecera mientras esta visible (--alto-cabecera, que define el
           layout), asi la barra queda debajo de ella cuando reaparece y sube a 0 cuando se oculta */}
-      <div className="sticky top-[calc(var(--alto-cabecera,0px)-1rem)] z-20 -mx-4 -mt-4 bg-fondo-pagina px-4 pt-2 pb-2 transition-[top] lg:pt-4 lg:pb-3 duration-200 motion-reduce:transition-none lg:-top-4 xl:-top-8 xl:-mx-8 xl:-mt-8 xl:px-8 xl:pt-8">
+      {/* La barra queda metida bajo el aire inferior de la cabecera (su margen negativo), asi la separacion con las
+          pestanas sigue siendo un contorno. Por eso el top resta un contorno mas, sin pasar de 0 cuando la cabecera
+          se oculta: ahi la barra pega al borde con su propio relleno */}
+      <div className="sticky top-[max(calc(var(--spacing-contorno)*-1),calc(var(--alto-cabecera,0px)-var(--spacing-contorno)*2))] z-20 -mx-contorno -mt-contorno bg-fondo-pagina px-contorno pt-contorno pb-interno transition-[top] duration-200 motion-reduce:transition-none">
         <PanelFiltrosHistorial propiedades={propiedadesFiltros} estadoLista={estadoLista} />
       </div>
 

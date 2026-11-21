@@ -12,12 +12,12 @@ export function CampoClienteFiado({
   onCambiarNombreCliente,
 }: CampoClienteFiadoProps) {
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-sm text-texto-suave">
+    <div className="flex flex-col gap-bloque">
+      <p className="text-cuerpo text-texto-suave">
         El fiado no ingresa a la caja: queda como deuda del cliente hasta que la liquide.
       </p>
       <div className="flex flex-col gap-1.5">
-        <Label htmlFor="nombre-cliente-fiado" className="text-sm text-texto-suave">
+        <Label htmlFor="nombre-cliente-fiado" className="text-cuerpo text-texto-suave">
           Nombre del cliente
         </Label>
         <Input
@@ -26,7 +26,7 @@ export function CampoClienteFiado({
           required
           maxLength={80}
           autoComplete="off"
-          className="h-11 bg-fondo-tarjeta"
+          className="bg-fondo-tarjeta"
           value={nombreCliente}
           onChange={(evento) => onCambiarNombreCliente(evento.target.value)}
         />

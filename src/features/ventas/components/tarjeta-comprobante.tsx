@@ -3,7 +3,6 @@ import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
-import { AjustesComprobante } from '@/features/ventas/components/ajustes-comprobante'
 import { DetalleProductosComprobante } from '@/features/ventas/components/detalle-productos-comprobante'
 import { PagosComprobante } from '@/features/ventas/components/pagos-comprobante'
 import { TotalesComprobante } from '@/features/ventas/components/totales-comprobante'
@@ -18,18 +17,18 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
   const cobrada = comprobante.estado === 'completada'
 
   return (
-    <Card className="gap-5 p-4 shadow-none sm:p-6">
+    <Card className="gap-bloque p-contorno">
       {/* --- ENCABEZADO --- */}
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-bloque">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <div className="min-w-0">
-            <p className="text-sm text-texto-suave">Comprobante</p>
-            <p className="text-xl font-bold tabular-nums">{comprobante.numeroComprobante}</p>
+            <p className="text-cuerpo text-texto-suave">Comprobante</p>
+            <p className="text-titulo-pagina font-bold tabular-nums">{comprobante.numeroComprobante}</p>
           </div>
           <Badge
             variant="outline"
             className={cn(
-              'h-7 px-3 text-sm',
+              'h-7 px-3 text-cuerpo',
               cobrada ? 'text-green-700' : 'text-amber-700',
             )}
           >
@@ -37,14 +36,12 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
           </Badge>
         </div>
 
-        <dl className="grid grid-cols-2 gap-x-4 gap-y-3 text-sm sm:grid-cols-3">
-          <div>
-            <dt className="text-texto-suave">Fecha y hora</dt>
+        {/* Dos columnas, una por lado de la venta, igual que en el detalle del Historial: a la izquierda lo de quien
+            vende (canal, vendedor) y a la derecha lo del cliente (entrega, cliente). La fecha va sola, a todo el ancho */}
+        <dl className="grid grid-cols-2 gap-x-bloque gap-y-interno text-cuerpo">
+          <div className="col-span-2">
+            <dt className="text-texto-suave">Fecha de la venta</dt>
             <dd className="font-medium tabular-nums">{formatearFechaHora(comprobante.fechaHora)}</dd>
-          </div>
-          <div>
-            <dt className="text-texto-suave">Vendedor</dt>
-            <dd className="font-medium">{comprobante.nombreVendedor}</dd>
           </div>
           <div>
             <dt className="text-texto-suave">Canal</dt>
@@ -55,6 +52,10 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
           <div>
             <dt className="text-texto-suave">Entrega</dt>
             <dd className="font-medium">{comprobante.tipoEntrega === 'retiro' ? 'Retiro' : 'Envío'}</dd>
+          </div>
+          <div>
+            <dt className="text-texto-suave">Vendedor</dt>
+            <dd className="font-medium">{comprobante.nombreVendedor}</dd>
           </div>
           {comprobante.clienteReferencia !== null && (
             <div className="min-w-0">
@@ -72,21 +73,16 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
 
       <Separator />
 
-      {/* --- DESCUENTOS --- */}
-      <AjustesComprobante comprobante={comprobante} />
+      {/* --- RESUMEN: SUBTOTAL, DESCUENTOS Y RECARGOS, Y TOTAL (O DEUDA EN UN FIADO) --- */}
+      <TotalesComprobante comprobante={comprobante} />
 
-      <Separator />
-
-      {/* --- TOTALES --- */}
-      <TotalesComprobante
-        subtotalProductos={comprobante.subtotalProductos}
-        montoTotal={comprobante.montoTotal}
-      />
-
-      <Separator />
-
-      {/* --- MEDIOS DE PAGO (O DEUDA EN UN FIADO) --- */}
-      <PagosComprobante comprobante={comprobante} />
+      {/* --- MEDIOS DE PAGO: UN FIADO TODAVIA NO TIENE --- */}
+      {comprobante.estado === 'completada' && (
+        <>
+          <Separator />
+          <PagosComprobante comprobante={comprobante} />
+        </>
+      )}
     </Card>
   )
 }

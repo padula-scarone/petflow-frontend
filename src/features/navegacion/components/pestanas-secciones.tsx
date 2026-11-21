@@ -16,11 +16,12 @@ export function PestanasSecciones({
 }: PestanasSeccionesProps) {
   return (
     // Si no entran en pantalla se desplazan en horizontal en lugar de romper el layout.
-    // El margen lateral es relleno de la propia nav (px-4) y no del contenedor: asi la zona que se
-    // desplaza llega hasta el borde de la pantalla y las pestanas se cortan ahi, no 16 px antes
+    // El margen lateral es relleno de la propia nav (px-contorno) y no del contenedor: asi la zona que se
+    // desplaza llega hasta el borde de la pantalla y las pestanas se cortan ahi, no un contorno antes.
+    // En PC el mismo relleno las alinea con el contenido de la pagina
     <nav
       aria-label="Secciones"
-      className="sin-barra-desplazamiento flex gap-2 overflow-x-auto px-4"
+      className="sin-barra-desplazamiento flex gap-interno overflow-x-auto px-contorno"
     >
       {secciones.map((seccion) => {
         const activa = seccion.idSeccion === idSeccionActiva
@@ -31,7 +32,7 @@ export function PestanasSecciones({
             variant="ghost"
             aria-current={activa ? 'page' : undefined}
             className={cn(
-              'h-11 shrink-0 rounded-full border px-5',
+              'shrink-0 rounded-full border border-borde-campo',
               activa ? 'bg-fondo-seleccion font-medium hover:bg-fondo-seleccion' : 'bg-fondo-tarjeta font-normal',
             )}
             onClick={() => onSeleccionarSeccion(seccion.idSeccion)}

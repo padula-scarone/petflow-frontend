@@ -7,14 +7,15 @@ interface IndicadorCajaProps {
 }
 
 /**
- * Estado de la caja en una linea: punto de color y texto. El texto lleva el significado; el color
- * solo lo refuerza, para que no dependa de distinguir colores ni se lea como una notificacion.
+ * Estado de la caja como un chip, al lado del usuario: los dos son datos del puesto de trabajo. Punto de color y
+ * texto; el texto lleva el significado y el color solo lo refuerza, para que no dependa de distinguir colores ni se
+ * lea como una notificacion. Tiene la forma de las insignias de estado.
  */
 export function IndicadorCaja({ cajaAbierta, className }: IndicadorCajaProps) {
   return (
     <p
       className={cn(
-        'flex items-center gap-1.5 text-xs leading-none font-medium whitespace-nowrap text-texto-suave',
+        'inline-flex h-7 shrink-0 items-center gap-1.5 rounded-full border bg-fondo-tarjeta px-3 text-cuerpo font-medium whitespace-nowrap',
         className,
       )}
     >
