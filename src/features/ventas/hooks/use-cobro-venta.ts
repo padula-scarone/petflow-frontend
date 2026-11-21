@@ -4,6 +4,7 @@ import {
   MONTO_RECIBIDO_MAXIMO_CENTAVOS,
   MOTIVO_DESCUENTO_LONGITUD_MAXIMA,
 } from '@/features/ventas/config/reglas-venta'
+import { MOTIVO_ELEGIR_MEDIO_PAGO } from '@/features/ventas/config/mensajes-error-venta'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import type { BorradorRepoblado } from '@/features/ventas/types/borrador-repoblado'
 import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
@@ -259,7 +260,7 @@ export function useCobroVenta({
       if (baseCentavos <= 0) return 'El descuento deja el total en cero: no hay nada para cobrar'
     }
     if (formaPago === 'unico') {
-      if (!medioUnico) return 'Elegí un medio de pago'
+      if (!medioUnico) return MOTIVO_ELEGIR_MEDIO_PAGO
       if (medioUnico.admiteVuelto && pagaConCentavos !== null) {
         if (pagaConCentavos < totalCentavos) return 'El monto con el que paga no cubre el total'
         if (pagaConCentavos > MONTO_RECIBIDO_MAXIMO_CENTAVOS) {
