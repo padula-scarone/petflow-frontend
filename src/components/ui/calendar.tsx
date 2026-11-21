@@ -19,23 +19,23 @@ function Calendar({
       className={cn("w-fit", className)}
       classNames={{
         [UI.Root]: "relative w-fit",
-        [UI.Months]: "relative flex flex-col gap-4",
+        [UI.Months]: "relative flex flex-col gap-bloque",
         [UI.Month]: "flex flex-col gap-1",
-        [UI.MonthCaption]: "flex h-11 items-center justify-center px-12",
-        [UI.CaptionLabel]: "text-sm font-bold capitalize",
-        [UI.Nav]: "absolute inset-x-0 top-0 z-10 flex h-11 items-center justify-between",
+        [UI.MonthCaption]: "flex h-control items-center justify-center px-12",
+        [UI.CaptionLabel]: "text-cuerpo font-bold capitalize",
+        [UI.Nav]: "absolute inset-x-0 top-0 z-10 flex h-control items-center justify-between",
         [UI.PreviousMonthButton]:
-          "flex size-11 items-center justify-center rounded-mediano outline-none hover:bg-fondo-hover focus-visible:ring-[3px] focus-visible:ring-foco/50",
+          "flex size-control items-center justify-center rounded-mediano outline-none hover:bg-fondo-hover focus-visible:ring-[3px] focus-visible:ring-foco/50",
         [UI.NextMonthButton]:
-          "flex size-11 items-center justify-center rounded-mediano outline-none hover:bg-fondo-hover focus-visible:ring-[3px] focus-visible:ring-foco/50",
+          "flex size-control items-center justify-center rounded-mediano outline-none hover:bg-fondo-hover focus-visible:ring-[3px] focus-visible:ring-foco/50",
         [UI.Chevron]: "size-4 fill-current",
         [UI.MonthGrid]: "w-full border-collapse",
         [UI.Weekdays]: "flex",
-        [UI.Weekday]: "flex size-11 items-center justify-center text-xs font-medium text-texto-suave capitalize",
+        [UI.Weekday]: "flex size-control items-center justify-center text-auxiliar font-medium text-texto-suave capitalize",
         [UI.Week]: "flex",
-        [UI.Day]: "size-11 p-0 text-center text-sm",
+        [UI.Day]: "size-control p-0 text-center text-cuerpo",
         [UI.DayButton]:
-          "size-11 rounded-mediano tabular-nums outline-none hover:bg-fondo-hover focus-visible:ring-[3px] focus-visible:ring-foco/50",
+          "size-control rounded-mediano tabular-nums outline-none hover:bg-fondo-hover focus-visible:ring-[3px] focus-visible:ring-foco/50",
         [SelectionState.range_start]: "rounded-l-mediano bg-primario",
         [SelectionState.range_middle]: "bg-fondo-seleccion",
         [SelectionState.range_end]: "rounded-r-mediano bg-primario",

@@ -69,6 +69,76 @@ input::-ms-clear {
   --radius-mediano: 0.375rem;
   --radius-grande: 0.5rem;
   --radius-extragrande: 0.75rem;
+
+  /* --- SISTEMA DE TAMANOS --- */
+  /* Cada rol tiene un valor para celular (aca) y otro para PC (mas abajo, desde lg). Los componentes usan
+     el nombre del rol y no repiten el cambio de tamano. El punto de cambio es lg (1024 px), el mismo donde el
+     menu pasa de barra inferior a barra lateral. */
+
+  /* Espaciado. Los nombres sirven en cualquier clase de espacio: p-contorno, gap-bloque, h-control, -mx-contorno.
+     Para espacios de hasta 8 px dentro de un mismo componente (icono y texto, filas muy juntas) se sigue usando
+     la escala numerica de Tailwind: ahi el valor no debe crecer en PC. */
+  /* contorno: relleno de todo contenedor (pagina, tarjeta, barra, dialogo). */
+  --spacing-contorno: 0.75rem;
+  /* bloque: separacion entre bloques hermanos (tarjetas, secciones de una pagina, de una tarjeta o de un dialogo). */
+  --spacing-bloque: 1rem;
+  /* interno: separacion entre elementos de un mismo grupo (etiqueta y control, filas de una lista, botones contiguos). */
+  --spacing-interno: 0.5rem;
+  /* control: alto de todo lo que se toca o se escribe (boton, pestana, toggle, campo, selector). */
+  --spacing-control: 2.5rem;
+  /* accion: alto de la accion principal de una pantalla (COBRAR, CONFIRMAR). */
+  --spacing-accion: 3rem;
+
+  /* Tipografia: tamano (--text-X) e interlineado (--text-X--line-height). El peso va aparte y solo hay tres:
+     font-normal para texto corrido, font-medium para etiquetas y enfasis leve, font-bold para titulos y cifras. */
+  /* cifra-principal: el total que se cobra. Negrita. */
+  --text-cifra-principal: 1.5rem;
+  --text-cifra-principal--line-height: 2rem;
+  /* titulo-pagina: titulo de una pantalla. Negrita. */
+  --text-titulo-pagina: 1.25rem;
+  --text-titulo-pagina--line-height: 1.75rem;
+  /* cifra-secundaria: totales de tarjetas y pies, vuelto, saldo, subtotal. Negrita. */
+  --text-cifra-secundaria: 1.125rem;
+  --text-cifra-secundaria--line-height: 1.75rem;
+  /* titulo-seccion: titulo de una tarjeta, seccion o dialogo. Negrita. */
+  --text-titulo-seccion: 1rem;
+  --text-titulo-seccion--line-height: 1.5rem;
+  /* accion: texto de la accion principal. Negrita. */
+  --text-accion: 1rem;
+  --text-accion--line-height: 1.5rem;
+  /* campo: texto dentro de un campo. En celular 16 px: con menos, Safari de iPhone hace zoom al tocarlo. */
+  --text-campo: 1rem;
+  --text-campo--line-height: 1.5rem;
+  /* cuerpo: contenido, etiquetas, botones, pestanas, toggles y valores de listas. Normal o medio. */
+  --text-cuerpo: 0.875rem;
+  --text-cuerpo--line-height: 1.25rem;
+  /* auxiliar: ayudas, metadatos, contadores. Normal. */
+  --text-auxiliar: 0.75rem;
+  --text-auxiliar--line-height: 1rem;
+}
+
+/* Valores de PC de los roles que cambian. Control, accion, cuerpo y auxiliar son iguales en celular y en PC:
+   con mouse y pantalla grande el contenido gana densidad, no tamano. Se redefinen en :root, sin capa, y por eso
+   pisan a los de @theme. */
+@media (min-width: 64rem) {
+  :root {
+    --spacing-contorno: 1.5rem;
+    --spacing-bloque: 1.5rem;
+    --spacing-interno: 0.75rem;
+
+    --text-cifra-principal: 1.875rem;
+    --text-cifra-principal--line-height: 2.25rem;
+    --text-titulo-pagina: 1.5rem;
+    --text-titulo-pagina--line-height: 2rem;
+    --text-cifra-secundaria: 1.25rem;
+    --text-cifra-secundaria--line-height: 1.75rem;
+    --text-titulo-seccion: 1.125rem;
+    --text-titulo-seccion--line-height: 1.75rem;
+    --text-accion: 1.125rem;
+    --text-accion--line-height: 1.75rem;
+    --text-campo: 0.875rem;
+    --text-campo--line-height: 1.25rem;
+  }
 }
 
 @layer base {
