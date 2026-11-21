@@ -12,7 +12,7 @@ export function MenuDoble({
   modulos,
   idModuloActivo,
   idSeccionActiva,
-  nombreUsuario,
+  usuario,
   cajaAbierta,
   onSeleccionarModulo,
   onSeleccionarSeccion,
@@ -45,23 +45,26 @@ export function MenuDoble({
       <BarraLateralModulos
         modulos={modulos}
         idModuloActivo={idModuloActivo}
-        nombreUsuario={nombreUsuario}
-        cajaAbierta={cajaAbierta}
         onSeleccionarModulo={onSeleccionarModulo}
-        onAbrirMiPerfil={onAbrirMiPerfil}
-        onCerrarSesion={onCerrarSesion}
       />
 
-      {/* --- CABECERA DE ESCRITORIO: SOLO LAS SECCIONES, SIEMPRE A LA VISTA --- */}
-      {/* El logo y el usuario viven en la barra lateral; en mobile la cabecera esta dentro del contenido */}
-      <header className="hidden shrink-0 lg:ml-60 lg:flex lg:flex-col lg:pt-contorno">
-        {seccionesDelModulo.length > 0 && (
-          <PestanasSecciones
-            secciones={seccionesDelModulo}
-            idSeccionActiva={idSeccionActiva}
-            onSeleccionarSeccion={onSeleccionarSeccion}
-          />
-        )}
+      {/* --- CABECERA DE ESCRITORIO: SECCIONES, ESTADO DE LA CAJA Y USUARIO, SIEMPRE A LA VISTA --- */}
+      {/* El logo vive en la barra lateral; la caja y el usuario van arriba a la derecha, en el mismo lugar que en
+          celular. En mobile la cabecera esta dentro del contenido */}
+      <header className="hidden shrink-0 lg:ml-60 lg:flex lg:items-center lg:pt-contorno lg:pr-contorno">
+        <div className="min-w-0 flex-1">
+          {seccionesDelModulo.length > 0 && (
+            <PestanasSecciones
+              secciones={seccionesDelModulo}
+              idSeccionActiva={idSeccionActiva}
+              onSeleccionarSeccion={onSeleccionarSeccion}
+            />
+          )}
+        </div>
+        <div className="flex shrink-0 items-center gap-interno">
+          <IndicadorCaja cajaAbierta={cajaAbierta} />
+          <MenuUsuario usuario={usuario} onAbrirMiPerfil={onAbrirMiPerfil} onCerrarSesion={onCerrarSesion} />
+        </div>
       </header>
 
       {/* --- CONTENIDO (UNICA ZONA CON SCROLL) --- */}
@@ -88,21 +91,12 @@ export function MenuDoble({
           )}
         >
           <div className="flex items-center justify-between gap-interno border-b bg-fondo-tarjeta p-contorno">
-            {/* Logo con interlineado ajustado y el estado de la caja debajo, separado para que no se
-                lea como parte del logo: 24 + 4 + 12 = 40 px, justo el alto del boton de usuario
-                (un control), asi que la cabecera no crece */}
-            <div className="flex shrink-0 flex-col gap-1">
-              <p className="text-logo font-bold">PetFlow</p>
+            <p className="shrink-0 text-logo font-bold">PetFlow</p>
+            {/* El estado de la caja y el usuario juntos, igual que en PC: los dos son datos del puesto de trabajo */}
+            <div className="flex min-w-0 items-center gap-interno">
               <IndicadorCaja cajaAbierta={cajaAbierta} />
+              <MenuUsuario usuario={usuario} onAbrirMiPerfil={onAbrirMiPerfil} onCerrarSesion={onCerrarSesion} />
             </div>
-            {/* El menu sale hacia abajo y se alinea al borde derecho del boton */}
-            <MenuUsuario
-              nombreUsuario={nombreUsuario}
-              ladoMenu="bottom"
-              alineacionMenu="end"
-              onAbrirMiPerfil={onAbrirMiPerfil}
-              onCerrarSesion={onCerrarSesion}
-            />
           </div>
           {seccionesDelModulo.length > 0 && (
             <div className="pt-contorno">

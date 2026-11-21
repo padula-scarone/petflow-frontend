@@ -1,6 +1,7 @@
 import { Outlet, useLocation } from 'react-router'
 import { useCerrarSesion } from '@/features/auth/hooks/use-cerrar-sesion'
 import { useUsuarioSesion } from '@/features/auth/hooks/use-usuario-sesion'
+import { describirRol } from '@/features/auth/utils/describir-rol'
 import { useEstadoCaja } from '@/features/caja/hooks/use-estado-caja'
 import { MenuDoble } from '@/features/navegacion/components/menu-doble'
 import { MODULOS_MENU } from '@/features/navegacion/config/modulos-menu'
@@ -20,7 +21,7 @@ export function LayoutMenu() {
       modulos={MODULOS_MENU}
       idModuloActivo={idModuloActivo}
       idSeccionActiva={idSeccionActiva}
-      nombreUsuario={usuario.nombre}
+      usuario={{ nombre: usuario.nombre, username: usuario.username, rol: describirRol(usuario.rol) }}
       cajaAbierta={cajaAbierta}
       onSeleccionarModulo={seleccionarModulo}
       onSeleccionarSeccion={seleccionarSeccion}
