@@ -6,6 +6,7 @@ import { formatearMoneda } from '@/lib/formatear-moneda'
 import { ImagenProducto } from '@/features/ventas/components/imagen-producto'
 import { NombreProducto } from '@/features/ventas/components/nombre-producto'
 import { useNavegacionSugerencias } from '@/features/ventas/hooks/use-navegacion-sugerencias'
+import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
 
 /** Producto del catalogo que coincide con el texto buscado. */
 export interface ResultadoBuscadorProducto<Identificador extends string | number> {
@@ -182,7 +183,10 @@ export function BuscadorProductos<Identificador extends string | number>({
                       {formatearMoneda(resultado.precioUnitario)}
                     </span>
                     <span className={resultadoSinStock ? 'font-medium text-peligro' : 'text-texto-suave'}>
-                      {resultadoSinStock ? 'Sin stock' : `Stock: ${resultado.stockDisponible}`}
+                      {/* Con el formato conocido el stock lleva su unidad ("89 u", "73,445 kg"), igual que en el carrito */}
+                      {resultadoSinStock
+                        ? 'Sin stock'
+                        : `Stock: ${resultado.formato ? formatearCantidad(resultado.stockDisponible, resultado.formato) : resultado.stockDisponible}`}
                     </span>
                   </span>
                 </button>
