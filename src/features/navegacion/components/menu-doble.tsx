@@ -37,8 +37,10 @@ export function MenuDoble({
   }, [idModuloActivo, idSeccionActiva, claveContenido])
 
   return (
-    // La pantalla ocupa exactamente el alto visible: solo el contenido hace scroll
-    <div className="flex h-dvh flex-col overflow-hidden bg-fondo-pagina">
+    // La pantalla ocupa exactamente el alto visible: solo el contenido hace scroll. relative: lo que esta posicionado
+    // en absoluto (como los textos sr-only de las tablas) toma este contenedor como referencia; sin eso su
+    // referencia es la ventana, el overflow-hidden no lo recorta y alarga el documento: aparece una segunda barra
+    <div className="relative flex h-dvh flex-col overflow-hidden bg-fondo-pagina">
       {/* --- BARRA LATERAL (ESCRITORIO) --- */}
       <BarraLateralModulos
         modulos={modulos}
@@ -68,7 +70,7 @@ export function MenuDoble({
         // Las pantallas con elementos fijos arriba (como los filtros del Historial) se acomodan debajo
         // de la cabecera con esta variable: vale su alto mientras se ve y 0 cuando se oculta
         style={{ '--alto-cabecera': `${cabeceraVisible ? altoCabecera : 0}px` } as CSSProperties}
-        className="flex min-h-0 flex-1 flex-col overflow-y-auto p-contorno lg:ml-60"
+        className="relative flex min-h-0 flex-1 flex-col overflow-y-auto p-contorno lg:ml-60"
       >
         {/* --- CABECERA DE MOBILE: LOGO, USUARIO Y SECCIONES --- */}
         {/* Va dentro del area con scroll y se oculta al bajar; reaparece apenas se sube un poco.
