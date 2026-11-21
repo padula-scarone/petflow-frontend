@@ -1,7 +1,7 @@
 import { useEffect, useRef, type CSSProperties } from 'react'
 import { cn } from '@/lib/utils'
 import { IndicadorCaja } from '@/features/caja/components/indicador-caja'
-import { useCabeceraDesplazable } from '@/features/navegacion/hooks/use-cabecera-desplazable'
+import { useBarrasDesplazables } from '@/features/navegacion/hooks/use-barras-desplazables'
 import { BarraInferiorModulos } from '@/features/navegacion/components/barra-inferior-modulos'
 import { BarraLateralModulos } from '@/features/navegacion/components/barra-lateral-modulos'
 import { MenuUsuario } from '@/features/navegacion/components/menu-usuario'
@@ -26,7 +26,7 @@ export function MenuDoble({
     cabeceraRef,
     visible: cabeceraVisible,
     altoCabecera,
-  } = useCabeceraDesplazable(contenidoRef)
+  } = useBarrasDesplazables(contenidoRef)
   const seccionesDelModulo =
     modulos.find((modulo) => modulo.idModulo === idModuloActivo)?.secciones ?? []
 

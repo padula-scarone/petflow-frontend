@@ -12,8 +12,8 @@ const UMBRAL_MOSTRAR = 8
  */
 const PAUSA_TRANSICION = 300
 
-/** Lo que devuelve el hook de la cabecera que se oculta al bajar y reaparece al subir. */
-interface CabeceraDesplazable {
+/** Lo que devuelve el hook de la cabecera y la barra inferior que se ocultan al bajar y reaparecen al subir. */
+interface BarrasDesplazables {
   /** Asignar al elemento de la cabecera: se mide su alto y se la saca del foco cuando esta oculta. */
   cabeceraRef: RefObject<HTMLDivElement | null>
   visible: boolean
@@ -27,9 +27,9 @@ interface CabeceraDesplazable {
  * visible cerca del principio del contenido.
  * @param contenidoRef Elemento con el scroll.
  */
-export function useCabeceraDesplazable(
+export function useBarrasDesplazables(
   contenidoRef: RefObject<HTMLElement | null>,
-): CabeceraDesplazable {
+): BarrasDesplazables {
   // --- ESTADOS ---
   const cabeceraRef = useRef<HTMLDivElement>(null)
   const [visible, setVisible] = useState(true)
