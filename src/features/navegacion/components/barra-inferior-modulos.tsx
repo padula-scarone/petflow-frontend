@@ -26,7 +26,7 @@ export function BarraInferiorModulos({
             key={modulo.idModulo}
             type="button"
             aria-current={activo ? 'page' : undefined}
-            className="flex h-control min-w-control flex-auto flex-col items-center justify-center gap-1 px-0.5 text-auxiliar leading-none outline-none focus-visible:bg-fondo-hover sm:flex-1"
+            className="flex h-control min-w-control flex-auto flex-col items-center justify-center gap-1 px-1 text-menu outline-none focus-visible:bg-fondo-hover sm:flex-1"
             onClick={() => onSeleccionarModulo(modulo.idModulo)}
           >
             <span

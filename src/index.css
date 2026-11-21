@@ -121,6 +121,10 @@ input::-ms-clear {
   /* logo: la marca "PetFlow". Negrita. Igual en celular y en PC. */
   --text-logo: 1.5rem;
   --text-logo--line-height: 1;
+  /* menu: las etiquetas de la barra inferior del celular. Mas chico que auxiliar a proposito: con seis modulos y
+     320 px de ancho, a 12 px o 11 px las etiquetas quedan pegadas. Solo se usa ahi. Igual en celular y en PC. */
+  --text-menu: 0.625rem;
+  --text-menu--line-height: 1;
   /* decorativo: el "404". Negrita. Igual en celular y en PC. */
   --text-decorativo: 3.75rem;
   --text-decorativo--line-height: 1;
