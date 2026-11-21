@@ -1,6 +1,12 @@
+import { useState } from 'react'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
+import {
+  formatearMontoParaCampo,
+  limpiarTextoMonto,
+  parsearTextoMonto,
+} from '@/features/ventas/utils/texto-monto'
 
 /** Props de un campo para ingresar un monto en pesos. */
 interface CampoMontoProps {
@@ -19,6 +25,15 @@ export function CampoMonto({
   onCambiar,
   className,
 }: CampoMontoProps) {
+  // Se guarda lo tipeado aparte del numero: "12," tiene que seguir viendose como "12," mientras se escribe
+  const [texto, setTexto] = useState(formatearMontoParaCampo(valor))
+  const [valorPrevio, setValorPrevio] = useState(valor)
+  // Si el valor cambia desde afuera (por ejemplo al completar con lo que falta), el campo lo muestra
+  if (valor !== valorPrevio) {
+    setValorPrevio(valor)
+    if (parsearTextoMonto(texto) !== valor) setTexto(formatearMontoParaCampo(valor))
+  }
+
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <Label htmlFor={idCampo} className="text-sm text-texto-suave">
@@ -34,15 +49,19 @@ export function CampoMonto({
         <Input
           id={idCampo}
           type="text"
-          inputMode="numeric"
+          inputMode="decimal"
           autoComplete="off"
           className="h-11 bg-fondo-tarjeta pl-7 tabular-nums"
-          value={valor ?? ''}
-          // Solo digitos: el monto se maneja como entero, sin decimales
+          value={texto}
           onChange={(evento) => {
-            const soloDigitos = evento.target.value.replace(/\D/g, '')
-            onCambiar(soloDigitos === '' ? null : Number(soloDigitos))
+            const textoLimpio = limpiarTextoMonto(evento.target.value)
+            const monto = parsearTextoMonto(textoLimpio)
+            setTexto(textoLimpio)
+            setValorPrevio(monto)
+            onCambiar(monto)
           }}
+          // Al salir del campo se completan los decimales: "1500" queda "1500,00"
+          onBlur={() => setTexto(formatearMontoParaCampo(parsearTextoMonto(texto)))}
         />
       </div>
     </div>

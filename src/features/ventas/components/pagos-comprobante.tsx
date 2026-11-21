@@ -44,16 +44,23 @@ export function PagosComprobante({ comprobante }: PagosComprobanteProps) {
               <span className="font-bold tabular-nums">{formatearMoneda(pago.montoFinal)}</span>
             </p>
             {pago.montoAjuste !== 0 && (
-              <p className="text-sm text-texto-suave tabular-nums">
-                Parte del total: {formatearMoneda(pago.montoBase)}
+              <p className="flex justify-between gap-3 text-sm text-texto-suave">
+                <span>Parte del total</span>
+                <span className="tabular-nums">{formatearMoneda(pago.montoBase)}</span>
               </p>
             )}
             {/* Sin "Paga con" el back no registra recibido ni vuelto: no hay nada que mostrar */}
             {pago.admiteVuelto && pago.montoRecibido !== null && pago.vuelto !== null && (
-              <p className="flex flex-wrap justify-between gap-x-3 text-sm text-texto-suave tabular-nums">
-                <span>Recibido: {formatearMoneda(pago.montoRecibido)}</span>
-                <span>Vuelto: {formatearMoneda(pago.vuelto)}</span>
-              </p>
+              <>
+                <p className="flex justify-between gap-3 text-sm text-texto-suave">
+                  <span>Recibido</span>
+                  <span className="tabular-nums">{formatearMoneda(pago.montoRecibido)}</span>
+                </p>
+                <p className="flex justify-between gap-3 text-sm text-texto-suave">
+                  <span>Vuelto</span>
+                  <span className="tabular-nums">{formatearMoneda(pago.vuelto)}</span>
+                </p>
+              </>
             )}
           </li>
         ))}

@@ -72,7 +72,7 @@ export function GrillaMediosPago({
             valor={pagaCon}
             onCambiar={onCambiarPagaCon}
           />
-          <p className="flex flex-col">
+          <p className="flex items-baseline justify-between gap-3">
             <span className="text-sm text-texto-suave">Vuelto</span>
             <span className="text-2xl font-bold tabular-nums">
               {formatearMoneda(vuelto ?? 0)}

@@ -1,6 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatearMoneda } from '@/lib/formatear-moneda'
+import { MOTIVO_ELEGIR_MEDIO_PAGO } from '@/features/ventas/config/mensajes-error-venta'
 import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-venta'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
 import { EstadoCobertura } from '@/features/ventas/components/estado-cobertura'
@@ -112,7 +113,7 @@ export function RegistrarVentaCobro({
 
       {/* --- FOOTER CONFIRMAR (MOBILE) --- */}
       {/* Mismo patron que la Seccion 1: pegado al borde inferior del area con scroll */}
-      <footer className="sticky -bottom-4 z-10 mt-auto -mx-4 -mb-4 flex flex-col gap-2 border-t bg-fondo-tarjeta p-4 xl:hidden">
+      <footer className="sticky -bottom-4 z-10 mt-auto -mx-4 -mb-4 flex flex-col gap-2 border-t bg-fondo-tarjeta px-4 py-3 xl:hidden">
         {/* El estado va en su propia linea: dentro de la columna del total ensancharia y desbordaria el boton */}
         {formaPago === 'mixto' && (
           <EstadoCobertura
@@ -122,7 +123,8 @@ export function RegistrarVentaCobro({
           />
         )}
         <EstadoEnvioCobro estadoEnvio={estadoEnvio} />
-        {motivoNoConfirmable && !puedeConfirmar && (
+        {/* Sin medio elegido el boton bloqueado ya lo dice: el texto solo estorba en la pantalla chica */}
+        {motivoNoConfirmable && motivoNoConfirmable !== MOTIVO_ELEGIR_MEDIO_PAGO && !puedeConfirmar && (
           <p role="status" className="text-xs text-amber-700 tabular-nums">
             {motivoNoConfirmable}
           </p>

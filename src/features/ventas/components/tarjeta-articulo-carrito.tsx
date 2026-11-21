@@ -89,14 +89,15 @@ export function TarjetaArticuloCarrito({
           el ancho. Es el mismo orden que en PC. Desde sm todo vuelve a ir en una fila (el orden del DOM) */}
       <div className="flex flex-wrap justify-between gap-x-3 gap-y-3 sm:items-center sm:justify-start sm:gap-y-2 xl:contents">
         {/* El stock siempre a la vista: asi se sabe cuanto se puede agregar antes de que salte el aviso */}
-        <div className="order-1 flex flex-col sm:order-0 xl:w-24">
+        {/* Desde xl stock y precio son columnas de cifras: van a la derecha, con su etiqueta */}
+        <div className="order-1 flex flex-col sm:order-0 xl:w-24 xl:items-end">
           <span className="text-xs whitespace-nowrap text-texto-suave">Stock</span>
           <span className="tabular-nums">
             {formatearCantidad(articulo.stockDisponible, articulo.formato)}
           </span>
         </div>
 
-        <div className="order-2 flex flex-col sm:order-0 xl:w-28">
+        <div className="order-2 flex flex-col sm:order-0 xl:w-28 xl:items-end">
           <span className="text-xs whitespace-nowrap text-texto-suave">
             {esGranel ? 'Precio por kg' : 'Precio unidad'}
           </span>

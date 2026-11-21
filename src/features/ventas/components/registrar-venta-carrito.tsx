@@ -112,7 +112,7 @@ export function RegistrarVentaCarrito({
 
       {/* --- FOOTER COBRO --- */}
       {/* En mobile queda pegado al borde inferior del area con scroll; -bottom-4 y los margenes negativos compensan el padding del contenedor */}
-      <footer className="sticky -bottom-4 z-10 mt-auto xl:mt-0 -mx-4 -mb-4 flex items-center justify-between gap-3 border-t bg-fondo-tarjeta p-4 xl:static xl:mx-0 xl:mb-0 xl:justify-end xl:gap-6 xl:border-0 xl:bg-transparent xl:p-0">
+      <footer className="sticky -bottom-4 z-10 mt-auto xl:mt-0 -mx-4 -mb-4 flex items-center justify-between gap-3 border-t bg-fondo-tarjeta px-4 py-3 xl:static xl:mx-0 xl:mb-0 xl:justify-end xl:gap-6 xl:border-0 xl:bg-transparent xl:p-0">
         <p className="flex flex-col xl:flex-row xl:items-baseline xl:gap-2">
           <span className="text-sm text-texto-suave">Subtotal:</span>
           <span className="text-xl font-bold tabular-nums xl:text-2xl">

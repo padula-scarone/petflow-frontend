@@ -56,10 +56,10 @@ export function PanelResumenCobro({
       </dl>
 
       {/* --- TOTAL --- */}
-      <div className="flex flex-col gap-1 border-t pt-4">
+      <p className="flex items-baseline justify-between gap-3 border-t pt-4">
         <span className="text-sm text-texto-suave">Total</span>
         <span className="text-3xl font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
-      </div>
+      </p>
 
       {/* --- ESTADO DE COBERTURA (SOLO PAGO MIXTO) --- */}
       {formaPago === 'mixto' && (

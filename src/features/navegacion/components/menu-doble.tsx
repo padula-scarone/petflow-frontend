@@ -79,11 +79,11 @@ export function MenuDoble({
           ref={cabeceraRef}
           inert={!cabeceraVisible}
           className={cn(
-            'sticky -top-4 z-30 -mx-4 -mt-4 mb-5 shrink-0 bg-fondo-pagina transition-transform duration-200 motion-reduce:transition-none lg:hidden',
+            'sticky -top-4 z-30 -mx-4 -mt-4 mb-4 shrink-0 bg-fondo-pagina transition-transform duration-200 motion-reduce:transition-none lg:hidden',
             !cabeceraVisible && '-translate-y-full',
           )}
         >
-          <div className="flex items-center justify-between gap-3 border-b bg-fondo-tarjeta px-4 py-3">
+          <div className="flex items-center justify-between gap-3 border-b bg-fondo-tarjeta px-4 py-2">
             {/* Logo con interlineado ajustado y el estado de la caja debajo, separado para que no se
                 lea como parte del logo: 24 + 8 + 12 = 44 px, justo el alto del boton de usuario,
                 asi que la cabecera no crece */}
@@ -101,7 +101,7 @@ export function MenuDoble({
             />
           </div>
           {seccionesDelModulo.length > 0 && (
-            <div className="pt-3">
+            <div className="pt-2">
               <PestanasSecciones
                 secciones={seccionesDelModulo}
                 idSeccionActiva={idSeccionActiva}

@@ -1,5 +1,11 @@
 // Textos propios para el vendedor: claros y sin detalle tecnico. Los mensajes del back son para desarrolladores.
 
+/**
+ * Motivo por el que no se puede confirmar el cobro cuando todavia no se eligio un medio de pago. Es evidente
+ * con el boton bloqueado, asi que el pie de celular no lo repite; el resto de los motivos si se muestran.
+ */
+export const MOTIVO_ELEGIR_MEDIO_PAGO = 'Elegí un medio de pago'
+
 // --- ERRORES DE CONSULTA (CATALOGO, MEDIOS DE PAGO, DETALLE DE LA VENTA) ---
 export const MENSAJE_SIN_RED = 'No hay conexión. Revisá tu internet e intentá de nuevo.'
 export const MENSAJE_TIEMPO_AGOTADO = 'El servidor tardó demasiado en responder. Intentá de nuevo.'

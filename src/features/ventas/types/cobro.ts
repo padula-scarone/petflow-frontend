@@ -11,6 +11,16 @@ export type TipoAjuste = 'descuento' | 'recargo' | 'ninguno'
 /** Como se expresa un descuento manual. */
 export type TipoDescuentoManual = 'porcentaje' | 'monto'
 
+/** Motivo elegido de la lista fija del descuento manual. OTRO pide un detalle escrito. */
+export type CodigoMotivoDescuento =
+  | 'CLIENTE_FRECUENTE'
+  | 'PROMOCION_VIGENTE'
+  | 'COMPRA_POR_VOLUMEN'
+  | 'PRODUCTO_DANADO_O_POR_VENCER'
+  | 'COMPENSACION_POR_RECLAMO'
+  | 'EMPLEADO_O_CONOCIDO'
+  | 'OTRO'
+
 /** Medio de pago configurado en la seccion "Medios de pago". */
 export interface MedioPago {
   idMedioPago: number
@@ -77,7 +87,7 @@ export interface EstadoCobro {
   descuentoManual: DescuentoManual | null
   resumen: ResumenCobro
   puedeConfirmar: boolean
-  /** Por que no se puede confirmar, ej. "Falta cubrir $ 2.000". */
+  /** Por que no se puede confirmar, ej. "Falta cubrir $ 2.000,00". */
   motivoNoConfirmable?: string
 }
 
