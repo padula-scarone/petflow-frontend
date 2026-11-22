@@ -5,6 +5,7 @@ import type {
   EstadoBusquedaDeudor,
   EstadoGuardadoDeudor,
 } from '@/features/ventas/deudores/types/deudor'
+// EstadoGuardadoDeudor es lo que devuelve onCrearDeudor
 
 /** Con que paga AHORA. El fiado ya no es una forma de pago: es lo que queda sin pagar. */
 export type FormaPagoAhora = 'unico' | 'mixto'
@@ -80,7 +81,6 @@ export type EstadoConfirmacionConDeuda =
 export interface PropiedadesPagoConDeuda {
   estadoPago: EstadoPagoConDeuda
   estadoConfirmacion: EstadoConfirmacionConDeuda
-  estadoGuardadoDeudor: EstadoGuardadoDeudor
   // --- Forma y medios de pago ---
   onCambiarFormaPago: (formaPago: FormaPagoAhora) => void
   onSeleccionarMedioPago: (idMedioPago: number) => void
@@ -102,7 +102,8 @@ export interface PropiedadesPagoConDeuda {
   onCrearDeudor: (datos: DatosDeudor) => Promise<EstadoGuardadoDeudor>
   onCambiarFechaEstimada: (fecha: FechaEstimadaPago | null) => void
   // --- Confirmacion ---
-  onAbrirResumen: () => void
+  /** Con deuda abre el resumen para confirmar; sin deuda es una venta de contado y la confirma directamente. */
+  onConfirmarPago: () => void
   onCerrarResumen: () => void
   onConfirmarVentaConDeuda: () => void
 }

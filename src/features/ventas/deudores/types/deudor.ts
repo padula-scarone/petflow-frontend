@@ -25,15 +25,19 @@ export type ErroresDatosDeudor = Partial<Record<CampoDeudor, string>>
 export type EstadoGuardadoDeudor =
   | { fase: 'inactivo' }
   | { fase: 'guardando' }
+  | { fase: 'guardado'; deudor: Deudor }
   /** 409 DNI_DUPLICADO: el back informa a quien pertenece ese DNI. */
   | { fase: 'dni-duplicado'; deudorExistente: Deudor }
+  /** 404 al editar: el deudor ya no existe. */
+  | { fase: 'no-encontrado' }
   /** 400 o falla de red. */
   | { fase: 'error'; mensaje: string }
 
-/** Busqueda de un deudor por nombre o DNI, en Registrar Venta. */
-export type EstadoBusquedaDeudor =
-  | { fase: 'inactivo' }
-  | { fase: 'cargando' }
+/** Lo que devuelve una busqueda de deudores ya terminada. */
+export type ResultadoBusquedaDeudor =
   | { fase: 'sin-resultados'; textoBuscado: string }
   | { fase: 'error'; mensaje: string }
   | { fase: 'con-resultados'; deudores: Deudor[] }
+
+/** Busqueda de un deudor por nombre o DNI, en Registrar Venta. */
+export type EstadoBusquedaDeudor = { fase: 'inactivo' } | { fase: 'cargando' } | ResultadoBusquedaDeudor
