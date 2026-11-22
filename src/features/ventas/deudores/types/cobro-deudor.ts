@@ -1,5 +1,5 @@
 import type { Deudor } from '@/features/ventas/deudores/types/deudor'
-import type { FiadoPendiente } from '@/features/ventas/deudores/types/cuenta-corriente'
+import type { EstadoFichaDeudor, FiadoPendiente } from '@/features/ventas/deudores/types/cuenta-corriente'
 import type { PagoComprobante } from '@/features/ventas/types/comprobante'
 
 /** Un fiado en la tabla de cobro, con lo que el vendedor tildo y tipeo. */
@@ -67,6 +67,22 @@ export interface ReciboCobroDeudor {
   saldoRestanteDeudor: number
   enlaceWhatsApp: string
   enlaceMail: string
+}
+
+/** Props de la ficha de un deudor: su cuenta y la seleccion de fiados a cobrar. */
+export interface FichaDeudorProps {
+  estadoFicha: EstadoFichaDeudor
+  /** Un fiado por fila, con lo tildado y lo tipeado; vacio hasta que la ficha esta lista. */
+  filasFiados: FilaFiadoSeleccionable[]
+  resumenSeleccion: ResumenSeleccionFiados
+  onVolver: () => void
+  onReintentar: () => void
+  onEditarDeudor: () => void
+  onAlternarFiado: (idVenta: number) => void
+  onCambiarMontoFiado: (idVenta: number, monto: number | null) => void
+  /** Tilda todos los fiados; si ya estaban todos tildados, los destilda. */
+  onSeleccionarTodos: () => void
+  onCobrarFiados: () => void
 }
 
 /** Estado del cobro de fiados desde la ficha. */

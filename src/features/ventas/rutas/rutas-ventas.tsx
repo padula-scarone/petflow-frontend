@@ -5,6 +5,7 @@ import {
 } from '@/features/ventas/config/rutas-registrar-venta'
 import { ID_SECCION_HISTORIAL } from '@/features/ventas/config/rutas-historial'
 import { ID_SECCION_DEUDORES } from '@/features/ventas/deudores/config/rutas-deudores'
+import { PaginaFichaDeudor } from '@/features/ventas/deudores/paginas/pagina-ficha-deudor'
 import { PaginaListaDeudores } from '@/features/ventas/deudores/paginas/pagina-lista-deudores'
 import { ID_SECCION_DEVOLUCIONES } from '@/features/ventas/devoluciones/config/rutas-devoluciones'
 import { PaginaDevoluciones } from '@/features/ventas/devoluciones/paginas/pagina-devoluciones'
@@ -36,7 +37,12 @@ export const RUTAS_VENTAS: RutaSeccion[] = [
   {
     idModulo: ID_MODULO_VENTAS,
     idSeccion: ID_SECCION_DEUDORES,
-    ruta: { element: <PaginaListaDeudores /> },
+    ruta: {
+      children: [
+        { index: true, element: <PaginaListaDeudores /> },
+        { path: ':idDeudor', element: <PaginaFichaDeudor /> },
+      ],
+    },
   },
   {
     idModulo: ID_MODULO_VENTAS,
