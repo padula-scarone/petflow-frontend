@@ -272,6 +272,7 @@ export function usePagoConDeudaEjemplo({
     onCompletarConRestante: propiedadesCobro.onCompletarConRestante,
     onAjustarMontosAutomaticamente: propiedadesCobro.onAjustarMontosAutomaticamente,
     onBuscarDeudor: deuda.buscar,
+    onReintentarBusquedaDeudor: deuda.reintentarBusqueda,
     onSeleccionarDeudor: deuda.seleccionarDeudor,
     onCambiarDeudor: deuda.cambiarDeudor,
     onCrearDeudor: deuda.crearDeudor,

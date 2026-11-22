@@ -97,6 +97,7 @@ export interface PropiedadesPagoConDeuda {
   onAjustarMontosAutomaticamente: () => void
   // --- Deuda ---
   onBuscarDeudor: (texto: string) => void
+  onReintentarBusquedaDeudor: () => void
   onSeleccionarDeudor: (deudor: Deudor) => void
   onCambiarDeudor: () => void
   onCrearDeudor: (datos: DatosDeudor) => Promise<EstadoGuardadoDeudor>
