@@ -77,8 +77,6 @@ export type EstadoFichaDeudor =
 export interface ListaDeudoresProps {
   filtros: FiltrosDeudores
   estadoLista: EstadoListaDeudores
-  /** Verdadero mientras se piden resultados nuevos y la lista anterior sigue visible. */
-  actualizando: boolean
   onCambiarBusqueda: (busqueda: string) => void
   onCambiarIncluirSinDeuda: (incluirSinDeuda: boolean) => void
   onCambiarPagina: (pagina: number) => void
