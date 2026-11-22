@@ -78,8 +78,23 @@ export interface VentaHistorialConsultada extends VentaHistorial {
 /** Metadatos de paginacion de la respuesta. */
 export type PaginacionHistorial = PaginacionResultados
 
+/** Deudor al que se le fio una venta. */
+export interface DeudorFilaHistorial {
+  idDeudor: number
+  nombreCompleto: string
+}
+
 /** Fila lista para renderizar: el hook ya calculo el plazo contra la hora del servidor. */
 export interface FilaHistorial extends VentaHistorial {
+  /**
+   * A quien se le fio la venta. Un fiado pendiente sin deudor es uno viejo, con el cliente como texto libre.
+   * El back lo informa (`deudor` en GET /api/ventas) pero el front todavia no lo mapea: hoy lo completa la maqueta.
+   */
+  deudor?: DeudorFilaHistorial | null
+  /** Lo que todavia falta pagar de un fiado pendiente; menor al total si ya pago una parte. */
+  montoFaltante?: number
+  /** AAAA-MM-DD en que se estima que se paga un fiado pendiente; null = sin fecha. */
+  fechaEstimadaPago?: string | null
   /**
    * true mientras se puede editar o anular: no esta anulada y no paso la hora de
    * fechaHoraLimiteModificacion. Cuando vence pasa a false sin que el usuario recargue.

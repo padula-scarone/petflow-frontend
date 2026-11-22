@@ -17,7 +17,7 @@ import { AccionesVentaHistorial } from '@/features/ventas/components/acciones-ve
 import { BotonesEnvioComprobante } from '@/features/ventas/components/botones-envio-comprobante'
 import { DetalleProductosComprobante } from '@/features/ventas/components/detalle-productos-comprobante'
 import { AvisoVentanaVenta } from '@/features/ventas/components/aviso-ventana-venta'
-import { BotonCobrarFiado } from '@/features/ventas/components/boton-cobrar-fiado'
+import { AccionDeudaFiado } from '@/features/ventas/deudores/components/accion-deuda-fiado'
 import { InsigniaEstadoVenta } from '@/features/ventas/components/insignia-estado-venta'
 import { PagosComprobante } from '@/features/ventas/components/pagos-comprobante'
 import { TotalesComprobante } from '@/features/ventas/components/totales-comprobante'
@@ -224,7 +224,7 @@ export function DetalleVentaHistorial({
                 <DialogFooter className="flex-col sm:flex-row sm:items-center sm:justify-between">
                   <AvisoVentanaVenta fila={fila} />
                   <div className="flex gap-2 sm:ml-auto">
-                    <BotonCobrarFiado
+                    <AccionDeudaFiado
                       fila={fila}
                       onCobrarFiado={acciones.onCobrarFiado}
                       className="min-w-0 shrink flex-1 px-2 sm:flex-none sm:px-4"

@@ -4,8 +4,9 @@ import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { AccionesVentaHistorial } from '@/features/ventas/components/acciones-venta-historial'
 import { AvisoVentanaVenta } from '@/features/ventas/components/aviso-ventana-venta'
-import { BotonCobrarFiado } from '@/features/ventas/components/boton-cobrar-fiado'
 import { InsigniaEstadoVenta } from '@/features/ventas/components/insignia-estado-venta'
+import { AccionDeudaFiado } from '@/features/ventas/deudores/components/accion-deuda-fiado'
+import { AvisoFaltanteFiado } from '@/features/ventas/deudores/components/aviso-faltante-fiado'
 import type { FilaHistorial, PropiedadesAccionesVenta } from '@/features/ventas/types/historial'
 import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
 
@@ -42,9 +43,9 @@ export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialP
 
       <AvisoVentanaVenta fila={fila} />
 
-      {/* --- TOTAL, Y COBRAR AL LADO SOLO EN UN FIADO --- */}
+      {/* --- TOTAL, Y AL LADO "VER DEUDA" SOLO EN UN FIADO --- */}
       <div className="mt-auto flex items-center justify-between gap-interno border-t pt-interno">
-        {/* El total va a la derecha, como en la tabla; en un fiado el boton Cobrar pasa a su izquierda */}
+        {/* El total va a la derecha, como en la tabla; en un fiado el boton Ver deuda pasa a su izquierda */}
         <p className="order-2 ml-auto flex flex-col items-end">
           <span className="text-auxiliar text-texto-suave">Total</span>
           <span
@@ -55,9 +56,10 @@ export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialP
           >
             {formatearMoneda(fila.montoTotal)}
           </span>
+          <AvisoFaltanteFiado fila={fila} />
         </p>
         <div className="order-1">
-          <BotonCobrarFiado fila={fila} onCobrarFiado={acciones.onCobrarFiado} />
+          <AccionDeudaFiado fila={fila} onCobrarFiado={acciones.onCobrarFiado} />
         </div>
       </div>
 
