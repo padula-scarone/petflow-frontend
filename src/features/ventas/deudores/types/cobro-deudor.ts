@@ -84,11 +84,3 @@ export interface FichaDeudorProps {
   onSeleccionarTodos: () => void
   onCobrarFiados: () => void
 }
-
-/** Estado del cobro de fiados desde la ficha. */
-export type EstadoCobroDeudor =
-  | { fase: 'cerrado' }
-  | { fase: 'cobrando' }
-  | { fase: 'enviando' }
-  | { fase: 'rechazado'; error: ErrorCobroDeudor }
-  | { fase: 'cobrado'; recibo: ReciboCobroDeudor }

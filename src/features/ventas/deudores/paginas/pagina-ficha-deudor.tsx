@@ -4,6 +4,7 @@ import { ContenedorDialogoDeudor } from '@/features/ventas/deudores/components/c
 import { FichaDeudor } from '@/features/ventas/deudores/components/ficha-deudor'
 import { PARAMETRO_FIADO_RESALTADO, RUTA_DEUDORES } from '@/features/ventas/deudores/config/rutas-deudores'
 import { editarDeudorApiEjemplo } from '@/features/ventas/deudores/ejemplos/api-deudores-ejemplo'
+import { ContenedorCobroDeudor } from '@/features/ventas/deudores/paginas/contenedor-cobro-deudor'
 import { useFichaDeudorEjemplo } from '@/features/ventas/deudores/hooks/use-ficha-deudor-ejemplo'
 import { useSeleccionFiados } from '@/features/ventas/deudores/hooks/use-seleccion-fiados'
 import type { FiadoOrigenHistorial } from '@/features/ventas/deudores/types/cuenta-corriente'
@@ -54,8 +55,9 @@ function ContenidoFichaDeudor({ idDeudor, idFiadoInicial, fiadoOrigen, onVolver 
   const ficha = useFichaDeudorEjemplo(idDeudor, fiadoOrigen)
   const fiados = ficha.estadoFicha.tipo === 'listo' ? ficha.estadoFicha.fiados : []
   const seleccion = useSeleccionFiados(fiados, idFiadoInicial)
-  // Solo estado de presentacion: si el dialogo de edicion esta abierto
+  // Solo estado de presentacion: si estan abiertos el dialogo de edicion o el de cobro
   const [edicionAbierta, setEdicionAbierta] = useState(false)
+  const [cobroAbierto, setCobroAbierto] = useState(false)
 
   return (
     <>
@@ -69,9 +71,17 @@ function ContenidoFichaDeudor({ idDeudor, idFiadoInicial, fiadoOrigen, onVolver 
         onAlternarFiado={seleccion.alternarFiado}
         onCambiarMontoFiado={seleccion.cambiarMontoFiado}
         onSeleccionarTodos={seleccion.seleccionarTodos}
-        // El cobro llega en el paso siguiente
-        onCobrarFiados={() => undefined}
+        onCobrarFiados={() => setCobroAbierto(true)}
       />
+      {cobroAbierto && ficha.estadoFicha.tipo === 'listo' && (
+        <ContenedorCobroDeudor
+          deudor={ficha.estadoFicha.deudor}
+          filasACobrar={seleccion.filas.filter((fila) => fila.seleccionado)}
+          // Despues de cobrar, la cuenta cambia (el almacen avisa y la ficha se vuelve a pedir): lo tildado ya no sirve
+          alCobrar={seleccion.limpiar}
+          onCerrar={() => setCobroAbierto(false)}
+        />
+      )}
       {edicionAbierta && ficha.estadoFicha.tipo === 'listo' && (
         <ContenedorDialogoDeudor
           modo="edicion"
