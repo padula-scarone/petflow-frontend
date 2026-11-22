@@ -45,8 +45,3 @@ export function formatearFechaEstimada(fecha: string) {
 export function describirFechaEstimada(fecha: string | null) {
   return fecha === null ? 'Sin fecha' : formatearFechaEstimada(fecha)
 }
-
-/** Fecha AAAA-MM-DD de un instante ISO 8601, en hora local. */
-export function extraerFechaDeInstante(fechaIso: string) {
-  return convertirDateAFechaTexto(new Date(fechaIso))
-}

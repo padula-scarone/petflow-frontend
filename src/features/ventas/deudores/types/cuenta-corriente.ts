@@ -50,6 +50,21 @@ export interface FiadoPendiente {
   montoFaltante: number
 }
 
+/**
+ * Un fiado tal como lo conoce el Historial. Viaja en el estado del router al tocar "Ver deuda" para que la ficha
+ * muestre ese mismo fiado: en la maqueta el almacen no lo conoce de antes. Con el back real la ficha lo pide al servidor.
+ */
+export interface FiadoOrigenHistorial {
+  idVenta: number
+  numeroComprobante: string
+  /** Fecha y hora de la venta en formato ISO 8601. */
+  fechaHora: string
+  importeAdeudado: number
+  montoPagado: number
+  /** AAAA-MM-DD; null = sin fecha. */
+  fechaEstimadaPago: string | null
+}
+
 /** Estado de la ficha de un deudor. */
 export type EstadoFichaDeudor =
   | { tipo: 'cargando' }
