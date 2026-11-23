@@ -1,5 +1,7 @@
+import { ContenedorFiltrosFijos } from '@/features/ventas/components/contenedor-filtros-fijos'
 import { ListaDeudoresEstados } from '@/features/ventas/deudores/components/lista-deudores'
 import { PanelFiltrosDeudores } from '@/features/ventas/deudores/components/panel-filtros-deudores'
+import { ResumenResultadosDeudores } from '@/features/ventas/deudores/components/resumen-resultados-deudores'
 import type { EstadoListaDeudores, ListaDeudoresProps } from '@/features/ventas/deudores/types/cuenta-corriente'
 
 /** Cuantos deudores devolvio la ultima consulta; null mientras carga o si fallo. */
@@ -28,9 +30,7 @@ export function Deudores({
       <h1 className="sr-only">Deudores</h1>
 
       {/* --- FILTROS (FIJOS AL HACER SCROLL) --- */}
-      {/* Es la misma barra fija que la del Historial y Devoluciones; los comentarios de por que cada clase estan en
-          historial-ventas.tsx: margenes negativos contra el padding del area con scroll y top que baja de la cabecera */}
-      <div className="sticky top-[max(calc(var(--spacing-contorno)*-1),calc(var(--alto-cabecera,0px)-var(--spacing-contorno)*2))] z-20 -mx-contorno -mt-contorno bg-fondo-pagina px-contorno pt-contorno pb-interno transition-[top] duration-200 motion-reduce:transition-none">
+      <ContenedorFiltrosFijos>
         <PanelFiltrosDeudores
           filtros={filtros}
           totalResultados={contarResultados(estadoLista)}
@@ -40,7 +40,15 @@ export function Deudores({
           onInvertirSentido={onInvertirSentido}
           onLimpiarFiltros={onLimpiarFiltros}
         />
-      </div>
+      </ContenedorFiltrosFijos>
+
+      {/* --- RESUMEN: CUANTOS DEUDORES, FILTROS APLICADOS Y LIMPIAR --- */}
+      <ResumenResultadosDeudores
+        filtros={filtros}
+        estadoLista={estadoLista}
+        onCambiarProximoPago={onCambiarProximoPago}
+        onLimpiarFiltros={onLimpiarFiltros}
+      />
 
       <ListaDeudoresEstados
         estadoLista={estadoLista}

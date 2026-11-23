@@ -1,7 +1,6 @@
-import { useId } from 'react'
-import { Search } from 'lucide-react'
-import { Input } from '@/components/ui/input'
 import { HojaFiltros } from '@/features/ventas/components/hoja-filtros'
+import { PanelFiltros } from '@/features/ventas/components/panel-filtros'
+import { CampoBusquedaDeudores } from '@/features/ventas/deudores/components/campo-busqueda-deudores'
 import { FiltroProximoPago } from '@/features/ventas/deudores/components/filtro-proximo-pago'
 import { SelectorOrdenDeudores } from '@/features/ventas/deudores/components/selector-orden-deudores'
 import type { ListaDeudoresProps } from '@/features/ventas/deudores/types/cuenta-corriente'
@@ -22,9 +21,10 @@ interface PanelFiltrosDeudoresProps
 }
 
 /**
- * Una sola fila, como en Historial y Devoluciones. Escritorio: buscador, proximo pago y orden. Celular: el buscador
- * y el boton "Filtros", que abre desde abajo una hoja con proximo pago y orden. No hay alta de deudores: un deudor
- * nace al fiarle una venta en Registrar Venta. Quien ya no debe nada sale de la lista y solo aparece al buscarlo.
+ * Misma estructura que Historial y Devoluciones, en una sola fila. Escritorio: buscador, proximo pago y orden.
+ * Mobile: el buscador y el boton de filtros, que abre desde abajo una hoja con proximo pago y orden. No hay alta de
+ * deudores: un deudor nace al fiarle una venta en Registrar Venta. Quien ya no debe nada sale de la lista y solo
+ * aparece al buscarlo.
  */
 export function PanelFiltrosDeudores({
   filtros,
@@ -35,61 +35,48 @@ export function PanelFiltrosDeudores({
   onInvertirSentido,
   onLimpiarFiltros,
 }: PanelFiltrosDeudoresProps) {
-  const idBusqueda = useId()
   // La insignia cuenta lo que hay dentro de la hoja: el buscador esta siempre a la vista y el orden no es un filtro
-  const cantidadFiltrosActivos = filtros.proximoPago === null ? 0 : 1
+  const cantidadFiltrosEnHoja = filtros.proximoPago === null ? 0 : 1
 
   return (
-    <div className="flex items-center gap-interno">
-      {/* --- BUSCADOR --- */}
-      <div className="relative min-w-0 flex-1">
-        <Search
-          aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-texto-suave"
+    <PanelFiltros
+      busquedaMobile={
+        <CampoBusquedaDeudores
+          idCampo="movil-deudores-busqueda"
+          busqueda={filtros.busqueda}
+          onCambiarBusqueda={onCambiarBusqueda}
         />
-        <Input
-          id={idBusqueda}
-          type="text"
-          autoComplete="off"
-          aria-label="Buscar deudor por nombre o DNI"
-          // Corto a proposito: en celular comparte la fila con el boton Filtros
-          placeholder="Nombre o DNI"
-          className="bg-fondo-tarjeta pl-10"
-          value={filtros.busqueda}
-          onChange={(evento) => onCambiarBusqueda(evento.target.value)}
-          onKeyDown={(evento) => {
-            if (evento.key === 'Escape' && filtros.busqueda !== '') {
-              evento.stopPropagation()
-              onCambiarBusqueda('')
-            }
-          }}
-        />
-      </div>
-
-      {/* --- ESCRITORIO: PROXIMO PAGO Y ORDEN --- */}
-      <div className="hidden items-center gap-interno lg:flex">
-        <div className="w-48">
-          <FiltroProximoPago
-            idCampo="barra-deudores-proximo-pago"
+      }
+      barra={
+        <div className="flex items-center gap-interno">
+          <div className="min-w-0 flex-1">
+            <CampoBusquedaDeudores
+              idCampo="barra-deudores-busqueda"
+              busqueda={filtros.busqueda}
+              onCambiarBusqueda={onCambiarBusqueda}
+            />
+          </div>
+          <div className="w-48">
+            <FiltroProximoPago
+              idCampo="barra-deudores-proximo-pago"
+              variante="barra"
+              proximoPago={filtros.proximoPago}
+              onCambiarProximoPago={onCambiarProximoPago}
+            />
+          </div>
+          <SelectorOrdenDeudores
+            idCampo="barra-deudores-orden"
             variante="barra"
-            proximoPago={filtros.proximoPago}
-            onCambiarProximoPago={onCambiarProximoPago}
+            ordenarPor={filtros.ordenarPor}
+            sentido={filtros.sentido}
+            onCambiarOrden={onCambiarOrden}
+            onInvertirSentido={onInvertirSentido}
           />
         </div>
-        <SelectorOrdenDeudores
-          idCampo="barra-deudores-orden"
-          variante="barra"
-          ordenarPor={filtros.ordenarPor}
-          sentido={filtros.sentido}
-          onCambiarOrden={onCambiarOrden}
-          onInvertirSentido={onInvertirSentido}
-        />
-      </div>
-
-      {/* --- CELULAR: HOJA CON PROXIMO PAGO Y ORDEN --- */}
-      <div className="lg:hidden">
+      }
+      hoja={
         <HojaFiltros
-          cantidadFiltrosActivos={cantidadFiltrosActivos}
+          cantidadFiltrosActivos={cantidadFiltrosEnHoja}
           totalResultados={totalResultados}
           sustantivoSingular="deudor"
           sustantivoPlural="deudores"
@@ -110,7 +97,7 @@ export function PanelFiltrosDeudores({
             onInvertirSentido={onInvertirSentido}
           />
         </HojaFiltros>
-      </div>
-    </div>
+      }
+    />
   )
 }
