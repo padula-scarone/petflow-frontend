@@ -1,16 +1,13 @@
 import type { ReactNode } from 'react'
-import { Button } from '@/components/ui/button'
 
 /** Props del panel de filtros de una lista. */
 interface PanelFiltrosProps {
-  /** Barra de escritorio. */
+  /** Buscador principal de la fila de mobile: siempre a la vista, junto al boton de filtros. */
+  busquedaMobile: ReactNode
+  /** Barra de escritorio, con todos los controles. */
   barra: ReactNode
   /** Boton que abre la hoja de filtros de mobile. */
   hoja: ReactNode
-  /** Texto corto de la fila mobile, por ejemplo "47 ventas". */
-  textoCantidad: string
-  cantidadFiltrosActivos: number
-  onLimpiarFiltros: () => void
   /** Boton principal de la lista (ej. "Cargar nueva devolución") junto a la barra de escritorio. */
   accionEscritorio?: ReactNode
   /** Version compacta de ese boton para la fila mobile. */
@@ -18,19 +15,12 @@ interface PanelFiltrosProps {
 }
 
 /**
- * Escritorio: la barra de una fila (y la accion principal a su lado). Mobile: una fila compacta con
- * el boton "Filtros" (que abre la hoja), la cantidad de resultados, "Limpiar" y la accion principal.
+ * Historial, Devoluciones y Deudores comparten esta estructura, siempre en una sola fila.
+ * Escritorio: la barra con todos los controles (y la accion principal a su lado). Mobile: el buscador principal, el
+ * boton de filtros (que abre la hoja, donde estan el resto de los filtros y "Limpiar filtros") y la accion principal.
  * Ambas se alternan con CSS.
  */
-export function PanelFiltros({
-  barra,
-  hoja,
-  textoCantidad,
-  cantidadFiltrosActivos,
-  onLimpiarFiltros,
-  accionEscritorio,
-  accionMobile,
-}: PanelFiltrosProps) {
+export function PanelFiltros({ busquedaMobile, barra, hoja, accionEscritorio, accionMobile }: PanelFiltrosProps) {
   return (
     <>
       <div className="hidden items-start gap-interno lg:flex">
@@ -39,26 +29,10 @@ export function PanelFiltros({
         {accionEscritorio && <div className="flex shrink-0 border-l pl-3">{accionEscritorio}</div>}
       </div>
 
-      {/* --- MOBILE: UNA SOLA FILA, SIN BOTON DE ANCHO COMPLETO --- */}
+      {/* --- MOBILE: UNA SOLA FILA --- */}
       <div className="flex items-center gap-2 lg:hidden">
+        <div className="min-w-0 flex-1">{busquedaMobile}</div>
         {hoja}
-        <p
-          role="status"
-          className="min-w-0 flex-1 truncate text-right text-cuerpo text-texto-suave tabular-nums"
-        >
-          {textoCantidad}
-        </p>
-        {cantidadFiltrosActivos > 0 && (
-          <Button
-            type="button"
-            variant="ghost"
-            aria-label="Limpiar filtros"
-            className="shrink-0 px-3"
-            onClick={onLimpiarFiltros}
-          >
-            Limpiar
-          </Button>
-        )}
         {accionMobile && <div className="flex shrink-0 border-l pl-2">{accionMobile}</div>}
       </div>
     </>

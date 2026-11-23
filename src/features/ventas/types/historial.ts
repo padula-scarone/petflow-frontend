@@ -278,9 +278,12 @@ export interface ReciboFiado {
 export interface PropiedadesFiltrosHistorial {
   filtros: FiltrosHistorial
   opciones: OpcionesFiltros
+  /** Todos los filtros con valor, incluido el N.º de comprobante. */
   cantidadFiltrosActivos: number
-  /** Cuantos de los filtros de "Mas filtros" (origen, medio de pago, comprobante) estan activos. */
+  /** Cuantos de los filtros de "Mas filtros" (origen y medio de pago) estan activos. */
   cantidadFiltrosAdicionales: number
+  /** Cuantos de los filtros de la hoja de mobile estan activos: todos menos el N.º de comprobante, que esta a la vista. */
+  cantidadFiltrosEnHoja: number
   /** Atajo que coincide con el rango elegido, o null si es un rango propio o no hay fechas. */
   periodoRapidoActivo: PeriodoRapido | null
   /** Total de la ultima consulta, para el boton "Ver n ventas" del Sheet mobile. */

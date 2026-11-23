@@ -69,7 +69,8 @@ export function FiltroProducto({
             id={idCampo}
             type="text"
             autoComplete="off"
-            placeholder="Buscar producto"
+            // Corto en la barra (en mobile comparte la fila con el boton de filtros); con etiqueta, el texto completo
+            placeholder={variante === 'barra' ? 'Producto' : 'Buscar producto'}
             aria-label={variante === 'barra' ? 'Producto' : undefined}
             className="bg-fondo-tarjeta pl-10"
             value={textoBusqueda}

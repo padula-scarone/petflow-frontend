@@ -411,9 +411,12 @@ export type EstadoEnvioDevolucion =
 export interface PropiedadesFiltrosDevoluciones {
   filtros: FiltrosDevoluciones
   opciones: OpcionesFiltros
+  /** Todos los filtros con valor, incluido el producto. */
   cantidadFiltrosActivos: number
   /** Cuantos de los filtros de "Mas filtros" (vinculo y medio de pago) estan activos. */
   cantidadFiltrosAdicionales: number
+  /** Cuantos de los filtros de la hoja de mobile estan activos: todos menos el producto, que esta a la vista. */
+  cantidadFiltrosEnHoja: number
   periodoRapidoActivo: PeriodoRapido | null
   /** Total de la ultima consulta, para el boton "Ver n devoluciones" de la hoja mobile. */
   totalResultados: number | null

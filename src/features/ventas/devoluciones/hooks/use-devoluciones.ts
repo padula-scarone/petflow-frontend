@@ -12,7 +12,11 @@ import type {
   FilaDevolucion,
 } from '@/features/ventas/devoluciones/types/devolucion'
 import { convertirDevolucionAListado, crearFilaDevolucion } from '@/features/ventas/devoluciones/utils/calcular-ventana-devolucion'
-import { contarFiltrosActivosDevoluciones, contarFiltrosAdicionalesDevoluciones } from '@/features/ventas/devoluciones/utils/contar-filtros-devoluciones'
+import {
+  contarFiltrosActivosDevoluciones,
+  contarFiltrosAdicionalesDevoluciones,
+  contarFiltrosEnHojaDevoluciones,
+} from '@/features/ventas/devoluciones/utils/contar-filtros-devoluciones'
 import { useCatalogoProductos } from '@/features/ventas/hooks/use-catalogo-productos'
 import { useMediosPago } from '@/features/ventas/hooks/use-medios-pago'
 import { usePlazoModificacionVenta } from '@/features/ventas/hooks/use-plazo-modificacion-venta'
@@ -166,6 +170,7 @@ export function useDevoluciones() {
       },
       cantidadFiltrosActivos: contarFiltrosActivosDevoluciones(lista.filtros),
       cantidadFiltrosAdicionales: contarFiltrosAdicionalesDevoluciones(lista.filtros),
+      cantidadFiltrosEnHoja: contarFiltrosEnHojaDevoluciones(lista.filtros),
       periodoRapidoActivo: detectarPeriodoRapido(
         lista.filtros.fechaDesde,
         lista.filtros.fechaHasta,

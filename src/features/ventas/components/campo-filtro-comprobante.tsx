@@ -1,32 +1,40 @@
+import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 
-/** Props del filtro por numero de comprobante. */
+/** Props del buscador por numero de comprobante. */
 interface CampoFiltroComprobanteProps {
   idCampo: string
   numeroComprobante: string
   onCambiarNumeroComprobante: (numeroComprobante: string) => void
 }
 
-/** Texto libre con el formato de ejemplo del comprobante. Lleva su propia etiqueta. */
+/** Buscador del Historial: siempre a la vista, sin etiqueta (el placeholder y el aria-label dicen que es). */
 export function CampoFiltroComprobante({
   idCampo,
   numeroComprobante,
   onCambiarNumeroComprobante,
 }: CampoFiltroComprobanteProps) {
   return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={idCampo} className="text-cuerpo font-medium">
-        N.º de comprobante
-      </Label>
+    <div className="relative min-w-0">
+      <Search
+        aria-hidden="true"
+        className="pointer-events-none absolute top-1/2 left-3 size-5 -translate-y-1/2 text-texto-suave"
+      />
       <Input
         id={idCampo}
         type="text"
         autoComplete="off"
-        placeholder="Ej: CMP-00001040"
-        className="bg-fondo-tarjeta tabular-nums"
+        aria-label="N.º de comprobante"
+        placeholder="N.º comprobante"
+        className="bg-fondo-tarjeta pl-10 tabular-nums"
         value={numeroComprobante}
         onChange={(evento) => onCambiarNumeroComprobante(evento.target.value)}
+        onKeyDown={(evento) => {
+          if (evento.key === 'Escape' && numeroComprobante !== '') {
+            evento.stopPropagation()
+            onCambiarNumeroComprobante('')
+          }
+        }}
       />
     </div>
   )

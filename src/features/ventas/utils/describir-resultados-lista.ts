@@ -11,8 +11,3 @@ export function describirRangoMostrado(
   const primera = (paginacion.pagina - 1) * paginacion.cantidadPorPagina + 1
   return `Mostrando ${primera}–${primera + cantidadFilas - 1} de ${paginacion.totalRegistros} ${sustantivoPlural}`
 }
-
-/** "47 ventas" o "1 venta": el total, sin rango. */
-export function describirTotal(total: number, sustantivoSingular: string, sustantivoPlural: string) {
-  return `${total} ${total === 1 ? sustantivoSingular : sustantivoPlural}`
-}

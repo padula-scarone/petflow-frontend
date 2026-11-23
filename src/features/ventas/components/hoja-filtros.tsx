@@ -26,7 +26,11 @@ interface HojaFiltrosProps {
   onLimpiarFiltros: () => void
 }
 
-/** Mobile: un boton que abre una hoja con todos los filtros, cada uno con su etiqueta. */
+/**
+ * Mobile: un boton que abre una hoja con los filtros que no estan a la vista, cada uno con su etiqueta. Por debajo de sm
+ * el boton es solo el icono (con la insignia al lado) para que el buscador de la fila tenga lugar; desde sm lleva
+ * tambien el texto. La insignia no se superpone al icono: sobresalir por arriba la tapaba la barra de pestañas.
+ */
 export function HojaFiltros({
   children,
   cantidadFiltrosActivos,
@@ -38,9 +42,14 @@ export function HojaFiltros({
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button type="button" variant="outline" className="shrink-0 gap-2 bg-fondo-tarjeta">
+        <Button
+          type="button"
+          variant="outline"
+          className="shrink-0 gap-2 bg-fondo-tarjeta max-sm:min-w-control max-sm:px-2"
+        >
           <SlidersHorizontal />
-          Filtros
+          {/* sr-only por debajo de sm: el icono solo no se anuncia */}
+          <span className="max-sm:sr-only">Filtros</span>
           {cantidadFiltrosActivos > 0 && (
             <Badge className="size-6 justify-center rounded-full p-0 tabular-nums">
               <span className="sr-only">Activos: </span>
@@ -50,7 +59,14 @@ export function HojaFiltros({
         </Button>
       </SheetTrigger>
 
-      <SheetContent side="bottom">
+      <SheetContent
+        side="bottom"
+        // Sin esto el foco cae en el primer campo, que puede ser un buscador, y en un celular abre el teclado
+        onOpenAutoFocus={(evento) => {
+          evento.preventDefault()
+          if (evento.currentTarget instanceof HTMLElement) evento.currentTarget.focus()
+        }}
+      >
         <SheetHeader>
           <SheetTitle>Filtros</SheetTitle>
           <SheetDescription>Los resultados se actualizan al elegir cada filtro.</SheetDescription>

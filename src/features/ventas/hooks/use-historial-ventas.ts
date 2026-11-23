@@ -18,7 +18,11 @@ import type {
 } from '@/features/ventas/types/historial'
 import type { ProductoCatalogo } from '@/features/ventas/types/venta'
 import { crearFilaHistorial } from '@/features/ventas/utils/calcular-plazo-modificacion'
-import { contarFiltrosActivos, contarFiltrosAdicionales } from '@/features/ventas/utils/contar-filtros-activos'
+import {
+  contarFiltrosActivos,
+  contarFiltrosAdicionales,
+  contarFiltrosEnHoja,
+} from '@/features/ventas/utils/contar-filtros-activos'
 import { detectarPeriodoRapido } from '@/features/ventas/utils/detectar-periodo-rapido'
 import { filtrarProductosCatalogo } from '@/features/ventas/utils/filtrar-productos-catalogo'
 import { traducirErrorConsulta } from '@/features/ventas/utils/traducir-error-venta'
@@ -168,6 +172,7 @@ export function useHistorialVentas() {
       },
       cantidadFiltrosActivos: contarFiltrosActivos(lista.filtros),
       cantidadFiltrosAdicionales: contarFiltrosAdicionales(lista.filtros),
+      cantidadFiltrosEnHoja: contarFiltrosEnHoja(lista.filtros),
       periodoRapidoActivo: detectarPeriodoRapido(
         lista.filtros.fechaDesde,
         lista.filtros.fechaHasta,

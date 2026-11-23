@@ -1,28 +1,29 @@
 import { BarraFiltrosHistorial } from '@/features/ventas/components/barra-filtros-historial'
+import { CampoFiltroComprobante } from '@/features/ventas/components/campo-filtro-comprobante'
 import { HojaFiltrosHistorial } from '@/features/ventas/components/hoja-filtros-historial'
 import { PanelFiltros } from '@/features/ventas/components/panel-filtros'
-import type {
-  EstadoListaHistorial,
-  PropiedadesFiltrosHistorial,
-} from '@/features/ventas/types/historial'
-import { describirCantidadVentas } from '@/features/ventas/utils/describir-resultados-historial'
+import type { PropiedadesFiltrosHistorial } from '@/features/ventas/types/historial'
 
 /** Props del panel de filtros del historial. */
 interface PanelFiltrosHistorialProps {
   propiedades: PropiedadesFiltrosHistorial
-  /** Para el conteo de la fila fija de mobile. */
-  estadoLista: EstadoListaHistorial
 }
 
-/** Arma el panel generico con la barra y la hoja del historial. */
-export function PanelFiltrosHistorial({ propiedades, estadoLista }: PanelFiltrosHistorialProps) {
+/** Arma el panel generico con la barra, la hoja y el buscador de comprobante (siempre a la vista en mobile). */
+export function PanelFiltrosHistorial({ propiedades }: PanelFiltrosHistorialProps) {
+  const { filtros, onCambiarFiltros } = propiedades
+
   return (
     <PanelFiltros
+      busquedaMobile={
+        <CampoFiltroComprobante
+          idCampo="movil-comprobante"
+          numeroComprobante={filtros.numeroComprobante}
+          onCambiarNumeroComprobante={(numeroComprobante) => onCambiarFiltros({ numeroComprobante })}
+        />
+      }
       barra={<BarraFiltrosHistorial propiedades={propiedades} />}
       hoja={<HojaFiltrosHistorial propiedades={propiedades} />}
-      textoCantidad={describirCantidadVentas(estadoLista)}
-      cantidadFiltrosActivos={propiedades.cantidadFiltrosActivos}
-      onLimpiarFiltros={propiedades.onLimpiarFiltros}
     />
   )
 }
