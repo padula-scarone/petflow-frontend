@@ -12,7 +12,7 @@ interface FiltroProximoPagoProps {
 const OPCIONES_PROXIMO_PAGO: OpcionSelector<OpcionProximoPago>[] = [
   { valor: 'ESTA_SEMANA', etiqueta: 'Paga esta semana' },
   { valor: 'HOY', etiqueta: 'Paga hoy' },
-  { valor: 'VENCIDOS', etiqueta: 'Pagos vencidos' },
+  { valor: 'VENCIDOS', etiqueta: 'Pagos atrasados' },
   { valor: 'SIN_FECHA', etiqueta: 'Pagos sin fecha' },
 ]
 

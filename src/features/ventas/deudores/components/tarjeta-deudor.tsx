@@ -24,8 +24,8 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
       <div className="flex items-start justify-between gap-interno">
         <div className="min-w-0">
           <p className="truncate font-bold">{fila.nombreCompleto}</p>
-          <p className="text-cuerpo text-texto-suave tabular-nums">{fila.telefono}</p>
           <p className="text-cuerpo text-texto-suave tabular-nums">DNI {fila.dni}</p>
+          <p className="text-cuerpo text-texto-suave tabular-nums">{fila.telefono}</p>
         </div>
         <p className="flex shrink-0 flex-col items-end">
           <span className="text-auxiliar text-texto-suave">Saldo</span>
@@ -47,6 +47,12 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
           <dd className="font-medium tabular-nums">{fila.cantidadFiadosPendientes}</dd>
         </div>
         <div>
+          <dt className="text-auxiliar text-texto-suave">Fecha de fiado</dt>
+          <dd className="font-medium tabular-nums">
+            {fila.fiadoDesde === null ? <span className="text-texto-suave">—</span> : formatearFecha(fila.fiadoDesde)}
+          </dd>
+        </div>
+        <div>
           <dt className="text-auxiliar text-texto-suave">Próximo pago</dt>
           <dd className="font-medium">
             <EstadoProximoPago
@@ -54,12 +60,6 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
               vencido={fila.proximoPagoVencido}
               tieneSaldo={tieneSaldo}
             />
-          </dd>
-        </div>
-        <div>
-          <dt className="text-auxiliar text-texto-suave">Fiado desde</dt>
-          <dd className="font-medium tabular-nums">
-            {fila.fiadoDesde === null ? <span className="text-texto-suave">—</span> : formatearFecha(fila.fiadoDesde)}
           </dd>
         </div>
       </dl>

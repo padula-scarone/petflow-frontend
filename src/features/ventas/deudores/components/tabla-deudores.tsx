@@ -30,16 +30,16 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
         {/* --- ENCABEZADO --- */}
         <div role="row" className={cn(CLASE_FILA, 'min-h-control font-medium text-texto-suave')}>
           <span role="columnheader">Nombre</span>
-          <span role="columnheader">Teléfono</span>
           <span role="columnheader">DNI</span>
+          <span role="columnheader">Teléfono</span>
           <span role="columnheader" className="justify-self-end">
             Fiados pendientes
           </span>
           <span role="columnheader" className="justify-self-end">
             Saldo
           </span>
+          <span role="columnheader">Fecha de fiado</span>
           <span role="columnheader">Próximo pago</span>
-          <span role="columnheader">Fiado desde</span>
           <span role="columnheader">
             <span className="sr-only">Acciones</span>
           </span>
@@ -55,11 +55,11 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
             <div role="cell" className="max-w-44 min-w-0 truncate font-bold">
               {fila.nombreCompleto}
             </div>
-            <div role="cell" className="whitespace-nowrap tabular-nums">
-              {fila.telefono}
-            </div>
             <div role="cell" className="tabular-nums">
               {fila.dni}
+            </div>
+            <div role="cell" className="whitespace-nowrap tabular-nums">
+              {fila.telefono}
             </div>
             <div role="cell" className="justify-self-end tabular-nums">
               {fila.cantidadFiadosPendientes}
@@ -73,15 +73,15 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
             >
               {formatearMoneda(fila.saldo)}
             </div>
+            <div role="cell" className="whitespace-nowrap tabular-nums">
+              {fila.fiadoDesde === null ? <span className="text-texto-suave">—</span> : formatearFecha(fila.fiadoDesde)}
+            </div>
             <div role="cell">
               <EstadoProximoPago
                 fecha={fila.proximaFechaEstimadaPago}
                 vencido={fila.proximoPagoVencido}
                 tieneSaldo={fila.saldo > 0}
               />
-            </div>
-            <div role="cell" className="whitespace-nowrap tabular-nums">
-              {fila.fiadoDesde === null ? <span className="text-texto-suave">—</span> : formatearFecha(fila.fiadoDesde)}
             </div>
             <div role="cell">
               <Tooltip>

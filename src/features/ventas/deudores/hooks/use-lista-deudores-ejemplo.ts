@@ -13,11 +13,14 @@ import type {
 import { useListaPaginada, type OpcionesListaPaginada } from '@/features/ventas/hooks/use-lista-paginada'
 import { traducirErrorConsulta } from '@/features/ventas/utils/traducir-error-venta'
 
-/** Filtros con los que arranca la lista: sin busqueda (solo quienes deben algo), todos los pagos y por nombre. */
+/**
+ * Filtros con los que arranca la lista: sin busqueda (solo quienes deben algo), todos los pagos y por fecha de
+ * fiado, del mas viejo al mas nuevo: arriba quedan quienes hace mas que esperan cobrar.
+ */
 const FILTROS_DEUDORES_VACIOS: FiltrosDeudores = {
   busqueda: '',
   proximoPago: null,
-  ordenarPor: 'NOMBRE',
+  ordenarPor: 'FIADO_DESDE',
   sentido: 'ASCENDENTE',
 }
 

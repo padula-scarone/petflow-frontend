@@ -17,8 +17,8 @@ const OPCIONES_ORDEN: OpcionSelector<CriterioOrdenDeudores>[] = [
   { valor: 'NOMBRE', etiqueta: 'Ordenar por nombre' },
   { valor: 'FIADOS_PENDIENTES', etiqueta: 'Ordenar por fiados pendientes' },
   { valor: 'SALDO', etiqueta: 'Ordenar por saldo' },
+  { valor: 'FIADO_DESDE', etiqueta: 'Ordenar por fecha de fiado' },
   { valor: 'PROXIMO_PAGO', etiqueta: 'Ordenar por próximo pago' },
-  { valor: 'FIADO_DESDE', etiqueta: 'Ordenar por fiado desde' },
 ]
 
 /**

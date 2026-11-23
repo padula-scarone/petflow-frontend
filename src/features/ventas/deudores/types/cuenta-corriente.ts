@@ -38,7 +38,10 @@ export interface FilaDeudor {
   proximaFechaEstimadaPago: string | null
   /** Verdadero si la proxima fecha ya paso. La calcula el hook contra la fecha de hoy. */
   proximoPagoVencido: boolean
-  /** Fecha y hora (ISO 8601) del fiado pendiente mas antiguo; null si no tiene fiados pendientes. */
+  /**
+   * Fecha y hora (ISO 8601) de la venta del fiado pendiente mas antiguo, el mas viejo que todavia tiene saldo; null
+   * si no tiene fiados pendientes. Se muestra como "Fecha de fiado".
+   */
   fiadoDesde: string | null
 }
 
