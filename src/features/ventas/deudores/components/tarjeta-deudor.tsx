@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { formatearFecha } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
+import { DatosContactoDeudor } from '@/features/ventas/deudores/components/datos-contacto-deudor'
 import { EstadoProximoPago } from '@/features/ventas/deudores/components/estado-proximo-pago'
 import type { FilaDeudor } from '@/features/ventas/deudores/types/cuenta-corriente'
 
@@ -27,8 +28,7 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
       {/* --- NOMBRE, DNI Y TELEFONO --- */}
       <div className="min-w-0">
         <p className="font-bold wrap-break-word">{fila.nombreCompleto}</p>
-        <p className="text-cuerpo text-texto-suave tabular-nums">DNI: {fila.dni}</p>
-        <p className="text-cuerpo text-texto-suave tabular-nums">Teléfono: {fila.telefono}</p>
+        <DatosContactoDeudor dni={fila.dni} telefono={fila.telefono} className="text-cuerpo text-texto-suave" />
       </div>
 
       {/* --- FIADOS, FECHA DE FIADO Y PROXIMO PAGO --- */}

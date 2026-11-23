@@ -1,3 +1,4 @@
+import { DatosContactoDeudor } from '@/features/ventas/deudores/components/datos-contacto-deudor'
 import type { Deudor } from '@/features/ventas/deudores/types/deudor'
 import { describirFechaEstimada } from '@/features/ventas/deudores/utils/fechas-estimadas'
 
@@ -20,11 +21,13 @@ export function BloqueDeudorComprobante({ deudor, fechaEstimadaPago }: BloqueDeu
           <dt className="text-texto-suave">Deudor</dt>
           <dd className="truncate font-medium">{deudor.nombreCompleto}</dd>
         </div>
-        <div>
-          <dt className="text-texto-suave">DNI</dt>
-          <dd className="font-medium tabular-nums">{deudor.dni}</dd>
+        <div className="col-span-2">
+          <dt className="sr-only">DNI y teléfono</dt>
+          <dd>
+            <DatosContactoDeudor dni={deudor.dni} telefono={deudor.telefono} className="text-texto-suave" />
+          </dd>
         </div>
-        <div>
+        <div className="col-span-2">
           <dt className="text-texto-suave">Fecha estimada de pago</dt>
           <dd className="font-medium tabular-nums">{describirFechaEstimada(fechaEstimadaPago)}</dd>
         </div>

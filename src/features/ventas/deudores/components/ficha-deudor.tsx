@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { EstadoErrorLista } from '@/features/ventas/components/estado-error-lista'
 import { EstadoVacioLista } from '@/features/ventas/components/estado-vacio-lista'
+import { DatosContactoDeudor } from '@/features/ventas/deudores/components/datos-contacto-deudor'
 import { BarraCobroFiados } from '@/features/ventas/deudores/components/barra-cobro-fiados'
 import { PanelCobroFiados } from '@/features/ventas/deudores/components/panel-cobro-fiados'
 import { TablaFiadosPendientes } from '@/features/ventas/deudores/components/tabla-fiados-pendientes'
@@ -116,16 +117,7 @@ export function FichaDeudor({
               <TooltipContent>Editar datos</TooltipContent>
             </Tooltip>
           </div>
-          <dl className="flex flex-col text-cuerpo tabular-nums">
-            <div className="flex gap-1">
-              <dt className="text-texto-suave">DNI:</dt>
-              <dd className="font-medium">{deudor.dni}</dd>
-            </div>
-            <div className="flex gap-1">
-              <dt className="text-texto-suave">Teléfono:</dt>
-              <dd className="font-medium">{deudor.telefono}</dd>
-            </div>
-          </dl>
+          <DatosContactoDeudor dni={deudor.dni} telefono={deudor.telefono} className="text-cuerpo text-texto-suave" />
         </div>
       </header>
 

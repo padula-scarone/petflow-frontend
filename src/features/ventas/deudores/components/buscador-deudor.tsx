@@ -3,6 +3,7 @@ import { Loader2, Plus, Search } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { DatosContactoDeudor } from '@/features/ventas/deudores/components/datos-contacto-deudor'
 import { useNavegacionSugerencias } from '@/features/ventas/hooks/use-navegacion-sugerencias'
 import type { Deudor, EstadoBusquedaDeudor } from '@/features/ventas/deudores/types/deudor'
 
@@ -122,11 +123,17 @@ export function BuscadorDeudor({
                   <button
                     type="button"
                     {...navegacion.propiedadesOpcion(indiceDeudor)}
-                    className="flex min-h-control w-full items-center justify-between gap-interno rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none"
+                    // @container: el telefono dice "Tel.:" si la fila es angosta (mide la fila, no su propia caja)
+                    className="@container flex min-h-control w-full flex-col items-start justify-center gap-0.5 rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-interno"
                     onClick={() => elegirDeudor(deudor)}
                   >
                     <span className="min-w-0 font-medium">{deudor.nombreCompleto}</span>
-                    <span className="shrink-0 text-auxiliar text-texto-suave tabular-nums">DNI {deudor.dni}</span>
+                    <DatosContactoDeudor
+                      dni={deudor.dni}
+                      telefono={deudor.telefono}
+                      contenedorPropio={false}
+                      className="shrink-0 text-auxiliar text-texto-suave"
+                    />
                   </button>
                 </li>
               ))}
