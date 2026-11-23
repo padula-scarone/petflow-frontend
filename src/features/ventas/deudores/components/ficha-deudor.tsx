@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Skeleton } from '@/components/ui/skeleton'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { EstadoErrorLista } from '@/features/ventas/components/estado-error-lista'
@@ -95,25 +96,36 @@ export function FichaDeudor({
       {/* El nombre va una sola vez, como titulo; debajo solo lo que no esta en el titulo */}
       <header className="flex flex-col gap-interno">
         <BotonVolverADeudores onVolver={onVolver} />
-        <div className="min-w-0">
-          {/* Editar va pegado al nombre, no al borde: es la accion sobre lo que se esta leyendo */}
-          <div className="flex flex-wrap items-center gap-x-interno gap-y-1">
+        <div className="flex min-w-0 flex-col gap-1">
+          {/* El lapiz va junto al nombre, como el "+" de Descuento en Registrar Venta: chico y lejos de los datos */}
+          <div className="flex items-center gap-interno">
             <h1 className="min-w-0 text-titulo-pagina font-bold wrap-break-word">{deudor.nombreCompleto}</h1>
-            <Button
-              type="button"
-              variant="outline"
-              aria-label={`Editar los datos de ${deudor.nombreCompleto}`}
-              className="shrink-0 bg-fondo-tarjeta"
-              onClick={onEditarDeudor}
-            >
-              <Pencil aria-hidden="true" />
-              Editar
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  aria-label={`Editar los datos de ${deudor.nombreCompleto}`}
+                  className="size-control shrink-0 rounded-full bg-fondo-tarjeta"
+                  onClick={onEditarDeudor}
+                >
+                  <Pencil aria-hidden="true" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Editar datos</TooltipContent>
+            </Tooltip>
           </div>
-          <p className="flex flex-wrap gap-x-bloque text-cuerpo text-texto-suave tabular-nums">
-            <span>DNI {deudor.dni}</span>
-            <span>Tel. {deudor.telefono}</span>
-          </p>
+          <dl className="flex flex-col text-cuerpo tabular-nums">
+            <div className="flex gap-1">
+              <dt className="text-texto-suave">DNI:</dt>
+              <dd className="font-medium">{deudor.dni}</dd>
+            </div>
+            <div className="flex gap-1">
+              <dt className="text-texto-suave">Teléfono:</dt>
+              <dd className="font-medium">{deudor.telefono}</dd>
+            </div>
+          </dl>
         </div>
       </header>
 

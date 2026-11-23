@@ -77,7 +77,6 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
             fecha={fiado.fechaEstimadaPago}
             vencido={fiado.fechaEstimadaVencida}
             tieneSaldo
-            apilado
           />
         </div>
         {/* --- LO QUE FALTA, DE CUANTO ERA Y LO YA PAGADO: una sola columna, la tabla no entra con tres --- */}
@@ -95,8 +94,9 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
               prefijo="Pagado "
               abierto={pagosAbiertos}
               onAlternar={() => setPagosAbiertos(!pagosAbiertos)}
-              // El boton trae su propio aire: se corre para alinear el monto a la derecha y no agrandar la fila
-              className="-my-2 -mr-3 h-control text-auxiliar text-texto-suave"
+              // El boton trae su propio aire: se corre a la derecha para alinear el monto. Sin margen vertical
+              // negativo: con el, el fondo del boton se montaba sobre el texto de arriba
+              className="-mr-3 text-auxiliar text-texto-suave"
             />
           )}
         </div>
