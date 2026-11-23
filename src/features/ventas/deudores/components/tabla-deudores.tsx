@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
+import { formatearFecha } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { EstadoProximoPago } from '@/features/ventas/deudores/components/estado-proximo-pago'
 import type { FilaDeudor } from '@/features/ventas/deudores/types/cuenta-corriente'
@@ -23,8 +24,8 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
     <Card className="gap-0 overflow-hidden p-0">
       <div
         role="table"
-        aria-label="Deudores, por orden alfabético"
-        className="grid grid-cols-[repeat(7,auto)] justify-between text-cuerpo"
+        aria-label="Deudores"
+        className="grid grid-cols-[repeat(8,auto)] justify-between gap-x-interno text-cuerpo"
       >
         {/* --- ENCABEZADO --- */}
         <div role="row" className={cn(CLASE_FILA, 'min-h-control font-medium text-texto-suave')}>
@@ -38,6 +39,7 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
             Saldo
           </span>
           <span role="columnheader">Próximo pago</span>
+          <span role="columnheader">Fiado desde</span>
           <span role="columnheader">
             <span className="sr-only">Acciones</span>
           </span>
@@ -50,7 +52,7 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
             role="row"
             className={cn(CLASE_FILA, 'min-h-16 py-2 transition-colors last:border-b-0 hover:bg-fondo-hover/60')}
           >
-            <div role="cell" className="max-w-64 min-w-0 truncate font-bold">
+            <div role="cell" className="max-w-44 min-w-0 truncate font-bold">
               {fila.nombreCompleto}
             </div>
             <div role="cell" className="whitespace-nowrap tabular-nums">
@@ -77,6 +79,9 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
                 vencido={fila.proximoPagoVencido}
                 tieneSaldo={fila.saldo > 0}
               />
+            </div>
+            <div role="cell" className="whitespace-nowrap tabular-nums">
+              {fila.fiadoDesde === null ? <span className="text-texto-suave">—</span> : formatearFecha(fila.fiadoDesde)}
             </div>
             <div role="cell">
               <Tooltip>

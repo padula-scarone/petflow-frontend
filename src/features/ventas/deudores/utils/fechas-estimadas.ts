@@ -21,6 +21,12 @@ export function sumarDiasAFecha(fecha: string, dias: number) {
   return formatearFechaCalendario(new Date(base.getTime() + dias * MILISEGUNDOS_POR_DIA + MILISEGUNDOS_POR_DIA / 2))
 }
 
+/** El domingo de la semana de una fecha (la semana va de lunes a domingo); si la fecha es domingo, ella misma. */
+export function obtenerDomingoDeLaSemana(fecha: string) {
+  const diaDeLaSemana = parsearFechaCalendario(fecha).getDay() // 0 = domingo
+  return sumarDiasAFecha(fecha, (7 - diaDeLaSemana) % 7)
+}
+
 /** Verdadero si la fecha es anterior a hoy. Hoy no cuenta como pasada: es el ultimo dia para pagar. */
 export function esFechaPasada(fecha: string, hoy: string = obtenerFechaHoy()) {
   return fecha < hoy

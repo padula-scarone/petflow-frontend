@@ -2,10 +2,16 @@ import type { Deudor } from '@/features/ventas/deudores/types/deudor'
 import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
 
 /**
- * Filtro por proximo pago (la fecha estimada mas cercana entre los fiados pendientes). VENCIDOS: esa fecha ya paso.
- * SIN_FECHA: ningun fiado pendiente tiene fecha. FECHA: es el dia elegido.
+ * Filtro por proximo pago (la fecha estimada mas cercana entre los fiados pendientes). HOY: vence hoy. ESTA_SEMANA:
+ * vence entre hoy y el domingo. VENCIDOS: esa fecha ya paso. SIN_FECHA: ningun fiado pendiente tiene fecha.
  */
-export type OpcionProximoPago = 'VENCIDOS' | 'SIN_FECHA' | 'FECHA'
+export type OpcionProximoPago = 'ESTA_SEMANA' | 'HOY' | 'VENCIDOS' | 'SIN_FECHA'
+
+/** Por que dato se ordena la lista de Deudores. */
+export type CriterioOrdenDeudores = 'NOMBRE' | 'FIADOS_PENDIENTES' | 'SALDO' | 'PROXIMO_PAGO' | 'FIADO_DESDE'
+
+/** Hacia donde se ordena: ASCENDENTE es de menor a mayor (A-Z, mas cercano o mas viejo primero). */
+export type SentidoOrden = 'ASCENDENTE' | 'DESCENDENTE'
 
 /** Lo que filtra la lista de Deudores. */
 export interface FiltrosDeudores {
@@ -14,10 +20,10 @@ export interface FiltrosDeudores {
    * no debe nada aparece unicamente al buscarlo.
    */
   busqueda: string
-  /** null = todos. */
+  /** null = todos los pagos. */
   proximoPago: OpcionProximoPago | null
-  /** AAAA-MM-DD; solo cuenta con proximoPago FECHA. null = todavia no eligio el dia. */
-  fechaProximoPago: string | null
+  ordenarPor: CriterioOrdenDeudores
+  sentido: SentidoOrden
 }
 
 /** Una fila de la lista de Deudores. Los importes estan en pesos. */
@@ -32,6 +38,8 @@ export interface FilaDeudor {
   proximaFechaEstimadaPago: string | null
   /** Verdadero si la proxima fecha ya paso. La calcula el hook contra la fecha de hoy. */
   proximoPagoVencido: boolean
+  /** Fecha y hora (ISO 8601) del fiado pendiente mas antiguo; null si no tiene fiados pendientes. */
+  fiadoDesde: string | null
 }
 
 /** Estado de la lista de Deudores. */
@@ -103,8 +111,9 @@ export interface ListaDeudoresProps {
   estadoLista: EstadoListaDeudores
   onCambiarBusqueda: (busqueda: string) => void
   onCambiarProximoPago: (proximoPago: OpcionProximoPago | null) => void
-  onCambiarFechaProximoPago: (fecha: string) => void
-  /** Quita la busqueda y el filtro por proximo pago. */
+  onCambiarOrden: (criterio: CriterioOrdenDeudores) => void
+  onInvertirSentido: () => void
+  /** Quita la busqueda y el filtro por proximo pago; el orden se mantiene. */
   onLimpiarFiltros: () => void
   onCambiarPagina: (pagina: number) => void
   onAbrirFicha: (idDeudor: number) => void

@@ -4,15 +4,31 @@ import {
 } from '@/features/ventas/deudores/ejemplos/api-deudores-ejemplo'
 import { DEUDORES_POR_PAGINA } from '@/features/ventas/deudores/config/reglas-deudores'
 import type {
+  CriterioOrdenDeudores,
   EstadoListaDeudores,
-  OpcionProximoPago,
   FiltrosDeudores,
+  OpcionProximoPago,
+  SentidoOrden,
 } from '@/features/ventas/deudores/types/cuenta-corriente'
 import { useListaPaginada, type OpcionesListaPaginada } from '@/features/ventas/hooks/use-lista-paginada'
 import { traducirErrorConsulta } from '@/features/ventas/utils/traducir-error-venta'
 
-/** Filtros con los que arranca la lista: sin busqueda (solo quienes deben algo) y sin filtro por proximo pago. */
-const FILTROS_DEUDORES_VACIOS: FiltrosDeudores = { busqueda: '', proximoPago: null, fechaProximoPago: null }
+/** Filtros con los que arranca la lista: sin busqueda (solo quienes deben algo), todos los pagos y por nombre. */
+const FILTROS_DEUDORES_VACIOS: FiltrosDeudores = {
+  busqueda: '',
+  proximoPago: null,
+  ordenarPor: 'NOMBRE',
+  sentido: 'ASCENDENTE',
+}
+
+/** El sentido natural de cada criterio: lo mas importante primero (mas deuda, mas cercano, mas viejo). */
+const SENTIDO_INICIAL_POR_CRITERIO: Record<CriterioOrdenDeudores, SentidoOrden> = {
+  NOMBRE: 'ASCENDENTE',
+  FIADOS_PENDIENTES: 'DESCENDENTE',
+  SALDO: 'DESCENDENTE',
+  PROXIMO_PAGO: 'ASCENDENTE',
+  FIADO_DESDE: 'ASCENDENTE',
+}
 
 // Funciones de modulo: el hook las usa dentro de efectos y necesitan identidad estable
 const OPCIONES_LISTA_DEUDORES: OpcionesListaPaginada<FiltrosDeudores, PaginaDeudoresConsultada> = {
@@ -54,11 +70,17 @@ export function useListaDeudoresEjemplo() {
     estadoLista: calcularEstadoLista(),
     cambiarBusqueda: (busqueda: string) => lista.establecerFiltros({ ...lista.filtros, busqueda }),
     cambiarProximoPago: (proximoPago: OpcionProximoPago | null) =>
-      // Cambiar de opcion descarta el dia elegido: solo vale para "Un dia"
-      lista.establecerFiltros({ ...lista.filtros, proximoPago, fechaProximoPago: null }),
-    cambiarFechaProximoPago: (fechaProximoPago: string) =>
-      lista.establecerFiltros({ ...lista.filtros, proximoPago: 'FECHA', fechaProximoPago }),
-    limpiarFiltros: () => lista.establecerFiltros(FILTROS_DEUDORES_VACIOS),
+      lista.establecerFiltros({ ...lista.filtros, proximoPago }),
+    /** Cambia el criterio y arranca por su sentido natural. */
+    cambiarOrden: (ordenarPor: CriterioOrdenDeudores) =>
+      lista.establecerFiltros({ ...lista.filtros, ordenarPor, sentido: SENTIDO_INICIAL_POR_CRITERIO[ordenarPor] }),
+    invertirSentido: () =>
+      lista.establecerFiltros({
+        ...lista.filtros,
+        sentido: lista.filtros.sentido === 'ASCENDENTE' ? 'DESCENDENTE' : 'ASCENDENTE',
+      }),
+    /** Quita la busqueda y el filtro por proximo pago; el orden elegido se mantiene. */
+    limpiarFiltros: () => lista.establecerFiltros({ ...lista.filtros, busqueda: '', proximoPago: null }),
     cambiarPagina: lista.cambiarPagina,
     reintentar: lista.reintentar,
   }

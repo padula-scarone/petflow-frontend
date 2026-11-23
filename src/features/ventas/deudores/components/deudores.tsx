@@ -8,7 +8,8 @@ export function Deudores({
   estadoLista,
   onCambiarBusqueda,
   onCambiarProximoPago,
-  onCambiarFechaProximoPago,
+  onCambiarOrden,
+  onInvertirSentido,
   onLimpiarFiltros,
   onCambiarPagina,
   onAbrirFicha,
@@ -23,7 +24,8 @@ export function Deudores({
         filtros={filtros}
         onCambiarBusqueda={onCambiarBusqueda}
         onCambiarProximoPago={onCambiarProximoPago}
-        onCambiarFechaProximoPago={onCambiarFechaProximoPago}
+        onCambiarOrden={onCambiarOrden}
+        onInvertirSentido={onInvertirSentido}
       />
 
       <ListaDeudoresEstados

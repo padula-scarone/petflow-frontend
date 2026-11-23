@@ -5,7 +5,11 @@ import type {
 } from '@/features/ventas/deudores/ejemplos/tipos-almacen-ejemplo'
 import type { FilaDeudor, FiltrosDeudores } from '@/features/ventas/deudores/types/cuenta-corriente'
 import type { DatosDeudor, Deudor } from '@/features/ventas/deudores/types/deudor'
-import { esFechaPasada, obtenerFechaHoy } from '@/features/ventas/deudores/utils/fechas-estimadas'
+import {
+  esFechaPasada,
+  obtenerDomingoDeLaSemana,
+  obtenerFechaHoy,
+} from '@/features/ventas/deudores/utils/fechas-estimadas'
 import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
 import { convertirCentavosAPesos } from '@/features/ventas/utils/calcular-centavos'
 import { normalizarTextoBusqueda } from '@/features/ventas/utils/normalizar-texto-busqueda'
@@ -41,6 +45,12 @@ function buscarProximaFechaEstimada(deudor: DeudorAlmacenado) {
   return fechas.length === 0 ? null : [...fechas].sort()[0]
 }
 
+/** La fecha de venta del fiado pendiente mas antiguo; null si no tiene fiados pendientes. */
+function buscarFiadoMasAntiguo(deudor: DeudorAlmacenado) {
+  const fechas = filtrarFiadosPendientes(deudor.fiados).map((fiado) => fiado.fechaHora)
+  return fechas.length === 0 ? null : [...fechas].sort()[0]
+}
+
 function convertirAFilaDeudor(deudor: DeudorAlmacenado, hoy: string): FilaDeudor {
   const proximaFecha = buscarProximaFechaEstimada(deudor)
   return {
@@ -52,6 +62,7 @@ function convertirAFilaDeudor(deudor: DeudorAlmacenado, hoy: string): FilaDeudor
     saldo: convertirCentavosAPesos(calcularSaldoDeudorCentavos(deudor)),
     proximaFechaEstimadaPago: proximaFecha,
     proximoPagoVencido: proximaFecha !== null && esFechaPasada(proximaFecha, hoy),
+    fiadoDesde: buscarFiadoMasAntiguo(deudor),
   }
 }
 
@@ -70,14 +81,51 @@ function ordenarPorNombre<Elemento>(elementos: Elemento[], obtenerNombre: (eleme
   )
 }
 
+/** Compara dos valores que pueden faltar: el que falta va siempre al final, sin importar el sentido. */
+function compararConFaltantes<Valor extends string | number>(
+  primero: Valor | null,
+  segundo: Valor | null,
+  signo: 1 | -1,
+) {
+  if (primero === null && segundo === null) return 0
+  if (primero === null) return 1
+  if (segundo === null) return -1
+  if (primero === segundo) return 0
+  return (primero < segundo ? -1 : 1) * signo
+}
+
+/** Ordena las filas segun el criterio y el sentido elegidos; a igual valor, por nombre. */
+function ordenarFilasDeudores(filas: FilaDeudor[], filtros: FiltrosDeudores) {
+  const signo = filtros.sentido === 'ASCENDENTE' ? 1 : -1
+  const comparar = (primera: FilaDeudor, segunda: FilaDeudor) => {
+    if (filtros.ordenarPor === 'NOMBRE') {
+      return primera.nombreCompleto.localeCompare(segunda.nombreCompleto, 'es') * signo
+    }
+    if (filtros.ordenarPor === 'FIADOS_PENDIENTES') {
+      return compararConFaltantes(primera.cantidadFiadosPendientes, segunda.cantidadFiadosPendientes, signo)
+    }
+    if (filtros.ordenarPor === 'SALDO') return compararConFaltantes(primera.saldo, segunda.saldo, signo)
+    if (filtros.ordenarPor === 'PROXIMO_PAGO') {
+      return compararConFaltantes(primera.proximaFechaEstimadaPago, segunda.proximaFechaEstimadaPago, signo)
+    }
+    return compararConFaltantes(primera.fiadoDesde, segunda.fiadoDesde, signo)
+  }
+  return [...filas].sort(
+    (primera, segunda) =>
+      comparar(primera, segunda) || primera.nombreCompleto.localeCompare(segunda.nombreCompleto, 'es'),
+  )
+}
+
 /** Coincide con el filtro por proximo pago. Quien no debe nada no tiene proximo pago: no entra en ningun filtro. */
-function coincideConProximoPago(fila: FilaDeudor, filtros: FiltrosDeudores) {
+function coincideConProximoPago(fila: FilaDeudor, filtros: FiltrosDeudores, hoy: string) {
   if (filtros.proximoPago === null) return true
   if (fila.saldo === 0) return false
+  const proxima = fila.proximaFechaEstimadaPago
   if (filtros.proximoPago === 'VENCIDOS') return fila.proximoPagoVencido
-  if (filtros.proximoPago === 'SIN_FECHA') return fila.proximaFechaEstimadaPago === null
-  // Sin dia elegido todavia, el filtro no recorta nada
-  return filtros.fechaProximoPago === null || fila.proximaFechaEstimadaPago === filtros.fechaProximoPago
+  if (filtros.proximoPago === 'SIN_FECHA') return proxima === null
+  if (filtros.proximoPago === 'HOY') return proxima === hoy
+  // ESTA_SEMANA: de hoy al domingo; lo vencido tiene su propia opcion
+  return proxima !== null && proxima >= hoy && proxima <= obtenerDomingoDeLaSemana(hoy)
 }
 
 // --- LECTURAS ---
@@ -92,8 +140,8 @@ export function leerPaginaDeudores(filtros: FiltrosDeudores, pagina: number, can
     .deudores.filter((deudor) => coincideConBusqueda(deudor.deudor, textoNormalizado))
     .map((deudor) => convertirAFilaDeudor(deudor, hoy))
     .filter((fila) => textoNormalizado !== '' || fila.saldo > 0)
-    .filter((fila) => coincideConProximoPago(fila, filtros))
-  const ordenadas = ordenarPorNombre(coincidentes, (fila) => fila.nombreCompleto)
+    .filter((fila) => coincideConProximoPago(fila, filtros, hoy))
+  const ordenadas = ordenarFilasDeudores(coincidentes, filtros)
 
   const totalPaginas = Math.ceil(ordenadas.length / cantidadPorPagina)
   const paginacion: PaginacionResultados = {

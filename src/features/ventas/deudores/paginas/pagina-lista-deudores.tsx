@@ -14,7 +14,8 @@ export function PaginaListaDeudores() {
       estadoLista={lista.estadoLista}
       onCambiarBusqueda={lista.cambiarBusqueda}
       onCambiarProximoPago={lista.cambiarProximoPago}
-      onCambiarFechaProximoPago={lista.cambiarFechaProximoPago}
+      onCambiarOrden={lista.cambiarOrden}
+      onInvertirSentido={lista.invertirSentido}
       onLimpiarFiltros={lista.limpiarFiltros}
       onCambiarPagina={lista.cambiarPagina}
       onAbrirFicha={(idDeudor) => void navegar(construirRutaFichaDeudor(idDeudor))}

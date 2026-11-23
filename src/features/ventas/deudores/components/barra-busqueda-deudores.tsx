@@ -2,25 +2,25 @@ import { useId } from 'react'
 import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { FiltroProximoPago } from '@/features/ventas/deudores/components/filtro-proximo-pago'
-import type { FiltrosDeudores, OpcionProximoPago } from '@/features/ventas/deudores/types/cuenta-corriente'
+import { SelectorOrdenDeudores } from '@/features/ventas/deudores/components/selector-orden-deudores'
+import type { FiltrosDeudores, ListaDeudoresProps } from '@/features/ventas/deudores/types/cuenta-corriente'
 
-/** Props de la barra con el buscador y el filtro por proximo pago. */
-interface BarraBusquedaDeudoresProps {
+/** Props de la barra con el buscador, el filtro por proximo pago y el orden. */
+interface BarraBusquedaDeudoresProps
+  extends Pick<ListaDeudoresProps, 'onCambiarBusqueda' | 'onCambiarProximoPago' | 'onCambiarOrden' | 'onInvertirSentido'> {
   filtros: FiltrosDeudores
-  onCambiarBusqueda: (busqueda: string) => void
-  onCambiarProximoPago: (proximoPago: OpcionProximoPago | null) => void
-  onCambiarFechaProximoPago: (fecha: string) => void
 }
 
 /**
- * Buscador por nombre o DNI y filtro por proximo pago. No hay alta de deudores: un deudor nace al fiarle una
- * venta en Registrar Venta. Quien ya no debe nada sale de la lista y solo aparece al buscarlo.
+ * Buscador por nombre o DNI, filtro por proximo pago y orden. No hay alta de deudores: un deudor nace al fiarle
+ * una venta en Registrar Venta. Quien ya no debe nada sale de la lista y solo aparece al buscarlo.
  */
 export function BarraBusquedaDeudores({
   filtros,
   onCambiarBusqueda,
   onCambiarProximoPago,
-  onCambiarFechaProximoPago,
+  onCambiarOrden,
+  onInvertirSentido,
 }: BarraBusquedaDeudoresProps) {
   const idBusqueda = useId()
   const idProximoPago = useId()
@@ -51,14 +51,22 @@ export function BarraBusquedaDeudores({
         />
       </div>
 
-      {/* --- PROXIMO PAGO --- */}
-      <FiltroProximoPago
-        idCampo={idProximoPago}
-        proximoPago={filtros.proximoPago}
-        fechaProximoPago={filtros.fechaProximoPago}
-        onCambiarProximoPago={onCambiarProximoPago}
-        onCambiarFechaProximoPago={onCambiarFechaProximoPago}
-      />
+      {/* --- PROXIMO PAGO Y ORDEN --- */}
+      <div className="flex flex-col gap-interno sm:flex-row">
+        <div className="sm:w-48">
+          <FiltroProximoPago
+            idCampo={idProximoPago}
+            proximoPago={filtros.proximoPago}
+            onCambiarProximoPago={onCambiarProximoPago}
+          />
+        </div>
+        <SelectorOrdenDeudores
+          ordenarPor={filtros.ordenarPor}
+          sentido={filtros.sentido}
+          onCambiarOrden={onCambiarOrden}
+          onInvertirSentido={onInvertirSentido}
+        />
+      </div>
     </div>
   )
 }

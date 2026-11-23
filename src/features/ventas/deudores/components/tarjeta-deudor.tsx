@@ -2,6 +2,7 @@ import { FileText } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+import { formatearFecha } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { EstadoProximoPago } from '@/features/ventas/deudores/components/estado-proximo-pago'
 import type { FilaDeudor } from '@/features/ventas/deudores/types/cuenta-corriente'
@@ -53,6 +54,12 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
               vencido={fila.proximoPagoVencido}
               tieneSaldo={tieneSaldo}
             />
+          </dd>
+        </div>
+        <div>
+          <dt className="text-auxiliar text-texto-suave">Fiado desde</dt>
+          <dd className="font-medium tabular-nums">
+            {fila.fiadoDesde === null ? <span className="text-texto-suave">—</span> : formatearFecha(fila.fiadoDesde)}
           </dd>
         </div>
       </dl>
