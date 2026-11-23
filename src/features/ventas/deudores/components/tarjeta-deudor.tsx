@@ -13,21 +13,52 @@ interface TarjetaDeudorProps {
   onAbrirFicha: (idDeudor: number) => void
 }
 
-/** Tarjeta de un deudor. Como en el Historial, la ficha se abre con el boton "Ver ficha" del pie. */
+/**
+ * Tarjeta de un deudor, con la misma estructura que las del Historial y Devoluciones: cabecera con el nombre en
+ * negrita, datos con etiqueta, el importe a la derecha bajo una linea y un boton de ancho completo. La ficha se
+ * abre con el boton "Ver ficha".
+ */
 export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
   const tieneSaldo = fila.saldo > 0
 
   return (
-    // h-full + mt-auto en el pie: las tarjetas de una misma fila de la grilla igualan alto
+    // h-full + mt-auto en el saldo: las tarjetas de una misma fila de la grilla igualan alto
     <Card className="h-full min-w-0 gap-interno p-contorno">
-      {/* --- NOMBRE, CONTACTO Y SALDO --- */}
-      <div className="flex items-start justify-between gap-interno">
-        <div className="min-w-0">
-          <p className="truncate font-bold">{fila.nombreCompleto}</p>
-          <p className="text-cuerpo text-texto-suave tabular-nums">DNI {fila.dni}</p>
-          <p className="text-cuerpo text-texto-suave tabular-nums">{fila.telefono}</p>
+      {/* --- NOMBRE, DNI Y TELEFONO --- */}
+      <div className="min-w-0">
+        <p className="font-bold wrap-break-word">{fila.nombreCompleto}</p>
+        <p className="text-cuerpo text-texto-suave tabular-nums">DNI: {fila.dni}</p>
+        <p className="text-cuerpo text-texto-suave tabular-nums">Teléfono: {fila.telefono}</p>
+      </div>
+
+      {/* --- FIADOS, FECHA DE FIADO Y PROXIMO PAGO --- */}
+      <dl className="grid grid-cols-2 gap-x-bloque gap-y-interno text-cuerpo">
+        <div>
+          <dt className="text-auxiliar text-texto-suave">Fiados pendientes</dt>
+          <dd className="font-medium tabular-nums">{fila.cantidadFiadosPendientes}</dd>
         </div>
-        <p className="flex shrink-0 flex-col items-end">
+        <div>
+          <dt className="text-auxiliar text-texto-suave">Fecha de fiado</dt>
+          <dd className="font-medium tabular-nums">
+            {fila.fiadoDesde === null ? <span className="text-texto-suave">—</span> : formatearFecha(fila.fiadoDesde)}
+          </dd>
+        </div>
+        <div className="col-span-2">
+          <dt className="text-auxiliar text-texto-suave">Próximo pago</dt>
+          <dd className="font-medium">
+            <EstadoProximoPago
+              fecha={fila.proximaFechaEstimadaPago}
+              vencido={fila.proximoPagoVencido}
+              tieneSaldo={tieneSaldo}
+              disposicion="en-linea"
+            />
+          </dd>
+        </div>
+      </dl>
+
+      {/* --- SALDO, A LA DERECHA --- */}
+      <div className="mt-auto flex justify-end border-t pt-interno">
+        <p className="flex flex-col items-end">
           <span className="text-auxiliar text-texto-suave">Saldo</span>
           <span
             className={cn(
@@ -40,36 +71,12 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
         </p>
       </div>
 
-      {/* --- FIADOS Y PROXIMO PAGO --- */}
-      <dl className="flex flex-wrap justify-between gap-x-bloque gap-y-1 border-t pt-interno text-cuerpo">
-        <div>
-          <dt className="text-auxiliar text-texto-suave">Fiados pendientes</dt>
-          <dd className="font-medium tabular-nums">{fila.cantidadFiadosPendientes}</dd>
-        </div>
-        <div>
-          <dt className="text-auxiliar text-texto-suave">Fecha de fiado</dt>
-          <dd className="font-medium tabular-nums">
-            {fila.fiadoDesde === null ? <span className="text-texto-suave">—</span> : formatearFecha(fila.fiadoDesde)}
-          </dd>
-        </div>
-        <div>
-          <dt className="text-auxiliar text-texto-suave">Próximo pago</dt>
-          <dd className="font-medium">
-            <EstadoProximoPago
-              fecha={fila.proximaFechaEstimadaPago}
-              vencido={fila.proximoPagoVencido}
-              tieneSaldo={tieneSaldo}
-            />
-          </dd>
-        </div>
-      </dl>
-
       {/* --- ACCION --- */}
       <Button
         type="button"
         variant="outline"
         aria-label={`Ver la ficha de ${fila.nombreCompleto}`}
-        className="mt-auto w-full gap-1.5 bg-fondo-tarjeta px-2"
+        className="w-full gap-1.5 bg-fondo-tarjeta px-2"
         onClick={() => onAbrirFicha(fila.idDeudor)}
       >
         <FileText />

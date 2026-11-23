@@ -86,7 +86,12 @@ export function TarjetaFiadoPendiente({ fila, onAlternarFiado, onCambiarMontoFia
         <div className="col-span-2">
           <dt className="text-auxiliar text-texto-suave">Fecha estimada de pago</dt>
           <dd className="font-medium">
-            <EstadoProximoPago fecha={fiado.fechaEstimadaPago} vencido={fiado.fechaEstimadaVencida} tieneSaldo />
+            <EstadoProximoPago
+              fecha={fiado.fechaEstimadaPago}
+              vencido={fiado.fechaEstimadaVencida}
+              tieneSaldo
+              disposicion="en-linea"
+            />
           </dd>
         </div>
       </dl>

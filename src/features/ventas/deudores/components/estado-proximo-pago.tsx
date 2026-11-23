@@ -10,19 +10,38 @@ interface EstadoProximoPagoProps {
   vencido: boolean
   /** Sin saldo no hay nada que pagar: no se muestra "Sin fecha" sino un guion. */
   tieneSaldo: boolean
+  /**
+   * Donde va "Atrasado". apilada (por defecto, en las tablas): debajo de la fecha, mas chico, para que la columna no
+   * se ensanche. en-linea (en las tarjetas): al lado de la fecha.
+   */
+  disposicion?: 'apilada' | 'en-linea'
   className?: string
 }
 
-/**
- * La fecha del proximo pago. Una fecha que ya paso se destaca con color e icono, y debajo, mas chico, dice "Atrasado":
- * en una segunda linea para que la columna no se ensanche.
- */
-export function EstadoProximoPago({ fecha, vencido, tieneSaldo, className }: EstadoProximoPagoProps) {
+/** La fecha del proximo pago. Una fecha que ya paso se destaca con color, icono y la palabra "Atrasado". */
+export function EstadoProximoPago({
+  fecha,
+  vencido,
+  tieneSaldo,
+  disposicion = 'apilada',
+  className,
+}: EstadoProximoPagoProps) {
   if (!tieneSaldo) return <span className={cn('text-texto-suave', className)}>—</span>
   if (fecha === null) return <span className={cn('text-texto-suave', className)}>Sin fecha</span>
 
   if (!vencido) {
     return <span className={cn('whitespace-nowrap tabular-nums', className)}>{describirFechaEstimada(fecha)}</span>
+  }
+
+  if (disposicion === 'en-linea') {
+    return (
+      <span className={cn('inline-flex flex-wrap items-center gap-x-1 font-medium text-peligro tabular-nums', className)}>
+        <CalendarX aria-hidden="true" className="size-4 shrink-0" />
+        <span className="sr-only">Atrasado: </span>
+        {describirFechaEstimada(fecha)}
+        <span aria-hidden="true">· Atrasado</span>
+      </span>
+    )
   }
 
   return (
