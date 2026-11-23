@@ -32,9 +32,7 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
           <span role="columnheader">Nombre</span>
           <span role="columnheader">DNI</span>
           <span role="columnheader">Teléfono</span>
-          <span role="columnheader" className="justify-self-end">
-            Fiados pendientes
-          </span>
+          <span role="columnheader">Fiados pendientes</span>
           <span role="columnheader" className="justify-self-end">
             Saldo
           </span>
@@ -61,7 +59,7 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
             <div role="cell" className="whitespace-nowrap tabular-nums">
               {fila.telefono}
             </div>
-            <div role="cell" className="justify-self-end tabular-nums">
+            <div role="cell" className="tabular-nums">
               {fila.cantidadFiadosPendientes}
             </div>
             <div
