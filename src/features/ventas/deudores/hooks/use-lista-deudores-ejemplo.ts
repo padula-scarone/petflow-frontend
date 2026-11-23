@@ -3,19 +3,23 @@ import {
   type PaginaDeudoresConsultada,
 } from '@/features/ventas/deudores/ejemplos/api-deudores-ejemplo'
 import { DEUDORES_POR_PAGINA } from '@/features/ventas/deudores/config/reglas-deudores'
-import type { EstadoListaDeudores, FiltrosDeudores } from '@/features/ventas/deudores/types/cuenta-corriente'
+import type {
+  EstadoListaDeudores,
+  OpcionProximoPago,
+  FiltrosDeudores,
+} from '@/features/ventas/deudores/types/cuenta-corriente'
 import { useListaPaginada, type OpcionesListaPaginada } from '@/features/ventas/hooks/use-lista-paginada'
 import { traducirErrorConsulta } from '@/features/ventas/utils/traducir-error-venta'
 
-/** Filtros con los que arranca la lista: sin busqueda y solo quienes deben algo. */
-const FILTROS_DEUDORES_VACIOS: FiltrosDeudores = { busqueda: '', incluirSinDeuda: false }
+/** Filtros con los que arranca la lista: sin busqueda (solo quienes deben algo) y sin filtro por proximo pago. */
+const FILTROS_DEUDORES_VACIOS: FiltrosDeudores = { busqueda: '', proximoPago: null, fechaProximoPago: null }
 
 // Funciones de modulo: el hook las usa dentro de efectos y necesitan identidad estable
 const OPCIONES_LISTA_DEUDORES: OpcionesListaPaginada<FiltrosDeudores, PaginaDeudoresConsultada> = {
   // El cliente del back real no se usa: la consulta es de ejemplo
   consultar: (_cliente, filtros, pagina) => consultarDeudoresApiEjemplo(filtros, pagina, DEUDORES_POR_PAGINA),
   contarElementos: (pagina) => pagina.deudores.length,
-  // Solo el texto espera a que se deje de tipear; el interruptor aplica al instante
+  // Solo el texto espera a que se deje de tipear; el filtro por proximo pago aplica al instante
   hayTextoPendiente: (escritos, consultados) => escritos.busqueda !== consultados.busqueda,
 }
 
@@ -27,7 +31,8 @@ export function useListaDeudoresEjemplo() {
   const lista = useListaPaginada(OPCIONES_LISTA_DEUDORES, FILTROS_DEUDORES_VACIOS)
 
   // --- CALCULOS ---
-  const hayBusquedaEnConsulta = lista.filtrosConsulta.busqueda.trim() !== ''
+  const hayFiltrosEnConsulta =
+    lista.filtrosConsulta.busqueda.trim() !== '' || lista.filtrosConsulta.proximoPago !== null
 
   const calcularEstadoLista = (): EstadoListaDeudores => {
     const { consulta } = lista
@@ -39,7 +44,7 @@ export function useListaDeudoresEjemplo() {
       }
     }
     const { deudores, paginacion } = consulta.pagina
-    if (deudores.length === 0) return { tipo: hayBusquedaEnConsulta ? 'sin-resultados' : 'sin-deudores' }
+    if (deudores.length === 0) return { tipo: hayFiltrosEnConsulta ? 'sin-resultados' : 'sin-deudores' }
     return { tipo: 'con-deudores', filas: deudores, paginacion }
   }
 
@@ -48,11 +53,13 @@ export function useListaDeudoresEjemplo() {
     filtros: lista.filtros,
     estadoLista: calcularEstadoLista(),
     cambiarBusqueda: (busqueda: string) => lista.establecerFiltros({ ...lista.filtros, busqueda }),
-    cambiarIncluirSinDeuda: (incluirSinDeuda: boolean) =>
-      lista.establecerFiltros({ ...lista.filtros, incluirSinDeuda }),
+    cambiarProximoPago: (proximoPago: OpcionProximoPago | null) =>
+      // Cambiar de opcion descarta el dia elegido: solo vale para "Un dia"
+      lista.establecerFiltros({ ...lista.filtros, proximoPago, fechaProximoPago: null }),
+    cambiarFechaProximoPago: (fechaProximoPago: string) =>
+      lista.establecerFiltros({ ...lista.filtros, proximoPago: 'FECHA', fechaProximoPago }),
+    limpiarFiltros: () => lista.establecerFiltros(FILTROS_DEUDORES_VACIOS),
     cambiarPagina: lista.cambiarPagina,
     reintentar: lista.reintentar,
-    /** Repite la consulta sin mostrar "cargando": despues de dar de alta un deudor. */
-    refrescar: lista.refrescar,
   }
 }

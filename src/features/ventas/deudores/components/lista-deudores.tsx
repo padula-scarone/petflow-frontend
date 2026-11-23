@@ -1,4 +1,4 @@
-import { Plus, SearchX, UsersRound } from 'lucide-react'
+import { SearchX, UsersRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { EstadoCargandoLista } from '@/features/ventas/components/estado-cargando-lista'
 import { EstadoErrorLista } from '@/features/ventas/components/estado-error-lista'
@@ -14,8 +14,7 @@ interface ListaDeudoresEstadosProps {
   onAbrirFicha: (idDeudor: number) => void
   onCambiarPagina: (pagina: number) => void
   onReintentar: () => void
-  onLimpiarBusqueda: () => void
-  onNuevoDeudor: () => void
+  onLimpiarFiltros: () => void
 }
 
 /** Cada estado de la lista con su salida; con datos, tarjetas hasta xl y tabla desde xl. */
@@ -24,8 +23,7 @@ export function ListaDeudoresEstados({
   onAbrirFicha,
   onCambiarPagina,
   onReintentar,
-  onLimpiarBusqueda,
-  onNuevoDeudor,
+  onLimpiarFiltros,
 }: ListaDeudoresEstadosProps) {
   if (estadoLista.tipo === 'cargando') return <EstadoCargandoLista textoAccesible="Cargando deudores" />
   if (estadoLista.tipo === 'error') {
@@ -37,19 +35,15 @@ export function ListaDeudoresEstados({
       />
     )
   }
-  // sin-deudores: nadie debe (o no hay ninguno cargado). sin-resultados: la busqueda no devuelve a nadie
+  // sin-deudores: nadie debe. sin-resultados: la busqueda o el filtro no devuelven a nadie
   if (estadoLista.tipo === 'sin-deudores') {
     return (
       <EstadoVacioLista
         icono={UsersRound}
         titulo="No hay deudores con saldo pendiente"
-        descripcion="Cuando registres una venta con deuda, vas a ver acá a quién se le fió. También podés cargar un deudor nuevo."
-        accion={
-          <Button type="button" onClick={onNuevoDeudor}>
-            <Plus aria-hidden="true" />
-            Nuevo deudor
-          </Button>
-        }
+        descripcion="Cuando fíes una venta en Registrar Venta, vas a ver acá a quién se le fió."
+        // Sin accion: los deudores nacen al fiar una venta, no desde aca
+        accion={null}
       />
     )
   }
@@ -57,11 +51,11 @@ export function ListaDeudoresEstados({
     return (
       <EstadoVacioLista
         icono={SearchX}
-        titulo="No encontramos deudores con esa búsqueda"
-        descripcion="Revisá el nombre o el DNI, o activá «Incluir a los que no deben» si buscás a alguien sin saldo."
+        titulo="No encontramos deudores"
+        descripcion="Revisá el nombre o el DNI, o cambiá el filtro de próximo pago."
         accion={
-          <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onLimpiarBusqueda}>
-            Limpiar búsqueda
+          <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onLimpiarFiltros}>
+            Limpiar filtros
           </Button>
         }
       />

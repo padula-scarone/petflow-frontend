@@ -7,10 +7,11 @@ export function Deudores({
   filtros,
   estadoLista,
   onCambiarBusqueda,
-  onCambiarIncluirSinDeuda,
+  onCambiarProximoPago,
+  onCambiarFechaProximoPago,
+  onLimpiarFiltros,
   onCambiarPagina,
   onAbrirFicha,
-  onNuevoDeudor,
   onReintentar,
 }: ListaDeudoresProps) {
   return (
@@ -21,8 +22,8 @@ export function Deudores({
       <BarraBusquedaDeudores
         filtros={filtros}
         onCambiarBusqueda={onCambiarBusqueda}
-        onCambiarIncluirSinDeuda={onCambiarIncluirSinDeuda}
-        onNuevoDeudor={onNuevoDeudor}
+        onCambiarProximoPago={onCambiarProximoPago}
+        onCambiarFechaProximoPago={onCambiarFechaProximoPago}
       />
 
       <ListaDeudoresEstados
@@ -30,8 +31,7 @@ export function Deudores({
         onAbrirFicha={onAbrirFicha}
         onCambiarPagina={onCambiarPagina}
         onReintentar={onReintentar}
-        onLimpiarBusqueda={() => onCambiarBusqueda('')}
-        onNuevoDeudor={onNuevoDeudor}
+        onLimpiarFiltros={onLimpiarFiltros}
       />
     </section>
   )

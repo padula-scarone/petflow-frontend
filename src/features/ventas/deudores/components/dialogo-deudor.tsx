@@ -14,7 +14,6 @@ import { FormularioDeudor } from '@/features/ventas/deudores/components/formular
 import type {
   CampoDeudor,
   DatosDeudor,
-  Deudor,
   ErroresDatosDeudor,
   EstadoGuardadoDeudor,
 } from '@/features/ventas/deudores/types/deudor'
@@ -32,41 +31,21 @@ interface DialogoDeudorProps {
   onSalirDelCampo: (campo: CampoDeudor) => void
   onEnviar: () => void
   onCerrar: () => void
-  /** Solo en el alta: abre la ficha de quien ya tenia ese DNI. */
-  onVerDeudorExistente?: (deudor: Deudor) => void
 }
 
 const ID_FORMULARIO_DEUDOR = 'formulario-deudor'
 
 /** Aviso que corresponde al resultado del guardado; null si no hay nada que avisar. */
-function AvisoGuardado({
-  modo,
-  estadoGuardado,
-  onVerDeudorExistente,
-}: Pick<DialogoDeudorProps, 'modo' | 'estadoGuardado' | 'onVerDeudorExistente'>) {
+function AvisoGuardado({ modo, estadoGuardado }: Pick<DialogoDeudorProps, 'modo' | 'estadoGuardado'>) {
+  // En el alta de Registrar Venta un DNI repetido no llega aca: se elige a esa persona y se cierra el dialogo
   if (estadoGuardado.fase === 'dni-duplicado') {
-    const { deudorExistente } = estadoGuardado
     return (
       <Alert variant="destructive">
         <AlertTitle>
           {modo === 'alta' ? 'Ya hay un deudor con ese DNI' : 'Ese DNI pertenece a otro deudor'}
         </AlertTitle>
         <AlertDescription>
-          {modo === 'alta' && onVerDeudorExistente ? (
-            <>
-              <p>Está registrado a nombre de {deudorExistente.nombreCompleto}.</p>
-              <Button
-                type="button"
-                variant="outline"
-                className="mt-interno bg-fondo-tarjeta text-texto-principal"
-                onClick={() => onVerDeudorExistente(deudorExistente)}
-              >
-                Ver ficha de {deudorExistente.nombreCompleto}
-              </Button>
-            </>
-          ) : (
-            <p>Revisá el número: cada persona tiene un solo DNI.</p>
-          )}
+          <p>Revisá el número: cada persona tiene un solo DNI.</p>
         </AlertDescription>
       </Alert>
     )
@@ -104,7 +83,6 @@ export function DialogoDeudor({
   onSalirDelCampo,
   onEnviar,
   onCerrar,
-  onVerDeudorExistente,
 }: DialogoDeudorProps) {
   const guardando = estadoGuardado.fase === 'guardando'
 
@@ -130,7 +108,7 @@ export function DialogoDeudor({
             onSalirDelCampo={onSalirDelCampo}
             onEnviar={onEnviar}
           />
-          <AvisoGuardado modo={modo} estadoGuardado={estadoGuardado} onVerDeudorExistente={onVerDeudorExistente} />
+          <AvisoGuardado modo={modo} estadoGuardado={estadoGuardado} />
         </DialogBody>
 
         <DialogFooter>

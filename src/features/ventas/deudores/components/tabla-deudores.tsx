@@ -1,4 +1,7 @@
+import { FileText } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { EstadoProximoPago } from '@/features/ventas/deudores/components/estado-proximo-pago'
@@ -11,24 +14,22 @@ interface TablaDeudoresProps {
 }
 
 // Misma distribucion que la tabla del Historial: grilla con subgrid, cada columna mide lo que su contenido y el
-// espacio sobrante se reparte en separaciones iguales.
-const CLASE_FILA = 'col-span-full grid grid-cols-subgrid items-center border-b px-contorno'
+// espacio sobrante se reparte en separaciones iguales. pr-interno: el boton de icono ya trae su propio aire.
+const CLASE_FILA = 'col-span-full grid grid-cols-subgrid items-center border-b pr-interno pl-contorno'
 
-/**
- * Tabla de deudores para pantallas anchas. Toda la fila abre la ficha: el nombre es el boton y se estira sobre
- * la fila entera, asi hay un solo punto de foco por deudor y un area de toque amplia.
- */
+/** Tabla de deudores para pantallas anchas. Como en el Historial, la ficha se abre con el boton de la ultima columna. */
 export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
   return (
     <Card className="gap-0 overflow-hidden p-0">
       <div
         role="table"
         aria-label="Deudores, por orden alfabético"
-        className="grid grid-cols-[repeat(5,auto)] justify-between text-cuerpo"
+        className="grid grid-cols-[repeat(7,auto)] justify-between text-cuerpo"
       >
         {/* --- ENCABEZADO --- */}
         <div role="row" className={cn(CLASE_FILA, 'min-h-control font-medium text-texto-suave')}>
           <span role="columnheader">Nombre</span>
+          <span role="columnheader">Teléfono</span>
           <span role="columnheader">DNI</span>
           <span role="columnheader" className="justify-self-end">
             Fiados pendientes
@@ -37,6 +38,9 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
             Saldo
           </span>
           <span role="columnheader">Próximo pago</span>
+          <span role="columnheader">
+            <span className="sr-only">Acciones</span>
+          </span>
         </div>
 
         {/* --- FILAS --- */}
@@ -44,20 +48,13 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
           <div
             key={fila.idDeudor}
             role="row"
-            className={cn(
-              CLASE_FILA,
-              'relative min-h-16 py-interno transition-colors last:border-b-0 hover:bg-fondo-hover/60 has-[button:focus-visible]:bg-fondo-hover/60',
-            )}
+            className={cn(CLASE_FILA, 'min-h-16 py-2 transition-colors last:border-b-0 hover:bg-fondo-hover/60')}
           >
-            <div role="cell" className="min-w-0">
-              <button
-                type="button"
-                aria-label={`Ver la ficha de ${fila.nombreCompleto}`}
-                className="max-w-64 truncate text-left font-bold outline-none after:absolute after:inset-0 focus-visible:after:ring-[3px] focus-visible:after:ring-foco/50 focus-visible:after:ring-inset"
-                onClick={() => onAbrirFicha(fila.idDeudor)}
-              >
-                {fila.nombreCompleto}
-              </button>
+            <div role="cell" className="max-w-64 min-w-0 truncate font-bold">
+              {fila.nombreCompleto}
+            </div>
+            <div role="cell" className="whitespace-nowrap tabular-nums">
+              {fila.telefono}
             </div>
             <div role="cell" className="tabular-nums">
               {fila.dni}
@@ -80,6 +77,22 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
                 vencido={fila.proximoPagoVencido}
                 tieneSaldo={fila.saldo > 0}
               />
+            </div>
+            <div role="cell">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    aria-label={`Ver la ficha de ${fila.nombreCompleto}`}
+                    className="size-control"
+                    onClick={() => onAbrirFicha(fila.idDeudor)}
+                  >
+                    <FileText className="size-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Ver ficha</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         ))}

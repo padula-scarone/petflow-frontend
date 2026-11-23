@@ -1,3 +1,5 @@
+import { FileText } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 import { formatearMoneda } from '@/lib/formatear-moneda'
@@ -10,23 +12,18 @@ interface TarjetaDeudorProps {
   onAbrirFicha: (idDeudor: number) => void
 }
 
-/** Tarjeta de un deudor. Toda la tarjeta abre la ficha: el nombre es el boton y se estira sobre ella. */
+/** Tarjeta de un deudor. Como en el Historial, la ficha se abre con el boton "Ver ficha" del pie. */
 export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
   const tieneSaldo = fila.saldo > 0
 
   return (
-    <Card className="relative h-full min-w-0 gap-interno p-contorno transition-colors hover:bg-fondo-hover/60 has-[button:focus-visible]:ring-[3px] has-[button:focus-visible]:ring-foco/50">
-      {/* --- NOMBRE Y SALDO --- */}
+    // h-full + mt-auto en el pie: las tarjetas de una misma fila de la grilla igualan alto
+    <Card className="h-full min-w-0 gap-interno p-contorno">
+      {/* --- NOMBRE, CONTACTO Y SALDO --- */}
       <div className="flex items-start justify-between gap-interno">
         <div className="min-w-0">
-          <button
-            type="button"
-            aria-label={`Ver la ficha de ${fila.nombreCompleto}`}
-            className="max-w-full truncate text-left font-bold outline-none after:absolute after:inset-0"
-            onClick={() => onAbrirFicha(fila.idDeudor)}
-          >
-            {fila.nombreCompleto}
-          </button>
+          <p className="truncate font-bold">{fila.nombreCompleto}</p>
+          <p className="text-cuerpo text-texto-suave tabular-nums">{fila.telefono}</p>
           <p className="text-cuerpo text-texto-suave tabular-nums">DNI {fila.dni}</p>
         </div>
         <p className="flex shrink-0 flex-col items-end">
@@ -43,7 +40,7 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
       </div>
 
       {/* --- FIADOS Y PROXIMO PAGO --- */}
-      <dl className="mt-auto flex flex-wrap justify-between gap-x-bloque gap-y-1 border-t pt-interno text-cuerpo">
+      <dl className="flex flex-wrap justify-between gap-x-bloque gap-y-1 border-t pt-interno text-cuerpo">
         <div>
           <dt className="text-auxiliar text-texto-suave">Fiados pendientes</dt>
           <dd className="font-medium tabular-nums">{fila.cantidadFiadosPendientes}</dd>
@@ -59,6 +56,18 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
           </dd>
         </div>
       </dl>
+
+      {/* --- ACCION --- */}
+      <Button
+        type="button"
+        variant="outline"
+        aria-label={`Ver la ficha de ${fila.nombreCompleto}`}
+        className="mt-auto w-full gap-1.5 bg-fondo-tarjeta px-2"
+        onClick={() => onAbrirFicha(fila.idDeudor)}
+      >
+        <FileText />
+        Ver ficha
+      </Button>
     </Card>
   )
 }

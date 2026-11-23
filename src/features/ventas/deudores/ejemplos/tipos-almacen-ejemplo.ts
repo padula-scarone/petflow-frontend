@@ -2,7 +2,17 @@ import type { Deudor } from '@/features/ventas/deudores/types/deudor'
 
 // Almacen en memoria que hace de back en la maqueta. Los importes se guardan en centavos enteros.
 
-/** Un fiado guardado: lo adeudado y lo ya pagado, en centavos. */
+/** Un pago aplicado a un fiado, en centavos. */
+export interface PagoFiadoAlmacenado {
+  /** Fecha y hora del pago en formato ISO 8601. */
+  fechaHora: string
+  /** Porcion base que se abono al fiado. */
+  montoCentavos: number
+  /** Recibo del cobro; null = se pago al registrar la venta. */
+  numeroRecibo: string | null
+}
+
+/** Un fiado guardado: lo adeudado y cada pago que recibio. */
 export interface FiadoAlmacenado {
   idVenta: number
   numeroComprobante: string
@@ -11,8 +21,8 @@ export interface FiadoAlmacenado {
   /** AAAA-MM-DD; null = sin fecha. */
   fechaEstimadaPago: string | null
   importeAdeudadoCentavos: number
-  /** Suma de las porciones base ya pagadas: el pago inicial mas los cobros posteriores. */
-  montoPagadoCentavos: number
+  /** El pago inicial (si lo hubo) y los cobros posteriores, del mas viejo al mas nuevo. */
+  pagos: PagoFiadoAlmacenado[]
 }
 
 /** Un deudor con sus fiados, pendientes y completados. */

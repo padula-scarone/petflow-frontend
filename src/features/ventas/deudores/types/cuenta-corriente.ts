@@ -1,18 +1,30 @@
 import type { Deudor } from '@/features/ventas/deudores/types/deudor'
 import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
 
+/**
+ * Filtro por proximo pago (la fecha estimada mas cercana entre los fiados pendientes). VENCIDOS: esa fecha ya paso.
+ * SIN_FECHA: ningun fiado pendiente tiene fecha. FECHA: es el dia elegido.
+ */
+export type OpcionProximoPago = 'VENCIDOS' | 'SIN_FECHA' | 'FECHA'
+
 /** Lo que filtra la lista de Deudores. */
 export interface FiltrosDeudores {
-  /** Nombre o DNI, parcial y sin distinguir mayusculas. */
+  /**
+   * Nombre o DNI, parcial y sin distinguir mayusculas. Sin busqueda la lista muestra solo a quienes deben algo; quien
+   * no debe nada aparece unicamente al buscarlo.
+   */
   busqueda: string
-  /** Apagado (por defecto) la lista muestra solo a quienes deben algo. */
-  incluirSinDeuda: boolean
+  /** null = todos. */
+  proximoPago: OpcionProximoPago | null
+  /** AAAA-MM-DD; solo cuenta con proximoPago FECHA. null = todavia no eligio el dia. */
+  fechaProximoPago: string | null
 }
 
 /** Una fila de la lista de Deudores. Los importes estan en pesos. */
 export interface FilaDeudor {
   idDeudor: number
   nombreCompleto: string
+  telefono: string
   dni: string
   cantidadFiadosPendientes: number
   saldo: number
@@ -28,9 +40,19 @@ export type EstadoListaDeudores =
   | { tipo: 'error'; mensaje: string }
   /** No hay deudores y no hay filtros activos. */
   | { tipo: 'sin-deudores' }
-  /** Hay deudores, pero la busqueda o el interruptor no devuelven ninguno. */
+  /** Hay deudores, pero la busqueda o los filtros no devuelven ninguno. */
   | { tipo: 'sin-resultados' }
   | { tipo: 'con-deudores'; filas: FilaDeudor[]; paginacion: PaginacionResultados }
+
+/** Un pago que recibio un fiado. El monto esta en pesos. */
+export interface PagoFiado {
+  /** Fecha y hora del pago en formato ISO 8601. */
+  fechaHora: string
+  /** Porcion base que se abono al fiado. */
+  monto: number
+  /** Recibo del cobro; null = se pago al registrar la venta. */
+  numeroRecibo: string | null
+}
 
 /** Un fiado pendiente de un deudor. Los importes estan en pesos. */
 export interface FiadoPendiente {
@@ -48,6 +70,8 @@ export interface FiadoPendiente {
   montoPagado: number
   /** Lo que todavia falta: importe adeudado menos lo ya pagado. */
   montoFaltante: number
+  /** Cada pago que recibio, del mas viejo al mas nuevo; vacio si todavia no pago nada. */
+  pagos: PagoFiado[]
 }
 
 /**
@@ -78,9 +102,11 @@ export interface ListaDeudoresProps {
   filtros: FiltrosDeudores
   estadoLista: EstadoListaDeudores
   onCambiarBusqueda: (busqueda: string) => void
-  onCambiarIncluirSinDeuda: (incluirSinDeuda: boolean) => void
+  onCambiarProximoPago: (proximoPago: OpcionProximoPago | null) => void
+  onCambiarFechaProximoPago: (fecha: string) => void
+  /** Quita la busqueda y el filtro por proximo pago. */
+  onLimpiarFiltros: () => void
   onCambiarPagina: (pagina: number) => void
   onAbrirFicha: (idDeudor: number) => void
-  onNuevoDeudor: () => void
   onReintentar: () => void
 }

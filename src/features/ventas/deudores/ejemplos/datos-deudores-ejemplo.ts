@@ -28,13 +28,25 @@ export function armarNumeroComprobanteEjemplo(idVenta: number) {
   return `V-${String(idVenta).padStart(6, '0')}`
 }
 
+/** Numero de recibo de ejemplo de un cobro de fiados: numeracion propia, distinta de la de las ventas. */
+export function armarNumeroReciboEjemplo(idCobro: number) {
+  return `R-${String(idCobro).padStart(6, '0')}`
+}
+
+interface DatosPagoEjemplo {
+  diasDesdeElPago: number
+  pesos: number
+  /** Id del cobro que lo registro; null = se pago al registrar la venta. */
+  idCobro: number | null
+}
+
 interface DatosFiadoEjemplo {
   idVenta: number
   diasDesdeLaVenta: number
   /** Dias hasta la fecha estimada (negativo = ya vencio); null = sin fecha. */
   diasHastaLaFecha: number | null
   importePesos: number
-  pagadoPesos: number
+  pagos?: DatosPagoEjemplo[]
 }
 
 function crearFiado(datos: DatosFiadoEjemplo): FiadoAlmacenado {
@@ -45,7 +57,11 @@ function crearFiado(datos: DatosFiadoEjemplo): FiadoAlmacenado {
     fechaEstimadaPago:
       datos.diasHastaLaFecha === null ? null : sumarDiasAFecha(obtenerFechaHoy(), datos.diasHastaLaFecha),
     importeAdeudadoCentavos: convertirPesosACentavos(datos.importePesos),
-    montoPagadoCentavos: convertirPesosACentavos(datos.pagadoPesos),
+    pagos: (datos.pagos ?? []).map((pago) => ({
+      fechaHora: fechaHoraHaceDias(pago.diasDesdeElPago),
+      montoCentavos: convertirPesosACentavos(pago.pesos),
+      numeroRecibo: pago.idCobro === null ? null : armarNumeroReciboEjemplo(pago.idCobro),
+    })),
   }
 }
 
@@ -64,28 +80,53 @@ export function crearEstadoInicialDeudores(): EstadoAlmacenDeudores {
   return {
     deudores: [
       crearDeudor(1, 'Marta Gimenez', '+54 9 11 4455-6677', '20111222', [
-        { idVenta: 9001, diasDesdeLaVenta: 20, diasHastaLaFecha: -3, importePesos: 18500, pagadoPesos: 5000 },
-        { idVenta: 9002, diasDesdeLaVenta: 6, diasHastaLaFecha: 7, importePesos: 12000, pagadoPesos: 0 },
+        {
+          idVenta: 9001,
+          diasDesdeLaVenta: 20,
+          diasHastaLaFecha: -3,
+          importePesos: 18500,
+          pagos: [
+            { diasDesdeElPago: 20, pesos: 3000, idCobro: null },
+            { diasDesdeElPago: 12, pesos: 2000, idCobro: 51 },
+          ],
+        },
+        { idVenta: 9002, diasDesdeLaVenta: 6, diasHastaLaFecha: 7, importePesos: 12000 },
       ]),
       crearDeudor(2, 'Carlos Perez', '+54 9 351 555-0102', '30222333', [
-        { idVenta: 9003, diasDesdeLaVenta: 10, diasHastaLaFecha: 5, importePesos: 24300, pagadoPesos: 10000 },
+        {
+          idVenta: 9003,
+          diasDesdeLaVenta: 10,
+          diasHastaLaFecha: 5,
+          importePesos: 24300,
+          pagos: [
+            { diasDesdeElPago: 10, pesos: 4000, idCobro: null },
+            { diasDesdeElPago: 6, pesos: 3500, idCobro: 53 },
+            { diasDesdeElPago: 2, pesos: 2500, idCobro: 57 },
+          ],
+        },
       ]),
       crearDeudor(3, 'Lucia Fernandez', '+54 9 11 2233-4455', '28444555', [
-        { idVenta: 9004, diasDesdeLaVenta: 30, diasHastaLaFecha: null, importePesos: 9800, pagadoPesos: 0 },
-        { idVenta: 9005, diasDesdeLaVenta: 12, diasHastaLaFecha: null, importePesos: 15250, pagadoPesos: 0 },
-        { idVenta: 9006, diasDesdeLaVenta: 2, diasHastaLaFecha: 15, importePesos: 6400, pagadoPesos: 0 },
+        { idVenta: 9004, diasDesdeLaVenta: 30, diasHastaLaFecha: null, importePesos: 9800 },
+        { idVenta: 9005, diasDesdeLaVenta: 12, diasHastaLaFecha: null, importePesos: 15250 },
+        { idVenta: 9006, diasDesdeLaVenta: 2, diasHastaLaFecha: 15, importePesos: 6400 },
       ]),
       crearDeudor(4, 'Roberto Sosa', '+54 9 261 444-0188', '17555666', [
-        { idVenta: 9007, diasDesdeLaVenta: 45, diasHastaLaFecha: -10, importePesos: 41200, pagadoPesos: 12000 },
+        {
+          idVenta: 9007,
+          diasDesdeLaVenta: 45,
+          diasHastaLaFecha: -10,
+          importePesos: 41200,
+          pagos: [{ diasDesdeElPago: 45, pesos: 12000, idCobro: null }],
+        },
       ]),
       crearDeudor(5, 'Valeria Rios', '+54 9 341 6677-8899', '33666777', [
-        { idVenta: 9008, diasDesdeLaVenta: 3, diasHastaLaFecha: 1, importePesos: 7300, pagadoPesos: 0 },
+        { idVenta: 9008, diasDesdeLaVenta: 3, diasHastaLaFecha: 1, importePesos: 7300 },
       ]),
       crearDeudor(6, 'Diego Alvarez', '+54 9 11 3344-5566', '29777888', [
-        { idVenta: 9009, diasDesdeLaVenta: 15, diasHastaLaFecha: 20, importePesos: 32800, pagadoPesos: 0 },
+        { idVenta: 9009, diasDesdeLaVenta: 15, diasHastaLaFecha: 20, importePesos: 32800 },
       ]),
       crearDeudor(7, 'Sofia Benitez', '+54 9 223 480-1122', '36888999', [
-        { idVenta: 9010, diasDesdeLaVenta: 8, diasHastaLaFecha: null, importePesos: 5600, pagadoPesos: 0 },
+        { idVenta: 9010, diasDesdeLaVenta: 8, diasHastaLaFecha: null, importePesos: 5600 },
       ]),
       // Cobrarle devuelve un 409 distinto segun el fiado que se incluya (ver disparadores-ejemplo)
       crearDeudor(8, 'Conflicto Demo', '+54 9 11 5555-0000', '31000001', [
@@ -94,47 +135,66 @@ export function crearEstadoInicialDeudores(): EstadoAlmacenDeudores {
           diasDesdeLaVenta: 7,
           diasHastaLaFecha: 3,
           importePesos: 8000,
-          pagadoPesos: 0,
         },
         {
           idVenta: ID_VENTA_FIADO_MONTO_SUPERA_FALTANTE_EJEMPLO,
           diasDesdeLaVenta: 6,
           diasHastaLaFecha: 4,
           importePesos: 9000,
-          pagadoPesos: 0,
         },
         {
           idVenta: ID_VENTA_FIADO_CAJA_CERRADA_EJEMPLO,
           diasDesdeLaVenta: 5,
           diasHastaLaFecha: 6,
           importePesos: 10000,
-          pagadoPesos: 0,
         },
       ]),
       // Confirmar una venta a su nombre devuelve 404 (ver disparadores-ejemplo)
       crearDeudor(9, 'Ex Deudor Demo', '+54 9 11 5555-0001', '31000002', []),
       crearDeudor(10, 'Ana Martinez', '+54 9 11 6000-1010', '25999000', [
-        { idVenta: 9011, diasDesdeLaVenta: 60, diasHastaLaFecha: null, importePesos: 8000, pagadoPesos: 8000 },
+        {
+          idVenta: 9011,
+          diasDesdeLaVenta: 60,
+          diasHastaLaFecha: null,
+          importePesos: 8000,
+          pagos: [
+            { diasDesdeElPago: 60, pesos: 2000, idCobro: null },
+            { diasDesdeElPago: 40, pesos: 6000, idCobro: 50 },
+          ],
+        },
       ]),
       crearDeudor(11, 'Hector Molina', '+54 9 11 7000-2020', '22123123', [
-        { idVenta: 9012, diasDesdeLaVenta: 5, diasHastaLaFecha: 2, importePesos: 13900, pagadoPesos: 0 },
+        { idVenta: 9012, diasDesdeLaVenta: 5, diasHastaLaFecha: 2, importePesos: 13900 },
       ]),
       crearDeudor(12, 'Patricia Luna', '+54 9 11 8000-3030', '27234234', [
-        { idVenta: 9013, diasDesdeLaVenta: 9, diasHastaLaFecha: -1, importePesos: 21000, pagadoPesos: 6000 },
+        {
+          idVenta: 9013,
+          diasDesdeLaVenta: 9,
+          diasHastaLaFecha: -1,
+          importePesos: 21000,
+          pagos: [{ diasDesdeElPago: 5, pesos: 6000, idCobro: 55 }],
+        },
       ]),
       crearDeudor(13, 'Julian Castro', '+54 9 11 9000-4040', '38345345', [
-        { idVenta: 9014, diasDesdeLaVenta: 4, diasHastaLaFecha: 30, importePesos: 4500, pagadoPesos: 0 },
+        { idVenta: 9014, diasDesdeLaVenta: 4, diasHastaLaFecha: 30, importePesos: 4500 },
       ]),
       crearDeudor(14, 'Nora Quiroga', '+54 9 11 1000-5050', '14456456', [
-        { idVenta: 9015, diasDesdeLaVenta: 22, diasHastaLaFecha: -6, importePesos: 19900, pagadoPesos: 0 },
+        { idVenta: 9015, diasDesdeLaVenta: 22, diasHastaLaFecha: -6, importePesos: 19900 },
       ]),
       crearDeudor(15, 'Mateo Ferreyra', '+54 9 11 2000-6060', '40567567', []),
       crearDeudor(16, 'Ines Vega', '+54 9 11 3000-7070', '26678678', [
-        { idVenta: 9016, diasDesdeLaVenta: 70, diasHastaLaFecha: null, importePesos: 3000, pagadoPesos: 3000 },
+        {
+          idVenta: 9016,
+          diasDesdeLaVenta: 70,
+          diasHastaLaFecha: null,
+          importePesos: 3000,
+          pagos: [{ diasDesdeElPago: 50, pesos: 3000, idCobro: 52 }],
+        },
       ]),
     ],
     proximoIdDeudor: 17,
     proximoIdVenta: 9200,
-    proximoIdCobro: 1,
+    // Los recibos de ejemplo usan ids menores a 100: los cobros de la demo arrancan despues
+    proximoIdCobro: 100,
   }
 }

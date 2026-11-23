@@ -1,27 +1,29 @@
 import { useId } from 'react'
-import { Plus, Search } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Search } from 'lucide-react'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Switch } from '@/components/ui/switch'
-import type { FiltrosDeudores } from '@/features/ventas/deudores/types/cuenta-corriente'
+import { FiltroProximoPago } from '@/features/ventas/deudores/components/filtro-proximo-pago'
+import type { FiltrosDeudores, OpcionProximoPago } from '@/features/ventas/deudores/types/cuenta-corriente'
 
-/** Props de la barra con el buscador, el interruptor y el alta. */
+/** Props de la barra con el buscador y el filtro por proximo pago. */
 interface BarraBusquedaDeudoresProps {
   filtros: FiltrosDeudores
   onCambiarBusqueda: (busqueda: string) => void
-  onCambiarIncluirSinDeuda: (incluirSinDeuda: boolean) => void
-  onNuevoDeudor: () => void
+  onCambiarProximoPago: (proximoPago: OpcionProximoPago | null) => void
+  onCambiarFechaProximoPago: (fecha: string) => void
 }
 
-/** Buscador por nombre o DNI, interruptor "Incluir a los que no deben" y boton "Nuevo deudor". */
+/**
+ * Buscador por nombre o DNI y filtro por proximo pago. No hay alta de deudores: un deudor nace al fiarle una
+ * venta en Registrar Venta. Quien ya no debe nada sale de la lista y solo aparece al buscarlo.
+ */
 export function BarraBusquedaDeudores({
   filtros,
   onCambiarBusqueda,
-  onCambiarIncluirSinDeuda,
-  onNuevoDeudor,
+  onCambiarProximoPago,
+  onCambiarFechaProximoPago,
 }: BarraBusquedaDeudoresProps) {
   const idBusqueda = useId()
+  const idProximoPago = useId()
 
   return (
     <div className="flex flex-col gap-interno xl:flex-row xl:items-center">
@@ -49,19 +51,14 @@ export function BarraBusquedaDeudores({
         />
       </div>
 
-      <div className="flex items-center justify-between gap-interno">
-        {/* --- INTERRUPTOR: el label entero es el area de toque, de al menos 44 px de alto --- */}
-        <Label className="flex min-h-11 cursor-pointer items-center gap-interno text-cuerpo font-medium">
-          <Switch checked={filtros.incluirSinDeuda} onCheckedChange={onCambiarIncluirSinDeuda} />
-          Incluir a los que no deben
-        </Label>
-
-        {/* --- ALTA --- */}
-        <Button type="button" onClick={onNuevoDeudor}>
-          <Plus aria-hidden="true" />
-          Nuevo deudor
-        </Button>
-      </div>
+      {/* --- PROXIMO PAGO --- */}
+      <FiltroProximoPago
+        idCampo={idProximoPago}
+        proximoPago={filtros.proximoPago}
+        fechaProximoPago={filtros.fechaProximoPago}
+        onCambiarProximoPago={onCambiarProximoPago}
+        onCambiarFechaProximoPago={onCambiarFechaProximoPago}
+      />
     </div>
   )
 }

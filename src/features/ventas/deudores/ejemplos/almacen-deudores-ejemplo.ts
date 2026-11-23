@@ -13,9 +13,14 @@ import { normalizarTextoBusqueda } from '@/features/ventas/utils/normalizar-text
 // Lecturas y altas del almacen de deudores. Hace el papel de GET y POST /api/deudores y PUT /api/deudores/:idDeudor.
 
 // --- CALCULOS DE LA CUENTA ---
+/** Lo ya pagado de un fiado: la suma de sus pagos, en centavos. */
+export function calcularPagadoFiadoCentavos(fiado: FiadoAlmacenado) {
+  return fiado.pagos.reduce((acumulado, pago) => acumulado + pago.montoCentavos, 0)
+}
+
 /** Lo que falta pagar de un fiado, en centavos. */
 export function calcularFaltanteFiadoCentavos(fiado: FiadoAlmacenado) {
-  return Math.max(fiado.importeAdeudadoCentavos - fiado.montoPagadoCentavos, 0)
+  return Math.max(fiado.importeAdeudadoCentavos - calcularPagadoFiadoCentavos(fiado), 0)
 }
 
 /** Fiados que todavia tienen algo por pagar. */
@@ -41,6 +46,7 @@ function convertirAFilaDeudor(deudor: DeudorAlmacenado, hoy: string): FilaDeudor
   return {
     idDeudor: deudor.deudor.idDeudor,
     nombreCompleto: deudor.deudor.nombreCompleto,
+    telefono: deudor.deudor.telefono,
     dni: deudor.deudor.dni,
     cantidadFiadosPendientes: filtrarFiadosPendientes(deudor.fiados).length,
     saldo: convertirCentavosAPesos(calcularSaldoDeudorCentavos(deudor)),
@@ -64,15 +70,29 @@ function ordenarPorNombre<Elemento>(elementos: Elemento[], obtenerNombre: (eleme
   )
 }
 
+/** Coincide con el filtro por proximo pago. Quien no debe nada no tiene proximo pago: no entra en ningun filtro. */
+function coincideConProximoPago(fila: FilaDeudor, filtros: FiltrosDeudores) {
+  if (filtros.proximoPago === null) return true
+  if (fila.saldo === 0) return false
+  if (filtros.proximoPago === 'VENCIDOS') return fila.proximoPagoVencido
+  if (filtros.proximoPago === 'SIN_FECHA') return fila.proximaFechaEstimadaPago === null
+  // Sin dia elegido todavia, el filtro no recorta nada
+  return filtros.fechaProximoPago === null || fila.proximaFechaEstimadaPago === filtros.fechaProximoPago
+}
+
 // --- LECTURAS ---
-/** Una pagina de GET /api/deudores. Sin "incluir a los que no deben", solo trae a quienes tienen saldo. */
+/**
+ * Una pagina de GET /api/deudores. Sin busqueda trae solo a quienes tienen saldo; con busqueda tambien a quien no
+ * debe nada, para poder encontrarlo.
+ */
 export function leerPaginaDeudores(filtros: FiltrosDeudores, pagina: number, cantidadPorPagina: number) {
   const hoy = obtenerFechaHoy()
   const textoNormalizado = normalizarTextoBusqueda(filtros.busqueda)
   const coincidentes = leerEstadoAlmacen()
     .deudores.filter((deudor) => coincideConBusqueda(deudor.deudor, textoNormalizado))
     .map((deudor) => convertirAFilaDeudor(deudor, hoy))
-    .filter((fila) => filtros.incluirSinDeuda || fila.saldo > 0)
+    .filter((fila) => textoNormalizado !== '' || fila.saldo > 0)
+    .filter((fila) => coincideConProximoPago(fila, filtros))
   const ordenadas = ordenarPorNombre(coincidentes, (fila) => fila.nombreCompleto)
 
   const totalPaginas = Math.ceil(ordenadas.length / cantidadPorPagina)

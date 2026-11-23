@@ -1,10 +1,14 @@
 import {
   calcularFaltanteFiadoCentavos,
+  calcularPagadoFiadoCentavos,
   calcularSaldoDeudorCentavos,
   filtrarFiadosPendientes,
   leerDeudorAlmacenado,
 } from '@/features/ventas/deudores/ejemplos/almacen-deudores-ejemplo'
-import { armarNumeroComprobanteEjemplo } from '@/features/ventas/deudores/ejemplos/datos-deudores-ejemplo'
+import {
+  armarNumeroComprobanteEjemplo,
+  armarNumeroReciboEjemplo,
+} from '@/features/ventas/deudores/ejemplos/datos-deudores-ejemplo'
 import {
   ID_DEUDOR_INEXISTENTE_AL_CONFIRMAR_EJEMPLO,
   ID_VENTA_FIADO_CAJA_CERRADA_EJEMPLO,
@@ -31,8 +35,13 @@ function convertirAFiadoPendiente(fiado: FiadoAlmacenado, hoy: string): FiadoPen
     fechaEstimadaPago: fiado.fechaEstimadaPago,
     fechaEstimadaVencida: fiado.fechaEstimadaPago !== null && esFechaPasada(fiado.fechaEstimadaPago, hoy),
     importeAdeudado: convertirCentavosAPesos(fiado.importeAdeudadoCentavos),
-    montoPagado: convertirCentavosAPesos(fiado.montoPagadoCentavos),
+    montoPagado: convertirCentavosAPesos(calcularPagadoFiadoCentavos(fiado)),
     montoFaltante: convertirCentavosAPesos(calcularFaltanteFiadoCentavos(fiado)),
+    pagos: fiado.pagos.map((pago) => ({
+      fechaHora: pago.fechaHora,
+      monto: convertirCentavosAPesos(pago.montoCentavos),
+      numeroRecibo: pago.numeroRecibo,
+    })),
   }
 }
 
@@ -72,7 +81,11 @@ export function asegurarFiadoDeHistorial(idDeudor: number, origen: FiadoOrigenHi
     fechaHora: origen.fechaHora,
     fechaEstimadaPago: origen.fechaEstimadaPago,
     importeAdeudadoCentavos: convertirPesosACentavos(origen.importeAdeudado),
-    montoPagadoCentavos: convertirPesosACentavos(origen.montoPagado),
+    // El Historial solo sabe cuanto se pago: se toma como pagado al registrar la venta
+    pagos:
+      origen.montoPagado > 0
+        ? [{ fechaHora: origen.fechaHora, montoCentavos: convertirPesosACentavos(origen.montoPagado), numeroRecibo: null }]
+        : [],
   }
   escribirEstadoAlmacen((estado) => ({
     ...estado,
@@ -113,7 +126,10 @@ export function registrarVentaConDeudaAlmacenada(venta: VentaConDeudaARegistrar)
     fechaHora,
     fechaEstimadaPago: venta.fechaEstimadaPago,
     importeAdeudadoCentavos: venta.importeVentaCentavos,
-    montoPagadoCentavos: venta.pagadoAhoraBaseCentavos,
+    pagos:
+      venta.pagadoAhoraBaseCentavos > 0
+        ? [{ fechaHora, montoCentavos: venta.pagadoAhoraBaseCentavos, numeroRecibo: null }]
+        : [],
   }
   escribirEstadoAlmacen((estado) => ({
     ...estado,
@@ -191,11 +207,16 @@ export function cobrarFiadosAlmacenados(idDeudor: number, fiadosACobrar: FiadoAC
   const motivo = buscarMotivoDeRechazo(fiadosACobrar, almacenado.fiados)
   if (motivo !== null) return crearRechazo(motivo)
 
+  const idCobro = leerEstadoAlmacen().proximoIdCobro
+  const numeroRecibo = armarNumeroReciboEjemplo(idCobro)
+  const fechaHora = new Date().toISOString()
   const montoPorFiado = new Map(fiadosACobrar.map((fiado) => [fiado.idVenta, fiado.montoCentavos]))
-  const fiadosActualizados = almacenado.fiados.map((fiado) => ({
-    ...fiado,
-    montoPagadoCentavos: fiado.montoPagadoCentavos + (montoPorFiado.get(fiado.idVenta) ?? 0),
-  }))
+  const fiadosActualizados = almacenado.fiados.map((fiado) => {
+    const montoCentavos = montoPorFiado.get(fiado.idVenta)
+    return montoCentavos === undefined
+      ? fiado
+      : { ...fiado, pagos: [...fiado.pagos, { fechaHora, montoCentavos, numeroRecibo }] }
+  })
   const fiadosAbonados: FiadoAbonado[] = fiadosActualizados
     .filter((fiado) => montoPorFiado.has(fiado.idVenta))
     .map((fiado) => {
@@ -209,7 +230,6 @@ export function cobrarFiadosAlmacenados(idDeudor: number, fiadosACobrar: FiadoAC
       }
     })
 
-  const idCobro = leerEstadoAlmacen().proximoIdCobro
   escribirEstadoAlmacen((estado) => ({
     ...estado,
     proximoIdCobro: estado.proximoIdCobro + 1,
@@ -220,8 +240,8 @@ export function cobrarFiadosAlmacenados(idDeudor: number, fiadosACobrar: FiadoAC
   return {
     tipo: 'cobrado',
     idCobro,
-    numeroRecibo: `R-${String(idCobro).padStart(6, '0')}`,
-    fechaHora: new Date().toISOString(),
+    numeroRecibo,
+    fechaHora,
     fiadosAbonados,
     saldoRestanteCentavos: calcularSaldoDeudorCentavos({ ...almacenado, fiados: fiadosActualizados }),
   }

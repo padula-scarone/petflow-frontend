@@ -11,14 +11,9 @@ interface ContenedorDialogoDeudorProps {
   guardar: (datos: DatosDeudor) => Promise<EstadoGuardadoDeudor>
   /** Se llama cuando el guardado sale bien, con el deudor guardado. */
   alGuardar: (deudor: Deudor) => void
-  /**
-   * Se llama cuando el DNI ya existia. Si no se informa, el dialogo se queda abierto mostrando el aviso
-   * (en el alta de la lista, con un boton para ver la ficha de esa persona).
-   */
+  /** Se llama cuando el DNI ya existia. Si no se informa, el dialogo se queda abierto mostrando el aviso. */
   alDniDuplicado?: (deudorExistente: Deudor) => void
   onCerrar: () => void
-  /** Solo en el alta: abre la ficha de quien ya tenia ese DNI. */
-  onVerDeudorExistente?: (deudor: Deudor) => void
 }
 
 /**
@@ -32,7 +27,6 @@ export function ContenedorDialogoDeudor({
   alGuardar,
   alDniDuplicado,
   onCerrar,
-  onVerDeudorExistente,
 }: ContenedorDialogoDeudorProps) {
   const formulario = useFormularioDeudor({ valoresIniciales, guardar })
 
@@ -52,7 +46,6 @@ export function ContenedorDialogoDeudor({
       onSalirDelCampo={formulario.salirDelCampo}
       onEnviar={() => void enviar()}
       onCerrar={onCerrar}
-      onVerDeudorExistente={onVerDeudorExistente}
     />
   )
 }
