@@ -35,7 +35,9 @@ export function GrillaMediosPago({
         type="single"
         spacing={3}
         aria-label="Medio de pago"
-        className="grid w-full grid-cols-2 lg:grid-cols-4"
+        // items-stretch: el grupo trae items-center, y con el cada tarjeta conserva su alto; una con el nombre en tres
+        // lineas (Transferencia) salia mas alta que las demas
+        className="grid w-full grid-cols-2 items-stretch lg:grid-cols-4"
         value={idMedioSeleccionado === null ? '' : String(idMedioSeleccionado)}
         // Radix emite '' al des-seleccionar; en pago unico siempre debe haber un medio
         onValueChange={(valor) => {
