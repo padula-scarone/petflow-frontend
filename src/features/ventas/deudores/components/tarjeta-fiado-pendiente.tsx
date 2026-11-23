@@ -80,7 +80,12 @@ export function TarjetaFiadoPendiente({ fila, onAlternarFiado, onCambiarMontoFia
         </div>
         {pagosAbiertos && (
           <div className="col-span-2 rounded-grande bg-fondo-suave p-interno">
-            <ListaPagosFiado idLista={idListaPagos} numeroComprobante={fiado.numeroComprobante} pagos={fiado.pagos} />
+            <ListaPagosFiado
+              idLista={idListaPagos}
+              numeroComprobante={fiado.numeroComprobante}
+              pagos={fiado.pagos}
+              variante="tarjeta"
+            />
           </div>
         )}
         <div className="col-span-2">

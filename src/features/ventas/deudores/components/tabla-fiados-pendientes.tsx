@@ -113,14 +113,19 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
       </div>
 
       {/* --- PAGOS DEL FIADO --- */}
+      {/* Mini tabla con sus propios encabezados, de la columna Comprobante a la columna Falta: asi los montos quedan
+          bajo "Falta" y las fechas no se leen como la "Fecha estimada" del fiado */}
       {pagosAbiertos && (
-        <div role="row" className="col-span-full border-b bg-fondo-suave px-contorno py-interno last:border-b-0">
-          <div role="cell" className="flex justify-end">
+        <div
+          role="row"
+          className="col-span-full grid grid-cols-subgrid border-b bg-fondo-suave px-contorno py-interno last:border-b-0"
+        >
+          <div role="cell" className="col-span-3 col-start-2 min-w-0">
             <ListaPagosFiado
               idLista={idListaPagos}
               numeroComprobante={fiado.numeroComprobante}
               pagos={fiado.pagos}
-              className="w-full max-w-md"
+              variante="tabla"
             />
           </div>
         </div>
