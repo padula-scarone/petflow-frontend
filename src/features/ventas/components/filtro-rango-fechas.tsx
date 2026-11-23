@@ -1,7 +1,7 @@
 import { CalendarDays } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverClose, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
+import { CalendarioEmergente } from '@/features/ventas/components/calendario-emergente'
 import { EtiquetaFiltro, type VarianteFiltro } from '@/features/ventas/components/etiqueta-filtro'
 import type { RangoFechasFiltro } from '@/features/ventas/types/compartidos'
 import type { PeriodoRapido } from '@/features/ventas/types/historial'
@@ -62,8 +62,9 @@ export function FiltroRangoFechas({
       <EtiquetaFiltro variante={variante} idCampo={idCampo}>
         Fecha
       </EtiquetaFiltro>
-      <Popover>
-        <PopoverTrigger asChild>
+      <CalendarioEmergente
+        titulo="Filtrar por fecha"
+        disparador={
           <Button
             id={idCampo}
             type="button"
@@ -74,36 +75,39 @@ export function FiltroRangoFechas({
             <CalendarDays aria-hidden="true" className="text-texto-suave" />
             <span className="truncate tabular-nums">{descripcion}</span>
           </Button>
-        </PopoverTrigger>
-
-        <PopoverContent className="w-auto p-2">
+        }
+      >
+        {(cerrar) => (
           <div className="flex flex-col gap-2 sm:flex-row">
             {/* --- ATAJOS --- */}
             <div role="group" aria-label="Atajos de fecha" className="flex flex-wrap gap-1 sm:w-40 sm:flex-col sm:flex-nowrap">
               {PERIODOS_RAPIDOS.map(({ periodo, etiqueta }) => (
-                <PopoverClose key={periodo} asChild>
-                  <Button
-                    type="button"
-                    variant={periodoRapidoActivo === periodo ? 'secondary' : 'ghost'}
-                    aria-pressed={periodoRapidoActivo === periodo}
-                    className="justify-start px-3"
-                    onClick={() => onSeleccionarPeriodoRapido(periodo)}
-                  >
-                    {etiqueta}
-                  </Button>
-                </PopoverClose>
-              ))}
-              <PopoverClose asChild>
                 <Button
+                  key={periodo}
                   type="button"
-                  variant={hayFechas ? 'ghost' : 'secondary'}
-                  aria-pressed={!hayFechas}
+                  variant={periodoRapidoActivo === periodo ? 'secondary' : 'ghost'}
+                  aria-pressed={periodoRapidoActivo === periodo}
                   className="justify-start px-3"
-                  onClick={() => onCambiarFiltros({ fechaDesde: null, fechaHasta: null })}
+                  onClick={() => {
+                    onSeleccionarPeriodoRapido(periodo)
+                    cerrar()
+                  }}
                 >
-                  Todas las fechas
+                  {etiqueta}
                 </Button>
-              </PopoverClose>
+              ))}
+              <Button
+                type="button"
+                variant={hayFechas ? 'ghost' : 'secondary'}
+                aria-pressed={!hayFechas}
+                className="justify-start px-3"
+                onClick={() => {
+                  onCambiarFiltros({ fechaDesde: null, fechaHasta: null })
+                  cerrar()
+                }}
+              >
+                Todas las fechas
+              </Button>
             </div>
 
             {/* --- CALENDARIO DE RANGO --- */}
@@ -127,8 +131,8 @@ export function FiltroRangoFechas({
               }
             />
           </div>
-        </PopoverContent>
-      </Popover>
+        )}
+      </CalendarioEmergente>
     </div>
   )
 }
