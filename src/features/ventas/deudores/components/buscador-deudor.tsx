@@ -18,8 +18,8 @@ interface BuscadorDeudorProps {
 
 /**
  * Buscador de deudores con lista de coincidencias (combobox): nombre o DNI, parcial y sin distinguir mayusculas.
- * La lista se muestra en linea y no flotante: este campo vive en una pantalla con barra fija abajo, donde una lista
- * flotante quedaria tapada. Siempre ofrece "Nuevo deudor" para quien todavia no esta cargado.
+ * La lista flota debajo del campo, con la misma estetica que la del buscador de productos de Registrar Venta.
+ * Siempre ofrece "Nuevo deudor" para quien todavia no esta cargado.
  */
 export function BuscadorDeudor({
   textoBusqueda,
@@ -79,64 +79,65 @@ export function BuscadorDeudor({
               onBuscarDeudor(evento.target.value)
             }}
           />
+
+          {/* --- LISTA DE RESULTADOS --- */}
+          {/* Dentro del contenedor del campo: flota debajo de el y mide lo mismo */}
+          {listaVisible && (
+            <ul
+              {...navegacion.propiedadesLista}
+              aria-label="Deudores encontrados"
+              // Tocar un resultado no debe sacar el foco del campo antes del clic: si no, la lista se cierra y el clic se pierde
+              onMouseDown={(evento) => evento.preventDefault()}
+              className="absolute inset-x-0 top-full z-20 mt-1 max-h-72 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable shadow-flotante"
+            >
+              {estadoBusqueda.fase === 'cargando' && (
+                <li role="presentation" className="flex items-center gap-interno px-3 py-3 text-cuerpo text-texto-suave">
+                  <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />
+                  Buscando…
+                </li>
+              )}
+              {estadoBusqueda.fase === 'error' && (
+                <li role="presentation" className="flex flex-col items-start gap-interno px-3 py-3 text-cuerpo">
+                  <span role="alert" className="text-peligro">
+                    {estadoBusqueda.mensaje}
+                  </span>
+                  <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onReintentarBusqueda}>
+                    Reintentar
+                  </Button>
+                </li>
+              )}
+              {estadoBusqueda.fase === 'sin-resultados' && (
+                <li role="presentation" className="flex flex-col items-start gap-interno px-3 py-3 text-cuerpo">
+                  <span role="status" className="text-texto-suave">
+                    No encontramos a nadie con «{estadoBusqueda.textoBuscado}».
+                  </span>
+                  <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onNuevoDeudor}>
+                    <Plus aria-hidden="true" />
+                    Cargar como nuevo deudor
+                  </Button>
+                </li>
+              )}
+              {deudoresVisibles.map((deudor, indiceDeudor) => (
+                <li key={deudor.idDeudor} role="presentation">
+                  <button
+                    type="button"
+                    {...navegacion.propiedadesOpcion(indiceDeudor)}
+                    className="flex min-h-control w-full items-center justify-between gap-interno rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none"
+                    onClick={() => elegirDeudor(deudor)}
+                  >
+                    <span className="min-w-0 font-medium">{deudor.nombreCompleto}</span>
+                    <span className="shrink-0 text-auxiliar text-texto-suave tabular-nums">DNI {deudor.dni}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onNuevoDeudor}>
           <Plus aria-hidden="true" />
           Nuevo deudor
         </Button>
       </div>
-
-      {/* --- LISTA DE RESULTADOS --- */}
-      {listaVisible && (
-        <ul
-          {...navegacion.propiedadesLista}
-          aria-label="Deudores encontrados"
-          // Tocar un resultado no debe sacar el foco del campo antes del clic: si no, la lista se cierra y el clic se pierde
-          onMouseDown={(evento) => evento.preventDefault()}
-          className="max-h-72 overflow-y-auto rounded-grande border bg-fondo-desplegable p-1 text-texto-desplegable"
-        >
-          {estadoBusqueda.fase === 'cargando' && (
-            <li role="presentation" className="flex items-center gap-interno px-3 py-3 text-cuerpo text-texto-suave">
-              <Loader2 aria-hidden="true" className="size-4 animate-spin motion-reduce:animate-none" />
-              Buscando…
-            </li>
-          )}
-          {estadoBusqueda.fase === 'error' && (
-            <li role="presentation" className="flex flex-col items-start gap-interno px-3 py-3 text-cuerpo">
-              <span role="alert" className="text-peligro">
-                {estadoBusqueda.mensaje}
-              </span>
-              <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onReintentarBusqueda}>
-                Reintentar
-              </Button>
-            </li>
-          )}
-          {estadoBusqueda.fase === 'sin-resultados' && (
-            <li role="presentation" className="flex flex-col items-start gap-interno px-3 py-3 text-cuerpo">
-              <span role="status" className="text-texto-suave">
-                No encontramos a nadie con «{estadoBusqueda.textoBuscado}».
-              </span>
-              <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onNuevoDeudor}>
-                <Plus aria-hidden="true" />
-                Cargar como nuevo deudor
-              </Button>
-            </li>
-          )}
-          {deudoresVisibles.map((deudor, indiceDeudor) => (
-            <li key={deudor.idDeudor} role="presentation">
-              <button
-                type="button"
-                {...navegacion.propiedadesOpcion(indiceDeudor)}
-                className="flex min-h-control w-full flex-col items-start justify-center rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-interno"
-                onClick={() => elegirDeudor(deudor)}
-              >
-                <span className="min-w-0 font-medium">{deudor.nombreCompleto}</span>
-                <span className="shrink-0 text-auxiliar text-texto-suave tabular-nums">DNI {deudor.dni}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   )
 }
