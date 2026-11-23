@@ -2,7 +2,7 @@
 export interface Deudor {
   idDeudor: number
   nombreCompleto: string
-  /** Con codigo de pais; admite espacios, guiones y un "+" inicial. */
+  /** Con o sin codigo de pais; admite espacios, guiones y un "+" inicial. */
   telefono: string
   /** 7 u 8 digitos, sin puntos. */
   dni: string

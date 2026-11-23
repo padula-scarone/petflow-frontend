@@ -32,11 +32,11 @@ export function validarCampoDeudor(campo: CampoDeudor, valor: string): string | 
   }
 
   if (campo === 'telefono') {
-    if (texto === '') return 'Ingresá el teléfono con código de país'
+    if (texto === '') return 'Ingresá el teléfono'
     if (!FORMATO_TELEFONO.test(texto)) return 'Usá solo números, espacios, guiones y un + al inicio'
     const digitos = contarDigitos(texto)
     if (digitos < TELEFONO_DIGITOS_MINIMOS || digitos > TELEFONO_DIGITOS_MAXIMOS) {
-      return `Debe tener entre ${TELEFONO_DIGITOS_MINIMOS} y ${TELEFONO_DIGITOS_MAXIMOS} dígitos, con código de país`
+      return `Debe tener entre ${TELEFONO_DIGITOS_MINIMOS} y ${TELEFONO_DIGITOS_MAXIMOS} dígitos`
     }
     return undefined
   }

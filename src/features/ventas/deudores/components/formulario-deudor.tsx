@@ -20,7 +20,6 @@ interface CampoDatoDeudorProps {
   idFormulario: string
   campo: CampoDeudor
   etiqueta: string
-  ayuda: string
   valor: string
   error?: string
   deshabilitado: boolean
@@ -31,12 +30,11 @@ interface CampoDatoDeudorProps {
   onSalirDelCampo: (campo: CampoDeudor) => void
 }
 
-/** Un campo con su etiqueta, su ayuda y su error. El error reemplaza a la ayuda y se anuncia al marcarse. */
+/** Un campo con su etiqueta y, si hace falta, su error: se anuncia al marcarse. Sin errores no lleva textos de ayuda. */
 function CampoDatoDeudor({
   idFormulario,
   campo,
   etiqueta,
-  ayuda,
   valor,
   error,
   deshabilitado,
@@ -63,18 +61,14 @@ function CampoDatoDeudor({
         disabled={deshabilitado}
         value={valor}
         aria-invalid={error !== undefined}
-        aria-describedby={idMensaje}
+        aria-describedby={error !== undefined ? idMensaje : undefined}
         className="bg-fondo-tarjeta"
         onChange={(evento) => onCambiarValor(campo, evento.target.value)}
         onBlur={() => onSalirDelCampo(campo)}
       />
-      {error !== undefined ? (
+      {error !== undefined && (
         <p id={idMensaje} role="alert" className="text-auxiliar font-medium text-peligro">
           {error}
-        </p>
-      ) : (
-        <p id={idMensaje} className="text-auxiliar text-texto-suave">
-          {ayuda}
         </p>
       )}
     </div>
@@ -82,7 +76,7 @@ function CampoDatoDeudor({
 }
 
 /**
- * Los tres datos de un deudor: nombre y apellido, telefono con codigo de pais y DNI. Se usa igual para el alta y
+ * Los tres datos de un deudor: nombre y apellido, telefono y DNI. Se usa igual para el alta y
  * para la edicion. Los errores de cada campo los decide el hook; aca solo se muestran.
  */
 export function FormularioDeudor({
@@ -108,7 +102,6 @@ export function FormularioDeudor({
         {...propiedadesComunes}
         campo="nombreCompleto"
         etiqueta="Nombre y apellido"
-        ayuda="Hasta 100 caracteres"
         tipo="text"
         modoEntrada="text"
         autoEnfocar
@@ -119,7 +112,6 @@ export function FormularioDeudor({
         {...propiedadesComunes}
         campo="telefono"
         etiqueta="Teléfono"
-        ayuda="Con código de país. Por ejemplo: +54 9 11 2345-6789"
         tipo="tel"
         modoEntrada="tel"
         valor={valores.telefono}
@@ -129,7 +121,6 @@ export function FormularioDeudor({
         {...propiedadesComunes}
         campo="dni"
         etiqueta="DNI"
-        ayuda="7 u 8 números, sin puntos"
         tipo="text"
         modoEntrada="numeric"
         valor={valores.dni}
