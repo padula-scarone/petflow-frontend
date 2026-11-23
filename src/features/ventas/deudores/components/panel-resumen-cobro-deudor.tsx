@@ -47,7 +47,8 @@ export function PanelResumenCobroDeudor({
       </dl>
 
       {/* --- TOTAL --- */}
-      <p className="flex items-baseline justify-between gap-interno border-t pt-bloque">
+      {/* Solo desde xl: en celular el total y la cobertura estan en el pie fijo, que siempre se ve */}
+      <p className="hidden items-baseline justify-between gap-interno border-t pt-bloque xl:flex">
         <span className="text-cuerpo text-texto-suave">Total</span>
         <span className="text-cifra-principal font-bold tabular-nums">{formatearMoneda(resumen.total)}</span>
       </p>
@@ -58,7 +59,7 @@ export function PanelResumenCobroDeudor({
           faltaCubrir={resumen.faltaCubrir}
           excedente={resumen.excedente}
           onAjustarAutomaticamente={onAjustarMontosAutomaticamente}
-          className="border-t pt-bloque"
+          className="hidden border-t pt-bloque xl:flex"
         />
       )}
 

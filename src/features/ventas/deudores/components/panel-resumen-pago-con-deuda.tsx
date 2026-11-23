@@ -60,7 +60,8 @@ export function PanelResumenPagoConDeuda({
       </dl>
 
       {/* --- LO QUE SE COBRA AHORA --- */}
-      <p className="flex items-baseline justify-between gap-interno border-t pt-bloque">
+      {/* Solo desde xl: en celular esto y lo que queda debiendo estan en el pie fijo, que siempre se ve */}
+      <p className="hidden items-baseline justify-between gap-interno border-t pt-bloque xl:flex">
         <span className="text-cuerpo text-texto-suave">Cobrás ahora</span>
         <span className="text-cifra-principal font-bold tabular-nums">{formatearMoneda(resumen.cobradoAhora)}</span>
       </p>
@@ -71,7 +72,7 @@ export function PanelResumenPagoConDeuda({
         excedente={resumen.excedente}
         puedeAjustarAutomaticamente={formaPago === 'mixto'}
         onAjustarAutomaticamente={onAjustarMontosAutomaticamente}
-        className="border-t pt-bloque"
+        className="hidden border-t pt-bloque xl:flex"
       />
 
       {/* --- ACCIONES (ESCRITORIO) --- */}
