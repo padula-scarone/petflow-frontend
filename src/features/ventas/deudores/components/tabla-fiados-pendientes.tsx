@@ -73,27 +73,34 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
           <p className="text-auxiliar text-texto-suave">{formatearFecha(fiado.fechaHora)}</p>
         </div>
         <div role="cell">
-          <EstadoProximoPago fecha={fiado.fechaEstimadaPago} vencido={fiado.fechaEstimadaVencida} tieneSaldo />
-        </div>
-        <div role="cell" className="justify-self-end whitespace-nowrap tabular-nums">
-          {formatearMoneda(fiado.importeAdeudado)}
-        </div>
-        <div role="cell" className="justify-self-end">
-          <BotonPagosFiado
-            idLista={idListaPagos}
-            numeroComprobante={fiado.numeroComprobante}
-            montoPagado={fiado.montoPagado}
-            cantidadPagos={fiado.pagos.length}
-            abierto={pagosAbiertos}
-            onAlternar={() => setPagosAbiertos(!pagosAbiertos)}
-            // El boton trae su propio aire: se corre para que el monto quede alineado con los de la columna
-            className="-mr-3"
+          <EstadoProximoPago
+            fecha={fiado.fechaEstimadaPago}
+            vencido={fiado.fechaEstimadaVencida}
+            tieneSaldo
+            apilado
           />
         </div>
-        <div role="cell" className="justify-self-end font-bold whitespace-nowrap tabular-nums">
-          {formatearMoneda(fiado.montoFaltante)}
+        {/* --- LO QUE FALTA, DE CUANTO ERA Y LO YA PAGADO: una sola columna, la tabla no entra con tres --- */}
+        <div role="cell" className="flex flex-col items-end justify-self-end whitespace-nowrap tabular-nums">
+          <span className="font-bold">{formatearMoneda(fiado.montoFaltante)}</span>
+          <span className="text-auxiliar text-texto-suave">de {formatearMoneda(fiado.importeAdeudado)}</span>
+          {fiado.pagos.length === 0 ? (
+            <span className="text-auxiliar text-texto-suave">Sin pagos</span>
+          ) : (
+            <BotonPagosFiado
+              idLista={idListaPagos}
+              numeroComprobante={fiado.numeroComprobante}
+              montoPagado={fiado.montoPagado}
+              cantidadPagos={fiado.pagos.length}
+              prefijo="Pagado "
+              abierto={pagosAbiertos}
+              onAlternar={() => setPagosAbiertos(!pagosAbiertos)}
+              // El boton trae su propio aire: se corre para alinear el monto a la derecha y no agrandar la fila
+              className="-my-2 -mr-3 h-control text-auxiliar text-texto-suave"
+            />
+          )}
         </div>
-        <div role="cell" className="w-40 justify-self-end">
+        <div role="cell" className="w-32 justify-self-end">
           <CampoMontoFiado
             idCampo={`monto-fiado-${fiado.idVenta}`}
             etiquetaAccesible={`Monto a cobrar del fiado ${fiado.numeroComprobante}`}
@@ -135,7 +142,7 @@ export function TablaFiadosPendientes({
       <div
         role="table"
         aria-label="Fiados pendientes, del más viejo al más nuevo"
-        className="grid grid-cols-[repeat(7,auto)] justify-between text-cuerpo"
+        className="grid grid-cols-[repeat(5,auto)] justify-between gap-x-interno text-cuerpo"
       >
         {/* --- ENCABEZADO --- */}
         <div role="row" className={cn(CLASE_FILA, 'min-h-control font-medium text-texto-suave')}>
@@ -150,12 +157,6 @@ export function TablaFiadosPendientes({
           </span>
           <span role="columnheader">Comprobante</span>
           <span role="columnheader">Fecha estimada</span>
-          <span role="columnheader" className="justify-self-end">
-            Adeudado
-          </span>
-          <span role="columnheader" className="justify-self-end">
-            Pagado
-          </span>
           <span role="columnheader" className="justify-self-end">
             Falta
           </span>

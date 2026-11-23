@@ -9,6 +9,8 @@ interface BotonPagosFiadoProps {
   numeroComprobante: string
   montoPagado: number
   cantidadPagos: number
+  /** Texto antes del monto, por ejemplo "Pagado ". */
+  prefijo?: string
   abierto: boolean
   onAlternar: () => void
   className?: string
@@ -23,6 +25,7 @@ export function BotonPagosFiado({
   numeroComprobante,
   montoPagado,
   cantidadPagos,
+  prefijo = '',
   abierto,
   onAlternar,
   className,
@@ -41,6 +44,7 @@ export function BotonPagosFiado({
       className={cn('gap-1 px-3 font-normal tabular-nums', className)}
       onClick={onAlternar}
     >
+      {prefijo}
       {formatearMoneda(montoPagado)}
       <ChevronDown
         aria-hidden="true"

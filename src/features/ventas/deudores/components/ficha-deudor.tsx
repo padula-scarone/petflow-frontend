@@ -95,24 +95,25 @@ export function FichaDeudor({
       {/* El nombre va una sola vez, como titulo; debajo solo lo que no esta en el titulo */}
       <header className="flex flex-col gap-interno">
         <BotonVolverADeudores onVolver={onVolver} />
-        <div className="flex items-start justify-between gap-interno">
-          <div className="min-w-0">
-            <h1 className="text-titulo-pagina font-bold wrap-break-word">{deudor.nombreCompleto}</h1>
-            <p className="flex flex-wrap gap-x-bloque text-cuerpo text-texto-suave tabular-nums">
-              <span>DNI {deudor.dni}</span>
-              <span>Tel. {deudor.telefono}</span>
-            </p>
+        <div className="min-w-0">
+          {/* Editar va pegado al nombre, no al borde: es la accion sobre lo que se esta leyendo */}
+          <div className="flex flex-wrap items-center gap-x-interno gap-y-1">
+            <h1 className="min-w-0 text-titulo-pagina font-bold wrap-break-word">{deudor.nombreCompleto}</h1>
+            <Button
+              type="button"
+              variant="outline"
+              aria-label={`Editar los datos de ${deudor.nombreCompleto}`}
+              className="shrink-0 bg-fondo-tarjeta"
+              onClick={onEditarDeudor}
+            >
+              <Pencil aria-hidden="true" />
+              Editar
+            </Button>
           </div>
-          <Button
-            type="button"
-            variant="outline"
-            aria-label={`Editar los datos de ${deudor.nombreCompleto}`}
-            className="shrink-0 bg-fondo-tarjeta"
-            onClick={onEditarDeudor}
-          >
-            <Pencil aria-hidden="true" />
-            Editar
-          </Button>
+          <p className="flex flex-wrap gap-x-bloque text-cuerpo text-texto-suave tabular-nums">
+            <span>DNI {deudor.dni}</span>
+            <span>Tel. {deudor.telefono}</span>
+          </p>
         </div>
       </header>
 
