@@ -1,12 +1,12 @@
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
 import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda, formatearMonedaConSigno } from '@/lib/formatear-moneda'
-import { BotonesEnvioComprobante } from '@/features/ventas/components/botones-envio-comprobante'
-import { EncabezadoExitoVenta } from '@/features/ventas/components/encabezado-exito-venta'
 import type { ReciboCobroDeudor } from '@/features/ventas/deudores/types/cobro-deudor'
 
-/** Props del recibo consolidado de un cobro. */
-interface ReciboCobroDeudorProps {
+/** Props de la tarjeta del recibo consolidado de un cobro. */
+interface TarjetaReciboCobroDeudorProps {
   recibo: ReciboCobroDeudor
 }
 
@@ -14,20 +14,18 @@ interface ReciboCobroDeudorProps {
  * Recibo consolidado: un solo comprobante para todos los fiados que se cobraron, con su propio numero. Dice cuanto
  * se abono a cada uno y si quedo completado o cuanto le falta todavia, y cuanto queda debiendo la persona.
  */
-export function ReciboCobroDeudorContenido({ recibo }: ReciboCobroDeudorProps) {
+export function TarjetaReciboCobroDeudor({ recibo }: TarjetaReciboCobroDeudorProps) {
   const ajustesMedios = recibo.pagos.filter((pago) => pago.montoAjuste !== 0)
 
   return (
-    <div className="flex flex-col gap-bloque">
-      <EncabezadoExitoVenta estado="completada" titulo="Cobro registrado" />
-
+    <Card className="gap-bloque p-contorno">
       {/* --- ENCABEZADO DEL RECIBO --- */}
+      <div className="min-w-0">
+        <p className="text-cuerpo text-texto-suave">Recibo</p>
+        <p className="text-titulo-pagina font-bold tabular-nums">{recibo.numeroRecibo}</p>
+      </div>
       <dl className="grid grid-cols-2 gap-x-bloque gap-y-interno text-cuerpo">
-        <div>
-          <dt className="text-texto-suave">Recibo</dt>
-          <dd className="font-bold tabular-nums">{recibo.numeroRecibo}</dd>
-        </div>
-        <div>
+        <div className="col-span-2">
           <dt className="text-texto-suave">Fecha</dt>
           <dd className="font-medium tabular-nums">{formatearFechaHora(recibo.fechaHora)}</dd>
         </div>
@@ -40,6 +38,8 @@ export function ReciboCobroDeudorContenido({ recibo }: ReciboCobroDeudorProps) {
           <dd className="font-medium">{recibo.nombreVendedor}</dd>
         </div>
       </dl>
+
+      <Separator />
 
       {/* --- FIADOS ABONADOS --- */}
       <section aria-labelledby="titulo-fiados-abonados" className="flex flex-col gap-interno">
@@ -72,6 +72,8 @@ export function ReciboCobroDeudorContenido({ recibo }: ReciboCobroDeudorProps) {
         </ul>
       </section>
 
+      <Separator />
+
       {/* --- MEDIOS DE PAGO Y TOTAL --- */}
       <dl className="flex flex-col gap-interno text-cuerpo">
         {recibo.pagos.map((pago) => (
@@ -103,15 +105,6 @@ export function ReciboCobroDeudorContenido({ recibo }: ReciboCobroDeudorProps) {
           <dd className="font-bold tabular-nums">{formatearMoneda(recibo.saldoRestanteDeudor)}</dd>
         </div>
       </dl>
-
-      {/* --- ENVIO DEL RECIBO --- */}
-      <div className="flex gap-2">
-        <BotonesEnvioComprobante
-          enlaceWhatsApp={recibo.enlaceWhatsApp}
-          enlaceMail={recibo.enlaceMail}
-          variante="compacta"
-        />
-      </div>
-    </div>
+    </Card>
   )
 }

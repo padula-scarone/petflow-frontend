@@ -14,3 +14,11 @@ export function construirRutaFichaDeudor(idDeudor: number, idVentaFiado?: number
   const ruta = `${RUTA_DEUDORES}/${idDeudor}`
   return idVentaFiado === undefined ? ruta : `${ruta}?${PARAMETRO_FIADO_RESALTADO}=${idVentaFiado}`
 }
+
+/** Segmento de la pantalla de cobro, hija de la ficha: comparte con ella los fiados tildados. */
+export const SEGMENTO_COBRO_DEUDOR = 'cobro'
+
+/** Ruta absoluta de la pantalla de cobro de un deudor. */
+export function construirRutaCobroDeudor(idDeudor: number) {
+  return `${RUTA_DEUDORES}/${idDeudor}/${SEGMENTO_COBRO_DEUDOR}`
+}

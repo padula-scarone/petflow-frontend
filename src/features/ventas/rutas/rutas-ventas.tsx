@@ -4,7 +4,9 @@ import {
   ID_SECCION_REGISTRAR_VENTA,
 } from '@/features/ventas/config/rutas-registrar-venta'
 import { ID_SECCION_HISTORIAL } from '@/features/ventas/config/rutas-historial'
-import { ID_SECCION_DEUDORES } from '@/features/ventas/deudores/config/rutas-deudores'
+import { ID_SECCION_DEUDORES, SEGMENTO_COBRO_DEUDOR } from '@/features/ventas/deudores/config/rutas-deudores'
+import { LayoutFichaDeudor } from '@/features/ventas/deudores/paginas/layout-ficha-deudor'
+import { PaginaCobroDeudor } from '@/features/ventas/deudores/paginas/pagina-cobro-deudor'
 import { PaginaFichaDeudor } from '@/features/ventas/deudores/paginas/pagina-ficha-deudor'
 import { PaginaListaDeudores } from '@/features/ventas/deudores/paginas/pagina-lista-deudores'
 import { ID_SECCION_DEVOLUCIONES } from '@/features/ventas/devoluciones/config/rutas-devoluciones'
@@ -40,7 +42,14 @@ export const RUTAS_VENTAS: RutaSeccion[] = [
     ruta: {
       children: [
         { index: true, element: <PaginaListaDeudores /> },
-        { path: ':idDeudor', element: <PaginaFichaDeudor /> },
+        {
+          path: ':idDeudor',
+          element: <LayoutFichaDeudor />,
+          children: [
+            { index: true, element: <PaginaFichaDeudor /> },
+            { path: SEGMENTO_COBRO_DEUDOR, element: <PaginaCobroDeudor /> },
+          ],
+        },
       ],
     },
   },

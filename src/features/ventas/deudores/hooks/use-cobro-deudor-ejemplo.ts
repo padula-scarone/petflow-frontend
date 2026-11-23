@@ -64,7 +64,7 @@ export function useCobroDeudorEjemplo({
     (acumulado, fila) => acumulado + convertirPesosACentavos(fila.montoACobrar ?? 0),
     0,
   )
-  // Reutiliza el cobro de Registrar Venta: el dialogo no muestra descuento manual ni la opcion de fiado
+  // Reutiliza el cobro de Registrar Venta: la pantalla de cobro no muestra descuento manual ni la opcion de fiado
   const cobro = useCobroVenta({
     subtotalCentavos: totalACobrarCentavos,
     medios,
