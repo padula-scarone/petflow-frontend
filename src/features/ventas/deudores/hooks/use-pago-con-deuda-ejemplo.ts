@@ -119,7 +119,11 @@ export function usePagoConDeudaEjemplo({
       : null
 
   const hayDeuda = resumen.queDebe > 0
-  const { motivoNoConfirmable: motivoPago, errorMontoAhora } = evaluarPagoConDeuda({
+  // El bloque Deuda aparece recien cuando el vendedor ya eligio como paga (un medio, o "Fiar todo") y no alcanza
+  const hayMedioElegido =
+    fiarTodo || (formaPago === 'unico' ? medioUnico !== undefined : estadoCobro.lineasPagoMixto.length > 0)
+  const mostrarDeuda = hayDeuda && hayMedioElegido
+  const { confirmable, motivoNoConfirmable: motivoPago, errorMontoAhora } = evaluarPagoConDeuda({
     formaPago,
     fiarTodo,
     estadoMediosPago: propiedadesCobro.estadoMediosPago,
@@ -137,7 +141,7 @@ export function usePagoConDeudaEjemplo({
   })
   // Sin deuda es una venta de contado: ademas se exige lo que exige el cobro real (envio posible, forma de pago valida)
   const contadoConfirmable = estadoCobro.puedeConfirmar && estadoCobro.formaPago !== 'fiado'
-  const puedeConfirmar = motivoPago === undefined && (hayDeuda || contadoConfirmable)
+  const puedeConfirmar = confirmable && (hayDeuda || contadoConfirmable)
 
   const estadoPago: EstadoPagoConDeuda = {
     formaPago,
@@ -149,7 +153,7 @@ export function usePagoConDeudaEjemplo({
     vuelto: vueltoUnico,
     lineasPagoMixto: estadoCobro.lineasPagoMixto,
     resumen,
-    deuda: hayDeuda
+    deuda: mostrarDeuda
       ? {
           deudorElegido: deuda.deudorElegido,
           fechaEstimada: deuda.fechaEstimada,

@@ -81,9 +81,6 @@ export function SelectorFechaEstimada({ fechaEstimada, onCambiarFechaEstimada }:
           Sin fecha
         </Button>
       </div>
-      {fechaEstimada === null && (
-        <p className="text-auxiliar text-texto-suave">Elegí una fecha o marcá «Sin fecha» para continuar.</p>
-      )}
     </div>
   )
 }

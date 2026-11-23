@@ -61,7 +61,7 @@ export function EstadoSaldoPago({
   return (
     <p role="status" className={cn('flex items-center gap-1 text-cuerpo font-medium text-green-700', className)}>
       <Check aria-hidden="true" className="size-4 shrink-0" />
-      Total cubierto: no queda deuda
+      Total cubierto
     </p>
   )
 }

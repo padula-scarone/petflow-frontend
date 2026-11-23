@@ -1,11 +1,5 @@
-import {
-  MOTIVO_ELEGIR_DEUDOR,
-  MOTIVO_ELEGIR_FECHA_ESTIMADA,
-  MOTIVO_ELEGIR_MEDIO_O_FIAR_TODO,
-  MOTIVO_MONTO_AHORA_VACIO,
-} from '@/features/ventas/deudores/config/mensajes-deudores'
+import { MOTIVO_MONTO_AHORA_VACIO } from '@/features/ventas/deudores/config/mensajes-deudores'
 import type { FormaPagoAhora, ResumenPagoConDeuda } from '@/features/ventas/deudores/types/pago-con-deuda'
-import { MOTIVO_ELEGIR_MEDIO_PAGO } from '@/features/ventas/config/mensajes-error-venta'
 import { MONTO_RECIBIDO_MAXIMO_CENTAVOS } from '@/features/ventas/config/reglas-venta'
 import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import { formatearMoneda } from '@/lib/formatear-moneda'
@@ -36,57 +30,70 @@ interface EntradaEvaluacionPago {
 
 /** Resultado de la evaluacion. */
 export interface EvaluacionPagoConDeuda {
-  /** Primer motivo que impide confirmar; undefined si se puede. */
+  confirmable: boolean
+  /**
+   * Error que se le muestra al vendedor; undefined si no hay ninguno. Lo que todavia falta elegir (medio, deudor,
+   * fecha) bloquea la confirmacion sin texto: el boton deshabilitado y el bloque a completar ya lo dicen.
+   */
   motivoNoConfirmable: string | undefined
   /** Error del campo "Cobrar ahora" del pago unico. */
   errorMontoAhora: string | undefined
 }
 
-/** Decide si el pago se puede confirmar, y si no, por que. El primer motivo que aparece es el que se muestra. */
+const CONFIRMABLE: EvaluacionPagoConDeuda = {
+  confirmable: true,
+  motivoNoConfirmable: undefined,
+  errorMontoAhora: undefined,
+}
+const FALTA_ELEGIR: EvaluacionPagoConDeuda = {
+  confirmable: false,
+  motivoNoConfirmable: undefined,
+  errorMontoAhora: undefined,
+}
+
+/** Un error que se muestra debajo del boton de confirmar. */
+function bloquearCon(motivo: string, errorMontoAhora?: string): EvaluacionPagoConDeuda {
+  return { confirmable: false, motivoNoConfirmable: motivo, errorMontoAhora }
+}
+
+/** Decide si el pago se puede confirmar, y si no, por que. El primer motivo que aparece es el que vale. */
 export function evaluarPagoConDeuda(entrada: EntradaEvaluacionPago): EvaluacionPagoConDeuda {
   const { resumen, fiarTodo } = entrada
-  const sinErrores = (motivoNoConfirmable?: string): EvaluacionPagoConDeuda => ({
-    motivoNoConfirmable,
-    errorMontoAhora: undefined,
-  })
 
   if (!fiarTodo) {
-    if (entrada.estadoMediosPago.fase === 'cargando') return sinErrores('Cargando los medios de pago')
-    if (entrada.estadoMediosPago.fase === 'error') return sinErrores('No se pudieron cargar los medios de pago')
+    if (entrada.estadoMediosPago.fase === 'cargando') return FALTA_ELEGIR
+    if (entrada.estadoMediosPago.fase === 'error') return FALTA_ELEGIR
   }
   if (resumen.importeVenta <= 0) {
-    return sinErrores('El descuento deja el total en cero: no hay nada para cobrar')
+    return bloquearCon('El descuento deja el total en cero: no hay nada para cobrar')
   }
 
   if (!fiarTodo && entrada.formaPago === 'unico') {
-    if (!entrada.hayMedioUnicoElegido) return sinErrores(MOTIVO_ELEGIR_MEDIO_PAGO)
+    if (!entrada.hayMedioUnicoElegido) return FALTA_ELEGIR
     if (entrada.montoAhoraUnico === null || entrada.montoAhoraUnico <= 0) {
-      return { motivoNoConfirmable: MOTIVO_MONTO_AHORA_VACIO, errorMontoAhora: MOTIVO_MONTO_AHORA_VACIO }
+      return bloquearCon(MOTIVO_MONTO_AHORA_VACIO, MOTIVO_MONTO_AHORA_VACIO)
     }
     if (resumen.excedente > 0) {
       const mensaje = `El monto no puede superar el total (${formatearMoneda(resumen.importeVenta)})`
-      return { motivoNoConfirmable: mensaje, errorMontoAhora: mensaje }
+      return bloquearCon(mensaje, mensaje)
     }
     if (entrada.medioUnicoAdmiteVuelto && entrada.pagaConCentavos !== null) {
       if (entrada.pagaConCentavos < entrada.cobradoAhoraCentavos) {
-        return sinErrores('El monto con el que paga no cubre lo que se cobra ahora')
+        return bloquearCon('El monto con el que paga no cubre lo que se cobra ahora')
       }
       if (entrada.pagaConCentavos > MONTO_RECIBIDO_MAXIMO_CENTAVOS) {
-        return sinErrores('El monto con el que paga es demasiado alto')
+        return bloquearCon('El monto con el que paga es demasiado alto')
       }
     }
   }
 
   if (!fiarTodo && entrada.formaPago === 'mixto') {
-    if (entrada.cantidadLineasMixto === 0) return sinErrores(MOTIVO_ELEGIR_MEDIO_O_FIAR_TODO)
-    if (entrada.motivoCobroMixto !== undefined) return sinErrores(entrada.motivoCobroMixto)
+    if (entrada.cantidadLineasMixto === 0) return FALTA_ELEGIR
+    if (entrada.motivoCobroMixto !== undefined) return bloquearCon(entrada.motivoCobroMixto)
     // La diferencia ya la muestra el estado del pago: aca solo se bloquea la confirmacion
-    if (resumen.excedente > 0) return sinErrores(`Los montos superan el total en ${formatearMoneda(resumen.excedente)}`)
+    if (resumen.excedente > 0) return bloquearCon(`Los montos superan el total en ${formatearMoneda(resumen.excedente)}`)
   }
 
-  if (entrada.hayDeuda) {
-    if (!entrada.hayDeudorElegido) return sinErrores(MOTIVO_ELEGIR_DEUDOR)
-    if (!entrada.hayFechaEstimadaElegida) return sinErrores(MOTIVO_ELEGIR_FECHA_ESTIMADA)
-  }
-  return sinErrores()
+  if (entrada.hayDeuda && (!entrada.hayDeudorElegido || !entrada.hayFechaEstimadaElegida)) return FALTA_ELEGIR
+  return CONFIRMABLE
 }

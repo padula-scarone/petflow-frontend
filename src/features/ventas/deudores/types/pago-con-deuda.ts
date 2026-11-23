@@ -60,12 +60,15 @@ export interface EstadoPagoConDeuda {
   /** Pago mixto. */
   lineasPagoMixto: LineaPagoMixto[]
   resumen: ResumenPagoConDeuda
-  /** null cuando no hay deuda. */
+  /** null cuando no hay deuda, o cuando todavia no se eligio como paga (un medio o "Fiar todo"). */
   deuda: EstadoDeuda | null
   puedeConfirmar: boolean
-  /** Por que no se puede confirmar, ej. "Elegi el deudor". */
+  /**
+   * Error que impide confirmar, ej. "El monto con el que paga no cubre lo que se cobra ahora". Lo que falta elegir
+   * (medio, deudor, fecha) no tiene texto: bloquea el boton y nada mas.
+   */
   motivoNoConfirmable?: string
-  /** Por que el monto del pago unico no es valido, ej. "Ingresa un monto mayor a cero o toca Fiar todo". */
+  /** Por que el monto del pago unico no es valido, ej. "Ingresa un monto mayor a cero". */
   errorMontoAhora?: string
 }
 

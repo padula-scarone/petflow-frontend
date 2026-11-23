@@ -54,38 +54,38 @@ export function PanelPagoAhora({
     <Card className="gap-bloque p-contorno">
       {/* --- ENCABEZADO: FORMA DE PAGO Y FIAR TODO --- */}
       <div className="flex flex-col gap-interno">
-        <h2 className="text-titulo-seccion font-bold">¿Con qué paga ahora?</h2>
+        <h2 className="text-titulo-seccion font-bold">Medio de pago</h2>
         <div className="flex flex-col gap-interno sm:flex-row sm:items-center sm:justify-between">
-          <ToggleGroup
-            type="single"
-            aria-label="Forma de pago"
-            className={CLASE_GRUPO}
-            value={formaPago}
-            // Radix emite '' al des-seleccionar; la forma de pago siempre debe tener valor
-            onValueChange={(valor) => {
-              if (valor) onCambiarFormaPago(valor as FormaPagoAhora)
-            }}
-          >
-            <ToggleGroupItem value="unico" className={CLASE_OPCION}>
-              Único
-            </ToggleGroupItem>
-            <ToggleGroupItem value="mixto" className={CLASE_OPCION}>
-              Mixto
-            </ToggleGroupItem>
-          </ToggleGroup>
+          {/* Fiando todo no se cobra nada: Unico y Mixto no tienen nada que elegir y se ocultan */}
+          {fiarTodo ? (
+            <p className="flex items-center gap-2 font-medium">
+              <NotebookPen aria-hidden="true" className="size-4 shrink-0" />
+              Toda la venta queda como deuda
+            </p>
+          ) : (
+            <ToggleGroup
+              type="single"
+              aria-label="Forma de pago"
+              className={CLASE_GRUPO}
+              value={formaPago}
+              // Radix emite '' al des-seleccionar; la forma de pago siempre debe tener valor
+              onValueChange={(valor) => {
+                if (valor) onCambiarFormaPago(valor as FormaPagoAhora)
+              }}
+            >
+              <ToggleGroupItem value="unico" className={CLASE_OPCION}>
+                Único
+              </ToggleGroupItem>
+              <ToggleGroupItem value="mixto" className={CLASE_OPCION}>
+                Mixto
+              </ToggleGroupItem>
+            </ToggleGroup>
+          )}
           <BotonFiarTodo fiarTodo={fiarTodo} onFiarTodo={onFiarTodo} onCobrarAlgoAhora={onCobrarAlgoAhora} />
         </div>
       </div>
 
       {/* --- CONTENIDO --- */}
-      {fiarTodo && (
-        <p className="flex items-start gap-interno rounded-grande border border-dashed p-contorno text-cuerpo text-texto-suave">
-          <NotebookPen aria-hidden="true" className="mt-0.5 size-4 shrink-0" />
-          El cliente no paga nada ahora: toda la venta queda como deuda. Si va a pagar una parte, tocá «Cobrar algo
-          ahora».
-        </p>
-      )}
-
       {!fiarTodo && formaPago === 'unico' && (
         <div className="flex flex-col gap-bloque">
           <div className="flex flex-col gap-interno">
@@ -95,13 +95,9 @@ export function PanelPagoAhora({
               valor={estadoPago.montoAhora}
               onCambiar={onCambiarMontoAhora}
             />
-            {errorMontoAhora !== undefined ? (
+            {errorMontoAhora !== undefined && (
               <p role="alert" className="text-auxiliar font-medium text-peligro">
                 {errorMontoAhora}
-              </p>
-            ) : (
-              <p className="text-auxiliar text-texto-suave">
-                Dejalo en el total para una venta de contado. Si es menos, el resto queda como deuda.
               </p>
             )}
           </div>

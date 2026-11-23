@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { formatearMoneda } from '@/lib/formatear-moneda'
-import { MOTIVO_ELEGIR_MEDIO_PAGO } from '@/features/ventas/config/mensajes-error-venta'
 import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-venta'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
 import { EstadoEnvioCobro } from '@/features/ventas/components/estado-envio-cobro'
@@ -137,8 +136,7 @@ export function RegistrarVentaCobroConDeuda({
           onAjustarAutomaticamente={propiedadesPago.onAjustarMontosAutomaticamente}
         />
         <EstadoEnvioCobro estadoEnvio={estadoEnvio} />
-        {/* Sin medio elegido el boton bloqueado ya lo dice: el texto solo estorba en la pantalla chica */}
-        {motivoNoConfirmable && motivoNoConfirmable !== MOTIVO_ELEGIR_MEDIO_PAGO && !puedeConfirmar && (
+        {motivoNoConfirmable && !puedeConfirmar && (
           <p role="status" className="text-auxiliar text-amber-700 tabular-nums">
             {motivoNoConfirmable}
           </p>

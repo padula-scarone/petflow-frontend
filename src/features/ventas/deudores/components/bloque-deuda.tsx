@@ -33,12 +33,7 @@ export function BloqueDeuda({
 }: BloqueDeudaProps) {
   return (
     <Card className="gap-bloque p-contorno">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-titulo-seccion font-bold">Deuda</h2>
-        <p className="text-cuerpo text-texto-suave">
-          Esta venta queda con deuda: elegí a quién se le fía y para cuándo.
-        </p>
-      </div>
+      <h2 className="text-titulo-seccion font-bold">Deuda</h2>
 
       {/* --- DEUDOR --- */}
       {deuda.deudorElegido ? (
