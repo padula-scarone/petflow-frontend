@@ -104,6 +104,8 @@ export function convertirDetalleApiAComprobante(
     fechaHora: venta.fechaHora,
     canalVenta: convertirOrigenACanal(venta.origen),
     tipoEntrega: convertirModalidadAEntrega(venta.modalidadEntrega),
+    direccionEnvio: venta.direccionEnvio ?? null,
+    destinatarioEnvio: venta.destinatarioEnvio ?? null,
     nombreVendedor: venta.vendedor.nombre,
     detalles,
     descuentoManual:

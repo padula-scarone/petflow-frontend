@@ -29,6 +29,8 @@ export function convertirVentaAComprobante(venta: VentaDetalle): Comprobante {
     fechaHora: venta.fechaHora,
     canalVenta: venta.origen === 'MOSTRADOR' ? ('mostrador' as const) : ('digital' as const),
     tipoEntrega: venta.modalidadEntrega === 'RETIRO' ? ('retiro' as const) : ('envio' as const),
+    direccionEnvio: venta.direccionEnvio,
+    destinatarioEnvio: venta.destinatarioEnvio,
     nombreVendedor: venta.vendedor.nombre,
     detalles: venta.items.map((item) => ({
       idProducto: String(item.idProducto),

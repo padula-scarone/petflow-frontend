@@ -115,6 +115,10 @@ export interface RegistrarVentaResponse {
     estado: EstadoVentaApi
     fechaHora: string
     pagos: PagoRegistradoApi[]
+    /** Lo que quedo guardado, ya recortado; null con RETIRO. Dato personal: nunca va en un log ni en un mensaje. */
+    direccionEnvio?: string | null
+    /** Lo que quedo guardado, ya recortado; null con RETIRO o si no se indico. Dato personal. */
+    destinatarioEnvio?: string | null
   }
 }
 
@@ -174,8 +178,13 @@ export interface VentaDetalleApi {
   deudor?: { idDeudor: number; nombreCompleto: string; telefono: string; dni: string } | null
   /** AAAA-MM-DD; null si no tiene. Solo informativa. */
   fechaEstimadaPago?: string | null
-  /** Dato personal: el detalle la trae pero hoy ninguna pantalla la muestra. Nunca va en un mensaje ni en un log. */
+  /**
+   * Direccion de envio tal como quedo guardada; null con RETIRO y en las ventas anteriores. El historial no la trae.
+   * Dato personal: nunca va en un mensaje ni en un log.
+   */
   direccionEnvio?: string | null
+  /** Quien recibe el envio; null con RETIRO, si no se indico y en las ventas anteriores. El historial no lo trae. Dato personal. */
+  destinatarioEnvio?: string | null
   vendedor: { idUsuario: number; nombre: string }
   subtotalBruto: string
   descuentoManual: string

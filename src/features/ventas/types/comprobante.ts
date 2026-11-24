@@ -59,6 +59,10 @@ interface ComprobanteBase {
   fechaHora: string
   canalVenta: CanalVenta
   tipoEntrega: TipoEntrega
+  /** Direccion de envio; null con Retiro o si el back no la manda. Dato personal: nunca va en un log ni en un mensaje. */
+  direccionEnvio: string | null
+  /** Quien recibe el envio; null con Retiro, si no se indico o si el back no lo manda. Dato personal. */
+  destinatarioEnvio: string | null
   nombreVendedor: string
   detalles: DetalleComprobante[]
   /** null cuando la venta no tuvo descuento manual. */

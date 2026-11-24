@@ -5,10 +5,12 @@ import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
 import { DetalleProductosComprobante } from '@/features/ventas/components/detalle-productos-comprobante'
+import { FilasDatosEnvio } from '@/features/ventas/components/filas-datos-envio'
 import { PagosComprobante } from '@/features/ventas/components/pagos-comprobante'
 import { BloqueDeudorComprobante } from '@/features/ventas/deudores/components/bloque-deudor-comprobante'
 import { TotalesComprobanteConDeuda } from '@/features/ventas/deudores/components/totales-comprobante-con-deuda'
 import type { ComprobanteConDeuda } from '@/features/ventas/deudores/types/comprobante-con-deuda'
+import { listarDatosEnvio } from '@/features/ventas/utils/listar-datos-envio'
 
 /** Props de la tarjeta con todo el desglose de una venta con deuda. */
 interface TarjetaComprobanteConDeudaProps {
@@ -51,6 +53,14 @@ export function TarjetaComprobanteConDeuda({ comprobante }: TarjetaComprobanteCo
             <dt className="text-texto-suave">Vendedor</dt>
             <dd className="font-medium">{comprobante.nombreVendedor}</dd>
           </div>
+          {/* Solo con Envio y con valor: un dato null no deja una fila vacia */}
+          <FilasDatosEnvio
+            datos={listarDatosEnvio(
+              comprobante.tipoEntrega === 'envio',
+              comprobante.direccionEnvio,
+              comprobante.destinatarioEnvio,
+            )}
+          />
         </dl>
       </div>
 

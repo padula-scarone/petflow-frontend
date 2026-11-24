@@ -79,6 +79,8 @@ function esVentaDetalleApi(valor: unknown): valor is VentaDetalleApi {
     // Tolerante: si el back no manda estos campos (version vieja), el detalle sigue sirviendo
     (valor.deudor === undefined || valor.deudor === null || esDeudorApi(valor.deudor)) &&
     (valor.fechaEstimadaPago === undefined || esTextoOpcional(valor.fechaEstimadaPago)) &&
+    (valor.direccionEnvio === undefined || esTextoOpcional(valor.direccionEnvio)) &&
+    (valor.destinatarioEnvio === undefined || esTextoOpcional(valor.destinatarioEnvio)) &&
     esObjeto(valor.vendedor) &&
     typeof valor.vendedor.idUsuario === 'number' &&
     typeof valor.vendedor.nombre === 'string' &&
