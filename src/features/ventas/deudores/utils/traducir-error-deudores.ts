@@ -27,11 +27,13 @@ import type {
 import type { CampoDeudor, ErroresDatosDeudor, EstadoGuardadoDeudor } from '@/features/ventas/deudores/types/deudor'
 import {
   crearMensajeStockInsuficiente,
+  MENSAJE_DATOS_ENVIO_RECHAZADOS,
   MENSAJE_DATOS_NO_COINCIDEN,
   MENSAJE_ITEM_NO_DISPONIBLE,
   MENSAJE_PRODUCTO_SIN_NOMBRE,
 } from '@/features/ventas/config/mensajes-error-venta'
-import type { ArticuloCarrito } from '@/features/ventas/types/venta'
+import type { ArticuloCarrito, ErroresDatosEnvio } from '@/features/ventas/types/venta'
+import { extraerErroresDatosEnvio } from '@/features/ventas/utils/extraer-errores-datos-envio'
 
 const ESTADO_NO_AUTORIZADO = 401
 const ESTADO_DATOS_INVALIDOS = 400
@@ -153,7 +155,14 @@ export function traducirErrorCobro(error: ErrorApi): ResultadoCobroDeudor {
 
 /** Como termino el alta del fiado: el back la rechazo sin guardar nada, o no hay respuesta util y puede haberse guardado. */
 export type ResultadoAltaFiadoFallida =
-  | { tipo: 'rechazado'; estadoHttp: 400 | 401 | 403 | 404 | 409; mensaje: string; reintentable: boolean }
+  | {
+      tipo: 'rechazado'
+      estadoHttp: 400 | 401 | 403 | 404 | 409
+      mensaje: string
+      reintentable: boolean
+      /** Lo que el back rechazo de los datos del envio, para marcarlo en su campo del carrito; ausente si no fue eso. */
+      erroresDatosEnvio?: ErroresDatosEnvio
+    }
   | { tipo: 'incierto' }
 
 /** Formato del 409 de stock del back: "Stock insuficiente para el producto 7". */
@@ -194,6 +203,17 @@ export function traducirErrorAltaFiado(error: ErrorApi, articulos: ArticuloCarri
     return { tipo: 'rechazado', estadoHttp: 409, mensaje: MENSAJE_FIADO_NO_REGISTRADO, reintentable: true }
   }
   if (error.estado === ESTADO_DATOS_INVALIDOS) {
+    // Un dato del envio rechazado se marca en su campo del carrito
+    const erroresDatosEnvio = extraerErroresDatosEnvio(error)
+    if (erroresDatosEnvio !== null) {
+      return {
+        tipo: 'rechazado',
+        estadoHttp: 400,
+        mensaje: MENSAJE_DATOS_ENVIO_RECHAZADOS,
+        reintentable: false,
+        erroresDatosEnvio,
+      }
+    }
     // La fecha anterior a hoy llega sin errores[]: se reconoce por su mensaje, que no se muestra
     const esFechaEstimada =
       error.errores.some((errorCampo) => errorCampo.campo === 'fechaEstimadaPago') ||

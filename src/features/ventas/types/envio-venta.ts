@@ -1,4 +1,5 @@
 import type { RegistroVenta } from '@/features/ventas/types/registro-venta'
+import type { ErroresDatosEnvio } from '@/features/ventas/types/venta'
 
 /** Estado del envio de la venta al back; decide que muestra y que permite la pantalla de Cobro. */
 export type EstadoEnvioVenta =
@@ -23,4 +24,6 @@ export interface ErrorEnvioVenta {
   incierto: boolean
   /** true si el error sugiere que catalogo o medios cambiaron en el back. */
   recargarDatos: boolean
+  /** Lo que el back rechazo de los datos del envio, para marcarlo en su campo del carrito; ausente si no fue eso. */
+  erroresDatosEnvio?: ErroresDatosEnvio
 }

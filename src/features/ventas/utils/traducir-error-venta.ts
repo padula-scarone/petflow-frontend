@@ -1,4 +1,5 @@
 import {
+  MENSAJE_DATOS_ENVIO_RECHAZADOS,
   crearMensajeConsultaFallida,
   crearMensajeSinPermiso,
   crearMensajeStockInsuficiente,
@@ -14,6 +15,7 @@ import {
 } from '@/features/ventas/config/mensajes-error-venta'
 import type { ErrorEnvioVenta } from '@/features/ventas/types/envio-venta'
 import type { ArticuloCarrito } from '@/features/ventas/types/venta'
+import { extraerErroresDatosEnvio } from '@/features/ventas/utils/extraer-errores-datos-envio'
 import type { ErrorApi } from '@/lib/cliente-http.types'
 
 const ESTADO_NO_AUTORIZADO = 401
@@ -83,6 +85,11 @@ export function traducirErrorRegistroVenta(
     return { mensaje: MENSAJE_SIN_CAJA_ABIERTA, incierto: false, recargarDatos: false }
   }
   if (error.estado === ESTADO_DATOS_INVALIDOS) {
+    // Un dato del envio rechazado se marca en su campo; lo demas sigue como siempre
+    const erroresDatosEnvio = extraerErroresDatosEnvio(error)
+    if (erroresDatosEnvio !== null) {
+      return { mensaje: MENSAJE_DATOS_ENVIO_RECHAZADOS, incierto: false, recargarDatos: false, erroresDatosEnvio }
+    }
     return { mensaje: MENSAJE_DATOS_NO_COINCIDEN, incierto: false, recargarDatos: true }
   }
   return { mensaje: MENSAJE_ALTA_FALLIDA, incierto: false, recargarDatos: false }

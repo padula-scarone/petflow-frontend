@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { BuscadorProductos } from '@/features/ventas/components/buscador-productos'
 import { EstadoCatalogoProductos } from '@/features/ventas/components/estado-catalogo-productos'
-import { SelectorConfiguracionVenta } from '@/features/ventas/components/selector-configuracion-venta'
+import { SelectorCanalVenta } from '@/features/ventas/components/selector-canal-venta'
 import { TarjetaArticuloCarrito } from '@/features/ventas/components/tarjeta-articulo-carrito'
 import type { RegistrarVentaCarritoProps } from '@/features/ventas/types/venta'
 
@@ -18,7 +18,6 @@ export function RegistrarVentaCarrito({
   onBuscarProducto,
   onAgregarProducto,
   onCambiarCanal,
-  onCambiarEntrega,
   onAumentarCantidad,
   onDisminuirCantidad,
   onCambiarPesoGranel,
@@ -28,20 +27,13 @@ export function RegistrarVentaCarrito({
   onCerrarAvisosRepoblado,
   onContinuarACobro,
 }: RegistrarVentaCarritoProps) {
-  const { canalVenta, tipoEntrega, articulos, subtotal, algunArticuloSuperaStock } = estadoVenta
+  const { canalVenta, articulos, subtotal, algunArticuloSuperaStock } = estadoVenta
   const carritoVacio = articulos.length === 0
 
   return (
     <section className="flex min-h-full flex-col gap-bloque">
-      {/* --- HEADER Y CONFIGURACION --- */}
-      <header className="flex flex-col gap-bloque rounded-grande border bg-fondo-tarjeta p-contorno">
-        <SelectorConfiguracionVenta
-          canalVenta={canalVenta}
-          tipoEntrega={tipoEntrega}
-          onCambiarCanal={onCambiarCanal}
-          onCambiarEntrega={onCambiarEntrega}
-        />
-      </header>
+      {/* --- CANAL --- */}
+      <SelectorCanalVenta canalVenta={canalVenta} onCambiarCanal={onCambiarCanal} />
 
       {/* --- AVISOS DE UNA VENTA EDITADA: LO QUE NO SE PUDO VOLVER A CARGAR --- */}
       {avisosRepoblado.length > 0 && (

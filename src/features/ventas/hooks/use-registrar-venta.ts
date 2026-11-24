@@ -4,6 +4,7 @@ import { useCarritoVenta } from '@/features/ventas/hooks/use-carrito-venta'
 import { useCatalogoProductos } from '@/features/ventas/hooks/use-catalogo-productos'
 import { useCobroVenta } from '@/features/ventas/hooks/use-cobro-venta'
 import { useComprobanteVenta } from '@/features/ventas/hooks/use-comprobante-venta'
+import { useEntregaVenta } from '@/features/ventas/hooks/use-entrega-venta'
 import { useEnvioVenta } from '@/features/ventas/hooks/use-envio-venta'
 import { useMediosPago } from '@/features/ventas/hooks/use-medios-pago'
 import type { MedioPago } from '@/features/ventas/types/cobro'
@@ -44,6 +45,8 @@ export function useRegistrarVenta({ alIniciarNuevaVenta }: OpcionesRegistrarVent
 
   // --- VENTA EN CURSO ---
   const carrito = useCarritoVenta(catalogo.datos ?? SIN_PRODUCTOS, catalogo.estado.fase === 'listo', borrador)
+  // La entrega se define en el cobro; una venta editada arranca con la modalidad que tenia
+  const entrega = useEntregaVenta(borrador?.tipoEntrega ?? 'retiro')
   // Tras un rechazo por stock, producto o medio inexistente, lo que se ve puede estar desactualizado
   const envio = useEnvioVenta({
     articulos: carrito.articulos,
@@ -51,6 +54,7 @@ export function useRegistrarVenta({ alIniciarNuevaVenta }: OpcionesRegistrarVent
       catalogo.recargar()
       mediosPago.recargar()
     },
+    alRechazarDatosEnvio: entrega.mostrarErroresDelBack,
   })
   const cobro = useCobroVenta({
     subtotalCentavos: carrito.subtotalCentavos,
@@ -71,7 +75,9 @@ export function useRegistrarVenta({ alIniciarNuevaVenta }: OpcionesRegistrarVent
     await envio.enviarVenta(
       construirSolicitudVenta({
         canalVenta: carrito.canalVenta,
-        tipoEntrega: carrito.tipoEntrega,
+        tipoEntrega: entrega.tipoEntrega,
+        direccionEnvio: entrega.direccionEnvio,
+        destinatarioEnvio: entrega.destinatarioEnvio,
         articulos: carrito.articulos,
         datosCobro: cobro.datosCobro,
       }),
@@ -90,11 +96,14 @@ export function useRegistrarVenta({ alIniciarNuevaVenta }: OpcionesRegistrarVent
       },
     },
     propiedadesCobro: cobro.propiedadesCobro,
+    propiedadesEntrega: entrega.propiedadesEntrega,
     registro,
     estadoComprobante: comprobante.estadoComprobante,
     onReintentarComprobante: comprobante.reintentarComprobante,
     confirmarCobro,
     descartarRechazoEnvio: envio.descartarRechazo,
+    validarDatosEnvio: entrega.validarDatosDelEnvio,
+    mostrarErroresDatosEnvio: entrega.mostrarErroresDelBack,
     iniciarNuevaVenta: alIniciarNuevaVenta,
   }
 }

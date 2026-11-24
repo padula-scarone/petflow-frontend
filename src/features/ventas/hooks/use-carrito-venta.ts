@@ -12,7 +12,6 @@ import type {
   ArticuloCarrito,
   CanalVenta,
   ProductoCatalogo,
-  TipoEntrega,
 } from '@/features/ventas/types/venta'
 import {
   calcularSubtotalLineaCentavos,
@@ -100,7 +99,6 @@ export function useCarritoVenta(
 ) {
   // --- ESTADOS ---
   const [canalVenta, setCanalVenta] = useState<CanalVenta>(borrador?.canalVenta ?? 'mostrador')
-  const [tipoEntrega, setTipoEntrega] = useState<TipoEntrega>(borrador?.tipoEntrega ?? 'retiro')
   const [textoBusqueda, setTextoBusqueda] = useState('')
   const [articulosAgregados, setArticulosAgregados] = useState<ArticuloCarrito[]>([])
   // Items de la venta editada que esperan al catalogo para tomar precio y stock vigentes; null si no hay nada pendiente
@@ -211,7 +209,6 @@ export function useCarritoVenta(
   const propiedadesCarrito: PropiedadesCarritoBase = {
     estadoVenta: {
       canalVenta,
-      tipoEntrega,
       articulos,
       subtotal: convertirCentavosAPesos(subtotalCentavos),
       algunArticuloSuperaStock: articulos.some(superaStockDisponible),
@@ -221,7 +218,6 @@ export function useCarritoVenta(
     onBuscarProducto: setTextoBusqueda,
     onAgregarProducto: agregarProducto,
     onCambiarCanal: setCanalVenta,
-    onCambiarEntrega: setTipoEntrega,
     onAumentarCantidad: (idProducto) => cambiarCantidad(idProducto, 1),
     onDisminuirCantidad: (idProducto) => cambiarCantidad(idProducto, -1),
     onCambiarPesoGranel: cambiarPesoGranel,
@@ -234,7 +230,6 @@ export function useCarritoVenta(
 
   return {
     canalVenta,
-    tipoEntrega,
     articulos,
     subtotalCentavos,
     propiedadesCarrito,

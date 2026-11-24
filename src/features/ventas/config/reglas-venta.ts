@@ -7,6 +7,12 @@ export const MOTIVO_DESCUENTO_LONGITUD_MAXIMA = 200
 /** Largo maximo del nombre del cliente de un fiado, sin contar los espacios de los extremos. */
 export const CLIENTE_REFERENCIA_LONGITUD_MAXIMA = 100
 
+/** Largo maximo de la direccion de envio, sin contar los espacios de los extremos (columna VARCHAR(200) del back). */
+export const DIRECCION_ENVIO_LONGITUD_MAXIMA = 200
+
+/** Largo maximo del destinatario del envio, sin contar los espacios de los extremos (columna VARCHAR(100) del back). */
+export const DESTINATARIO_ENVIO_LONGITUD_MAXIMA = 100
+
 /** Tope del monto recibido ("Paga con"): 9.999.999.999,99 en centavos. */
 export const MONTO_RECIBIDO_MAXIMO_CENTAVOS = 999_999_999_999
 

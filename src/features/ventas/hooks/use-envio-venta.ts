@@ -3,7 +3,7 @@ import { useSesion } from '@/features/auth/hooks/use-sesion'
 import { registrarVentaApi } from '@/features/ventas/api/registrar-venta-api'
 import type { EstadoEnvioVenta } from '@/features/ventas/types/envio-venta'
 import type { SolicitudVenta } from '@/features/ventas/types/solicitud-venta'
-import type { ArticuloCarrito } from '@/features/ventas/types/venta'
+import type { ArticuloCarrito, ErroresDatosEnvio } from '@/features/ventas/types/venta'
 import { traducirErrorRegistroVenta } from '@/features/ventas/utils/traducir-error-venta'
 
 const MILISEGUNDOS_POR_SEGUNDO = 1000
@@ -14,6 +14,8 @@ interface OpcionesEnvioVenta {
   articulos: ArticuloCarrito[]
   /** Se llama cuando un rechazo sugiere que catalogo o medios cambiaron en el back. */
   alNecesitarRecargarDatos: () => void
+  /** Se llama cuando el back rechaza la direccion o el destinatario, para marcarlos en el carrito. */
+  alRechazarDatosEnvio: (errores: ErroresDatosEnvio) => void
 }
 
 /**
@@ -22,7 +24,7 @@ interface OpcionesEnvioVenta {
  * (nada se guardo) deja reintentar. El bloqueo usa un ref porque un segundo toque puede llegar antes del
  * siguiente render.
  */
-export function useEnvioVenta({ articulos, alNecesitarRecargarDatos }: OpcionesEnvioVenta) {
+export function useEnvioVenta({ articulos, alNecesitarRecargarDatos, alRechazarDatosEnvio }: OpcionesEnvioVenta) {
   const { cliente } = useSesion()
 
   // --- ESTADOS ---
@@ -75,6 +77,7 @@ export function useEnvioVenta({ articulos, alNecesitarRecargarDatos }: OpcionesE
         : { fase: 'rechazado', mensaje: traduccion.mensaje },
     )
     if (traduccion.recargarDatos) alNecesitarRecargarDatos()
+    if (traduccion.erroresDatosEnvio !== undefined) alRechazarDatosEnvio(traduccion.erroresDatosEnvio)
     return
   }
 

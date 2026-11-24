@@ -6,6 +6,7 @@ import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
 import { EstadoEnvioCobro } from '@/features/ventas/components/estado-envio-cobro'
 import { EstadoMediosPago } from '@/features/ventas/components/estado-medios-pago'
+import { SeccionEntrega } from '@/features/ventas/components/seccion-entrega'
 import { TarjetaDescuentoManual } from '@/features/ventas/components/tarjeta-descuento-manual'
 import { BloqueDeuda } from '@/features/ventas/deudores/components/bloque-deuda'
 import { ContenedorDialogoDeudor } from '@/features/ventas/deudores/components/contenedor-dialogo-deudor'
@@ -16,12 +17,15 @@ import { PanelResumenPagoConDeuda } from '@/features/ventas/deudores/components/
 import { DATOS_DEUDOR_VACIOS } from '@/features/ventas/deudores/hooks/use-formulario-deudor'
 import type { PropiedadesPagoConDeuda } from '@/features/ventas/deudores/types/pago-con-deuda'
 import type { PropiedadesCobroRegistrarVenta } from '@/features/ventas/types/cobro'
+import type { PropiedadesEntrega } from '@/features/ventas/types/venta'
 
 /** Props del paso de pago de Registrar Venta con deuda. */
 interface RegistrarVentaCobroConDeudaProps {
   propiedadesPago: PropiedadesPagoConDeuda
   /** El cobro de siempre: de el salen el descuento manual, los medios y el envio de una venta de contado. */
   propiedadesCobro: PropiedadesCobroRegistrarVenta
+  /** Entrega de la venta: se define aca, al final, y no al armar el carrito. */
+  propiedadesEntrega: PropiedadesEntrega
   onVolverAlCarrito: () => void
   onCancelarVenta: () => void
 }
@@ -34,6 +38,7 @@ interface RegistrarVentaCobroConDeudaProps {
 export function RegistrarVentaCobroConDeuda({
   propiedadesPago,
   propiedadesCobro,
+  propiedadesEntrega,
   onVolverAlCarrito,
   onCancelarVenta,
 }: RegistrarVentaCobroConDeudaProps) {
@@ -106,12 +111,15 @@ export function RegistrarVentaCobroConDeuda({
               onNuevoDeudor={() => setDialogoDeudorAbierto(true)}
             />
           )}
+          {/* --- ENTREGA: lo ultimo que se define con el cliente --- */}
+          <SeccionEntrega propiedades={propiedadesEntrega} deshabilitado={enviando} />
         </div>
 
         {/* --- RESUMEN --- */}
         <PanelResumenPagoConDeuda
           estadoPago={estadoPago}
           estadoEnvio={estadoEnvio}
+          tipoEntrega={propiedadesEntrega.tipoEntrega}
           registrandoConDeuda={registrandoConDeuda}
           onConfirmarPago={propiedadesPago.onConfirmarPago}
           onCancelarVenta={onCancelarVenta}
