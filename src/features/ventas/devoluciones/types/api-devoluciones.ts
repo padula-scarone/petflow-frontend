@@ -1,4 +1,4 @@
-import type { FormatoVentaApi, PaginacionHistorialApi } from '@/features/ventas/types/api-ventas'
+import type { FormatoVentaApi, ModalidadEntregaApi, PaginacionHistorialApi } from '@/features/ventas/types/api-ventas'
 
 // Contrato crudo del back para Devoluciones (modulo devoluciones). Solo lo usa la capa api: el
 // resto del front trabaja con los tipos de dominio de types/devolución.ts (montos en pesos, cantidades numericas).
@@ -93,7 +93,16 @@ export interface DevolucionDetalleApi {
   fechaHoraLimiteModificacion: string | null
   /** Texto libre; null en devoluciones anteriores a que se registrara el motivo. */
   motivoCambio: string | null
-  ventaVinculada: { idVenta: number; numeroComprobante: string | null } | null
+  ventaVinculada: {
+    idVenta: number
+    numeroComprobante: string | null
+    // Los tres datos del envio de la venta original. Opcionales: el back todavia no los manda en este endpoint.
+    modalidadEntrega?: ModalidadEntregaApi
+    /** Dato personal: nunca va en un log ni en un mensaje. */
+    direccionEnvio?: string | null
+    /** Dato personal. */
+    destinatarioEnvio?: string | null
+  } | null
   articuloDevuelto: {
     idProducto: number
     nombreProducto: string

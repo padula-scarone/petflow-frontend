@@ -30,10 +30,15 @@ export function ContenedorCobroConDeuda({
   onNuevaVenta,
 }: ContenedorCobroConDeudaProps) {
   const { estadoVenta } = contexto.propiedadesCarrito
+  const { propiedadesEntrega } = contexto
   const { propiedadesPago, comprobante } = usePagoConDeuda({
     articulos: estadoVenta.articulos,
     canalVenta: estadoVenta.canalVenta,
-    tipoEntrega: estadoVenta.tipoEntrega,
+    tipoEntrega: propiedadesEntrega.tipoEntrega,
+    direccionEnvio: propiedadesEntrega.direccionEnvio,
+    destinatarioEnvio: propiedadesEntrega.destinatarioEnvio,
+    validarDatosEnvio: contexto.validarDatosEnvio,
+    alRechazarDatosEnvio: contexto.mostrarErroresDatosEnvio,
     propiedadesCobro: contexto.propiedadesCobro,
     confirmarCobro: contexto.confirmarCobro,
     alAbandonarVenta: onNuevaVenta,
@@ -55,6 +60,7 @@ export function ContenedorCobroConDeuda({
     <RegistrarVentaCobroConDeuda
       propiedadesPago={propiedadesPago}
       propiedadesCobro={contexto.propiedadesCobro}
+      propiedadesEntrega={propiedadesEntrega}
       onVolverAlCarrito={onVolverAlCarrito}
       onCancelarVenta={onCancelarVenta}
     />

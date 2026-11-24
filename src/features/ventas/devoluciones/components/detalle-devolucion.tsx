@@ -27,7 +27,9 @@ import {
   describirDevolucion,
 } from '@/features/ventas/devoluciones/utils/describir-articulo-devolucion'
 import { describirMotivoDevolucion } from '@/features/ventas/devoluciones/utils/describir-motivo-devolucion'
+import { FilasDatosEnvio } from '@/features/ventas/components/filas-datos-envio'
 import { NombreProducto } from '@/features/ventas/components/nombre-producto'
+import { listarDatosEnvio } from '@/features/ventas/utils/listar-datos-envio'
 import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 
@@ -187,6 +189,16 @@ export function DetalleDevolucion({ detalle, acciones, onCerrar, onReintentar }:
                       {devolucion.ventaVinculada ? devolucion.ventaVinculada.numeroComprobante : 'Sin venta vinculada'}
                     </dd>
                   </div>
+                  {/* Datos del envio de la venta original: solo con Envio y con valor */}
+                  {devolucion.ventaVinculada !== null && (
+                    <FilasDatosEnvio
+                      datos={listarDatosEnvio(
+                        devolucion.ventaVinculada.tipoEntrega === 'envio',
+                        devolucion.ventaVinculada.direccionEnvio,
+                        devolucion.ventaVinculada.destinatarioEnvio,
+                      )}
+                    />
+                  )}
                 </dl>
 
                 <Separator />

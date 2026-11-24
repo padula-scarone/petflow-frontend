@@ -4,9 +4,11 @@ import { Separator } from '@/components/ui/separator'
 import { cn } from '@/lib/utils'
 import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
 import { DetalleProductosComprobante } from '@/features/ventas/components/detalle-productos-comprobante'
+import { FilasDatosEnvio } from '@/features/ventas/components/filas-datos-envio'
 import { PagosComprobante } from '@/features/ventas/components/pagos-comprobante'
 import { TotalesComprobante } from '@/features/ventas/components/totales-comprobante'
 import type { Comprobante } from '@/features/ventas/types/comprobante'
+import { listarDatosEnvio } from '@/features/ventas/utils/listar-datos-envio'
 
 /** Props de la tarjeta con todo el desglose de la venta. */
 interface TarjetaComprobanteProps {
@@ -57,12 +59,14 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
             <dt className="text-texto-suave">Vendedor</dt>
             <dd className="font-medium">{comprobante.nombreVendedor}</dd>
           </div>
-          {comprobante.clienteReferencia !== null && (
-            <div className="min-w-0">
-              <dt className="text-texto-suave">Cliente</dt>
-              <dd className="truncate font-medium">{comprobante.clienteReferencia}</dd>
-            </div>
-          )}
+          {/* Solo con Envio y con valor: un dato null no deja una fila vacia */}
+          <FilasDatosEnvio
+            datos={listarDatosEnvio(
+              comprobante.tipoEntrega === 'envio',
+              comprobante.direccionEnvio,
+              comprobante.destinatarioEnvio,
+            )}
+          />
         </dl>
       </div>
 

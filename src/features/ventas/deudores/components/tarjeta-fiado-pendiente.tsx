@@ -8,7 +8,9 @@ import { BotonPagosFiado } from '@/features/ventas/deudores/components/boton-pag
 import { CampoMontoFiado } from '@/features/ventas/deudores/components/campo-monto-fiado'
 import { EstadoProximoPago } from '@/features/ventas/deudores/components/estado-proximo-pago'
 import { ListaPagosFiado } from '@/features/ventas/deudores/components/lista-pagos-fiado'
+import { FilasDatosEnvio } from '@/features/ventas/components/filas-datos-envio'
 import type { FilaFiadoSeleccionable } from '@/features/ventas/deudores/types/cobro-deudor'
+import { listarDatosEnvio } from '@/features/ventas/utils/listar-datos-envio'
 
 /** Props de la tarjeta de un fiado pendiente (mobile y pantallas medianas). */
 interface TarjetaFiadoPendienteProps {
@@ -24,6 +26,8 @@ export function TarjetaFiadoPendiente({ fila, onAlternarFiado, onCambiarMontoFia
   // Solo estado de presentacion: si los pagos estan desplegados
   const [pagosAbiertos, setPagosAbiertos] = useState(false)
   const idListaPagos = `pagos-fiado-tarjeta-${fiado.idVenta}`
+  // Solo con Envio y con valor: un dato null no deja una fila vacia
+  const datosEnvio = listarDatosEnvio(fiado.tipoEntrega === 'envio', fiado.direccionEnvio, fiado.destinatarioEnvio)
 
   // El fiado que llego desde "Ver deuda" se lleva a la vista
   useEffect(() => {
@@ -88,6 +92,7 @@ export function TarjetaFiadoPendiente({ fila, onAlternarFiado, onCambiarMontoFia
             />
           </div>
         )}
+        <FilasDatosEnvio datos={datosEnvio} />
         <div className="col-span-2">
           <dt className="text-auxiliar text-texto-suave">Fecha estimada de pago</dt>
           <dd className="font-medium">

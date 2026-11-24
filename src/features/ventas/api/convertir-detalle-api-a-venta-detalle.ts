@@ -100,6 +100,9 @@ export function convertirDetalleApiAVentaDetalle(
         ? null
         : { idDeudor: venta.deudor.idDeudor, nombreCompleto: venta.deudor.nombreCompleto },
     fechaEstimadaPago: venta.fechaEstimadaPago ?? null,
+    // Un back que todavia no los manda equivale a "sin dato": la pantalla no dibuja la fila
+    direccionEnvio: venta.direccionEnvio ?? null,
+    destinatarioEnvio: venta.destinatarioEnvio ?? null,
     origen: venta.origen,
     modalidadEntrega: venta.modalidadEntrega,
     fechaHoraLimiteModificacion: venta.fechaHoraLimiteModificacion,

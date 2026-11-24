@@ -39,11 +39,13 @@ export interface SolicitudVenta extends DatosCobroSolicitud {
   /** AAAA-MM-DD, solo en un fiado. Se omite para "Sin fecha". No puede ser anterior a hoy (hora de Argentina). */
   fechaEstimadaPago?: string
   /**
-   * Direccion de envio, una sola linea de 1 a 200 caracteres. El back la exige con Envio y la rechaza con Retiro.
-   * Todavia no hay interfaz que la pida: la solicitud ya sabe llevarla para cuando se agregue. Es un dato personal:
-   * nunca va en un mensaje ni en un log.
+   * Direccion de envio, una sola linea de 1 a 200 caracteres, ya recortada. El back la exige con Envio y la rechaza
+   * con Retiro. Es un dato personal: nunca va en un mensaje ni en un log.
    */
   direccionEnvio?: string
-  /** Quien recibe el envio, de 1 a 100 caracteres. Opcional con Envio y prohibido con Retiro. Tambien es un dato personal. */
+  /**
+   * Quien recibe el envio, de 1 a 100 caracteres, ya recortado. Opcional con Envio (si esta vacio se omite) y
+   * prohibido con Retiro. Tambien es un dato personal.
+   */
   destinatarioEnvio?: string
 }

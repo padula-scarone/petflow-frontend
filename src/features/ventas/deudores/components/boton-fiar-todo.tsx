@@ -1,11 +1,14 @@
 import { NotebookPen, Wallet } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 
 /** Props del boton que alterna entre "no paga nada ahora" y volver a cobrar algo. */
 interface BotonFiarTodoProps {
   fiarTodo: boolean
   onFiarTodo: () => void
   onCobrarAlgoAhora: () => void
+  /** Solo ubicacion: en que lugar de la grilla del encabezado va. */
+  className?: string
 }
 
 /**
@@ -13,14 +16,14 @@ interface BotonFiarTodoProps {
  * un campo vacio y un cero se confunden, obliga a elegir un medio para cobrar cero, y un cero tipeado por error
  * dejaria la venta entera como deuda sin que el vendedor lo haya decidido.
  */
-export function BotonFiarTodo({ fiarTodo, onFiarTodo, onCobrarAlgoAhora }: BotonFiarTodoProps) {
+export function BotonFiarTodo({ fiarTodo, onFiarTodo, onCobrarAlgoAhora, className }: BotonFiarTodoProps) {
   return fiarTodo ? (
-    <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onCobrarAlgoAhora}>
+    <Button type="button" variant="outline" className={cn('bg-fondo-tarjeta', className)} onClick={onCobrarAlgoAhora}>
       <Wallet aria-hidden="true" />
       Cobrar algo ahora
     </Button>
   ) : (
-    <Button type="button" variant="outline" className="bg-fondo-tarjeta" onClick={onFiarTodo}>
+    <Button type="button" variant="outline" className={cn('bg-fondo-tarjeta', className)} onClick={onFiarTodo}>
       <NotebookPen aria-hidden="true" />
       Fiar todo
     </Button>

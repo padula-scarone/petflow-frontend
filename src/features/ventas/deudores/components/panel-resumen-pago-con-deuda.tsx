@@ -6,12 +6,15 @@ import { EstadoEnvioCobro } from '@/features/ventas/components/estado-envio-cobr
 import { EstadoSaldoPago } from '@/features/ventas/deudores/components/estado-saldo-pago'
 import type { EstadoPagoConDeuda } from '@/features/ventas/deudores/types/pago-con-deuda'
 import type { EstadoEnvioVenta } from '@/features/ventas/types/envio-venta'
+import type { TipoEntrega } from '@/features/ventas/types/venta'
 
 /** Props del panel de resumen del pago con deuda. Los botones solo se muestran en escritorio. */
 interface PanelResumenPagoConDeudaProps {
   estadoPago: EstadoPagoConDeuda
   /** Estado del envio de una venta de contado (la que va al back real). */
   estadoEnvio: EstadoEnvioVenta
+  /** Para que el resumen diga como se entrega, aunque la seccion Entrega quede fuera de la vista. */
+  tipoEntrega: TipoEntrega
   /** Verdadero mientras se registra una venta con deuda. */
   registrandoConDeuda: boolean
   onConfirmarPago: () => void
@@ -23,6 +26,7 @@ interface PanelResumenPagoConDeudaProps {
 export function PanelResumenPagoConDeuda({
   estadoPago,
   estadoEnvio,
+  tipoEntrega,
   registrandoConDeuda,
   onConfirmarPago,
   onCancelarVenta,
@@ -56,6 +60,10 @@ export function PanelResumenPagoConDeuda({
           <dd className="shrink-0 font-medium whitespace-nowrap tabular-nums">
             {formatearMonedaConSigno(resumen.ajusteMediosPago)}
           </dd>
+        </div>
+        <div className="flex justify-between gap-interno">
+          <dt className="text-texto-suave">Entrega</dt>
+          <dd className="shrink-0 font-medium">{tipoEntrega === 'envio' ? 'Envío' : 'Retiro'}</dd>
         </div>
       </dl>
 

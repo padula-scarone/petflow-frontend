@@ -207,6 +207,13 @@ export interface VentaDetalle extends VentaHistorial {
   fechaHoraPago: string | null
   /** AAAA-MM-DD en que se estima que se paga un fiado; null si no tiene (o si no es un fiado). */
   fechaEstimadaPago: string | null
+  /**
+   * Direccion a la que se envia el pedido. null con Retiro, en las ventas anteriores a que se registrara y cuando el
+   * back no la manda. Solo el detalle la trae: la grilla no. Dato personal: nunca va en un log ni en un mensaje.
+   */
+  direccionEnvio: string | null
+  /** Quien recibe el pedido. null con Retiro, si no se indico, en las ventas anteriores y cuando el back no lo manda. Dato personal. */
+  destinatarioEnvio: string | null
   vendedor: VendedorVenta
   subtotalBruto: number
   descuentoManual: number

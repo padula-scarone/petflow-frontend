@@ -11,6 +11,7 @@ import type {
   DevolucionDetalle,
   DevolucionListado,
 } from '@/features/ventas/devoluciones/types/devolucion'
+import { convertirModalidadAEntrega } from '@/features/ventas/api/conversores-enums'
 import { NUMERO_COMPROBANTE_AUSENTE } from '@/features/ventas/config/reglas-venta'
 import { convertirCentavosAPesos } from '@/features/ventas/utils/calcular-centavos'
 
@@ -136,6 +137,12 @@ export function convertirDevolucionDetalleApi(devolucion: DevolucionDetalleApi):
         : {
             idVenta: devolucion.ventaVinculada.idVenta,
             numeroComprobante: devolucion.ventaVinculada.numeroComprobante ?? NUMERO_COMPROBANTE_AUSENTE,
+            tipoEntrega:
+              devolucion.ventaVinculada.modalidadEntrega === undefined
+                ? null
+                : convertirModalidadAEntrega(devolucion.ventaVinculada.modalidadEntrega),
+            direccionEnvio: devolucion.ventaVinculada.direccionEnvio ?? null,
+            destinatarioEnvio: devolucion.ventaVinculada.destinatarioEnvio ?? null,
           },
     saldoResultante,
     fechaHoraLimiteModificacion: devolucion.fechaHoraLimiteModificacion,

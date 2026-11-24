@@ -4,6 +4,7 @@ import type { ReciboCobroDeudor } from '@/features/ventas/deudores/types/cobro-d
 import type { ComprobanteConDeuda } from '@/features/ventas/deudores/types/comprobante-con-deuda'
 import { describirFechaEstimada } from '@/features/ventas/deudores/utils/fechas-estimadas'
 import { formatearCantidad } from '@/features/ventas/utils/formatear-cantidad'
+import { listarDatosEnvio } from '@/features/ventas/utils/listar-datos-envio'
 
 // Los textos se precargan en WhatsApp o en el mail con deep links, igual que el resto de los comprobantes.
 
@@ -35,9 +36,17 @@ export function construirTextoComprobanteConDeuda(comprobante: ComprobanteConDeu
         ]
       : []
 
+  // El comprobante va al propio cliente: lleva a donde se envia y quien recibe
+  const lineasEnvio = listarDatosEnvio(
+    comprobante.tipoEntrega === 'envio',
+    comprobante.direccionEnvio,
+    comprobante.destinatarioEnvio,
+  ).map((dato) => `${dato.etiqueta}: ${dato.valor}`)
+
   return [
     `PetFlow - Comprobante ${comprobante.numeroComprobante}`,
     formatearFechaHora(comprobante.fechaHora),
+    ...lineasEnvio,
     '',
     ...lineasProductos,
     ...(lineasAjustes.length > 0 ? ['', 'Descuentos y recargos:', ...lineasAjustes] : []),

@@ -27,6 +27,8 @@ export const MENSAJE_RESULTADO_INCIERTO =
   'No la cobres de nuevo todavía: es posible que se haya registrado. Revisá en el Historial de ventas o consultá con el encargado si figura. Si no figura, cancelá esta venta y cargala otra vez.'
 export const MENSAJE_DATOS_NO_COINCIDEN =
   'Algunos datos de la venta no coinciden. Volvé al carrito, revisá los productos y el cobro e intentá de nuevo.'
+export const MENSAJE_DATOS_ENVIO_RECHAZADOS =
+  'El servidor no aceptó los datos del envío. Corregí lo que se marca en rojo en Entrega e intentá de nuevo.'
 export const MENSAJE_ITEM_NO_DISPONIBLE =
   'Un producto o un medio de pago ya no está disponible. Volvé al carrito y revisalo.'
 export const MENSAJE_SIN_CAJA_ABIERTA =

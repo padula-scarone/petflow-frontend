@@ -41,7 +41,8 @@ function FilaResumen({ etiqueta, detalle, importe }: FilaResumenProps) {
  * total cierra el desglose sin una linea que lo separe, porque no es otra seccion.
  * - Sin descuentos ni recargos el desglose sobra (el subtotal seria igual al total) y tambien el titulo: queda
  *   solo la fila del total.
- * - En un fiado la deuda ocupa el lugar del total: es la misma cifra, dicha una sola vez, con el nombre del deudor.
+ * - En un fiado la deuda ocupa el lugar del total: es la misma cifra, dicha una sola vez. El nombre del deudor no se
+ *   repite aca: ya figura entre los datos de la venta.
  */
 export function TotalesComprobante({ comprobante, anulada = false }: TotalesComprobanteProps) {
   const { descuentoManual, subtotalProductos, montoTotal } = comprobante
@@ -51,10 +52,9 @@ export function TotalesComprobante({ comprobante, anulada = false }: TotalesComp
       ? comprobante.pagos.filter((pago) => pago.montoAjuste !== 0)
       : []
   const hayAjustes = descuentoManual !== null || ajustesMedios.length > 0
-  // Nombre del deudor; null si no es una deuda (venta cobrada o anulada)
-  const nombreDeudor =
-    comprobante.estado === 'pendiente-pago' && !anulada ? comprobante.clienteReferencia : null
-  const titulo = nombreDeudor !== null ? 'Deuda' : hayAjustes ? 'Resumen' : null
+  // Una venta cobrada o anulada no es una deuda
+  const esDeuda = comprobante.estado === 'pendiente-pago' && !anulada
+  const titulo = esDeuda ? 'Deuda' : hayAjustes ? 'Resumen' : null
 
   return (
     <section
@@ -88,17 +88,14 @@ export function TotalesComprobante({ comprobante, anulada = false }: TotalesComp
         </dl>
       )}
       <div className={cn('flex items-baseline justify-between gap-interno', hayAjustes && 'pt-interno')}>
-        {nombreDeudor !== null ? (
-          <span className="min-w-0">
-            <span className="block text-cuerpo text-texto-suave">A nombre de</span>
-            <span className="block truncate font-medium">{nombreDeudor}</span>
-          </span>
+        {esDeuda ? (
+          <span className="text-cuerpo text-texto-suave">Importe adeudado</span>
         ) : (
           <span className="text-titulo-seccion font-bold">Total</span>
         )}
         <span className="shrink-0 text-cifra-principal font-bold tabular-nums">{formatearMoneda(montoTotal)}</span>
       </div>
-      {nombreDeudor !== null && (
+      {esDeuda && (
         <p className="text-cuerpo text-texto-suave">
           Queda pendiente hasta que se cobre la deuda.
         </p>

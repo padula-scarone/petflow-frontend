@@ -13,7 +13,7 @@ interface BarraFiltrosHistorialProps {
 }
 
 /**
- * N.º de comprobante, producto, fecha y estado (los del SSOT), el cliente cuando el estado es "Pendiente de pago", y
+ * N.º de comprobante, producto, fecha y estado (los del SSOT), el deudor cuando el estado es "Pendiente de pago", y
  * "Mas filtros". Arma los controles; la fila y el popover son de BarraFiltros.
  */
 export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProps) {
@@ -65,13 +65,13 @@ export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProp
         onCambiarEstado={(estado) => onCambiarFiltros({ estado })}
       />
 
-      {/* --- CLIENTE: SOLO CON "PENDIENTE DE PAGO" --- */}
+      {/* --- DEUDOR: SOLO CON "PENDIENTE DE PAGO" --- */}
       {filtros.estado === 'PENDIENTE_PAGO' && (
         <Input
           type="text"
           autoComplete="off"
-          placeholder="Buscar cliente"
-          aria-label="Cliente"
+          placeholder="Buscar deudor"
+          aria-label="Deudor"
           className="bg-fondo-tarjeta"
           value={filtros.textoCliente}
           onChange={(evento) => onCambiarFiltros({ textoCliente: evento.target.value })}

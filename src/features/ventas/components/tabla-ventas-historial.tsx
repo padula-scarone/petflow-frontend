@@ -9,6 +9,7 @@ import { AccionDeudaFiado } from '@/features/ventas/deudores/components/accion-d
 import { AvisoFaltanteFiado } from '@/features/ventas/deudores/components/aviso-faltante-fiado'
 import type { FilaHistorial, PropiedadesAccionesVenta } from '@/features/ventas/types/historial'
 import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
+import { obtenerNombreDeudor } from '@/features/ventas/utils/obtener-nombre-deudor'
 
 /** Props de la tabla de ventas (desde xl). */
 interface TablaVentasHistorialProps {
@@ -56,12 +57,12 @@ export function TablaVentasHistorial({ filas, acciones }: TablaVentasHistorialPr
             role="row"
             className={cn(CLASE_FILA, 'min-h-[5.25rem] py-2 transition-colors last:border-b-0 hover:bg-fondo-hover/60')}
           >
-            {/* --- COMPROBANTE Y, SI EXISTE, CLIENTE --- */}
+            {/* --- COMPROBANTE Y, SI HAY DEUDA, DEUDOR --- */}
             <div role="cell" className="min-w-0">
               <p className="font-bold whitespace-nowrap tabular-nums">{fila.numeroComprobante}</p>
-              {fila.clienteReferencia !== null && (
+              {obtenerNombreDeudor(fila) !== null && (
                 <p className="max-w-40 truncate text-auxiliar text-texto-suave">
-                  Cliente: {fila.clienteReferencia}
+                  Deudor: {obtenerNombreDeudor(fila)}
                 </p>
               )}
             </div>

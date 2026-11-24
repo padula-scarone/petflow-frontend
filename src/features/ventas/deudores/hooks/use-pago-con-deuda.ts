@@ -42,13 +42,14 @@ import {
 } from '@/features/ventas/deudores/utils/verificar-resultado-deuda'
 import type { PropiedadesCobroRegistrarVenta } from '@/features/ventas/types/cobro'
 import type { SolicitudVenta, PagoSolicitud } from '@/features/ventas/types/solicitud-venta'
-import type { ArticuloCarrito, CanalVenta, TipoEntrega } from '@/features/ventas/types/venta'
+import type { ArticuloCarrito, CanalVenta, ErroresDatosEnvio, TipoEntrega } from '@/features/ventas/types/venta'
 import {
   calcularAjusteBasisPoints,
   calcularMontoFinalCentavos,
   convertirCentavosAPesos,
   convertirPesosACentavos,
 } from '@/features/ventas/utils/calcular-centavos'
+import { construirDatosEnvioSolicitud } from '@/features/ventas/utils/construir-datos-envio-solicitud'
 import { FILTROS_HISTORIAL_VACIOS } from '@/features/ventas/utils/contar-filtros-activos'
 
 /** Lo que necesita el pago con deuda de la venta en curso. */
@@ -56,6 +57,13 @@ interface OpcionesPagoConDeuda {
   articulos: ArticuloCarrito[]
   canalVenta: CanalVenta
   tipoEntrega: TipoEntrega
+  /** Tal como los escribio el vendedor en el carrito; aca se recortan y se descartan con Retiro. Datos personales. */
+  direccionEnvio: string
+  destinatarioEnvio: string
+  /** Valida los datos del envio antes de confirmar: true si se puede seguir, false si hay algo que corregir. */
+  validarDatosEnvio: () => boolean
+  /** Marca en la entrega lo que el back rechazo de los datos del envio. */
+  alRechazarDatosEnvio: (errores: ErroresDatosEnvio) => void
   /** El cobro de siempre: de el salen los medios, el descuento manual y el pago mixto. No se modifica. */
   propiedadesCobro: PropiedadesCobroRegistrarVenta
   /** Registra la venta de contado contra el back real. */
@@ -84,6 +92,10 @@ export function usePagoConDeuda({
   articulos,
   canalVenta,
   tipoEntrega,
+  direccionEnvio,
+  destinatarioEnvio,
+  validarDatosEnvio,
+  alRechazarDatosEnvio,
   propiedadesCobro,
   confirmarCobro,
   alAbandonarVenta,
@@ -275,6 +287,7 @@ export function usePagoConDeuda({
       idDeudor: deudor.idDeudor,
       // "Sin fecha" se omite: el back la toma como nula
       ...(fechaEstimada.modo === 'fecha' && { fechaEstimadaPago: fechaEstimada.fecha }),
+      ...construirDatosEnvioSolicitud(tipoEntrega, direccionEnvio, destinatarioEnvio),
     }
     const enviadoEnMilisegundos = Date.now()
     // El dia del envio, por si la verificacion cruza la medianoche
@@ -289,6 +302,7 @@ export function usePagoConDeuda({
     const traduccion = traducirErrorAltaFiado(resultado.error, articulos)
     if (traduccion.tipo === 'rechazado') {
       // El back rechazo el pedido sin guardar nada: se puede corregir y reintentar
+      if (traduccion.erroresDatosEnvio !== undefined) alRechazarDatosEnvio(traduccion.erroresDatosEnvio)
       setEstadoConfirmacion({
         fase: 'error',
         estadoHttp: traduccion.estadoHttp,
@@ -470,6 +484,8 @@ export function usePagoConDeuda({
     onCambiarFechaEstimada: deuda.cambiarFechaEstimada,
     onConfirmarPago: () => {
       if (!puedeConfirmar || estadoConfirmacion.fase !== 'cerrada') return
+      // Con un dato del envio invalido no se registra nada: el error queda marcado en su campo
+      if (!validarDatosEnvio()) return
       if (hayDeuda) setEstadoConfirmacion({ fase: 'resumen' })
       else void confirmarCobro()
     },

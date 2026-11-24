@@ -53,10 +53,37 @@ export interface ProductoCatalogo extends ResultadoBusqueda {
   bolsaAbierta?: DatosBolsaAbierta | null
 }
 
+/**
+ * Entrega de la venta tal como se muestra en el cobro: la modalidad y, con Envio, sus dos datos. Los datos son
+ * personales: nunca van en un log ni en un mensaje.
+ */
+export interface PropiedadesEntrega {
+  tipoEntrega: TipoEntrega
+  /** Direccion tal como la escribe el vendedor (sin recortar). Solo se usa con Envio: al pasar a Retiro se vacia. */
+  direccionEnvio: string
+  /** Quien recibe el envio, tal como lo escribe el vendedor (sin recortar). Opcional; se vacia con Retiro. */
+  destinatarioEnvio: string
+  /** Errores que se muestran en cada campo (los de la validacion y los que devolvio el back). */
+  erroresDatosEnvio: ErroresDatosEnvio
+  /** Sube con cada intento fallido de confirmar: la vista lleva el foco al primer campo con error. */
+  intentosFallidos: number
+  onCambiarEntrega: (tipoEntrega: TipoEntrega) => void
+  onCambiarDireccionEnvio: (direccionEnvio: string) => void
+  onCambiarDestinatarioEnvio: (destinatarioEnvio: string) => void
+}
+
+/**
+ * Error de cada dato del envio, ya con el texto para el vendedor. Un campo sin error no aparece. Los textos son
+ * fijos o los del back: nunca repiten lo que escribio el vendedor, porque son datos personales.
+ */
+export interface ErroresDatosEnvio {
+  direccionEnvio?: string
+  destinatarioEnvio?: string
+}
+
 /** Estado de la venta en curso; la vista solo lo renderiza. */
 export interface EstadoVentaEnCurso {
   canalVenta: CanalVenta
-  tipoEntrega: TipoEntrega
   articulos: ArticuloCarrito[]
   subtotal: number
   /** true si algun articulo supera su stock disponible: mientras sea asi no se puede cobrar. */
@@ -76,7 +103,6 @@ export interface RegistrarVentaCarritoProps {
   onBuscarProducto: (textoBusqueda: string) => void
   onAgregarProducto: (idProducto: string) => void
   onCambiarCanal: (canalVenta: CanalVenta) => void
-  onCambiarEntrega: (tipoEntrega: TipoEntrega) => void
   onAumentarCantidad: (idProducto: string) => void
   onDisminuirCantidad: (idProducto: string) => void
   /** Peso de un producto a granel, en gramos enteros y de al menos el minimo. */

@@ -16,6 +16,7 @@ import { formatearFechaHora } from '@/lib/formatear-fecha-hora'
 import { AccionesVentaHistorial } from '@/features/ventas/components/acciones-venta-historial'
 import { BotonesEnvioComprobante } from '@/features/ventas/components/botones-envio-comprobante'
 import { DetalleProductosComprobante } from '@/features/ventas/components/detalle-productos-comprobante'
+import { FilasDatosEnvio } from '@/features/ventas/components/filas-datos-envio'
 import { AvisoVentanaVenta } from '@/features/ventas/components/aviso-ventana-venta'
 import { AccionDeudaFiado } from '@/features/ventas/deudores/components/accion-deuda-fiado'
 import { DeudaFiadoDetalle } from '@/features/ventas/deudores/components/deuda-fiado-detalle'
@@ -32,6 +33,8 @@ import {
 } from '@/features/ventas/utils/construir-enlaces-comprobante'
 import { convertirVentaAComprobante } from '@/features/ventas/utils/convertir-venta-a-comprobante'
 import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
+import { listarDatosEnvio } from '@/features/ventas/utils/listar-datos-envio'
+import { obtenerNombreDeudor } from '@/features/ventas/utils/obtener-nombre-deudor'
 
 /** Props de la ventana con el detalle de una venta. */
 interface DetalleVentaHistorialProps {
@@ -167,12 +170,21 @@ export function DetalleVentaHistorial({
                     <dt className="text-texto-suave">Vendedor</dt>
                     <dd className="truncate font-medium">{venta.vendedor.nombre}</dd>
                   </div>
-                  <div className="min-w-0">
-                    <dt className="text-texto-suave">Cliente</dt>
-                    <dd className="truncate font-medium">
-                      {venta.deudor?.nombreCompleto ?? venta.clienteReferencia ?? '—'}
-                    </dd>
-                  </div>
+                  {/* Solo una venta con deuda tiene a quien mostrar: en contado no hay "cliente" */}
+                  {obtenerNombreDeudor(venta) !== null && (
+                    <div className="min-w-0">
+                      <dt className="text-texto-suave">Deudor</dt>
+                      <dd className="truncate font-medium">{obtenerNombreDeudor(venta)}</dd>
+                    </div>
+                  )}
+                  {/* Solo con Envio y con valor: un dato null no deja una fila vacia */}
+                  <FilasDatosEnvio
+                    datos={listarDatosEnvio(
+                      venta.modalidadEntrega === 'ENVIO',
+                      venta.direccionEnvio,
+                      venta.destinatarioEnvio,
+                    )}
+                  />
                 </dl>
 
                 {/* --- DEUDA: SOLO UN FIADO PENDIENTE CON DEUDOR --- */}
