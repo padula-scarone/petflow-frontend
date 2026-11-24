@@ -30,14 +30,14 @@ export function armarNumeroComprobanteEjemplo(idVenta: number) {
 
 /** Numero de recibo de ejemplo de un cobro de fiados: numeracion propia, distinta de la de las ventas. */
 export function armarNumeroReciboEjemplo(idCobro: number) {
-  return `R-${String(idCobro).padStart(6, '0')}`
+  return `REC-${String(idCobro).padStart(8, '0')}`
 }
 
 interface DatosPagoEjemplo {
   diasDesdeElPago: number
   pesos: number
-  /** Id del cobro que lo registro; null = se pago al registrar la venta. */
-  idCobro: number | null
+  /** Id del cobro que lo registro. El pago inicial de un fiado tambien es un cobro, con su recibo. */
+  idCobro: number
 }
 
 interface DatosFiadoEjemplo {
@@ -60,7 +60,7 @@ function crearFiado(datos: DatosFiadoEjemplo): FiadoAlmacenado {
     pagos: (datos.pagos ?? []).map((pago) => ({
       fechaHora: fechaHoraHaceDias(pago.diasDesdeElPago),
       montoCentavos: convertirPesosACentavos(pago.pesos),
-      numeroRecibo: pago.idCobro === null ? null : armarNumeroReciboEjemplo(pago.idCobro),
+      numeroRecibo: armarNumeroReciboEjemplo(pago.idCobro),
     })),
   }
 }
@@ -79,57 +79,57 @@ function crearDeudor(
 export function crearEstadoInicialDeudores(): EstadoAlmacenDeudores {
   return {
     deudores: [
-      crearDeudor(1, 'Marta Gimenez', '+54 9 11 4455-6677', '20111222', [
+      crearDeudor(1, 'Marta Gimenez', '5491144556677', '20111222', [
         {
           idVenta: 9001,
           diasDesdeLaVenta: 20,
           diasHastaLaFecha: -3,
           importePesos: 18500,
           pagos: [
-            { diasDesdeElPago: 20, pesos: 3000, idCobro: null },
+            { diasDesdeElPago: 20, pesos: 3000, idCobro: 41 },
             { diasDesdeElPago: 12, pesos: 2000, idCobro: 51 },
           ],
         },
         { idVenta: 9002, diasDesdeLaVenta: 6, diasHastaLaFecha: 7, importePesos: 12000 },
       ]),
-      crearDeudor(2, 'Carlos Perez', '+54 9 351 555-0102', '30222333', [
+      crearDeudor(2, 'Carlos Perez', '5493515550102', '30222333', [
         {
           idVenta: 9003,
           diasDesdeLaVenta: 10,
           diasHastaLaFecha: 5,
           importePesos: 24300,
           pagos: [
-            { diasDesdeElPago: 10, pesos: 4000, idCobro: null },
+            { diasDesdeElPago: 10, pesos: 4000, idCobro: 42 },
             { diasDesdeElPago: 6, pesos: 3500, idCobro: 53 },
             { diasDesdeElPago: 2, pesos: 2500, idCobro: 57 },
           ],
         },
       ]),
-      crearDeudor(3, 'Lucia Fernandez', '+54 9 11 2233-4455', '28444555', [
+      crearDeudor(3, 'Lucia Fernandez', '5491122334455', '28444555', [
         { idVenta: 9004, diasDesdeLaVenta: 30, diasHastaLaFecha: null, importePesos: 9800 },
         { idVenta: 9005, diasDesdeLaVenta: 12, diasHastaLaFecha: null, importePesos: 15250 },
         { idVenta: 9006, diasDesdeLaVenta: 2, diasHastaLaFecha: 15, importePesos: 6400 },
       ]),
-      crearDeudor(4, 'Roberto Sosa', '+54 9 261 444-0188', '17555666', [
+      crearDeudor(4, 'Roberto Sosa', '5492614440188', '17555666', [
         {
           idVenta: 9007,
           diasDesdeLaVenta: 45,
           diasHastaLaFecha: -10,
           importePesos: 41200,
-          pagos: [{ diasDesdeElPago: 45, pesos: 12000, idCobro: null }],
+          pagos: [{ diasDesdeElPago: 45, pesos: 12000, idCobro: 43 }],
         },
       ]),
-      crearDeudor(5, 'Valeria Rios', '+54 9 341 6677-8899', '33666777', [
+      crearDeudor(5, 'Valeria Rios', '5493416677889', '33666777', [
         { idVenta: 9008, diasDesdeLaVenta: 3, diasHastaLaFecha: 1, importePesos: 7300 },
       ]),
-      crearDeudor(6, 'Diego Alvarez', '+54 9 11 3344-5566', '29777888', [
+      crearDeudor(6, 'Diego Alvarez', '5491133445566', '29777888', [
         { idVenta: 9009, diasDesdeLaVenta: 15, diasHastaLaFecha: 20, importePesos: 32800 },
       ]),
-      crearDeudor(7, 'Sofia Benitez', '+54 9 223 480-1122', '36888999', [
+      crearDeudor(7, 'Sofia Benitez', '5492234801122', '36888999', [
         { idVenta: 9010, diasDesdeLaVenta: 8, diasHastaLaFecha: null, importePesos: 5600 },
       ]),
       // Cobrarle devuelve un 409 distinto segun el fiado que se incluya (ver disparadores-ejemplo)
-      crearDeudor(8, 'Conflicto Demo', '+54 9 11 5555-0000', '31000001', [
+      crearDeudor(8, 'Conflicto Demo', '5491155550000', '31000001', [
         {
           idVenta: ID_VENTA_FIADO_YA_NO_PENDIENTE_EJEMPLO,
           diasDesdeLaVenta: 7,
@@ -150,23 +150,23 @@ export function crearEstadoInicialDeudores(): EstadoAlmacenDeudores {
         },
       ]),
       // Confirmar una venta a su nombre devuelve 404 (ver disparadores-ejemplo)
-      crearDeudor(9, 'Ex Deudor Demo', '+54 9 11 5555-0001', '31000002', []),
-      crearDeudor(10, 'Ana Martinez', '+54 9 11 6000-1010', '25999000', [
+      crearDeudor(9, 'Ex Deudor Demo', '5491155550001', '31000002', []),
+      crearDeudor(10, 'Ana Martinez', '5491160001010', '25999000', [
         {
           idVenta: 9011,
           diasDesdeLaVenta: 60,
           diasHastaLaFecha: null,
           importePesos: 8000,
           pagos: [
-            { diasDesdeElPago: 60, pesos: 2000, idCobro: null },
+            { diasDesdeElPago: 60, pesos: 2000, idCobro: 44 },
             { diasDesdeElPago: 40, pesos: 6000, idCobro: 50 },
           ],
         },
       ]),
-      crearDeudor(11, 'Hector Molina', '+54 9 11 7000-2020', '22123123', [
+      crearDeudor(11, 'Hector Molina', '5491170002020', '22123123', [
         { idVenta: 9012, diasDesdeLaVenta: 5, diasHastaLaFecha: 2, importePesos: 13900 },
       ]),
-      crearDeudor(12, 'Patricia Luna', '+54 9 11 8000-3030', '27234234', [
+      crearDeudor(12, 'Patricia Luna', '5491180003030', '27234234', [
         {
           idVenta: 9013,
           diasDesdeLaVenta: 9,
@@ -175,14 +175,14 @@ export function crearEstadoInicialDeudores(): EstadoAlmacenDeudores {
           pagos: [{ diasDesdeElPago: 5, pesos: 6000, idCobro: 55 }],
         },
       ]),
-      crearDeudor(13, 'Julian Castro', '+54 9 11 9000-4040', '38345345', [
+      crearDeudor(13, 'Julian Castro', '5491190004040', '38345345', [
         { idVenta: 9014, diasDesdeLaVenta: 4, diasHastaLaFecha: 30, importePesos: 4500 },
       ]),
-      crearDeudor(14, 'Nora Quiroga', '+54 9 11 1000-5050', '14456456', [
+      crearDeudor(14, 'Nora Quiroga', '5491110005050', '14456456', [
         { idVenta: 9015, diasDesdeLaVenta: 22, diasHastaLaFecha: -6, importePesos: 19900 },
       ]),
-      crearDeudor(15, 'Mateo Ferreyra', '+54 9 11 2000-6060', '40567567', []),
-      crearDeudor(16, 'Ines Vega', '+54 9 11 3000-7070', '26678678', [
+      crearDeudor(15, 'Mateo Ferreyra', '5491120006060', '40567567', []),
+      crearDeudor(16, 'Ines Vega', '5491130007070', '26678678', [
         {
           idVenta: 9016,
           diasDesdeLaVenta: 70,

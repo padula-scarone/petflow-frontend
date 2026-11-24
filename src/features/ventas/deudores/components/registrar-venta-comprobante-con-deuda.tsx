@@ -8,7 +8,7 @@ import type { RegistrarVentaComprobanteConDeudaProps } from '@/features/ventas/d
 
 /**
  * Seccion 3 de Registrar Venta cuando la venta quedo con deuda. Igual que el comprobante de siempre, pero sin
- * Editar: editar o anular una venta con pago parcial todavia no esta definido.
+ * Editar: una venta con pago inicial ya no se puede anular (los cobros no se anulan).
  */
 export function RegistrarVentaComprobanteConDeuda({
   comprobante,

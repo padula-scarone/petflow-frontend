@@ -67,6 +67,13 @@ export function TarjetaComprobanteConDeuda({ comprobante }: TarjetaComprobanteCo
         <>
           <Separator />
           <PagosComprobante comprobante={comprobante} />
+          {/* El pago inicial es un cobro del fiado: tiene su propio recibo, distinto del comprobante de la venta */}
+          {comprobante.numeroReciboPagoInicial !== null && (
+            <p className="flex items-baseline justify-between gap-interno text-cuerpo">
+              <span className="text-texto-suave">Recibo del pago</span>
+              <span className="font-medium tabular-nums">{comprobante.numeroReciboPagoInicial}</span>
+            </p>
+          )}
         </>
       )}
 

@@ -61,8 +61,8 @@ export interface PagoFiado {
   fechaHora: string
   /** Porcion base que se abono al fiado. */
   monto: number
-  /** Recibo del cobro; null = se pago al registrar la venta. */
-  numeroRecibo: string | null
+  /** Numero del recibo del cobro (REC-...). El pago inicial de un fiado tambien lo tiene. */
+  numeroRecibo: string
 }
 
 /** Un fiado pendiente de un deudor. Los importes estan en pesos. */

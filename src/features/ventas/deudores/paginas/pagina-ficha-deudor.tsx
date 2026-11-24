@@ -5,6 +5,7 @@ import { FichaDeudor } from '@/features/ventas/deudores/components/ficha-deudor'
 import { construirRutaCobroDeudor, RUTA_DEUDORES } from '@/features/ventas/deudores/config/rutas-deudores'
 import { editarDeudorApiEjemplo } from '@/features/ventas/deudores/ejemplos/api-deudores-ejemplo'
 import { useContextoFichaDeudor } from '@/features/ventas/deudores/hooks/use-contexto-ficha-deudor'
+import { obtenerTelefonoLocal } from '@/features/ventas/deudores/utils/validar-datos-deudor'
 
 /** Ruta de Ventas > Deudores > un deudor: conecta la cuenta y la seleccion con la ficha. */
 export function PaginaFichaDeudor() {
@@ -33,7 +34,8 @@ export function PaginaFichaDeudor() {
           modo="edicion"
           valoresIniciales={{
             nombreCompleto: estadoFicha.deudor.nombreCompleto,
-            telefono: estadoFicha.deudor.telefono,
+            // El formulario pide los 10 digitos; el 549 se agrega solo al guardar
+            telefono: obtenerTelefonoLocal(estadoFicha.deudor.telefono),
             dni: estadoFicha.deudor.dni,
           }}
           guardar={(datos) => editarDeudorApiEjemplo(idDeudor, datos)}

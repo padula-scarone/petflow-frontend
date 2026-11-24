@@ -75,20 +75,28 @@ export function asegurarFiadoDeHistorial(idDeudor: number, origen: FiadoOrigenHi
   const almacenado = leerDeudorAlmacenado(idDeudor)
   if (almacenado === null || almacenado.fiados.some((fiado) => fiado.idVenta === origen.idVenta)) return
 
+  // El Historial solo sabe cuanto se pago: se toma como el pago inicial, que tiene su propio recibo
+  const hayPagoInicial = origen.montoPagado > 0
+  const numeroReciboPagoInicial = armarNumeroReciboEjemplo(leerEstadoAlmacen().proximoIdCobro)
   const fiadoNuevo: FiadoAlmacenado = {
     idVenta: origen.idVenta,
     numeroComprobante: origen.numeroComprobante,
     fechaHora: origen.fechaHora,
     fechaEstimadaPago: origen.fechaEstimadaPago,
     importeAdeudadoCentavos: convertirPesosACentavos(origen.importeAdeudado),
-    // El Historial solo sabe cuanto se pago: se toma como pagado al registrar la venta
-    pagos:
-      origen.montoPagado > 0
-        ? [{ fechaHora: origen.fechaHora, montoCentavos: convertirPesosACentavos(origen.montoPagado), numeroRecibo: null }]
-        : [],
+    pagos: hayPagoInicial
+      ? [
+          {
+            fechaHora: origen.fechaHora,
+            montoCentavos: convertirPesosACentavos(origen.montoPagado),
+            numeroRecibo: numeroReciboPagoInicial,
+          },
+        ]
+      : [],
   }
   escribirEstadoAlmacen((estado) => ({
     ...estado,
+    proximoIdCobro: estado.proximoIdCobro + (hayPagoInicial ? 1 : 0),
     deudores: estado.deudores.map((deudor) =>
       deudor.deudor.idDeudor === idDeudor ? { ...deudor, fiados: [...deudor.fiados, fiadoNuevo] } : deudor,
     ),
@@ -107,7 +115,14 @@ export interface VentaConDeudaARegistrar {
 
 /** Resultado de POST /api/ventas con deuda. */
 export type ResultadoRegistroConDeudaEjemplo =
-  | { tipo: 'registrada'; idVenta: number; numeroComprobante: string; fechaHora: string }
+  | {
+      tipo: 'registrada'
+      idVenta: number
+      numeroComprobante: string
+      fechaHora: string
+      /** Recibo del pago inicial (REC-...); null si no se pago nada ahora. */
+      numeroReciboPagoInicial: string | null
+    }
   /** 404: el deudor no existe. */
   | { tipo: 'deudor-no-encontrado' }
 
@@ -118,8 +133,11 @@ export function registrarVentaConDeudaAlmacenada(venta: VentaConDeudaARegistrar)
     return { tipo: 'deudor-no-encontrado' }
   }
 
-  const idVenta = leerEstadoAlmacen().proximoIdVenta
+  const { proximoIdVenta: idVenta, proximoIdCobro } = leerEstadoAlmacen()
   const fechaHora = new Date().toISOString()
+  // Como en el back: el pago inicial es un cobro del fiado recien creado, y genera su recibo
+  const hayPagoInicial = venta.pagadoAhoraBaseCentavos > 0
+  const numeroReciboPagoInicial = hayPagoInicial ? armarNumeroReciboEjemplo(proximoIdCobro) : null
   const fiadoNuevo: FiadoAlmacenado = {
     idVenta,
     numeroComprobante: armarNumeroComprobanteEjemplo(idVenta),
@@ -127,20 +145,27 @@ export function registrarVentaConDeudaAlmacenada(venta: VentaConDeudaARegistrar)
     fechaEstimadaPago: venta.fechaEstimadaPago,
     importeAdeudadoCentavos: venta.importeVentaCentavos,
     pagos:
-      venta.pagadoAhoraBaseCentavos > 0
-        ? [{ fechaHora, montoCentavos: venta.pagadoAhoraBaseCentavos, numeroRecibo: null }]
-        : [],
+      numeroReciboPagoInicial === null
+        ? []
+        : [{ fechaHora, montoCentavos: venta.pagadoAhoraBaseCentavos, numeroRecibo: numeroReciboPagoInicial }],
   }
   escribirEstadoAlmacen((estado) => ({
     ...estado,
     proximoIdVenta: estado.proximoIdVenta + 1,
+    proximoIdCobro: estado.proximoIdCobro + (hayPagoInicial ? 1 : 0),
     deudores: estado.deudores.map((deudor) =>
       deudor.deudor.idDeudor === venta.idDeudor
         ? { ...deudor, fiados: [...deudor.fiados, fiadoNuevo] }
         : deudor,
     ),
   }))
-  return { tipo: 'registrada', idVenta, numeroComprobante: fiadoNuevo.numeroComprobante, fechaHora }
+  return {
+    tipo: 'registrada',
+    idVenta,
+    numeroComprobante: fiadoNuevo.numeroComprobante,
+    fechaHora,
+    numeroReciboPagoInicial,
+  }
 }
 
 // --- COBRO DE FIADOS ---

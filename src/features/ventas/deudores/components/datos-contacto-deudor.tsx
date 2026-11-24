@@ -1,4 +1,5 @@
 import { cn } from '@/lib/utils'
+import { obtenerTelefonoLocal } from '@/features/ventas/deudores/utils/validar-datos-deudor'
 
 /** Props del DNI y, si corresponde, el telefono de un deudor. */
 interface DatosContactoDeudorProps {
@@ -33,7 +34,7 @@ export function DatosContactoDeudor({ dni, telefono, contenedorPropio = true, cl
           <span aria-hidden="true" className="hidden @max-[15rem]:inline">
             Tel.
           </span>
-          : {telefono}
+          : {obtenerTelefonoLocal(telefono)}
         </p>
       )}
     </div>

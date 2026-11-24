@@ -8,8 +8,8 @@ export interface PagoFiadoAlmacenado {
   fechaHora: string
   /** Porcion base que se abono al fiado. */
   montoCentavos: number
-  /** Recibo del cobro; null = se pago al registrar la venta. */
-  numeroRecibo: string | null
+  /** Recibo del cobro. El pago inicial de un fiado tambien lo tiene: el back lo registra como un cobro. */
+  numeroRecibo: string
 }
 
 /** Un fiado guardado: lo adeudado y cada pago que recibio. */

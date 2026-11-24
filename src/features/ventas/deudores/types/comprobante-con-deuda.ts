@@ -30,6 +30,8 @@ export interface ComprobanteConDeuda {
   montoAdeudado: number
   /** Vacio en una deuda total. */
   pagos: PagoComprobante[]
+  /** Recibo del pago inicial (REC-...): el back lo registra como un cobro. null en una deuda total. */
+  numeroReciboPagoInicial: string | null
   deudor: Deudor
   /** AAAA-MM-DD; null significa "Sin fecha". */
   fechaEstimadaPago: string | null

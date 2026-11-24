@@ -31,6 +31,7 @@ export function construirTextoComprobanteConDeuda(comprobante: ComprobanteConDeu
       ? [
           'Pagó ahora:',
           ...comprobante.pagos.map((pago) => `- ${pago.nombreMedioPago}: ${formatearMoneda(pago.montoFinal)}`),
+          ...(comprobante.numeroReciboPagoInicial === null ? [] : [`Recibo del pago: ${comprobante.numeroReciboPagoInicial}`]),
         ]
       : []
 

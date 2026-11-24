@@ -1,14 +1,16 @@
-// Reglas de formato de los datos de un deudor. El nombre y el DNI son los que valida el back (datosDeudorSchema).
-// El telefono no: el back hoy exige entre 11 y 15 digitos (codigo de pais incluido) y la maqueta no se lo pide a quien
-// lo escribe. Hasta que el back lo acepte sin codigo de pais, un telefono corto lo rechazaria con 400.
+// Reglas de formato de los datos de un deudor (las valida tambien el back, en datosDeudorSchema). El telefono se
+// escribe con 10 digitos (codigo de area y numero, sin 0 ni 15) y al enviarlo se le antepone el 549: el back guarda
+// de 11 a 15 digitos con codigo de pais, y con el 549 quedan 13.
 
 /** Largo minimo y maximo del nombre y apellido. */
 export const NOMBRE_DEUDOR_LONGITUD_MINIMA = 1
 export const NOMBRE_DEUDOR_LONGITUD_MAXIMA = 100
 
-/** Cantidad de digitos del telefono, con o sin codigo de pais, sin contar el "+", los espacios ni los guiones. */
-export const TELEFONO_DIGITOS_MINIMOS = 8
-export const TELEFONO_DIGITOS_MAXIMOS = 15
+/** Cantidad de digitos que escribe quien carga el telefono: codigo de area y numero, sin espacios ni guiones. */
+export const TELEFONO_DIGITOS = 10
+
+/** Lo que se antepone al telefono al enviarlo: codigo de Argentina (54) y el 9 de los celulares. */
+export const PREFIJO_TELEFONO = '549'
 
 /** El DNI tiene 7 u 8 digitos, sin puntos. */
 export const DNI_DIGITOS_MINIMOS = 7

@@ -8,10 +8,13 @@ import { formatearFechaCalendarioLegible } from '@/features/ventas/utils/formate
 // cronologico) y solo se pasan a Date para el calendario, siempre en hora local para evitar corrimientos de zona.
 
 const MILISEGUNDOS_POR_DIA = 24 * 60 * 60 * 1000
+/** "Hoy" es el de la tienda, no el del dispositivo: asi coincide con lo que calcula el back. */
+const ZONA_HORARIA_NEGOCIO = 'America/Argentina/Buenos_Aires'
 
-/** Fecha de hoy como AAAA-MM-DD. */
+/** Fecha de hoy en Argentina como AAAA-MM-DD, sin importar la zona horaria del dispositivo. */
 export function obtenerFechaHoy() {
-  return formatearFechaCalendario(new Date())
+  // El formato "en-CA" ya devuelve AAAA-MM-DD
+  return new Intl.DateTimeFormat('en-CA', { timeZone: ZONA_HORARIA_NEGOCIO }).format(new Date())
 }
 
 /** Suma (o resta) dias a una fecha AAAA-MM-DD. */

@@ -82,6 +82,16 @@ export function DialogoResumenVentaConDeuda({
             </div>
           </dl>
 
+          {/* Solo con pago inicial: el pago es un cobro y los cobros no se anulan, asi que el fiado queda firme */}
+          {resumen.cobradoAhora > 0 && (
+            <Alert>
+              <TriangleAlert aria-hidden="true" />
+              <AlertDescription>
+                Una vez registrado el pago, este fiado ya no se puede anular.
+              </AlertDescription>
+            </Alert>
+          )}
+
           {estadoConfirmacion.fase === 'error' && (
             <Alert variant="destructive">
               <TriangleAlert aria-hidden="true" />

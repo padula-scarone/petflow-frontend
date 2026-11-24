@@ -17,6 +17,8 @@ interface DatosComprobanteConDeuda {
   descuentoManual: { motivo: string; monto: number } | null
   resumen: ResumenPagoConDeuda
   pagos: PagoComprobante[]
+  /** Recibo del pago inicial; null si no se pago nada ahora. */
+  numeroReciboPagoInicial: string | null
   deudor: Deudor
   fechaEstimadaPago: string | null
 }

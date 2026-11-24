@@ -247,6 +247,7 @@ export function usePagoConDeudaEjemplo({
             : null,
           resumen,
           pagos: armarPagosComprobanteConDeuda(armarPagosAhora(), estadoCobro.mediosDisponibles),
+          numeroReciboPagoInicial: resultado.numeroReciboPagoInicial,
           deudor: deudorElegido,
           fechaEstimadaPago,
         }),
