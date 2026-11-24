@@ -18,11 +18,17 @@ export interface ErrorApi {
   /** `mensaje` del back cuando la respuesta fue JSON; null si no. */
   mensaje: string | null
   /**
-   * `codigo` del back cuando la respuesta fue JSON y lo trae (hoy solo los errores de Devoluciones); null si no.
-   * Un 401 o un 403 de autenticacion no lo traen.
+   * `codigo` del back cuando la respuesta fue JSON y lo trae (Devoluciones, Deudores, cobros de fiados y la
+   * anulacion de un fiado con cobros); null si no. Un 401 o un 403 de autenticacion no lo traen.
    */
   codigo: string | null
   errores: ErrorCampoApi[]
+  /**
+   * Cuerpo JSON de la respuesta de error, sin interpretar. Existe para los errores que traen datos propios (el 409
+   * de un DNI repetido trae al deudor existente). Quien lo lee debe validar su forma y nunca escribirlo en un log
+   * ni en un mensaje: puede tener datos personales.
+   */
+  cuerpo?: unknown
 }
 
 /** Nunca rechaza: el llamador revisa `exitoso`. Sin throw ni clases. */

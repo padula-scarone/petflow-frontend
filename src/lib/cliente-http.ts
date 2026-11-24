@@ -115,6 +115,7 @@ export function crearClienteHttp(configuracion: ConfiguracionClienteHttp): Clien
             ? interpretado.cuerpo.codigo
             : null,
         errores: leerErroresCampos(interpretado.cuerpo),
+        cuerpo: interpretado.cuerpo,
       })
     } catch (causa) {
       // El navegador no distingue un rechazo por CORS de una falta de red: el detalle solo va a la consola de desarrollo
