@@ -12,17 +12,16 @@ export const FILTROS_HISTORIAL_VACIOS: FiltrosHistorial = {
   numeroComprobante: '',
 }
 
-/** Cuenta los filtros que viven dentro de "Mas filtros": origen, medio de pago y comprobante. */
+/** Cuenta los filtros que viven dentro de "Mas filtros": origen y medio de pago. */
 export function contarFiltrosAdicionales(filtros: FiltrosHistorial) {
-  return [
-    filtros.origen !== null,
-    filtros.medioPago !== null,
-    filtros.numeroComprobante.trim() !== '',
-  ].filter(Boolean).length
+  return [filtros.origen !== null, filtros.medioPago !== null].filter(Boolean).length
 }
 
-/** Cuenta todos los filtros con valor. El rango de fechas cuenta como uno solo. */
-export function contarFiltrosActivos(filtros: FiltrosHistorial) {
+/**
+ * Cuenta los filtros que viven dentro de la hoja de mobile: todos menos el N.º de comprobante, que esta siempre a la
+ * vista. El rango de fechas cuenta como uno solo.
+ */
+export function contarFiltrosEnHoja(filtros: FiltrosHistorial) {
   const condiciones = [
     filtros.fechaDesde !== null || filtros.fechaHasta !== null,
     filtros.productoSeleccionado !== null,
@@ -30,4 +29,9 @@ export function contarFiltrosActivos(filtros: FiltrosHistorial) {
     filtros.textoCliente.trim() !== '',
   ]
   return condiciones.filter(Boolean).length + contarFiltrosAdicionales(filtros)
+}
+
+/** Cuenta todos los filtros con valor, tambien el N.º de comprobante. */
+export function contarFiltrosActivos(filtros: FiltrosHistorial) {
+  return contarFiltrosEnHoja(filtros) + (filtros.numeroComprobante.trim() !== '' ? 1 : 0)
 }

@@ -14,9 +14,10 @@ export function describirRangoFechas(fechaDesde: string | null, fechaHasta: stri
 }
 
 /**
- * Arma los chips de los filtros del historial.
- * soloAdicionales = true (escritorio): solo los de "Mas filtros", que no se ven en la barra.
- * soloAdicionales = false (mobile): todos, porque la hoja de filtros esta cerrada.
+ * Arma los chips de los filtros del historial que no estan a la vista, en el mismo orden que los controles.
+ * soloAdicionales = true (escritorio): solo los de "Mas filtros".
+ * soloAdicionales = false (mobile): todos los de la hoja, porque esta cerrada. El N.º de comprobante nunca lleva chip:
+ * su texto esta siempre a la vista en su campo.
  */
 export function construirChipsFiltrosHistorial(
   propiedades: PropiedadesFiltrosHistorial,
@@ -25,22 +26,22 @@ export function construirChipsFiltrosHistorial(
   const { filtros, opciones, onCambiarFiltros, onSeleccionarProducto } = propiedades
   const chips: ChipFiltro[] = []
 
-  // --- FILTROS QUE SOLO SE VEN EN LA BARRA (MOBILE: NO HAY BARRA) ---
+  // --- FILTROS QUE EN ESCRITORIO SE VEN EN LA BARRA (MOBILE: ESTAN EN LA HOJA) ---
   if (!soloAdicionales) {
-    if (filtros.fechaDesde !== null || filtros.fechaHasta !== null) {
-      chips.push({
-        clave: 'fechas',
-        etiqueta: describirRangoFechas(filtros.fechaDesde, filtros.fechaHasta),
-        descripcion: 'las fechas',
-        onQuitar: () => onCambiarFiltros({ fechaDesde: null, fechaHasta: null }),
-      })
-    }
     if (filtros.productoSeleccionado) {
       chips.push({
         clave: 'producto',
         etiqueta: describirProductoFiltro(filtros.productoSeleccionado),
         descripcion: 'el producto',
         onQuitar: () => onSeleccionarProducto(null),
+      })
+    }
+    if (filtros.fechaDesde !== null || filtros.fechaHasta !== null) {
+      chips.push({
+        clave: 'fechas',
+        etiqueta: describirRangoFechas(filtros.fechaDesde, filtros.fechaHasta),
+        descripcion: 'las fechas',
+        onQuitar: () => onCambiarFiltros({ fechaDesde: null, fechaHasta: null }),
       })
     }
     if (filtros.estado) {
@@ -80,14 +81,6 @@ export function construirChipsFiltrosHistorial(
             'Medio de pago'),
       descripcion: 'el medio de pago',
       onQuitar: () => onCambiarFiltros({ medioPago: null }),
-    })
-  }
-  if (filtros.numeroComprobante.trim() !== '') {
-    chips.push({
-      clave: 'comprobante',
-      etiqueta: filtros.numeroComprobante.trim(),
-      descripcion: 'el comprobante',
-      onQuitar: () => onCambiarFiltros({ numeroComprobante: '' }),
     })
   }
 

@@ -12,12 +12,15 @@ interface HojaFiltrosHistorialProps {
   propiedades: PropiedadesFiltrosHistorial
 }
 
-/** Mobile: todos los filtros del historial, cada uno con su etiqueta, dentro de la hoja generica. */
+/**
+ * Mobile: los filtros del historial que no estan a la vista (el N.º de comprobante esta siempre en la fila), cada uno
+ * con su etiqueta y en el mismo orden que la barra de escritorio, dentro de la hoja generica.
+ */
 export function HojaFiltrosHistorial({ propiedades }: HojaFiltrosHistorialProps) {
   const {
     filtros,
     opciones,
-    cantidadFiltrosActivos,
+    cantidadFiltrosEnHoja,
     periodoRapidoActivo,
     totalResultados,
     onCambiarFiltros,
@@ -29,21 +32,12 @@ export function HojaFiltrosHistorial({ propiedades }: HojaFiltrosHistorialProps)
 
   return (
     <HojaFiltros
-      cantidadFiltrosActivos={cantidadFiltrosActivos}
+      cantidadFiltrosActivos={cantidadFiltrosEnHoja}
       totalResultados={totalResultados}
       sustantivoSingular="venta"
       sustantivoPlural="ventas"
       onLimpiarFiltros={onLimpiarFiltros}
     >
-      <FiltroRangoFechas
-        idCampo="hoja-fecha"
-        variante="hoja"
-        fechaDesde={filtros.fechaDesde}
-        fechaHasta={filtros.fechaHasta}
-        periodoRapidoActivo={periodoRapidoActivo}
-        onCambiarFiltros={onCambiarFiltros}
-        onSeleccionarPeriodoRapido={onSeleccionarPeriodoRapido}
-      />
       <FiltroProducto
         idCampo="hoja-producto"
         variante="hoja"
@@ -52,6 +46,15 @@ export function HojaFiltrosHistorial({ propiedades }: HojaFiltrosHistorialProps)
         productosCoincidentes={opciones.productosCoincidentes}
         onBuscarProducto={onBuscarProducto}
         onSeleccionarProducto={onSeleccionarProducto}
+      />
+      <FiltroRangoFechas
+        idCampo="hoja-fecha"
+        variante="hoja"
+        fechaDesde={filtros.fechaDesde}
+        fechaHasta={filtros.fechaHasta}
+        periodoRapidoActivo={periodoRapidoActivo}
+        onCambiarFiltros={onCambiarFiltros}
+        onSeleccionarPeriodoRapido={onSeleccionarPeriodoRapido}
       />
       <FiltroEstado
         idCampo="hoja-estado"

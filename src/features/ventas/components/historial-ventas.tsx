@@ -1,4 +1,5 @@
 import { AvisoHistorial } from '@/features/ventas/components/aviso-historial'
+import { ContenedorFiltrosFijos } from '@/features/ventas/components/contenedor-filtros-fijos'
 import { DetalleVentaHistorial } from '@/features/ventas/components/detalle-venta-historial'
 import { DialogoConfirmarAccionVenta } from '@/features/ventas/components/dialogo-confirmar-accion-venta'
 import { ListaVentasHistorial } from '@/features/ventas/components/lista-ventas-historial'
@@ -30,16 +31,9 @@ export function HistorialVentas({
       <h1 className="sr-only">Historial de ventas</h1>
 
       {/* --- FILTROS (FIJOS AL HACER SCROLL) --- */}
-      {/* Los margenes negativos cubren el padding del area con scroll, asi la lista no se ve pasar por encima.
-          El top negativo compensa ese mismo padding: sticky se mide desde el borde interno, no desde el borde real */}
-      {/* En mobile el top suma el alto de la cabecera mientras esta visible (--alto-cabecera, que define el
-          layout), asi la barra queda debajo de ella cuando reaparece y sube a 0 cuando se oculta */}
-      {/* La barra queda metida bajo el aire inferior de la cabecera (su margen negativo), asi la separacion con las
-          pestanas sigue siendo un contorno. Por eso el top resta un contorno mas, sin pasar de 0 cuando la cabecera
-          se oculta: ahi la barra pega al borde con su propio relleno */}
-      <div className="sticky top-[max(calc(var(--spacing-contorno)*-1),calc(var(--alto-cabecera,0px)-var(--spacing-contorno)*2))] z-20 -mx-contorno -mt-contorno bg-fondo-pagina px-contorno pt-contorno pb-interno transition-[top] duration-200 motion-reduce:transition-none">
-        <PanelFiltrosHistorial propiedades={propiedadesFiltros} estadoLista={estadoLista} />
-      </div>
+      <ContenedorFiltrosFijos>
+        <PanelFiltrosHistorial propiedades={propiedadesFiltros} />
+      </ContenedorFiltrosFijos>
 
       {/* --- RESUMEN: CUANTAS VENTAS, FILTROS APLICADOS Y LIMPIAR --- */}
       <ResumenResultadosHistorial estadoLista={estadoLista} propiedadesFiltros={propiedadesFiltros} />

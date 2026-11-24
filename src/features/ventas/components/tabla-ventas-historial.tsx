@@ -4,8 +4,9 @@ import { formatearFecha, formatearHora } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { AccionesVentaHistorial } from '@/features/ventas/components/acciones-venta-historial'
 import { AvisoVentanaVenta } from '@/features/ventas/components/aviso-ventana-venta'
-import { BotonCobrarFiado } from '@/features/ventas/components/boton-cobrar-fiado'
 import { InsigniaEstadoVenta } from '@/features/ventas/components/insignia-estado-venta'
+import { AccionDeudaFiado } from '@/features/ventas/deudores/components/accion-deuda-fiado'
+import { AvisoFaltanteFiado } from '@/features/ventas/deudores/components/aviso-faltante-fiado'
 import type { FilaHistorial, PropiedadesAccionesVenta } from '@/features/ventas/types/historial'
 import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
 
@@ -75,7 +76,7 @@ export function TablaVentasHistorial({ filas, acciones }: TablaVentasHistorialPr
               <AvisoVentanaVenta fila={fila} className="max-w-40" />
             </div>
 
-            {/* --- TOTAL, Y COBRAR DEBAJO SOLO EN UN FIADO --- */}
+            {/* --- TOTAL, Y DEBAJO LO QUE FALTA Y "VER DEUDA" SOLO EN UN FIADO --- */}
             <div role="cell" className="flex flex-col items-end gap-1 justify-self-end">
               <span
                 className={cn(
@@ -85,7 +86,8 @@ export function TablaVentasHistorial({ filas, acciones }: TablaVentasHistorialPr
               >
                 {formatearMoneda(fila.montoTotal)}
               </span>
-              <BotonCobrarFiado fila={fila} onCobrarFiado={acciones.onCobrarFiado} />
+              <AvisoFaltanteFiado fila={fila} />
+              <AccionDeudaFiado fila={fila} onCobrarFiado={acciones.onCobrarFiado} />
             </div>
             <div role="cell">
               <AccionesVentaHistorial fila={fila} acciones={acciones} variante="tabla" />

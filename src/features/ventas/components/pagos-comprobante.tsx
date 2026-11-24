@@ -1,9 +1,9 @@
 import { formatearMoneda } from '@/lib/formatear-moneda'
-import type { ComprobanteCobrado } from '@/features/ventas/types/comprobante'
+import type { PagoComprobante } from '@/features/ventas/types/comprobante'
 
-/** Props de la seccion de pagos del comprobante. */
+/** Props de la seccion de pagos del comprobante. Le alcanza con los pagos: lo usa tambien el comprobante de una venta con deuda. */
 interface PagosComprobanteProps {
-  comprobante: ComprobanteCobrado
+  comprobante: { pagos: readonly PagoComprobante[] }
 }
 
 export function PagosComprobante({ comprobante }: PagosComprobanteProps) {

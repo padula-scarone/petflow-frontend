@@ -1,5 +1,6 @@
 import { Input } from '@/components/ui/input'
 import { BarraFiltros } from '@/features/ventas/components/barra-filtros'
+import { CampoFiltroComprobante } from '@/features/ventas/components/campo-filtro-comprobante'
 import { FiltroEstado } from '@/features/ventas/components/filtro-estado'
 import { FiltroProducto } from '@/features/ventas/components/filtro-producto'
 import { FiltroRangoFechas } from '@/features/ventas/components/filtro-rango-fechas'
@@ -12,7 +13,7 @@ interface BarraFiltrosHistorialProps {
 }
 
 /**
- * Fecha, producto y estado (los del SSOT), el cliente cuando el estado es "Pendiente de pago", y
+ * N.º de comprobante, producto, fecha y estado (los del SSOT), el cliente cuando el estado es "Pendiente de pago", y
  * "Mas filtros". Arma los controles; la fila y el popover son de BarraFiltros.
  */
 export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProps) {
@@ -34,14 +35,10 @@ export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProp
         <FiltrosAdicionalesHistorial propiedades={propiedades} idPrefijo="barra-adicionales" />
       }
     >
-      <FiltroRangoFechas
-        idCampo="barra-fecha"
-        variante="barra"
-        fechaDesde={filtros.fechaDesde}
-        fechaHasta={filtros.fechaHasta}
-        periodoRapidoActivo={periodoRapidoActivo}
-        onCambiarFiltros={onCambiarFiltros}
-        onSeleccionarPeriodoRapido={onSeleccionarPeriodoRapido}
+      <CampoFiltroComprobante
+        idCampo="barra-comprobante"
+        numeroComprobante={filtros.numeroComprobante}
+        onCambiarNumeroComprobante={(numeroComprobante) => onCambiarFiltros({ numeroComprobante })}
       />
       <FiltroProducto
         idCampo="barra-producto"
@@ -51,6 +48,15 @@ export function BarraFiltrosHistorial({ propiedades }: BarraFiltrosHistorialProp
         productosCoincidentes={opciones.productosCoincidentes}
         onBuscarProducto={onBuscarProducto}
         onSeleccionarProducto={onSeleccionarProducto}
+      />
+      <FiltroRangoFechas
+        idCampo="barra-fecha"
+        variante="barra"
+        fechaDesde={filtros.fechaDesde}
+        fechaHasta={filtros.fechaHasta}
+        periodoRapidoActivo={periodoRapidoActivo}
+        onCambiarFiltros={onCambiarFiltros}
+        onSeleccionarPeriodoRapido={onSeleccionarPeriodoRapido}
       />
       <FiltroEstado
         idCampo="barra-estado"

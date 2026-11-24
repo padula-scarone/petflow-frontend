@@ -1,0 +1,41 @@
+import {
+  formatearFechaCalendario,
+  parsearFechaCalendario,
+} from '@/features/ventas/utils/calcular-periodo-rapido'
+import { formatearFechaCalendarioLegible } from '@/features/ventas/utils/formatear-fecha-calendario-legible'
+
+// Las fechas estimadas viajan como texto AAAA-MM-DD, sin hora. Se comparan como texto (el orden alfabetico es el
+// cronologico) y solo se pasan a Date para el calendario, siempre en hora local para evitar corrimientos de zona.
+
+const MILISEGUNDOS_POR_DIA = 24 * 60 * 60 * 1000
+/** "Hoy" es el de la tienda, no el del dispositivo: asi coincide con lo que calcula el back. */
+const ZONA_HORARIA_NEGOCIO = 'America/Argentina/Buenos_Aires'
+
+/** Fecha de hoy en Argentina como AAAA-MM-DD, sin importar la zona horaria del dispositivo. */
+export function obtenerFechaHoy() {
+  // El formato "en-CA" ya devuelve AAAA-MM-DD
+  return new Intl.DateTimeFormat('en-CA', { timeZone: ZONA_HORARIA_NEGOCIO }).format(new Date())
+}
+
+/** Suma (o resta) dias a una fecha AAAA-MM-DD. */
+export function sumarDiasAFecha(fecha: string, dias: number) {
+  const base = parsearFechaCalendario(fecha)
+  // Se suma sobre el mediodia: un cambio de horario no mueve el resultado de dia
+  return formatearFechaCalendario(new Date(base.getTime() + dias * MILISEGUNDOS_POR_DIA + MILISEGUNDOS_POR_DIA / 2))
+}
+
+/** El domingo de la semana de una fecha (la semana va de lunes a domingo); si la fecha es domingo, ella misma. */
+export function obtenerDomingoDeLaSemana(fecha: string) {
+  const diaDeLaSemana = parsearFechaCalendario(fecha).getDay() // 0 = domingo
+  return sumarDiasAFecha(fecha, (7 - diaDeLaSemana) % 7)
+}
+
+/** Verdadero si la fecha es anterior a hoy. Hoy no cuenta como pasada: es el ultimo dia para pagar. */
+export function esFechaPasada(fecha: string, hoy: string = obtenerFechaHoy()) {
+  return fecha < hoy
+}
+
+/** Describe la fecha estimada para mostrar: DD/MM/AAAA o "Sin fecha". */
+export function describirFechaEstimada(fecha: string | null) {
+  return fecha === null ? 'Sin fecha' : formatearFechaCalendarioLegible(fecha)
+}

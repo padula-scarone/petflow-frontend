@@ -1,11 +1,7 @@
 import { BotonCargarNuevaDevolucion } from '@/features/ventas/devoluciones/components/boton-cargar-nueva-devolucion'
 import { FiltrosAdicionalesDevoluciones } from '@/features/ventas/devoluciones/components/filtros-adicionales-devoluciones'
 import { FiltroEstadoDevolucion } from '@/features/ventas/devoluciones/components/filtros-selectores-devoluciones'
-import type {
-  EstadoListaDevoluciones,
-  PropiedadesFiltrosDevoluciones,
-} from '@/features/ventas/devoluciones/types/devolucion'
-import { describirCantidadDevoluciones } from '@/features/ventas/devoluciones/utils/describir-resultados-devoluciones'
+import type { PropiedadesFiltrosDevoluciones } from '@/features/ventas/devoluciones/types/devolucion'
 import { BarraFiltros } from '@/features/ventas/components/barra-filtros'
 import { FiltroProducto } from '@/features/ventas/components/filtro-producto'
 import { FiltroRangoFechas } from '@/features/ventas/components/filtro-rango-fechas'
@@ -15,21 +11,19 @@ import { PanelFiltros } from '@/features/ventas/components/panel-filtros'
 /** Props del panel de filtros de la lista de devoluciones. */
 interface PanelFiltrosDevolucionesProps {
   propiedades: PropiedadesFiltrosDevoluciones
-  /** Para el conteo de la fila fija de mobile. */
-  estadoLista: EstadoListaDevoluciones
   onCargarNuevaDevolucion: () => void
 }
 
 /**
- * Fecha, producto (devuelto o entregado) y estado a la vista; vinculo y medio de pago en "Mas filtros".
- * El boton "Cargar nueva devolución" comparte la fila con los filtros, en escritorio y en mobile.
+ * Producto, fecha y estado a la vista; vinculo y medio de pago en "Mas filtros". El boton "Cargar nueva devolución"
+ * comparte la fila con los filtros, en escritorio y en mobile, donde el buscador de producto esta siempre a la vista.
  */
-export function PanelFiltrosDevoluciones({ propiedades, estadoLista, onCargarNuevaDevolucion }: PanelFiltrosDevolucionesProps) {
+export function PanelFiltrosDevoluciones({ propiedades, onCargarNuevaDevolucion }: PanelFiltrosDevolucionesProps) {
   const {
     filtros,
     opciones,
-    cantidadFiltrosActivos,
     cantidadFiltrosAdicionales,
+    cantidadFiltrosEnHoja,
     periodoRapidoActivo,
     totalResultados,
     onCambiarFiltros,
@@ -41,28 +35,28 @@ export function PanelFiltrosDevoluciones({ propiedades, estadoLista, onCargarNue
 
   return (
     <PanelFiltros
-      textoCantidad={describirCantidadDevoluciones(estadoLista)}
-      cantidadFiltrosActivos={cantidadFiltrosActivos}
-      onLimpiarFiltros={onLimpiarFiltros}
       accionEscritorio={
         <BotonCargarNuevaDevolucion variante="escritorio" onCargarNuevaDevolucion={onCargarNuevaDevolucion} />
       }
       accionMobile={<BotonCargarNuevaDevolucion variante="mobile" onCargarNuevaDevolucion={onCargarNuevaDevolucion} />}
+      // --- MOBILE: EL BUSCADOR DE PRODUCTO, SIEMPRE A LA VISTA ---
+      busquedaMobile={
+        <FiltroProducto
+          idCampo="movil-devoluciones-producto"
+          variante="barra"
+          productoSeleccionado={filtros.productoSeleccionado}
+          textoBusqueda={opciones.textoBusquedaProducto}
+          productosCoincidentes={opciones.productosCoincidentes}
+          onBuscarProducto={onBuscarProducto}
+          onSeleccionarProducto={onSeleccionarProducto}
+        />
+      }
       // --- ESCRITORIO: UNA FILA ---
       barra={
         <BarraFiltros
           cantidadFiltrosAdicionales={cantidadFiltrosAdicionales}
           contenidoAdicional={<FiltrosAdicionalesDevoluciones propiedades={propiedades} idPrefijo="barra-adicionales-devoluciones" />}
         >
-          <FiltroRangoFechas
-            idCampo="barra-devoluciones-fecha"
-            variante="barra"
-            fechaDesde={filtros.fechaDesde}
-            fechaHasta={filtros.fechaHasta}
-            periodoRapidoActivo={periodoRapidoActivo}
-            onCambiarFiltros={onCambiarFiltros}
-            onSeleccionarPeriodoRapido={onSeleccionarPeriodoRapido}
-          />
           <FiltroProducto
             idCampo="barra-devoluciones-producto"
             variante="barra"
@@ -72,6 +66,15 @@ export function PanelFiltrosDevoluciones({ propiedades, estadoLista, onCargarNue
             onBuscarProducto={onBuscarProducto}
             onSeleccionarProducto={onSeleccionarProducto}
           />
+          <FiltroRangoFechas
+            idCampo="barra-devoluciones-fecha"
+            variante="barra"
+            fechaDesde={filtros.fechaDesde}
+            fechaHasta={filtros.fechaHasta}
+            periodoRapidoActivo={periodoRapidoActivo}
+            onCambiarFiltros={onCambiarFiltros}
+            onSeleccionarPeriodoRapido={onSeleccionarPeriodoRapido}
+          />
           <FiltroEstadoDevolucion
             idCampo="barra-devoluciones-estado"
             variante="barra"
@@ -80,10 +83,10 @@ export function PanelFiltrosDevoluciones({ propiedades, estadoLista, onCargarNue
           />
         </BarraFiltros>
       }
-      // --- MOBILE: HOJA CON TODOS LOS FILTROS ---
+      // --- MOBILE: HOJA CON LOS FILTROS QUE NO ESTAN A LA VISTA ---
       hoja={
         <HojaFiltros
-          cantidadFiltrosActivos={cantidadFiltrosActivos}
+          cantidadFiltrosActivos={cantidadFiltrosEnHoja}
           totalResultados={totalResultados}
           sustantivoSingular="devolucion"
           sustantivoPlural="devoluciones"
@@ -97,15 +100,6 @@ export function PanelFiltrosDevoluciones({ propiedades, estadoLista, onCargarNue
             periodoRapidoActivo={periodoRapidoActivo}
             onCambiarFiltros={onCambiarFiltros}
             onSeleccionarPeriodoRapido={onSeleccionarPeriodoRapido}
-          />
-          <FiltroProducto
-            idCampo="hoja-devoluciones-producto"
-            variante="hoja"
-            productoSeleccionado={filtros.productoSeleccionado}
-            textoBusqueda={opciones.textoBusquedaProducto}
-            productosCoincidentes={opciones.productosCoincidentes}
-            onBuscarProducto={onBuscarProducto}
-            onSeleccionarProducto={onSeleccionarProducto}
           />
           <FiltroEstadoDevolucion
             idCampo="hoja-devoluciones-estado"

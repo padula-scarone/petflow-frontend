@@ -237,10 +237,7 @@ export function TarjetaDescuentoManual({
           </Button>
         </div>
       )}
-
-      {!descuentoManual && !formularioAbierto && (
-        <p className="text-cuerpo text-texto-suave">Sin descuento manual aplicado.</p>
-      )}
+      {/* Sin descuento no hay texto: el encabezado con el boton + ya lo dice */}
     </Card>
   )
 }

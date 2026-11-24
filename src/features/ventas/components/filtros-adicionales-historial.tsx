@@ -1,9 +1,8 @@
-import { CampoFiltroComprobante } from '@/features/ventas/components/campo-filtro-comprobante'
 import { SelectorFiltroMedioPago } from '@/features/ventas/components/selector-filtro-medio-pago'
 import { SelectorFiltroOrigen } from '@/features/ventas/components/selector-filtro-origen'
 import type { PropiedadesFiltrosHistorial } from '@/features/ventas/types/historial'
 
-/** Props de los filtros menos usados: origen, medio de pago y numero de comprobante. */
+/** Props de los filtros menos usados: origen y medio de pago. */
 interface FiltrosAdicionalesHistorialProps {
   propiedades: PropiedadesFiltrosHistorial
   /** Prefijo de los ids: el popover de escritorio y la hoja mobile pueden coexistir en el DOM. */
@@ -33,11 +32,6 @@ export function FiltrosAdicionalesHistorial({
         deshabilitado={filtros.estado === 'PENDIENTE_PAGO'}
         textoAyuda="Los fiados todavía no tienen pagos."
         onCambiarMedioPago={(medioPago) => onCambiarFiltros({ medioPago })}
-      />
-      <CampoFiltroComprobante
-        idCampo={`${idPrefijo}-comprobante`}
-        numeroComprobante={filtros.numeroComprobante}
-        onCambiarNumeroComprobante={(numeroComprobante) => onCambiarFiltros({ numeroComprobante })}
       />
     </div>
   )
