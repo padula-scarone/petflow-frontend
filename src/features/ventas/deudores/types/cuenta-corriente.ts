@@ -45,6 +45,14 @@ export interface FilaDeudor {
   fiadoDesde: string | null
 }
 
+/** La cuenta de un deudor tal como la entrega el estado de cuenta: sus datos, su saldo y sus fiados pendientes. */
+export interface CuentaDeudor {
+  deudor: Deudor
+  saldo: number
+  /** Del mas viejo al mas nuevo. */
+  fiados: FiadoPendiente[]
+}
+
 /** Estado de la lista de Deudores. */
 export type EstadoListaDeudores =
   | { tipo: 'cargando' }
@@ -57,12 +65,14 @@ export type EstadoListaDeudores =
 
 /** Un pago que recibio un fiado. El monto esta en pesos. */
 export interface PagoFiado {
+  /** Cobro que lo registro: el pago inicial de un fiado tambien es un cobro. */
+  idCobroDeudor: number
   /** Fecha y hora del pago en formato ISO 8601. */
   fechaHora: string
-  /** Porcion base que se abono al fiado. */
+  /** Porcion base que se abono a ESTE fiado (no el total del cobro, que puede cubrir varios). */
   monto: number
-  /** Numero del recibo del cobro (REC-...). El pago inicial de un fiado tambien lo tiene. */
-  numeroRecibo: string
+  /** Numero del recibo del cobro (REC-...); null si el back no lo asigno todavia. */
+  numeroRecibo: string | null
 }
 
 /** Un fiado pendiente de un deudor. Los importes estan en pesos. */
@@ -83,21 +93,6 @@ export interface FiadoPendiente {
   montoFaltante: number
   /** Cada pago que recibio, del mas viejo al mas nuevo; vacio si todavia no pago nada. */
   pagos: PagoFiado[]
-}
-
-/**
- * Un fiado tal como lo conoce el Historial. Viaja en el estado del router al tocar "Ver deuda" para que la ficha
- * muestre ese mismo fiado: en la maqueta el almacen no lo conoce de antes. Con el back real la ficha lo pide al servidor.
- */
-export interface FiadoOrigenHistorial {
-  idVenta: number
-  numeroComprobante: string
-  /** Fecha y hora de la venta en formato ISO 8601. */
-  fechaHora: string
-  importeAdeudado: number
-  montoPagado: number
-  /** AAAA-MM-DD; null = sin fecha. */
-  fechaEstimadaPago: string | null
 }
 
 /** Estado de la ficha de un deudor. */

@@ -7,6 +7,7 @@ import type {
 } from '@/features/ventas/deudores/types/deudor'
 import {
   normalizarDatosDeudor,
+  obtenerTelefonoConservado,
   validarCampoDeudor,
   validarDatosDeudor,
 } from '@/features/ventas/deudores/utils/validar-datos-deudor'
@@ -36,13 +37,20 @@ export function useFormularioDeudor({ valoresIniciales, guardar }: OpcionesFormu
   const [estadoGuardado, setEstadoGuardado] = useState<EstadoGuardadoDeudor>({ fase: 'inactivo' })
 
   // --- CALCULOS ---
-  const erroresCompletos = validarDatosDeudor(valores)
+  // Un telefono guardado con otro formato se acepta mientras no se toque: asi editar el nombre no lo pierde
+  const telefonoConservado = obtenerTelefonoConservado(valoresIniciales.telefono)
+  const erroresCompletos = validarDatosDeudor(valores, telefonoConservado)
   // Solo se muestran los errores de campos ya tocados, o todos despues de intentar enviar
-  const errores: ErroresDatosDeudor = Object.fromEntries(
+  const erroresDeFormato: ErroresDatosDeudor = Object.fromEntries(
     Object.entries(erroresCompletos).filter(
       ([campo]) => intentoEnviar || camposTocados.includes(campo as CampoDeudor),
     ),
   )
+  // Si el back marco un campo como invalido, el mensaje se muestra en ese campo hasta que se vuelva a escribir
+  const errores: ErroresDatosDeudor = {
+    ...erroresDeFormato,
+    ...(estadoGuardado.fase === 'error' ? estadoGuardado.erroresCampos : undefined),
+  }
   const guardando = estadoGuardado.fase === 'guardando'
 
   // --- ACCIONES ---
@@ -55,7 +63,7 @@ export function useFormularioDeudor({ valoresIniciales, guardar }: OpcionesFormu
   }
 
   const salirDelCampo = (campo: CampoDeudor) => {
-    if (validarCampoDeudor(campo, valores[campo]) !== undefined && !camposTocados.includes(campo)) {
+    if (validarCampoDeudor(campo, valores[campo], telefonoConservado) !== undefined && !camposTocados.includes(campo)) {
       setCamposTocados([...camposTocados, campo])
     }
   }
@@ -67,7 +75,7 @@ export function useFormularioDeudor({ valoresIniciales, guardar }: OpcionesFormu
 
     setEstadoGuardado({ fase: 'guardando' })
     try {
-      const resultado = await guardar(normalizarDatosDeudor(valores))
+      const resultado = await guardar(normalizarDatosDeudor(valores, telefonoConservado))
       setEstadoGuardado(resultado)
       return resultado
     } catch {

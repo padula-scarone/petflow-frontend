@@ -39,6 +39,11 @@ export function convertirSolicitudACuerpo(solicitud: SolicitudVenta): RegistrarV
       motivoDescuento: solicitud.descuentoManual.motivo,
     }),
     ...(solicitud.clienteReferencia !== null && { clienteReferencia: solicitud.clienteReferencia }),
+    // Solo un fiado lleva deudor y fecha; con Retiro no se manda direccion (el back rechaza la contradiccion)
+    ...(solicitud.idDeudor !== undefined && { idDeudor: solicitud.idDeudor }),
+    ...(solicitud.fechaEstimadaPago !== undefined && { fechaEstimadaPago: solicitud.fechaEstimadaPago }),
+    ...(solicitud.direccionEnvio !== undefined && { direccionEnvio: solicitud.direccionEnvio }),
+    ...(solicitud.destinatarioEnvio !== undefined && { destinatarioEnvio: solicitud.destinatarioEnvio }),
   }
 }
 

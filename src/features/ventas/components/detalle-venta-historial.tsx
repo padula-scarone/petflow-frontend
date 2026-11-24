@@ -18,6 +18,7 @@ import { BotonesEnvioComprobante } from '@/features/ventas/components/botones-en
 import { DetalleProductosComprobante } from '@/features/ventas/components/detalle-productos-comprobante'
 import { AvisoVentanaVenta } from '@/features/ventas/components/aviso-ventana-venta'
 import { AccionDeudaFiado } from '@/features/ventas/deudores/components/accion-deuda-fiado'
+import { DeudaFiadoDetalle } from '@/features/ventas/deudores/components/deuda-fiado-detalle'
 import { InsigniaEstadoVenta } from '@/features/ventas/components/insignia-estado-venta'
 import { PagosComprobante } from '@/features/ventas/components/pagos-comprobante'
 import { TotalesComprobante } from '@/features/ventas/components/totales-comprobante'
@@ -39,6 +40,7 @@ interface DetalleVentaHistorialProps {
   acciones: PropiedadesAccionesVenta
   onCerrar: () => void
   onReintentar: () => void
+  onReintentarDeudaFiado: () => void
 }
 
 export function DetalleVentaHistorial({
@@ -46,6 +48,7 @@ export function DetalleVentaHistorial({
   acciones,
   onCerrar,
   onReintentar,
+  onReintentarDeudaFiado,
 }: DetalleVentaHistorialProps) {
   return (
     <Dialog open={detalle !== null} onOpenChange={(abierto) => !abierto && onCerrar()}>
@@ -92,7 +95,7 @@ export function DetalleVentaHistorial({
         )}
 
         {detalle?.tipo === 'listo' && (() => {
-          const { venta, fila } = detalle
+          const { venta, fila, deudaFiado } = detalle
           const comprobante = convertirVentaAComprobante(venta)
           const anulada = venta.estado === 'ANULADA'
           const anuladaSinPagos = anulada && venta.pagos.length === 0
@@ -166,9 +169,23 @@ export function DetalleVentaHistorial({
                   </div>
                   <div className="min-w-0">
                     <dt className="text-texto-suave">Cliente</dt>
-                    <dd className="truncate font-medium">{venta.clienteReferencia ?? '—'}</dd>
+                    <dd className="truncate font-medium">
+                      {venta.deudor?.nombreCompleto ?? venta.clienteReferencia ?? '—'}
+                    </dd>
                   </div>
                 </dl>
+
+                {/* --- DEUDA: SOLO UN FIADO PENDIENTE CON DEUDOR --- */}
+                {venta.estado === 'PENDIENTE_PAGO' && venta.deudor !== null && (
+                  <>
+                    <Separator />
+                    <DeudaFiadoDetalle
+                      fechaEstimadaPago={venta.fechaEstimadaPago}
+                      deudaFiado={deudaFiado}
+                      onReintentar={onReintentarDeudaFiado}
+                    />
+                  </>
+                )}
 
                 <Separator />
                 <DetalleProductosComprobante detalles={comprobante.detalles} />
@@ -219,16 +236,12 @@ export function DetalleVentaHistorial({
 
               {/* --- ACCIONES --- */}
               {/* Sin nada que hacer (plazo vencido y no es un fiado), el pie no se muestra */}
-              {(fila.ventanaVigente || fila.puedeCobrarFiado) && (
+              {(fila.ventanaVigente || (fila.estado === 'PENDIENTE_PAGO' && fila.deudor !== null)) && (
                 // Mobile: el aviso arriba y todos los botones en una sola fila. Desde sm: aviso a la izquierda y botones a la derecha
                 <DialogFooter className="flex-col sm:flex-row sm:items-center sm:justify-between">
                   <AvisoVentanaVenta fila={fila} />
                   <div className="flex gap-2 sm:ml-auto">
-                    <AccionDeudaFiado
-                      fila={fila}
-                      onCobrarFiado={acciones.onCobrarFiado}
-                      className="min-w-0 shrink flex-1 px-2 sm:flex-none sm:px-4"
-                    />
+                    <AccionDeudaFiado fila={fila} className="min-w-0 shrink flex-1 px-2 sm:flex-none sm:px-4" />
                     <AccionesVentaHistorial fila={fila} acciones={acciones} variante="detalle" />
                   </div>
                 </DialogFooter>

@@ -87,7 +87,7 @@ export function TablaVentasHistorial({ filas, acciones }: TablaVentasHistorialPr
                 {formatearMoneda(fila.montoTotal)}
               </span>
               <AvisoFaltanteFiado fila={fila} />
-              <AccionDeudaFiado fila={fila} onCobrarFiado={acciones.onCobrarFiado} />
+              <AccionDeudaFiado fila={fila} />
             </div>
             <div role="cell">
               <AccionesVentaHistorial fila={fila} acciones={acciones} variante="tabla" />

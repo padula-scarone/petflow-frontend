@@ -100,7 +100,7 @@ export function TotalesComprobante({ comprobante, anulada = false }: TotalesComp
       </div>
       {nombreDeudor !== null && (
         <p className="text-cuerpo text-texto-suave">
-          No ingresó a la caja: queda pendiente hasta que el cliente la liquide.
+          Queda pendiente hasta que se cobre la deuda.
         </p>
       )}
     </section>

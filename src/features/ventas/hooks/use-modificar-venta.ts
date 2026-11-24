@@ -32,6 +32,7 @@ import { CLAVE_BORRADOR_REPOBLADO } from '@/features/ventas/utils/leer-borrador-
 import { esMotivoValido } from '@/features/ventas/utils/motivos-venta'
 import {
   clasificarFalloAccion,
+  CODIGO_FIADO_CON_COBROS,
   crearErrorAccionVenta,
   traducirRechazoAnulacion,
 } from '@/features/ventas/utils/traducir-error-accion-venta'
@@ -168,8 +169,10 @@ export function useModificarVenta({
 
     const clasificacion = clasificarFalloAccion(respuesta.error)
     if (clasificacion === 'sin-sesion') return { tipo: 'sin-sesion' }
-    // 400, 403 y 404 son rechazos firmes: nada se anulo. El 403 es ventana vencida aunque la fila dijera otra cosa
-    if (clasificacion === 'rechazo' && respuesta.error.estado !== 409) {
+    // 400, 403 y 404 son rechazos firmes: nada se anulo. El 403 es ventana vencida aunque la fila dijera otra cosa.
+    // Tambien lo es el 409 de un fiado con cobros: no es una repeticion ni "ya anulada", asi que no hay nada que verificar
+    const esFiadoConCobros = respuesta.error.estado === 409 && respuesta.error.codigo === CODIGO_FIADO_CON_COBROS
+    if (clasificacion === 'rechazo' && (respuesta.error.estado !== 409 || esFiadoConCobros)) {
       const error = traducirRechazoAnulacion(respuesta.error)
       return { tipo: 'error', error, ventaCambio: error.estadoHttp === 403 || error.estadoHttp === 404 }
     }

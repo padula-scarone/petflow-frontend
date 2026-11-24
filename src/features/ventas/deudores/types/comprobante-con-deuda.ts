@@ -35,6 +35,11 @@ export interface ComprobanteConDeuda {
   deudor: Deudor
   /** AAAA-MM-DD; null significa "Sin fecha". */
   fechaEstimadaPago: string | null
+  /**
+   * Aviso cuando el pago inicial no quedo registrado (o no se pudo confirmar): la venta existe como deuda total y el
+   * pago se cobra desde Deudores. null cuando todo salio como se pidio.
+   */
+  avisoPagoInicial: string | null
 }
 
 /** Props del comprobante de una venta con deuda. */

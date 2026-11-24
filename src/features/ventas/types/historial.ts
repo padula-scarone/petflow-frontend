@@ -61,6 +61,11 @@ export interface VentaHistorial {
   /** En un fiado pendiente es el importe adeudado (subtotal menos descuento manual). */
   montoTotal: number
   clienteReferencia: string | null
+  /**
+   * A quien se le fio la venta. Un fiado pendiente sin deudor es uno anterior al vinculo con deudores, con el cliente
+   * como texto libre; en contado tampoco hay.
+   */
+  deudor: DeudorFilaHistorial | null
   origen: OrigenVenta
   modalidadEntrega: ModalidadEntrega
   /**
@@ -86,11 +91,6 @@ export interface DeudorFilaHistorial {
 
 /** Fila lista para renderizar: el hook ya calculo el plazo contra la hora del servidor. */
 export interface FilaHistorial extends VentaHistorial {
-  /**
-   * A quien se le fio la venta. Un fiado pendiente sin deudor es uno viejo, con el cliente como texto libre.
-   * El back lo informa (`deudor` en GET /api/ventas) pero el front todavia no lo mapea: hoy lo completa la maqueta.
-   */
-  deudor?: DeudorFilaHistorial | null
   /** Lo que todavia falta pagar de un fiado pendiente; menor al total si ya pago una parte. */
   montoFaltante?: number
   /** AAAA-MM-DD en que se estima que se paga un fiado pendiente; null = sin fecha. */
@@ -100,8 +100,6 @@ export interface FilaHistorial extends VentaHistorial {
    * fechaHoraLimiteModificacion. Cuando vence pasa a false sin que el usuario recargue.
    */
   ventanaVigente: boolean
-  /** Un fiado se puede cobrar siempre, sin limite de tiempo. */
-  puedeCobrarFiado: boolean
 }
 
 // --- FILTROS ---
@@ -207,6 +205,8 @@ export interface VentaDetalle extends VentaHistorial {
   anulacion: DatosAnulacion | null
   /** null mientras el fiado no se cobro. */
   fechaHoraPago: string | null
+  /** AAAA-MM-DD en que se estima que se paga un fiado; null si no tiene (o si no es un fiado). */
+  fechaEstimadaPago: string | null
   vendedor: VendedorVenta
   subtotalBruto: number
   descuentoManual: number
@@ -216,15 +216,32 @@ export interface VentaDetalle extends VentaHistorial {
   pagos: PagoVentaDetalle[]
 }
 
+/**
+ * Lo pagado y lo que falta de un fiado pendiente con deudor. Sale de la ficha del deudor, porque ni la lista ni el
+ * detalle de la venta lo traen.
+ */
+export type EstadoDeudaFiadoDetalle =
+  | { tipo: 'cargando' }
+  | { tipo: 'error'; mensaje: string }
+  | { tipo: 'listo'; montoPagado: number; montoFaltante: number }
+  /** El fiado ya no figura entre los pendientes del deudor: otra persona lo cobro por completo. */
+  | { tipo: 'fuera-de-la-cuenta' }
+
 /** Estado del panel de detalle. null (fuera de este tipo) significa panel cerrado. */
 export type EstadoDetalleVenta =
   | { tipo: 'cargando'; idVenta: number }
   | { tipo: 'error'; idVenta: number; mensaje: string }
-  | { tipo: 'listo'; venta: VentaDetalle; fila: FilaHistorial }
+  | {
+      tipo: 'listo'
+      venta: VentaDetalle
+      fila: FilaHistorial
+      /** null si la venta no es un fiado pendiente con deudor. */
+      deudaFiado: EstadoDeudaFiadoDetalle | null
+    }
 
 // --- ACCIONES ---
 
-/** Por que fallo una accion sobre una venta (anular, editar o cobrar un fiado). */
+/** Por que fallo una accion sobre una venta (anular o editar). */
 export interface ErrorAccionVenta {
   /**
    * 400: dato invalido. 403: ventana vencida (o sin permiso). 404: la venta no existe. 409: conflicto de
@@ -300,7 +317,6 @@ export interface PropiedadesAccionesVenta {
   onVerDetalle: (idVenta: number) => void
   /** Abre la confirmacion de editar o anular. */
   onSolicitarAccion: (accion: AccionVenta, idVenta: number) => void
-  onCobrarFiado: (idVenta: number) => void
 }
 
 /** Props del componente presentacional de la seccion Historial. */
@@ -318,6 +334,8 @@ export interface HistorialVentasProps {
   onCerrarAviso: () => void
   onCerrarDetalle: () => void
   onReintentarDetalle: () => void
+  /** Vuelve a pedir lo que falta pagar de un fiado, en el detalle abierto. */
+  onReintentarDeudaFiado: () => void
   /** Confirma la edicion: anula la venta y reabre Registrar Venta. */
   onEditarVenta: (idVenta: number) => void
   /** Confirma la anulacion (baja logica). */

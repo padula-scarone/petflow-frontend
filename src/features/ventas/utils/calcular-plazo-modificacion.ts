@@ -22,6 +22,5 @@ export function crearFilaHistorial(venta: VentaHistorial, ahoraServidorMilisegun
     ...venta,
     ventanaVigente:
       venta.estado !== 'ANULADA' && limite !== null && Date.parse(limite) > ahoraServidorMilisegundos,
-    puedeCobrarFiado: venta.estado === 'PENDIENTE_PAGO',
   }
 }

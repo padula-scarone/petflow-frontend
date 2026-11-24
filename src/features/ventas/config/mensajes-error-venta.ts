@@ -51,6 +51,9 @@ export const MENSAJE_MOTIVO_INVALIDO = 'El motivo no es válido. Escribí entre 
 export const MENSAJE_ANULACION_SIN_CAJA =
   'No se pudo anular. Revisá que haya una caja abierta (una venta cobrada la necesita) y que la venta no haya cambiado, y volvé a intentar.'
 export const MENSAJE_ANULACION_FALLIDA = 'No se pudo anular la venta. Intentá de nuevo.'
+/** 409 FIADO_CON_COBROS: los cobros no se anulan, asi que un fiado que ya tiene uno no se puede anular. */
+export const MENSAJE_ANULACION_FIADO_CON_COBROS =
+  'Este fiado ya tiene cobros registrados, por eso no se puede anular. Revisá su cuenta en Deudores.'
 export const MENSAJE_ANULACION_NO_APLICADA = 'La venta no se anuló. Podés intentar de nuevo.'
 export const MENSAJE_ANULACION_INCIERTA =
   'No pudimos confirmar si la venta se anuló. Actualizá el listado para ver su estado. Si seguís viéndola vigente, podés intentar de nuevo: no se anulará dos veces.'
@@ -63,15 +66,3 @@ export function crearMensajeYaAnulada(nombreUsuario: string | null) {
     ? 'La venta ya estaba anulada. Actualizá el listado.'
     : `La venta ya la anuló ${nombreUsuario}. Actualizá el listado.`
 }
-
-// --- ERRORES DEL HISTORIAL: COBRO DE UN FIADO ---
-export const MENSAJE_COBRO_DATOS_NO_COINCIDEN =
-  'Los montos del cobro no coinciden con lo que se debe. Revisá los medios y los montos e intentá de nuevo.'
-export const MENSAJE_COBRO_SIN_CAJA =
-  'No hay una caja abierta, así que no se puede registrar el cobro. Abrí la caja y volvé a intentar.'
-export const MENSAJE_COBRO_FALLIDO = 'No se pudo cobrar el fiado. Intentá de nuevo.'
-export const MENSAJE_COBRO_NO_APLICADO = 'El fiado no se cobró. Podés intentar de nuevo.'
-export const MENSAJE_COBRO_INCIERTO =
-  'No pudimos confirmar si el fiado se cobró. Actualizá el listado para ver su estado. Si sigue pendiente, podés intentar de nuevo: no se cobrará dos veces.'
-export const MENSAJE_FIADO_YA_NO_PENDIENTE =
-  'Este fiado ya no está pendiente: otra persona lo cobró o lo anuló. Actualizá el listado.'

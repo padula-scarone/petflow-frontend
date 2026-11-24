@@ -1,7 +1,7 @@
 import {
-  consultarDeudoresApiEjemplo,
+  consultarCuentasCorrientesApi,
   type PaginaDeudoresConsultada,
-} from '@/features/ventas/deudores/ejemplos/api-deudores-ejemplo'
+} from '@/features/ventas/deudores/api/cuentas-corrientes-api'
 import { DEUDORES_POR_PAGINA } from '@/features/ventas/deudores/config/reglas-deudores'
 import type {
   CriterioOrdenDeudores,
@@ -35,18 +35,18 @@ const SENTIDO_INICIAL_POR_CRITERIO: Record<CriterioOrdenDeudores, SentidoOrden> 
 
 // Funciones de modulo: el hook las usa dentro de efectos y necesitan identidad estable
 const OPCIONES_LISTA_DEUDORES: OpcionesListaPaginada<FiltrosDeudores, PaginaDeudoresConsultada> = {
-  // El cliente del back real no se usa: la consulta es de ejemplo
-  consultar: (_cliente, filtros, pagina) => consultarDeudoresApiEjemplo(filtros, pagina, DEUDORES_POR_PAGINA),
+  consultar: (cliente, filtros, pagina) =>
+    consultarCuentasCorrientesApi(cliente, filtros, pagina, DEUDORES_POR_PAGINA),
   contarElementos: (pagina) => pagina.deudores.length,
   // Solo el texto espera a que se deje de tipear; el filtro por proximo pago aplica al instante
   hayTextoPendiente: (escritos, consultados) => escritos.busqueda !== consultados.busqueda,
 }
 
 /**
- * Lista paginada de Deudores: filtros, pagina y consulta (de ejemplo, hasta que el back tenga el saldo). La
- * mecanica (espera al tipear, descarte de respuestas viejas, refresco) vive en `useListaPaginada`.
+ * Lista paginada de Deudores: filtros, pagina y consulta a GET /api/cuentas-corrientes. La mecanica (espera al
+ * tipear, descarte de respuestas viejas, vuelta a la pagina 1 al cambiar filtros, refresco) vive en `useListaPaginada`.
  */
-export function useListaDeudoresEjemplo() {
+export function useListaDeudores() {
   const lista = useListaPaginada(OPCIONES_LISTA_DEUDORES, FILTROS_DEUDORES_VACIOS)
 
   // --- CALCULOS ---
