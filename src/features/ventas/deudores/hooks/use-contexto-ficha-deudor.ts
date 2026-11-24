@@ -1,4 +1,5 @@
 import { useOutletContext } from 'react-router'
+import type { OrigenFicha } from '@/features/ventas/deudores/config/rutas-deudores'
 import type { useFichaDeudor } from '@/features/ventas/deudores/hooks/use-ficha-deudor'
 import type { useSeleccionFiados } from '@/features/ventas/deudores/hooks/use-seleccion-fiados'
 
@@ -10,6 +11,8 @@ export interface ContextoFichaDeudor {
   idDeudor: number
   /** El fiado que llego desde "Ver deuda" del Historial (`?fiado=`); null si se entro desde la lista. */
   idFiadoInicial: number | null
+  /** Pantalla desde la que se abrio la ficha: a ella vuelve "Volver". Se conserva al ir al cobro y regresar. */
+  origen: OrigenFicha
   ficha: ReturnType<typeof useFichaDeudor>
   seleccion: ReturnType<typeof useSeleccionFiados>
 }

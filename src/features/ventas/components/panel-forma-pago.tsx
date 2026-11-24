@@ -76,6 +76,7 @@ export function PanelFormaPago({
           idMedioSeleccionado={estadoCobro.idMedioSeleccionado}
           pagaCon={estadoCobro.pagaCon}
           vuelto={estadoCobro.vuelto}
+          montoPagaJusto={estadoCobro.resumen.total}
           onSeleccionarMedioPago={onSeleccionarMedioPago}
           onCambiarPagaCon={onCambiarPagaCon}
         />

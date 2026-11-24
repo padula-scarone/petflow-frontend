@@ -5,11 +5,10 @@ import { cn } from '@/lib/utils'
 import { formatearFecha } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { BotonPagosFiado } from '@/features/ventas/deudores/components/boton-pagos-fiado'
+import { BotonVerVenta } from '@/features/ventas/deudores/components/boton-ver-venta'
 import { CampoMontoFiado } from '@/features/ventas/deudores/components/campo-monto-fiado'
 import { EstadoProximoPago } from '@/features/ventas/deudores/components/estado-proximo-pago'
 import { ListaPagosFiado } from '@/features/ventas/deudores/components/lista-pagos-fiado'
-import { FilasDatosEnvio } from '@/features/ventas/components/filas-datos-envio'
-import { listarDatosEnvio } from '@/features/ventas/utils/listar-datos-envio'
 import type { FilaFiadoSeleccionable, ResumenSeleccionFiados } from '@/features/ventas/deudores/types/cobro-deudor'
 
 /** Props de la tabla de fiados pendientes (desde xl). */
@@ -41,8 +40,6 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
   // Solo estado de presentacion: si los pagos estan desplegados
   const [pagosAbiertos, setPagosAbiertos] = useState(false)
   const idListaPagos = `pagos-fiado-${fiado.idVenta}`
-  // Solo con Envio y con valor: sin datos no se agrega la fila
-  const datosEnvio = listarDatosEnvio(fiado.tipoEntrega === 'envio', fiado.direccionEnvio, fiado.destinatarioEnvio)
 
   useEffect(() => {
     if (fila.resaltado) referencia.current?.scrollIntoView({ block: 'center' })
@@ -57,7 +54,7 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
         className={cn(
           CLASE_FILA,
           'min-h-16 py-2 transition-colors hover:bg-fondo-hover/60',
-          pagosAbiertos || datosEnvio.length > 0 ? 'border-b-0' : 'last:border-b-0',
+          pagosAbiertos ? 'border-b-0' : 'last:border-b-0',
           fila.seleccionado && 'bg-fondo-seleccion/50 hover:bg-fondo-seleccion/50',
           fila.resaltado && 'bg-fondo-seleccion hover:bg-fondo-seleccion',
         )}
@@ -75,6 +72,12 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
         <div role="cell" className="whitespace-nowrap tabular-nums">
           <p className="font-bold">{fiado.numeroComprobante}</p>
           <p className="text-auxiliar text-texto-suave">{formatearFecha(fiado.fechaHora)}</p>
+          {/* -ml-3: el boton trae su propio aire; asi el icono queda alineado con el comprobante */}
+          <BotonVerVenta
+            idVenta={fiado.idVenta}
+            numeroComprobante={fiado.numeroComprobante}
+            className="-ml-3 text-auxiliar text-texto-suave"
+          />
         </div>
         <div role="cell">
           <EstadoProximoPago
@@ -115,24 +118,6 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
           />
         </div>
       </div>
-
-      {/* --- DATOS DEL ENVIO --- */}
-      {/* Una fila aparte, debajo del comprobante: una direccion larga no entra en ninguna de las cinco columnas */}
-      {datosEnvio.length > 0 && (
-        <div
-          role="row"
-          className={cn(
-            'col-span-full grid grid-cols-subgrid px-contorno pb-interno',
-            pagosAbiertos ? 'border-b-0' : 'border-b last:border-b-0',
-          )}
-        >
-          <div role="cell" className="col-span-4 col-start-2 min-w-0">
-            <dl className="grid grid-cols-2 gap-x-bloque gap-y-interno text-auxiliar">
-              <FilasDatosEnvio datos={datosEnvio} />
-            </dl>
-          </div>
-        </div>
-      )}
 
       {/* --- PAGOS DEL FIADO --- */}
       {/* Mini tabla con sus propios encabezados, de la columna Comprobante a la columna Falta: asi los montos quedan

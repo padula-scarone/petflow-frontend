@@ -2,6 +2,7 @@ import { Info } from 'lucide-react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { Alert, AlertDescription } from '@/components/ui/alert'
+import { RUTA_HISTORIAL } from '@/features/ventas/config/rutas-historial'
 import { ContenedorDialogoDeudor } from '@/features/ventas/deudores/components/contenedor-dialogo-deudor'
 import { FichaDeudor } from '@/features/ventas/deudores/components/ficha-deudor'
 import { construirRutaCobroDeudor, RUTA_DEUDORES } from '@/features/ventas/deudores/config/rutas-deudores'
@@ -11,7 +12,7 @@ import { obtenerTelefonoLocal } from '@/features/ventas/deudores/utils/validar-d
 
 /** Ruta de Ventas > Deudores > un deudor: conecta la cuenta y la seleccion con la ficha. */
 export function PaginaFichaDeudor() {
-  const { idDeudor, idFiadoInicial, ficha, seleccion } = useContextoFichaDeudor()
+  const { idDeudor, idFiadoInicial, origen, ficha, seleccion } = useContextoFichaDeudor()
   const navegar = useNavigate()
   const { editar } = useGuardarDeudor()
   // Solo estado de presentacion: si el dialogo de edicion esta abierto
@@ -35,7 +36,8 @@ export function PaginaFichaDeudor() {
         estadoFicha={estadoFicha}
         filasFiados={seleccion.filas}
         resumenSeleccion={seleccion.resumen}
-        onVolver={() => void navegar(RUTA_DEUDORES)}
+        origen={origen}
+        onVolver={() => void navegar(origen === 'historial' ? RUTA_HISTORIAL : RUTA_DEUDORES)}
         onReintentar={ficha.reintentar}
         onEditarDeudor={() => setEdicionAbierta(true)}
         onAlternarFiado={seleccion.alternarFiado}

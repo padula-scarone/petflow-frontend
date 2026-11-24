@@ -15,6 +15,20 @@ export function construirRutaFichaDeudor(idDeudor: number, idVentaFiado?: number
   return idVentaFiado === undefined ? ruta : `${ruta}?${PARAMETRO_FIADO_RESALTADO}=${idVentaFiado}`
 }
 
+/** Pantalla desde la que se abrio la ficha de un deudor, y a la que vuelve "Volver". */
+export type OrigenFicha = 'deudores' | 'historial'
+
+/** `location.state` con el que "Ver deuda" abre la ficha. Entrando desde la lista de Deudores no hay estado. */
+export interface EstadoOrigenFicha {
+  origen: OrigenFicha
+}
+
+/** Lee el origen del `location.state` de la ficha; sin estado (o con uno desconocido) se vuelve a Deudores. */
+export function leerOrigenFicha(estado: unknown): OrigenFicha {
+  const origen = (estado as Partial<EstadoOrigenFicha> | null)?.origen
+  return origen === 'historial' ? 'historial' : 'deudores'
+}
+
 /** Segmento de la pantalla de cobro, hija de la ficha: comparte con ella los fiados tildados. */
 export const SEGMENTO_COBRO_DEUDOR = 'cobro'
 

@@ -111,6 +111,7 @@ export function PanelPagoAhora({
             idMedioSeleccionado={estadoPago.idMedioSeleccionado}
             pagaCon={estadoPago.pagaCon}
             vuelto={estadoPago.vuelto}
+            montoPagaJusto={resumen.cobradoAhora}
             onSeleccionarMedioPago={onSeleccionarMedioPago}
             onCambiarPagaCon={onCambiarPagaCon}
           />

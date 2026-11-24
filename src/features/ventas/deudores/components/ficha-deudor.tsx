@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { EstadoErrorLista } from '@/features/ventas/components/estado-error-lista'
 import { EstadoVacioLista } from '@/features/ventas/components/estado-vacio-lista'
+import type { OrigenFicha } from '@/features/ventas/deudores/config/rutas-deudores'
 import { DatosContactoDeudor } from '@/features/ventas/deudores/components/datos-contacto-deudor'
 import { BarraCobroFiados } from '@/features/ventas/deudores/components/barra-cobro-fiados'
 import { PanelCobroFiados } from '@/features/ventas/deudores/components/panel-cobro-fiados'
@@ -15,12 +16,18 @@ import { TablaFiadosPendientes } from '@/features/ventas/deudores/components/tab
 import { TarjetaFiadoPendiente } from '@/features/ventas/deudores/components/tarjeta-fiado-pendiente'
 import type { FichaDeudorProps } from '@/features/ventas/deudores/types/cobro-deudor'
 
-/** Boton para volver a la lista de Deudores. */
-function BotonVolverADeudores({ onVolver }: { onVolver: () => void }) {
+/** Texto del boton que vuelve a la pantalla de la que se llego. */
+const DESTINO_VOLVER: Record<OrigenFicha, string> = {
+  deudores: 'Volver a Deudores',
+  historial: 'Volver al Historial',
+}
+
+/** Boton para volver a la pantalla de la que se llego a la ficha: la lista de Deudores o el Historial. */
+function BotonVolver({ origen, onVolver }: { origen: OrigenFicha; onVolver: () => void }) {
   return (
     <Button type="button" variant="ghost" className="-ml-3 self-start" onClick={onVolver}>
       <ArrowLeft aria-hidden="true" />
-      Volver a Deudores
+      {DESTINO_VOLVER[origen]}
     </Button>
   )
 }
@@ -51,6 +58,7 @@ export function FichaDeudor({
   estadoFicha,
   filasFiados,
   resumenSeleccion,
+  origen,
   onVolver,
   onReintentar,
   onEditarDeudor,
@@ -63,7 +71,7 @@ export function FichaDeudor({
     return (
       <section className="flex flex-1 flex-col gap-bloque">
         <h1 className="sr-only">Deudor</h1>
-        <BotonVolverADeudores onVolver={onVolver} />
+        <BotonVolver origen={origen} onVolver={onVolver} />
         {estadoFicha.tipo === 'cargando' && <EstadoCargandoFicha />}
         {estadoFicha.tipo === 'error' && (
           <EstadoErrorLista
@@ -79,7 +87,7 @@ export function FichaDeudor({
             descripcion="Puede que se haya eliminado. Volvé a la lista para buscarlo."
             accion={
               <Button type="button" onClick={onVolver}>
-                Volver a Deudores
+                {DESTINO_VOLVER[origen]}
               </Button>
             }
           />
@@ -96,7 +104,7 @@ export function FichaDeudor({
       {/* --- ENCABEZADO: QUIEN ES --- */}
       {/* El nombre va una sola vez, como titulo; debajo solo lo que no esta en el titulo */}
       <header className="flex flex-col gap-interno">
-        <BotonVolverADeudores onVolver={onVolver} />
+        <BotonVolver origen={origen} onVolver={onVolver} />
         <div className="flex min-w-0 flex-col gap-1">
           {/* El lapiz va junto al nombre, como el "+" de Descuento en Registrar Venta: chico y lejos de los datos */}
           <div className="flex items-center gap-interno">

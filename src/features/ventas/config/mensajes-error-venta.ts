@@ -6,6 +6,12 @@
  */
 export const MOTIVO_ELEGIR_MEDIO_PAGO = 'Elegí un medio de pago'
 
+/**
+ * Motivo por el que no se puede confirmar un cobro en efectivo sin "Paga con". Sin el dato el back toma el pago como
+ * exacto: es obligatorio para que no se omita sin querer (si paga justo, alcanza con "Paga justo").
+ */
+export const MOTIVO_INGRESAR_PAGA_CON = 'Ingresá con cuánto paga'
+
 // --- ERRORES DE CONSULTA (CATALOGO, MEDIOS DE PAGO, DETALLE DE LA VENTA) ---
 export const MENSAJE_SIN_RED = 'No hay conexión. Revisá tu internet e intentá de nuevo.'
 export const MENSAJE_TIEMPO_AGOTADO = 'El servidor tardó demasiado en responder. Intentá de nuevo.'

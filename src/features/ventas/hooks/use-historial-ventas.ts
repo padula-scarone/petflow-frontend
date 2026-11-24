@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useLocation } from 'react-router'
 import { convertirDetalleApiAVentaDetalle } from '@/features/ventas/api/convertir-detalle-api-a-venta-detalle'
 import { MENSAJE_DETALLE_ILEGIBLE } from '@/features/ventas/config/mensajes-error-venta'
+import { leerIdVentaInicialHistorial } from '@/features/ventas/config/rutas-historial'
 import { useDeudaFiadoDetalle } from '@/features/ventas/deudores/hooks/use-deuda-fiado-detalle'
 import { useCatalogoProductos } from '@/features/ventas/hooks/use-catalogo-productos'
 import { useDetalleVenta } from '@/features/ventas/hooks/use-detalle-venta'
@@ -43,7 +45,9 @@ export function useHistorialVentas() {
 
   // --- LISTA Y DETALLE ---
   const lista = useListaHistorial()
-  const detalle = useDetalleVenta()
+  // "Ver venta" de la ficha de un deudor entra con el detalle de esa venta ya abierto
+  const { state: estadoUbicacion } = useLocation()
+  const detalle = useDetalleVenta(leerIdVentaInicialHistorial(estadoUbicacion))
   const [textoBusquedaProducto, setTextoBusquedaProducto] = useState('')
 
   // --- RELOJ DEL PLAZO ---

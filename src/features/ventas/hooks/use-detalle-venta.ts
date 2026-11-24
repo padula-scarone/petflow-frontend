@@ -3,9 +3,10 @@ import { useConsultaVenta } from '@/features/ventas/hooks/use-consulta-venta'
 
 /**
  * Panel de detalle del Historial: guarda cual venta esta abierta y la consulta al back.
+ * @param idVentaInicial Venta que arranca abierta (cuando otra pantalla manda al Historial a ver una); solo se lee al montar.
  */
-export function useDetalleVenta() {
-  const [idVentaAbierta, setIdVentaAbierta] = useState<number | null>(null)
+export function useDetalleVenta(idVentaInicial: number | null = null) {
+  const [idVentaAbierta, setIdVentaAbierta] = useState<number | null>(idVentaInicial)
   const consulta = useConsultaVenta(idVentaAbierta)
 
   return {

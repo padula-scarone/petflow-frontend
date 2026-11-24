@@ -2,7 +2,10 @@ import { NotebookText } from 'lucide-react'
 import { Link } from 'react-router'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import { construirRutaFichaDeudor } from '@/features/ventas/deudores/config/rutas-deudores'
+import {
+  construirRutaFichaDeudor,
+  type EstadoOrigenFicha,
+} from '@/features/ventas/deudores/config/rutas-deudores'
 import type { FilaHistorial } from '@/features/ventas/types/historial'
 
 /** Props del boton que lleva a la deuda de un fiado. */
@@ -23,6 +26,8 @@ export function BotonVerDeuda({ fila, className }: BotonVerDeudaProps) {
     <Button asChild variant="outline" className={cn('bg-fondo-tarjeta', className)}>
       <Link
         to={construirRutaFichaDeudor(fila.deudor.idDeudor, fila.idVenta)}
+        // La ficha recuerda que se llego desde el Historial: su "Volver" regresa aca y no a la lista de Deudores
+        state={{ origen: 'historial' } satisfies EstadoOrigenFicha}
         aria-label={`Ver la deuda del comprobante ${fila.numeroComprobante}`}
       >
         <NotebookText aria-hidden="true" />
