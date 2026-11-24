@@ -79,15 +79,17 @@ export function TarjetaArticuloCarrito({
   const esGranel = articulo.formato === 'granel'
 
   return (
-    // En mobile se apila en dos bloques, separados por bloque: el producto arriba y la cuenta (precio, cantidad y
-    // subtotal) debajo. Desde xl todo va en una sola fila
-    <Card className="flex flex-col gap-bloque p-contorno xl:flex-row xl:items-center">
+    // Se adapta al ancho de la propia tarjeta (el <li> que la contiene es el contenedor), no al de la ventana: la
+    // columna de productos mide unos 800 px incluso en una pantalla grande. Angosta se apila en dos bloques, separados
+    // por bloque: el producto arriba y la cuenta (precio, cantidad y subtotal) debajo. Desde 56 rem de tarjeta todo
+    // va en una sola fila
+    <Card className="flex flex-col gap-bloque p-contorno @4xl:flex-row @4xl:items-center">
       {/* --- PRODUCTO: IMAGEN, DATOS, ELIMINAR Y AVISO DE STOCK --- */}
-      <div className="flex flex-col gap-interno xl:contents">
-        <div className="flex items-start gap-interno xl:contents">
+      <div className="flex flex-col gap-interno @4xl:contents">
+        <div className="flex items-start gap-interno @4xl:contents">
           {/* 80 px: el alto de cuatro renglones de texto (nombre en dos, categoria y stock), asi la foto y los datos
               terminan a la misma altura */}
-          <ImagenProducto urlImagen={articulo.urlImagen} className="size-20 xl:size-26" />
+          <ImagenProducto urlImagen={articulo.urlImagen} className="size-20 @4xl:size-26" />
 
           <div className="min-w-0 flex-1">
             {/* Nada se corta con puntos suspensivos: lo que no entra en un renglon pasa al siguiente. La presentacion
@@ -101,18 +103,18 @@ export function TarjetaArticuloCarrito({
             <p className="text-cuerpo text-texto-suave tabular-nums">
               Stock: {formatearCantidad(articulo.stockDisponible, articulo.formato)}
             </p>
-            {/* Solo en PC: ahi el bloque del nombre es ancho. En mobile el aviso va en su propia fila, abajo */}
-            {excedeStock && <AvisoSuperaStock className="mt-2 hidden xl:flex" />}
+            {/* Solo con la tarjeta ancha: ahi el bloque del nombre es ancho. En mobile el aviso va en su propia fila, abajo */}
+            {excedeStock && <AvisoSuperaStock className="mt-2 hidden @4xl:flex" />}
           </div>
 
-          {/* En una esquina, lejos de los botones de la cantidad: un toque de mas no borra el articulo. En PC pasa
+          {/* En una esquina, lejos de los botones de la cantidad: un toque de mas no borra el articulo. Con la tarjeta ancha pasa
               al final de la fila */}
           <Button
             type="button"
             variant="ghost"
             size="icon"
             aria-label={`Eliminar ${articulo.nombreProducto}`}
-            className="-mt-2 -mr-2 shrink-0 text-slate-500 xl:order-last xl:m-0"
+            className="-mt-2 -mr-2 shrink-0 text-slate-500 @4xl:order-last @4xl:m-0"
             onClick={() => onEliminarArticulo(articulo.idProducto)}
           >
             <Trash2 />
@@ -121,20 +123,20 @@ export function TarjetaArticuloCarrito({
 
         {/* --- AVISO DE STOCK (MOBILE Y TABLET) --- */}
         {/* En una fila propia entra en un renglon; dentro del bloque del nombre se partia en dos */}
-        {excedeStock && <AvisoSuperaStock className="self-start xl:hidden" />}
+        {excedeStock && <AvisoSuperaStock className="self-start @4xl:hidden" />}
       </div>
 
       {/* --- CUENTA: PRECIO, CANTIDAD Y SUBTOTAL --- */}
       {/* Se leen como una cuenta: precio, cantidad y el resultado. En mobile el precio y la cantidad comparten fila
           (si no entran, la cantidad baja a su propia fila a todo el ancho) y el subtotal cierra debajo. Desde sm
-          los tres van en una fila. Desde xl siguen siendo un solo bloque, centrado en la tarjeta, para que sus
+          los tres van en una fila. Con la tarjeta ancha siguen siendo un solo bloque, centrado en la tarjeta, para que sus
           etiquetas queden a la misma altura aunque el campo de cantidad sea mas alto (el "1 kg" del granel) */}
-      <div className="flex flex-wrap items-start gap-x-bloque gap-y-interno xl:flex-nowrap">
-        {/* Desde xl el precio es una columna de cifras: va a la derecha, con su etiqueta */}
+      <div className="flex flex-wrap items-start gap-x-bloque gap-y-interno @4xl:flex-nowrap">
+        {/* Con la tarjeta ancha el precio es una columna de cifras: va a la derecha, con su etiqueta */}
         <DatoCuenta
           etiqueta={esGranel ? 'Precio por kg' : 'Precio unidad'}
-          className="xl:min-w-28 xl:items-end"
-          claseValor="h-control xl:justify-end"
+          className="@4xl:min-w-28 @4xl:items-end"
+          claseValor="h-control @4xl:justify-end"
         >
           <span className="tabular-nums">{formatearMoneda(articulo.precioUnitario)}</span>
         </DatoCuenta>
@@ -166,7 +168,7 @@ export function TarjetaArticuloCarrito({
             ticket; desde sm queda a la derecha de la fila */}
         <DatoCuenta
           etiqueta="Subtotal producto"
-          className="min-w-20 basis-full items-end border-t pt-interno sm:ml-auto sm:basis-auto sm:border-t-0 sm:pt-0 xl:ml-0 xl:min-w-28"
+          className="min-w-20 basis-full items-end border-t pt-interno sm:ml-auto sm:basis-auto sm:border-t-0 sm:pt-0 @4xl:ml-0 @4xl:min-w-28"
           claseValor="justify-end sm:h-control"
         >
           <span className="text-cifra-secundaria font-bold tabular-nums">{formatearMoneda(articulo.montoTotal)}</span>

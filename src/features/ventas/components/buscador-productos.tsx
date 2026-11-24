@@ -30,7 +30,7 @@ interface BuscadorProductosProps<Identificador extends string | number> {
   resultadosBusqueda: ResultadoBuscadorProducto<Identificador>[]
   onBuscarProducto: (textoBusqueda: string) => void
   onAgregarProducto: (idProducto: Identificador) => void
-  /** Por defecto "Buscar por nombre". */
+  /** Por defecto "Buscar producto por nombre". */
   placeholder?: string
   /** Por defecto "Buscar producto por nombre". */
   etiquetaAccesible?: string
@@ -52,7 +52,7 @@ export function BuscadorProductos<Identificador extends string | number>({
   resultadosBusqueda,
   onBuscarProducto,
   onAgregarProducto,
-  placeholder = 'Buscar por nombre',
+  placeholder = 'Buscar producto por nombre',
   etiquetaAccesible = 'Buscar producto por nombre',
   modoResultados = 'flotante',
   bloquearSinStock = false,
