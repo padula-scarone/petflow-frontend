@@ -6,7 +6,7 @@ import { sinErroresDatosEnvio, validarDatosEnvio } from '@/features/ventas/utils
  * Entrega de la venta en curso: Retiro o Envio y, con Envio, la direccion y el destinatario. Se define en el cobro,
  * al final de la charla con el cliente. Vive en el contexto de Registrar Venta, asi sobrevive a la navegacion entre
  * pantallas. Los datos del envio son personales: nunca se escriben en un log ni en un mensaje.
- * @param tipoEntregaInicial Lo que trae una venta editada; sin ella, Retiro.
+ * @param tipoEntregaInicial Con que modalidad arranca la venta.
  */
 export function useEntregaVenta(tipoEntregaInicial: TipoEntrega) {
   // --- ESTADOS ---

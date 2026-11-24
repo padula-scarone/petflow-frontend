@@ -3,7 +3,6 @@ import { useSesion } from '@/features/auth/hooks/use-sesion'
 import { consultarVentaApi, type DetalleVentaConsultado } from '@/features/ventas/api/consultar-venta-api'
 import { convertirDetalleApiAComprobante } from '@/features/ventas/api/convertir-detalle-api-a-comprobante'
 import { MENSAJE_COMPROBANTE_ILEGIBLE } from '@/features/ventas/config/mensajes-error-venta'
-import { usePlazoModificacionVenta } from '@/features/ventas/hooks/use-plazo-modificacion-venta'
 import type { MedioPago } from '@/features/ventas/types/cobro'
 import type { EstadoComprobanteVenta } from '@/features/ventas/types/comprobante'
 import type { RegistroVenta } from '@/features/ventas/types/registro-venta'
@@ -56,14 +55,6 @@ export function useComprobanteVenta(registro: RegistroVenta | null, medios: Medi
     carga.intento === numeroIntento
       ? carga
       : null
-  const detalle =
-    cargaVigente !== null && cargaVigente.resultado.exitoso ? cargaVigente.resultado.datos : null
-  const fechaHoraLimiteEdicion = detalle?.venta.fechaHoraLimiteModificacion ?? null
-  // El reloj del plazo se corrige con la hora del servidor, no con la del dispositivo
-  const ahoraServidorMilisegundos = usePlazoModificacionVenta(
-    [fechaHoraLimiteEdicion],
-    detalle?.desfaseServidorMilisegundos ?? 0,
-  )
 
   const calcularEstadoComprobante = (): EstadoComprobanteVenta | null => {
     if (registro === null) return null
@@ -80,7 +71,7 @@ export function useComprobanteVenta(registro: RegistroVenta | null, medios: Medi
       }
     }
     const comprobante = convertirDetalleApiAComprobante(cargaVigente.resultado.datos.venta, medios)
-    if (comprobante === null || fechaHoraLimiteEdicion === null) {
+    if (comprobante === null) {
       return { fase: 'error', registro, mensaje: MENSAJE_COMPROBANTE_ILEGIBLE }
     }
     return {
@@ -88,8 +79,6 @@ export function useComprobanteVenta(registro: RegistroVenta | null, medios: Medi
       comprobante,
       enlaceWhatsApp: construirEnlaceWhatsApp(comprobante),
       enlaceMail: construirEnlaceMail(comprobante),
-      edicionDisponible: Date.parse(fechaHoraLimiteEdicion) > ahoraServidorMilisegundos,
-      fechaHoraLimiteEdicion,
     }
   }
 

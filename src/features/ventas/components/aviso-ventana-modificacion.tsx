@@ -6,6 +6,8 @@ interface AvisoVentanaModificacionProps {
   ventanaVigente: boolean
   /** ISO 8601; null si el registro esta anulado. */
   fechaHoraLimiteModificacion: string | null
+  /** Lo que se puede hacer hasta esa hora; por defecto editar o anular. */
+  acciones?: string
   className?: string
 }
 
@@ -16,13 +18,14 @@ interface AvisoVentanaModificacionProps {
 export function AvisoVentanaModificacion({
   ventanaVigente,
   fechaHoraLimiteModificacion,
+  acciones = 'editar o anular',
   className,
 }: AvisoVentanaModificacionProps) {
   if (!ventanaVigente || fechaHoraLimiteModificacion === null) return null
 
   return (
     <p className={cn('text-auxiliar text-texto-suave tabular-nums', className)}>
-      Se puede editar o anular hasta las {formatearHora(fechaHoraLimiteModificacion)}
+      Se puede {acciones} hasta las {formatearHora(fechaHoraLimiteModificacion)}
     </p>
   )
 }

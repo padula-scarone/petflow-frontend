@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 
-/** Props de los botones Ver, Editar y Anular de un registro sujeto a la ventana de 15 minutos. */
+/** Props de los botones Ver, Editar y Anular de un registro sujeto a la ventana de 15 minutos. Editar es opcional. */
 interface AccionesRegistroModificableProps {
   /** Como se nombra el registro en los aria-label, por ejemplo "comprobante CMP-00001047" o "devolución 2012". */
   nombreRegistro: string
@@ -11,11 +11,12 @@ interface AccionesRegistroModificableProps {
   sustantivo: string
   ventanaVigente: boolean
   onVerDetalle: () => void
-  onEditar: () => void
+  /** Sin esta accion no se dibuja el boton Editar: una venta registrada no se edita, solo se anula. */
+  onEditar?: () => void
   onAnular: () => void
   /**
    * tabla: botones de solo icono con tooltip. tarjeta: texto corto, en fila.
-   * detalle: Editar y Anular en el pie del panel (Ver no hace falta: ya se esta viendo).
+   * detalle: Editar (si hay) y Anular en el pie del panel (Ver no hace falta: ya se esta viendo).
    */
   variante: 'tabla' | 'tarjeta' | 'detalle'
 }
@@ -72,8 +73,8 @@ export function AccionesRegistroModificable({
   // --- TABLA ---
   if (variante === 'tabla') {
     return (
-      // Ancho de tres botones fijo y contenido centrado: el ojo solo queda en el centro de la columna
-      <div className="mx-auto flex w-[8.75rem] items-center justify-center gap-1">
+      // Ancho fijo segun los botones que hay (tres con Editar, dos sin el) y contenido centrado: el ojo solo queda en el centro de la columna
+      <div className={cn('mx-auto flex items-center justify-center gap-1', onEditar ? 'w-[8.75rem]' : 'w-[5.5rem]')}>
         <BotonIconoTabla
           Icono={FileText}
           etiqueta="Ver detalle"
@@ -82,12 +83,14 @@ export function AccionesRegistroModificable({
         />
         {ventanaVigente && (
           <>
-            <BotonIconoTabla
-              Icono={Pencil}
-              etiqueta={`Editar ${sustantivo}`}
-              etiquetaAccesible={`Editar el ${nombreRegistro}`}
-              onClick={onEditar}
-            />
+            {onEditar && (
+              <BotonIconoTabla
+                Icono={Pencil}
+                etiqueta={`Editar ${sustantivo}`}
+                etiquetaAccesible={`Editar el ${nombreRegistro}`}
+                onClick={onEditar}
+              />
+            )}
             <BotonIconoTabla
               Icono={Trash2}
               etiqueta={`Anular ${sustantivo}`}
@@ -101,7 +104,7 @@ export function AccionesRegistroModificable({
     )
   }
 
-  const botonEditar = (
+  const botonEditar = onEditar && (
     <Button
       type="button"
       variant="outline"

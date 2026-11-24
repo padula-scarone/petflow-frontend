@@ -169,7 +169,7 @@ export interface VentaDetalleApi {
   fechaHoraPago: string | null
   /** El detalle sirve para cualquier estado. */
   estado: EstadoVentaConAnuladaApi
-  /** Hasta cuando se puede editar o anular; null si esta anulada. */
+  /** Hasta cuando se puede anular; null si esta anulada. */
   fechaHoraLimiteModificacion: string | null
   origen: OrigenApi
   modalidadEntrega: ModalidadEntregaApi
@@ -261,7 +261,7 @@ export interface ConsultarHistorialResponse {
 
 // --- POST /api/ventas/:idVenta/anulacion ---
 
-/** Body de la anulacion (tambien la usa Editar). El usuario sale del token. */
+/** Body de la anulacion. El usuario sale del token. */
 export interface AnularVentaRequest {
   /** De 1 a 200 caracteres, recortado. */
   motivo: string

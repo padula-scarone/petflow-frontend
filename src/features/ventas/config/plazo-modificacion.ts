@@ -1,4 +1,4 @@
-/** Minutos que dura la ventana para editar o anular una venta, segun SSOT.md (RF-VENTAS-05 y 06). */
+/** Minutos que dura la ventana para anular una venta (y para editar o anular un cambio de mercaderia), segun SSOT.md. */
 export const MINUTOS_PLAZO_MODIFICACION = 15
 
 /** Espera del debounce de los campos de texto de los filtros, en milisegundos. */

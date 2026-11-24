@@ -20,7 +20,6 @@ export function HistorialVentas({
   onCerrarDetalle,
   onReintentarDetalle,
   onReintentarDeudaFiado,
-  onEditarVenta,
   onAnularVenta,
   onCancelarConfirmacion,
   onSeleccionarMotivo,
@@ -60,7 +59,6 @@ export function HistorialVentas({
       />
       <DialogoConfirmarAccionVenta
         confirmacion={confirmacion}
-        onEditarVenta={onEditarVenta}
         onAnularVenta={onAnularVenta}
         onCancelar={onCancelarConfirmacion}
         onSeleccionarMotivo={onSeleccionarMotivo}

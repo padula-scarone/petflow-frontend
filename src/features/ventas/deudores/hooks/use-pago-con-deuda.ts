@@ -243,11 +243,6 @@ export function usePagoConDeuda({
   }
 
   // --- ACCIONES ---
-  /** Una venta que se cargo para editar un fiado arranca con la forma de pago "fiado": se la pasa a "unico". */
-  const asegurarFormaPagoValida = () => {
-    if (estadoCobro.formaPago === 'fiado') propiedadesCobro.onCambiarFormaPago('unico')
-  }
-
   const cambiarFormaPago = (nuevaFormaPago: FormaPagoAhora) => {
     propiedadesCobro.onCambiarFormaPago(nuevaFormaPago)
     setFiarTodo(false)
@@ -255,7 +250,6 @@ export function usePagoConDeuda({
   }
 
   const seleccionarMedioPago = (idMedioPago: number) => {
-    asegurarFormaPagoValida()
     propiedadesCobro.onSeleccionarMedioPago(idMedioPago)
     setFiarTodo(false)
   }

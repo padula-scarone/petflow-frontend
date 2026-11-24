@@ -18,9 +18,6 @@ export type ModalidadEntrega = 'RETIRO' | 'ENVIO'
 /** Unidad de venta de un producto. */
 export type FormatoVenta = 'UNIDAD' | 'GRANEL'
 
-/** Acciones que exigen confirmacion y estan limitadas por la ventana de seguridad. */
-export type AccionVenta = 'EDITAR' | 'ANULAR'
-
 /** Atajos para elegir un rango de fechas. */
 export type PeriodoRapido = 'HOY' | 'AYER' | 'ULTIMOS_7_DIAS'
 
@@ -34,17 +31,8 @@ export type CodigoMotivoAnulacion =
   | 'ERROR_DE_CARGA'
   | 'OTRO'
 
-/** Motivos para editar una venta. Valores fijos del back; OTRO exige un detalle escrito. */
-export type CodigoMotivoEdicion =
-  | 'PRODUCTO_O_CANTIDAD_INCORRECTOS'
-  | 'CLIENTE_CAMBIO_PEDIDO'
-  | 'MEDIO_DE_PAGO_INCORRECTO'
-  | 'DESCUENTO_O_PRECIO_INCORRECTO'
-  | 'DATOS_DEL_CLIENTE_INCORRECTOS'
-  | 'OTRO'
-
-/** Cualquier motivo de anulacion o edicion. */
-export type CodigoMotivo = CodigoMotivoAnulacion | CodigoMotivoEdicion
+/** Cualquier motivo de una venta: hoy solo los de la anulacion. */
+export type CodigoMotivo = CodigoMotivoAnulacion
 
 /** Filtro por medio de pago: un medio puntual, "MIXTO" (2 o mas pagos) o ninguno. */
 export type FiltroMedioPago = number | 'MIXTO' | null
@@ -69,7 +57,7 @@ export interface VentaHistorial {
   origen: OrigenVenta
   modalidadEntrega: ModalidadEntrega
   /**
-   * Hasta cuando se puede editar o anular, en ISO 8601: 15 minutos desde el pago si es un fiado saldado,
+   * Hasta cuando se puede anular, en ISO 8601: 15 minutos desde el pago si es un fiado saldado,
    * o desde la venta en el resto. null si la venta esta anulada. Lo calcula el back.
    */
   fechaHoraLimiteModificacion: string | null
@@ -96,7 +84,7 @@ export interface FilaHistorial extends VentaHistorial {
   /** AAAA-MM-DD en que se estima que se paga un fiado pendiente; null = sin fecha. */
   fechaEstimadaPago?: string | null
   /**
-   * true mientras se puede editar o anular: no esta anulada y no paso la hora de
+   * true mientras se puede anular: no esta anulada y no paso la hora de
    * fechaHoraLimiteModificacion. Cuando vence pasa a false sin que el usuario recargue.
    */
   ventanaVigente: boolean
@@ -248,7 +236,7 @@ export type EstadoDetalleVenta =
 
 // --- ACCIONES ---
 
-/** Por que fallo una accion sobre una venta (anular o editar). */
+/** Por que fallo una accion sobre una venta (anular). */
 export interface ErrorAccionVenta {
   /**
    * 400: dato invalido. 403: ventana vencida (o sin permiso). 404: la venta no existe. 409: conflicto de
@@ -263,9 +251,8 @@ export interface ErrorAccionVenta {
   reintentable: boolean
 }
 
-/** Confirmacion abierta de editar o anular. */
+/** Confirmacion abierta de anular. */
 export interface ConfirmacionAccionVenta {
-  accion: AccionVenta
   fila: FilaHistorial
   enviando: boolean
   error: ErrorAccionVenta | null
@@ -322,8 +309,8 @@ export interface PropiedadesFiltrosHistorial {
 /** Callbacks de las acciones sobre una venta. */
 export interface PropiedadesAccionesVenta {
   onVerDetalle: (idVenta: number) => void
-  /** Abre la confirmacion de editar o anular. */
-  onSolicitarAccion: (accion: AccionVenta, idVenta: number) => void
+  /** Abre la confirmacion de anular. */
+  onSolicitarAnulacion: (idVenta: number) => void
 }
 
 /** Props del componente presentacional de la seccion Historial. */
@@ -343,8 +330,6 @@ export interface HistorialVentasProps {
   onReintentarDetalle: () => void
   /** Vuelve a pedir lo que falta pagar de un fiado, en el detalle abierto. */
   onReintentarDeudaFiado: () => void
-  /** Confirma la edicion: anula la venta y reabre Registrar Venta. */
-  onEditarVenta: (idVenta: number) => void
   /** Confirma la anulacion (baja logica). */
   onAnularVenta: (idVenta: number) => void
   onCancelarConfirmacion: () => void

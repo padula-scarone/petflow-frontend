@@ -10,18 +10,9 @@ export function RegistrarVentaComprobante({
   comprobante,
   enlaceWhatsApp,
   enlaceMail,
-  edicionDisponible,
-  fechaHoraLimiteEdicion,
-  onEditarVenta,
   onNuevaVenta,
 }: RegistrarVentaComprobanteProps) {
-  const propiedadesAcciones = {
-    enlaceWhatsApp,
-    enlaceMail,
-    edicionDisponible,
-    fechaHoraLimiteEdicion,
-    onEditarVenta,
-  }
+  const propiedadesAcciones = { enlaceWhatsApp, enlaceMail }
 
   return (
     <section className="flex min-h-full flex-col gap-bloque">

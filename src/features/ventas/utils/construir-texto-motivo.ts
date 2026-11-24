@@ -17,7 +17,6 @@ export function construirTextoMotivoConEtiquetas(
 
 /**
  * Arma el `motivo` del body de la anulacion de una venta.
- * Editar y Anular usan el mismo texto: no se agrega ningun prefijo que marque que vino de una edicion.
  */
 export function construirTextoMotivo(codigoMotivo: CodigoMotivo, detalleMotivo: string) {
   return construirTextoMotivoConEtiquetas(codigoMotivo, detalleMotivo, ETIQUETA_POR_MOTIVO)
