@@ -2,7 +2,7 @@ import type { CodigoErrorDevolucion } from '@/features/ventas/devoluciones/types
 import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import type { MedioPago } from '@/features/ventas/types/cobro'
 import type { PaginacionResultados, RangoFechasFiltro } from '@/features/ventas/types/compartidos'
-import type { FormatoArticulo } from '@/features/ventas/types/venta'
+import type { FormatoArticulo, TipoEntrega } from '@/features/ventas/types/venta'
 import type {
   FiltroMedioPago,
   FormatoVenta,
@@ -176,17 +176,24 @@ export interface DatosAnulacionDevolucion {
   fechaHora: string
 }
 
+/** Venta original en el detalle de una devolución: suma los datos del envio, que la grilla no necesita. */
+export interface VentaVinculadaDetalle extends VentaVinculadaResumen {
+  /** null si el back no informa la modalidad de la venta: sin ella no se muestra ningun dato del envio. */
+  tipoEntrega: TipoEntrega | null
+  /** null con Retiro, en las ventas anteriores y mientras el back no lo manda. Dato personal: nunca va en un log ni en un mensaje. */
+  direccionEnvio: string | null
+  /** null con Retiro, si no se indico, en las ventas anteriores y mientras el back no lo manda. Dato personal. */
+  destinatarioEnvio: string | null
+}
+
 /** Devolución completa. */
 export interface DevolucionDetalle
   extends Pick<
     DevolucionListado,
-    | 'idDevolucion'
-    | 'fechaHora'
-    | 'estado'
-    | 'ventaVinculada'
-    | 'saldoResultante'
-    | 'fechaHoraLimiteModificacion'
+    'idDevolucion' | 'fechaHora' | 'estado' | 'saldoResultante' | 'fechaHoraLimiteModificacion'
   > {
+  /** null = devolución desvinculada. */
+  ventaVinculada: VentaVinculadaDetalle | null
   articuloDevuelto: ArticuloDevueltoDetalle
   articuloEntregado: ArticuloDevolucionDetalle
   valorDevuelto: number

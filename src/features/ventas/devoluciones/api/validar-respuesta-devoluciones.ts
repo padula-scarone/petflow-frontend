@@ -1,5 +1,5 @@
 import { esObjeto } from '@/lib/es-objeto'
-import { esFormatoVentaApi } from '@/features/ventas/api/conversores-enums'
+import { esFormatoVentaApi, esModalidadEntregaApi } from '@/features/ventas/api/conversores-enums'
 import type {
   DevolucionDetalleApi,
   DevolucionListadoApi,
@@ -103,7 +103,13 @@ export function esDevolucionDetalleApi(valor: unknown): valor is DevolucionDetal
     (valor.ventaVinculada === null ||
       (esObjeto(valor.ventaVinculada) &&
         typeof valor.ventaVinculada.idVenta === 'number' &&
-        esTextoONulo(valor.ventaVinculada.numeroComprobante))) &&
+        esTextoONulo(valor.ventaVinculada.numeroComprobante) &&
+        // Tolerante: si el back no manda los datos del envio, el detalle sigue sirviendo
+        (valor.ventaVinculada.modalidadEntrega === undefined ||
+          esModalidadEntregaApi(valor.ventaVinculada.modalidadEntrega)) &&
+        (valor.ventaVinculada.direccionEnvio === undefined || esTextoONulo(valor.ventaVinculada.direccionEnvio)) &&
+        (valor.ventaVinculada.destinatarioEnvio === undefined ||
+          esTextoONulo(valor.ventaVinculada.destinatarioEnvio)))) &&
     esArticuloDevueltoApi(valor.articuloDevuelto) &&
     esObjeto(valor.productoStockIngresado) &&
     typeof valor.productoStockIngresado.idProducto === 'number' &&

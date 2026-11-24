@@ -1,4 +1,4 @@
-import type { PagoRequest } from '@/features/ventas/types/api-ventas'
+import type { ModalidadEntregaApi, PagoRequest } from '@/features/ventas/types/api-ventas'
 
 // Forma exacta de lo que viaja con el back en Deudores y cuentas corrientes. Los montos llegan como texto con
 // 2 decimales y se convierten en un solo lugar (api/conversores-deudores.ts). El DNI y el telefono nunca se escriben
@@ -118,6 +118,12 @@ export interface FiadoDeEstadoCuentaApi {
   falta: string
   /** Del mas viejo al mas nuevo. */
   pagos: PagoDeFiadoApi[]
+  // Los tres datos del envio de la venta. Opcionales: el back todavia no los manda en este endpoint.
+  modalidadEntrega?: ModalidadEntregaApi
+  /** Dato personal: nunca va en un log ni en un mensaje. */
+  direccionEnvio?: string | null
+  /** Dato personal. */
+  destinatarioEnvio?: string | null
 }
 
 /** Respuesta 200 del estado de cuenta. Solo trae fiados pendientes: uno completado desaparece. */

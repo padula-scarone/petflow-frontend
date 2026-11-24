@@ -1,5 +1,6 @@
 import { esObjeto } from '@/lib/es-objeto'
 import { convertirTextoACentavos } from '@/features/ventas/api/conversores-numericos'
+import { convertirModalidadAEntrega, esModalidadEntregaApi } from '@/features/ventas/api/conversores-enums'
 import { NUMERO_COMPROBANTE_AUSENTE } from '@/features/ventas/config/reglas-venta'
 import type {
   DeudorApi,
@@ -123,7 +124,11 @@ function esFiadoDeEstadoCuentaApi(valor: unknown): valor is FiadoDeEstadoCuentaA
     typeof valor.yaPagado === 'string' &&
     typeof valor.falta === 'string' &&
     Array.isArray(valor.pagos) &&
-    valor.pagos.every(esPagoDeFiadoApi)
+    valor.pagos.every(esPagoDeFiadoApi) &&
+    // Tolerante: si el back no manda los datos del envio, la ficha sigue sirviendo
+    (valor.modalidadEntrega === undefined || esModalidadEntregaApi(valor.modalidadEntrega)) &&
+    (valor.direccionEnvio === undefined || esTextoONulo(valor.direccionEnvio)) &&
+    (valor.destinatarioEnvio === undefined || esTextoONulo(valor.destinatarioEnvio))
   )
 }
 
@@ -169,5 +174,8 @@ export function convertirFiadoDeEstadoCuentaApi(fiado: FiadoDeEstadoCuentaApi): 
     montoPagado: convertirCentavosAPesos(montoPagadoCentavos),
     montoFaltante: convertirCentavosAPesos(montoFaltanteCentavos),
     pagos: pagos.filter((pago): pago is PagoFiado => pago !== null),
+    tipoEntrega: fiado.modalidadEntrega === undefined ? null : convertirModalidadAEntrega(fiado.modalidadEntrega),
+    direccionEnvio: fiado.direccionEnvio ?? null,
+    destinatarioEnvio: fiado.destinatarioEnvio ?? null,
   }
 }

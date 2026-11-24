@@ -1,5 +1,6 @@
 import type { Deudor } from '@/features/ventas/deudores/types/deudor'
 import type { PaginacionResultados } from '@/features/ventas/types/compartidos'
+import type { TipoEntrega } from '@/features/ventas/types/venta'
 
 /**
  * Filtro por proximo pago (la fecha estimada mas cercana entre los fiados pendientes). HOY: vence hoy. ESTA_SEMANA:
@@ -93,6 +94,12 @@ export interface FiadoPendiente {
   montoFaltante: number
   /** Cada pago que recibio, del mas viejo al mas nuevo; vacio si todavia no pago nada. */
   pagos: PagoFiado[]
+  /** null si el back no informa la modalidad de la venta: sin ella no se muestra ningun dato del envio. */
+  tipoEntrega: TipoEntrega | null
+  /** null con Retiro y mientras el back no lo manda. Dato personal: nunca va en un log ni en un mensaje. */
+  direccionEnvio: string | null
+  /** null con Retiro, si no se indico y mientras el back no lo manda. Dato personal. */
+  destinatarioEnvio: string | null
 }
 
 /** Estado de la ficha de un deudor. */
