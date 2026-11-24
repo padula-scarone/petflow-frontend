@@ -1,7 +1,7 @@
 import { PRESENTACION_ESTADO_VENTA } from '@/features/ventas/config/estados-venta'
 import type { ChipFiltro } from '@/features/ventas/types/compartidos'
 import type { ProductoFiltro, PropiedadesFiltrosHistorial } from '@/features/ventas/types/historial'
-import { describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
+import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
 import { describirPresentacion } from '@/features/ventas/utils/describir-presentacion'
 import { formatearFechaCalendarioLegible } from '@/features/ventas/utils/formatear-fecha-calendario-legible'
 
@@ -69,6 +69,14 @@ export function construirChipsFiltrosHistorial(
       etiqueta: describirOrigen(filtros.origen),
       descripcion: 'el origen',
       onQuitar: () => onCambiarFiltros({ origen: null }),
+    })
+  }
+  if (filtros.modalidadEntrega) {
+    chips.push({
+      clave: 'entrega',
+      etiqueta: describirEntrega(filtros.modalidadEntrega),
+      descripcion: 'la entrega',
+      onQuitar: () => onCambiarFiltros({ modalidadEntrega: null }),
     })
   }
   if (filtros.medioPago !== null) {

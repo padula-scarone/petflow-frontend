@@ -39,7 +39,7 @@ import { traducirErrorConsulta } from '@/features/ventas/utils/traducir-error-ve
 
 /** Pasa los filtros de la busqueda a los del Historial: siempre solo ventas vinculables y sin busqueda por cliente. */
 function convertirFiltrosAHistorial(filtros: FiltrosBusquedaVenta): FiltrosHistorial {
-  return { ...filtros, estado: ESTADOS_VENTA_VINCULABLES[0], textoCliente: '' }
+  return { ...filtros, modalidadEntrega: null, estado: ESTADOS_VENTA_VINCULABLES[0], textoCliente: '' }
 }
 
 // Funciones de modulo: el hook las usa dentro de efectos y necesitan identidad estable

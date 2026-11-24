@@ -7,14 +7,15 @@ export const FILTROS_HISTORIAL_VACIOS: FiltrosHistorial = {
   productoSeleccionado: null,
   estado: null,
   origen: null,
+  modalidadEntrega: null,
   medioPago: null,
   textoCliente: '',
   numeroComprobante: '',
 }
 
-/** Cuenta los filtros que viven dentro de "Mas filtros": origen y medio de pago. */
+/** Cuenta los filtros que viven dentro de "Mas filtros": origen, entrega y medio de pago. */
 export function contarFiltrosAdicionales(filtros: FiltrosHistorial) {
-  return [filtros.origen !== null, filtros.medioPago !== null].filter(Boolean).length
+  return [filtros.origen !== null, filtros.modalidadEntrega !== null, filtros.medioPago !== null].filter(Boolean).length
 }
 
 /**

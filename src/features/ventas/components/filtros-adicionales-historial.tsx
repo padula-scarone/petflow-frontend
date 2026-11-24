@@ -1,8 +1,9 @@
+import { SelectorFiltroEntrega } from '@/features/ventas/components/selector-filtro-entrega'
 import { SelectorFiltroMedioPago } from '@/features/ventas/components/selector-filtro-medio-pago'
 import { SelectorFiltroOrigen } from '@/features/ventas/components/selector-filtro-origen'
 import type { PropiedadesFiltrosHistorial } from '@/features/ventas/types/historial'
 
-/** Props de los filtros menos usados: origen y medio de pago. */
+/** Props de los filtros menos usados: origen, entrega y medio de pago. */
 interface FiltrosAdicionalesHistorialProps {
   propiedades: PropiedadesFiltrosHistorial
   /** Prefijo de los ids: el popover de escritorio y la hoja mobile pueden coexistir en el DOM. */
@@ -22,6 +23,11 @@ export function FiltrosAdicionalesHistorial({
         idPrefijo={idPrefijo}
         origen={filtros.origen}
         onCambiarOrigen={(origen) => onCambiarFiltros({ origen })}
+      />
+      <SelectorFiltroEntrega
+        idPrefijo={idPrefijo}
+        modalidadEntrega={filtros.modalidadEntrega}
+        onCambiarModalidadEntrega={(modalidadEntrega) => onCambiarFiltros({ modalidadEntrega })}
       />
       {/* Con "Pendiente de pago" queda deshabilitado: un fiado todavia no tiene pagos que filtrar */}
       <SelectorFiltroMedioPago

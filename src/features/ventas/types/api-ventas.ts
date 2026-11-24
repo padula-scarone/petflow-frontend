@@ -216,6 +216,7 @@ export interface ConsultaHistorialApi {
   idProducto?: number
   estado?: EstadoVentaConAnuladaApi
   origen?: OrigenApi
+  modalidadEntrega?: ModalidadEntregaApi
   /** Id de un medio (ventas con un unico pago de ese medio) o "MIXTO" (mas de un pago). */
   medioPago?: number | 'MIXTO'
   /** Hasta 100 caracteres. */
