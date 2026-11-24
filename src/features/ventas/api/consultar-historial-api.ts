@@ -53,6 +53,7 @@ export function convertirFiltrosAConsulta(
     ...(filtros.productoSeleccionado !== null && { idProducto: filtros.productoSeleccionado.idProducto }),
     ...(filtros.estado !== null && { estado: filtros.estado }),
     ...(filtros.origen !== null && { origen: filtros.origen }),
+    ...(filtros.modalidadEntrega !== null && { modalidadEntrega: filtros.modalidadEntrega }),
     ...(filtros.medioPago !== null && { medioPago: filtros.medioPago }),
     ...(textoCliente !== '' && { textoCliente }),
     ...(numeroComprobante !== '' && { numeroComprobante }),

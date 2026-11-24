@@ -115,6 +115,8 @@ export interface FiltrosHistorial {
   productoSeleccionado: ProductoFiltro | null
   estado: EstadoVentaHistorial | null
   origen: OrigenVenta | null
+  /** Retiro en el local o envio a domicilio; null = ambas. */
+  modalidadEntrega: ModalidadEntrega | null
   /** El hook lo fuerza a null con PENDIENTE_PAGO: un fiado no tiene pagos. */
   medioPago: FiltroMedioPago
   /** Solo se muestra y se usa con estado PENDIENTE_PAGO. */
@@ -291,7 +293,7 @@ export interface PropiedadesFiltrosHistorial {
   opciones: OpcionesFiltros
   /** Todos los filtros con valor, incluido el N.º de comprobante. */
   cantidadFiltrosActivos: number
-  /** Cuantos de los filtros de "Mas filtros" (origen y medio de pago) estan activos. */
+  /** Cuantos de los filtros de "Mas filtros" (origen, entrega y medio de pago) estan activos. */
   cantidadFiltrosAdicionales: number
   /** Cuantos de los filtros de la hoja de mobile estan activos: todos menos el N.º de comprobante, que esta a la vista. */
   cantidadFiltrosEnHoja: number
