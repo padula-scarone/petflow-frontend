@@ -1,5 +1,5 @@
 import { useOutletContext } from 'react-router'
-import type { useFichaDeudorEjemplo } from '@/features/ventas/deudores/hooks/use-ficha-deudor-ejemplo'
+import type { useFichaDeudor } from '@/features/ventas/deudores/hooks/use-ficha-deudor'
 import type { useSeleccionFiados } from '@/features/ventas/deudores/hooks/use-seleccion-fiados'
 
 /**
@@ -8,7 +8,9 @@ import type { useSeleccionFiados } from '@/features/ventas/deudores/hooks/use-se
  */
 export interface ContextoFichaDeudor {
   idDeudor: number
-  ficha: ReturnType<typeof useFichaDeudorEjemplo>
+  /** El fiado que llego desde "Ver deuda" del Historial (`?fiado=`); null si se entro desde la lista. */
+  idFiadoInicial: number | null
+  ficha: ReturnType<typeof useFichaDeudor>
   seleccion: ReturnType<typeof useSeleccionFiados>
 }
 

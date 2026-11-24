@@ -59,7 +59,7 @@ export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialP
           <AvisoFaltanteFiado fila={fila} />
         </p>
         <div className="order-1">
-          <AccionDeudaFiado fila={fila} onCobrarFiado={acciones.onCobrarFiado} />
+          <AccionDeudaFiado fila={fila} />
         </div>
       </div>
 

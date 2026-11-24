@@ -73,12 +73,18 @@ export function convertirConsultaAParametros(consulta: object): Record<string, s
 const esEnteroNoNegativo = (valor: unknown) =>
   typeof valor === 'number' && Number.isInteger(valor) && valor >= 0
 
+/** El deudor de una fila del historial viene reducido a su id y su nombre (nunca DNI ni telefono). */
+function esDeudorResumidoApi(valor: unknown) {
+  return esObjeto(valor) && typeof valor.idDeudor === 'number' && typeof valor.nombreCompleto === 'string'
+}
+
 function esVentaHistorialApi(valor: unknown): valor is VentaHistorialApi {
   return (
     esObjeto(valor) &&
     typeof valor.idVenta === 'number' &&
     (valor.numeroComprobante === null || typeof valor.numeroComprobante === 'string') &&
     typeof valor.fechaHora === 'string' &&
+    (valor.deudor === undefined || valor.deudor === null || esDeudorResumidoApi(valor.deudor)) &&
     (esEstadoVentaApi(valor.estado) || valor.estado === 'ANULADA') &&
     (valor.fechaHoraLimiteModificacion === null || typeof valor.fechaHoraLimiteModificacion === 'string') &&
     typeof valor.montoTotal === 'string' &&
@@ -114,6 +120,8 @@ function convertirVentaHistorialApi(venta: VentaHistorialApi): VentaHistorialCon
     estado: venta.estado,
     montoTotal: convertirCentavosAPesos(montoTotalCentavos),
     clienteReferencia: venta.clienteReferencia,
+    // Sin deudor: contado, o un fiado anterior al vinculo con deudores (cliente como texto libre)
+    deudor: venta.deudor ?? null,
     origen: venta.origen,
     modalidadEntrega: venta.modalidadEntrega,
     fechaHoraLimiteModificacion: venta.fechaHoraLimiteModificacion,

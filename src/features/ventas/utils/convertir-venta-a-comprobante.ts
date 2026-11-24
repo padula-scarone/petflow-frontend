@@ -54,7 +54,8 @@ export function convertirVentaAComprobante(venta: VentaDetalle): Comprobante {
     return {
       ...datosComunes,
       estado: 'pendiente-pago',
-      clienteReferencia: venta.clienteReferencia ?? 'Sin cliente',
+      // Un fiado nuevo no tiene cliente como texto: el que debe es el deudor
+      clienteReferencia: venta.clienteReferencia ?? venta.deudor?.nombreCompleto ?? 'Sin cliente',
     }
   }
   return {

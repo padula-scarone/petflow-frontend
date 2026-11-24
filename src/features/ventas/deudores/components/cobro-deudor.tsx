@@ -28,10 +28,21 @@ interface CobroDeudorProps {
 
 /** Titulo del aviso de rechazo, segun por que el servidor no cobro. */
 function describirTituloRechazo(error: ErrorCobroDeudor) {
-  if (error.motivo === 'FIADO_NO_PENDIENTE') return 'Un fiado ya no está pendiente'
-  if (error.motivo === 'MONTO_SUPERA_FALTANTE') return 'Un monto supera lo que falta'
-  if (error.motivo === 'CAJA_CERRADA') return 'No hay una caja abierta'
-  return 'No se pudo registrar el cobro'
+  switch (error.motivo) {
+    case 'FIADO_NO_ENCONTRADO':
+    case 'FIADO_NO_PENDIENTE':
+      return 'Un fiado cambió'
+    case 'MONTO_EXCEDE_FALTA':
+      return 'Un monto supera lo que falta'
+    case 'SIN_CAJA_ABIERTA':
+      return 'No hay una caja abierta'
+    case 'COBRO_SIMULTANEO':
+      return 'Otro cobro está en curso'
+    case 'RESULTADO_INCIERTO':
+      return 'No pudimos confirmar el cobro'
+    default:
+      return 'No se pudo registrar el cobro'
+  }
 }
 
 /**

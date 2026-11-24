@@ -1,6 +1,6 @@
 import { RegistrarVentaCobroConDeuda } from '@/features/ventas/deudores/components/registrar-venta-cobro-con-deuda'
 import { RegistrarVentaComprobanteConDeuda } from '@/features/ventas/deudores/components/registrar-venta-comprobante-con-deuda'
-import { usePagoConDeudaEjemplo } from '@/features/ventas/deudores/hooks/use-pago-con-deuda-ejemplo'
+import { usePagoConDeuda } from '@/features/ventas/deudores/hooks/use-pago-con-deuda'
 import {
   construirEnlaceMailConTexto,
   construirEnlaceWhatsAppConTexto,
@@ -30,12 +30,13 @@ export function ContenedorCobroConDeuda({
   onNuevaVenta,
 }: ContenedorCobroConDeudaProps) {
   const { estadoVenta } = contexto.propiedadesCarrito
-  const { propiedadesPago, comprobante } = usePagoConDeudaEjemplo({
+  const { propiedadesPago, comprobante } = usePagoConDeuda({
     articulos: estadoVenta.articulos,
     canalVenta: estadoVenta.canalVenta,
     tipoEntrega: estadoVenta.tipoEntrega,
     propiedadesCobro: contexto.propiedadesCobro,
     confirmarCobro: contexto.confirmarCobro,
+    alAbandonarVenta: onNuevaVenta,
   })
 
   if (comprobante) {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router'
 import { convertirDetalleApiAVentaDetalle } from '@/features/ventas/api/convertir-detalle-api-a-venta-detalle'
 import { MENSAJE_DETALLE_ILEGIBLE } from '@/features/ventas/config/mensajes-error-venta'
+import { useDeudaFiadoDetalle } from '@/features/ventas/deudores/hooks/use-deuda-fiado-detalle'
 import { useCatalogoProductos } from '@/features/ventas/hooks/use-catalogo-productos'
 import { useDetalleVenta } from '@/features/ventas/hooks/use-detalle-venta'
 import { useListaHistorial } from '@/features/ventas/hooks/use-lista-historial'
@@ -42,8 +43,8 @@ function leerIdVentaDeParametro(texto: string | null) {
 }
 
 /**
- * Orquesta el Historial de ventas contra el back: lista paginada con filtros, detalle, editar, anular y el cobro
- * de un fiado. Cada parte vive en su propio hook; aca solo se conectan y se arma lo que consume la vista.
+ * Orquesta el Historial de ventas contra el back: lista paginada con filtros, detalle, editar y anular. El cobro de
+ * un fiado ya no vive aca: "Ver deuda" lleva a la ficha del deudor. Cada parte vive en su propio hook; aca solo se conectan y se arma lo que consume la vista.
  * Si la URL trae `?venta=<id>` (viene de Editar en el Comprobante), abre el detalle de esa venta y limpia el parametro.
  */
 export function useHistorialVentas() {
@@ -58,7 +59,6 @@ export function useHistorialVentas() {
   const [idVentaInicial] = useState(() => leerIdVentaDeParametro(parametrosBusqueda.get(PARAMETRO_VENTA)))
   const detalle = useDetalleVenta(idVentaInicial)
   const [textoBusquedaProducto, setTextoBusquedaProducto] = useState('')
-  const [filaACobrar, setFilaACobrar] = useState<FilaHistorial | null>(null)
 
   // El parametro ya se uso al montar: se limpia para que un reload o un "atras" no vuelva a abrir el detalle
   useEffect(() => {
@@ -115,9 +115,15 @@ export function useHistorialVentas() {
     const venta = convertirDetalleApiAVentaDetalle(estadoConsulta.detalle.venta, medios)
     if (venta === null) return { tipo: 'error', idVenta: idVentaAbierta, mensaje: MENSAJE_DETALLE_ILEGIBLE }
     // La fila sale del propio detalle: la venta puede no estar en la pagina que se esta viendo
-    return { tipo: 'listo', venta, fila: crearFilaHistorial(venta, ahoraServidor) }
+    return { tipo: 'listo', venta, fila: crearFilaHistorial(venta, ahoraServidor), deudaFiado: null }
   }
-  const estadoDetalle = calcularEstadoDetalle()
+  const estadoDetalleBase = calcularEstadoDetalle()
+  // Lo que falta de un fiado pendiente con deudor sale de la ficha del deudor: la lista y el detalle no lo traen
+  const deudaFiado = useDeudaFiadoDetalle(estadoDetalleBase?.tipo === 'listo' ? estadoDetalleBase.venta : null)
+  const estadoDetalle: EstadoDetalleVenta | null =
+    estadoDetalleBase?.tipo === 'listo'
+      ? { ...estadoDetalleBase, deudaFiado: deudaFiado.deudaFiado }
+      : estadoDetalleBase
 
   /** Busca la fila en el detalle abierto y, si no esta, en la lista. */
   const buscarFila = (idVenta: number): FilaHistorial | undefined => {
@@ -153,14 +159,6 @@ export function useHistorialVentas() {
     setTextoBusquedaProducto('')
   }
 
-  const cobrarFiado = (idVenta: number) => {
-    const fila = buscarFila(idVenta)
-    if (!fila) return
-    // Se cierra el detalle para no apilar dos paneles
-    detalle.cerrar()
-    setFilaACobrar(fila)
-  }
-
   const propiedadesHistorial: HistorialVentasProps = {
     estadoLista,
     propiedadesFiltros: {
@@ -188,7 +186,6 @@ export function useHistorialVentas() {
     acciones: {
       onVerDetalle: detalle.abrir,
       onSolicitarAccion: modificacion.solicitarAccion,
-      onCobrarFiado: cobrarFiado,
     },
     aviso: modificacion.aviso,
     detalle: estadoDetalle,
@@ -198,6 +195,7 @@ export function useHistorialVentas() {
     onCerrarAviso: modificacion.cerrarAviso,
     onCerrarDetalle: detalle.cerrar,
     onReintentarDetalle: detalle.recargar,
+    onReintentarDeudaFiado: deudaFiado.reintentar,
     onEditarVenta: () => void modificacion.confirmarAccion(),
     onAnularVenta: () => void modificacion.confirmarAccion(),
     onCancelarConfirmacion: modificacion.cancelarConfirmacion,
@@ -205,28 +203,5 @@ export function useHistorialVentas() {
     onCambiarDetalleMotivo: modificacion.cambiarDetalleMotivo,
   }
 
-  return {
-    propiedadesHistorial,
-    /** null mientras no hay un cobro abierto. */
-    cobro:
-      filaACobrar === null
-        ? null
-        : {
-            fila: filaACobrar,
-            medios,
-            estadoMediosPago: mediosPago.estado,
-            onReintentarMediosPago: mediosPago.recargar,
-            onCerrar: () => setFilaACobrar(null),
-            // Cierra el cobro y abre el detalle de esa venta, que ya es el recibo
-            onVerRecibo: () => {
-              detalle.abrir(filaACobrar.idVenta)
-              setFilaACobrar(null)
-            },
-            onActualizarListado: () => {
-              setFilaACobrar(null)
-              lista.refrescar()
-            },
-            alCambiarVenta: lista.refrescar,
-          },
-  }
+  return { propiedadesHistorial }
 }

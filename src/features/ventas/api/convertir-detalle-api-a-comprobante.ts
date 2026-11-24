@@ -26,7 +26,7 @@ import { convertirCentavosAPesos } from '@/features/ventas/utils/calcular-centav
 const FACTOR_MILESIMAS = 1000
 const PUNTOS_BASICOS_POR_PUNTO_PORCENTUAL = 100
 
-function convertirItem(item: ItemDetalleApi): DetalleComprobante | null {
+export function convertirItemApiAComprobante(item: ItemDetalleApi): DetalleComprobante | null {
   const cantidadMilesimas = convertirTextoAMilesimas(item.cantidad)
   const precioCentavos = convertirTextoACentavos(item.precioUnitario)
   const subtotalCentavos = convertirTextoACentavos(item.subtotal)
@@ -42,11 +42,11 @@ function convertirItem(item: ItemDetalleApi): DetalleComprobante | null {
 }
 
 /**
- * Convierte un pago del detalle. El detalle no trae el tipo del medio: si admite vuelto se sabe cruzando el
- * id con los medios ya cargados. Si el medio ya no esta, se deduce de que haya o no un monto recibido
- * (sin "Paga con" no hay nada que mostrar de todos modos).
+ * Convierte un pago del detalle o de un recibo de cobro (traen los mismos campos). No traen el tipo del medio: si
+ * admite vuelto se sabe cruzando el id con los medios ya cargados. Si el medio ya no esta, se deduce de que haya o no
+ * un monto recibido (sin "Paga con" no hay nada que mostrar de todos modos).
  */
-function convertirPago(pago: PagoDetalleApi, medios: MedioPago[]): PagoComprobante | null {
+export function convertirPagoApiAComprobante(pago: PagoDetalleApi, medios: MedioPago[]): PagoComprobante | null {
   const baseCentavos = convertirTextoACentavos(pago.montoBase)
   const finalCentavos = convertirTextoACentavos(pago.montoFinal)
   const puntosBasicos = convertirTextoABasisPoints(pago.porcentajeAplicado)
@@ -94,8 +94,8 @@ export function convertirDetalleApiAComprobante(
   const montoTotalCentavos = convertirTextoACentavos(venta.montoTotal)
   if (subtotalCentavos === null || descuentoCentavos === null || montoTotalCentavos === null) return null
 
-  const detalles = descartarSiHayNulos(venta.items.map(convertirItem))
-  const pagos = descartarSiHayNulos(venta.pagos.map((pago) => convertirPago(pago, medios)))
+  const detalles = descartarSiHayNulos(venta.items.map(convertirItemApiAComprobante))
+  const pagos = descartarSiHayNulos(venta.pagos.map((pago) => convertirPagoApiAComprobante(pago, medios)))
   if (detalles === null || pagos === null) return null
 
   const datosComunes = {

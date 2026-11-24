@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from 'react-router'
 import { CobroDeudor } from '@/features/ventas/deudores/components/cobro-deudor'
 import { ComprobanteCobroDeudor } from '@/features/ventas/deudores/components/comprobante-cobro-deudor'
 import { construirRutaFichaDeudor } from '@/features/ventas/deudores/config/rutas-deudores'
-import { useCobroDeudorEjemplo } from '@/features/ventas/deudores/hooks/use-cobro-deudor-ejemplo'
+import { useCobroDeudor } from '@/features/ventas/deudores/hooks/use-cobro-deudor'
 import { useContextoFichaDeudor } from '@/features/ventas/deudores/hooks/use-contexto-ficha-deudor'
 import type { FilaFiadoSeleccionable } from '@/features/ventas/deudores/types/cobro-deudor'
 import type { Deudor } from '@/features/ventas/deudores/types/deudor'
@@ -30,7 +30,18 @@ export function PaginaCobroDeudor() {
     return <Navigate to={construirRutaFichaDeudor(idDeudor)} replace />
   }
 
-  return <ContenidoCobroDeudor deudor={deudor} filasACobrar={filasACobrar} alCobrar={seleccion.limpiar} />
+  return (
+    <ContenidoCobroDeudor
+      deudor={deudor}
+      filasACobrar={filasACobrar}
+      // Despues de cobrar la verdad la tiene el servidor: se vuelve a pedir la cuenta en lugar de editar los saldos
+      alCobrar={() => {
+        seleccion.limpiar()
+        ficha.refrescar()
+      }}
+      alCambiarLaCuenta={ficha.refrescar}
+    />
+  )
 }
 
 /** Props del contenido del cobro, ya con lo que se cobra. */
@@ -38,20 +49,21 @@ interface ContenidoCobroDeudorProps {
   deudor: Deudor
   filasACobrar: FilaFiadoSeleccionable[]
   alCobrar: () => void
+  alCambiarLaCuenta: () => void
 }
 
-/** Conecta el cobro con los medios de pago reales (que ya existen en el back) y con el cobro de ejemplo. */
-function ContenidoCobroDeudor({ deudor, filasACobrar, alCobrar }: ContenidoCobroDeudorProps) {
+/** Conecta el cobro con los medios de pago y con el cobro por deudor del back. */
+function ContenidoCobroDeudor({ deudor, filasACobrar, alCobrar, alCambiarLaCuenta }: ContenidoCobroDeudorProps) {
   const navegar = useNavigate()
   const mediosPago = useMediosPago()
-  const cobro = useCobroDeudorEjemplo({
+  const cobro = useCobroDeudor({
     deudor,
     filasACobrar,
     medios: mediosPago.datos ?? SIN_MEDIOS,
     estadoMediosPago: mediosPago.estado,
     onReintentarMediosPago: mediosPago.recargar,
-    // Despues de cobrar la cuenta cambia: lo tildado ya no corresponde
     alCobrar,
+    alCambiarLaCuenta,
   })
   // replace: con el cobro hecho, "atras" no tiene que volver a esta pantalla
   const volverALaFicha = () => void navegar(construirRutaFichaDeudor(deudor.idDeudor), { replace: true })

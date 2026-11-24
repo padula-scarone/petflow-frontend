@@ -86,8 +86,14 @@ export interface RegistrarVentaRequest {
   /** En pesos, hasta 2 decimales. Se omite junto con motivoDescuento cuando no hay descuento. */
   descuentoManual?: number
   motivoDescuento?: string
-  /** Obligatorio en un fiado. */
+  /** Obsoleto: el fiado ahora lleva `idDeudor`. El back lo descarta sin error. */
   clienteReferencia?: string
+  /** Obligatorio en un fiado (pagos vacio); no se admite en una venta de contado. */
+  idDeudor?: number
+  /** AAAA-MM-DD, solo en un fiado; se omite para "Sin fecha". */
+  fechaEstimadaPago?: string
+  /** 1 a 200 caracteres. Obligatoria con ENVIO y prohibida con RETIRO. */
+  direccionEnvio?: string
 }
 
 /** Pago de la respuesta del alta. */
@@ -162,6 +168,12 @@ export interface VentaDetalleApi {
   origen: OrigenApi
   modalidadEntrega: ModalidadEntregaApi
   clienteReferencia: string | null
+  /** El deudor del fiado, con sus cuatro datos; null en contado y en fiados anteriores al vinculo con deudores. */
+  deudor?: { idDeudor: number; nombreCompleto: string; telefono: string; dni: string } | null
+  /** AAAA-MM-DD; null si no tiene. Solo informativa. */
+  fechaEstimadaPago?: string | null
+  /** Dato personal: el detalle la trae pero hoy ninguna pantalla la muestra. Nunca va en un mensaje ni en un log. */
+  direccionEnvio?: string | null
   vendedor: { idUsuario: number; nombre: string }
   subtotalBruto: string
   descuentoManual: string
@@ -213,6 +225,8 @@ export interface VentaHistorialApi {
   /** Texto con 2 decimales. */
   montoTotal: string
   clienteReferencia: string | null
+  /** El deudor del fiado (id y nombre); null en contado y en fiados anteriores al vinculo con deudores. */
+  deudor?: { idDeudor: number; nombreCompleto: string } | null
   origen: OrigenApi
   modalidadEntrega: ModalidadEntregaApi
   /** Devoluciones activas vinculadas a la venta. Es para Devoluciones. */

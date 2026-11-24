@@ -1,10 +1,8 @@
 import {
   crearMensajeSinPermiso,
   MENSAJE_ANULACION_FALLIDA,
+  MENSAJE_ANULACION_FIADO_CON_COBROS,
   MENSAJE_ANULACION_SIN_CAJA,
-  MENSAJE_COBRO_DATOS_NO_COINCIDEN,
-  MENSAJE_COBRO_FALLIDO,
-  MENSAJE_COBRO_SIN_CAJA,
   MENSAJE_MOTIVO_INVALIDO,
   MENSAJE_PLAZO_VENCIDO,
   MENSAJE_VENTA_INEXISTENTE,
@@ -58,7 +56,13 @@ export function crearErrorAccionVenta(
   }
 }
 
-/** Traduce un rechazo (4xx) de la anulacion. El 409 lo resuelve quien llama consultando el detalle. */
+/** Codigo del 409 de la anulacion de un fiado que ya tiene cobros. */
+export const CODIGO_FIADO_CON_COBROS = 'FIADO_CON_COBROS'
+
+/**
+ * Traduce un rechazo (4xx) de la anulacion. El 409 de un fiado con cobros es firme y tiene su propio texto; cualquier
+ * otro 409 lo resuelve quien llama consultando el detalle.
+ */
 export function traducirRechazoAnulacion(error: ErrorApi): ErrorAccionVenta {
   if (error.estado === ESTADO_DATOS_INVALIDOS) {
     return crearErrorAccionVenta(400, MENSAJE_MOTIVO_INVALIDO)
@@ -71,21 +75,12 @@ export function traducirRechazoAnulacion(error: ErrorApi): ErrorAccionVenta {
   if (error.estado === ESTADO_NO_ENCONTRADO) {
     return crearErrorAccionVenta(404, MENSAJE_VENTA_INEXISTENTE, { reintentable: false })
   }
-  if (error.estado === ESTADO_CONFLICTO) return crearErrorAccionVenta(409, MENSAJE_ANULACION_SIN_CAJA)
+  if (error.estado === ESTADO_CONFLICTO) {
+    // Repetirlo no cambia nada: los cobros no se anulan. Se manda a la cuenta del deudor
+    if (error.codigo === CODIGO_FIADO_CON_COBROS) {
+      return crearErrorAccionVenta(409, MENSAJE_ANULACION_FIADO_CON_COBROS, { reintentable: false })
+    }
+    return crearErrorAccionVenta(409, MENSAJE_ANULACION_SIN_CAJA)
+  }
   return crearErrorAccionVenta(null, MENSAJE_ANULACION_FALLIDA)
-}
-
-/** Traduce un rechazo (4xx) del cobro de un fiado. El 409 lo resuelve quien llama consultando el detalle. */
-export function traducirRechazoCobro(error: ErrorApi): ErrorAccionVenta {
-  if (error.estado === ESTADO_DATOS_INVALIDOS) {
-    return crearErrorAccionVenta(400, MENSAJE_COBRO_DATOS_NO_COINCIDEN)
-  }
-  if (error.estado === ESTADO_SIN_PERMISO) {
-    return crearErrorAccionVenta(403, crearMensajeSinPermiso('cobrar fiados'), { reintentable: false })
-  }
-  if (error.estado === ESTADO_NO_ENCONTRADO) {
-    return crearErrorAccionVenta(404, MENSAJE_VENTA_INEXISTENTE, { reintentable: false })
-  }
-  if (error.estado === ESTADO_CONFLICTO) return crearErrorAccionVenta(409, MENSAJE_COBRO_SIN_CAJA)
-  return crearErrorAccionVenta(null, MENSAJE_COBRO_FALLIDO)
 }

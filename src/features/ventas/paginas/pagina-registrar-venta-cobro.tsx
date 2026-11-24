@@ -1,21 +1,16 @@
 import { Navigate } from 'react-router'
-import { RegistrarVentaCobro } from '@/features/ventas/components/registrar-venta-cobro'
 import { RUTAS_REGISTRAR_VENTA } from '@/features/ventas/config/rutas-registrar-venta'
-import { COBRO_CON_DEUDA_ACTIVO } from '@/features/ventas/deudores/config/maqueta-deudores'
 import { ContenedorCobroConDeuda } from '@/features/ventas/deudores/paginas/contenedor-cobro-con-deuda'
 import { useContextoRegistrarVenta } from '@/features/ventas/hooks/use-contexto-registrar-venta'
 import { useNavegacionRegistrarVenta } from '@/features/ventas/hooks/use-navegacion-registrar-venta'
 
+/**
+ * Ruta del paso de pago de Registrar Venta. El cobro con deuda atiende los dos casos: con deuda registra el fiado y,
+ * si se pago algo, su pago inicial; sin deuda es la venta de contado de siempre, que se confirma con el cobro real.
+ */
 export function PaginaRegistrarVentaCobro() {
   const contexto = useContextoRegistrarVenta()
-  const {
-    propiedadesCarrito,
-    propiedadesCobro,
-    registro,
-    confirmarCobro,
-    descartarRechazoEnvio,
-    iniciarNuevaVenta,
-  } = contexto
+  const { propiedadesCarrito, registro, descartarRechazoEnvio, iniciarNuevaVenta } = contexto
   const { irAlCarrito } = useNavegacionRegistrarVenta()
 
   // Con la venta ya registrada no se puede volver a cobrar: solo queda el comprobante
@@ -36,26 +31,12 @@ export function PaginaRegistrarVentaCobro() {
     irAlCarrito()
   }
 
-  // Maqueta de fiados con pago parcial: el cobro con deuda convive con el real, que sigue atendiendo la venta de contado
-  if (COBRO_CON_DEUDA_ACTIVO) {
-    return (
-      <ContenedorCobroConDeuda
-        contexto={contexto}
-        onVolverAlCarrito={volverAlCarrito}
-        onCancelarVenta={cancelarVenta}
-        onNuevaVenta={cancelarVenta}
-      />
-    )
-  }
-
   return (
-    <RegistrarVentaCobro
-      {...propiedadesCobro}
+    <ContenedorCobroConDeuda
+      contexto={contexto}
       onVolverAlCarrito={volverAlCarrito}
       onCancelarVenta={cancelarVenta}
-      // Al confirmarse el alta, `registro` deja de ser null y esta misma pagina redirige al comprobante;
-      // ante un rechazo o una duda se queda mostrando el motivo
-      onConfirmarCobro={() => void confirmarCobro()}
+      onNuevaVenta={cancelarVenta}
     />
   )
 }

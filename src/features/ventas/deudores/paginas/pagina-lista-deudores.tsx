@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router'
 import { Deudores } from '@/features/ventas/deudores/components/deudores'
 import { construirRutaFichaDeudor } from '@/features/ventas/deudores/config/rutas-deudores'
-import { useListaDeudoresEjemplo } from '@/features/ventas/deudores/hooks/use-lista-deudores-ejemplo'
+import { useListaDeudores } from '@/features/ventas/deudores/hooks/use-lista-deudores'
 
 /** Ruta de Ventas > Deudores: conecta el hook con la vista. */
 export function PaginaListaDeudores() {
-  const lista = useListaDeudoresEjemplo()
+  const lista = useListaDeudores()
   const navegar = useNavigate()
 
   return (

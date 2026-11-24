@@ -1,6 +1,7 @@
 import { esObjeto } from '@/lib/es-objeto'
 import type { ClienteHttp, ResultadoApi } from '@/lib/cliente-http.types'
 import { crearFalloRespuestaInvalida } from '@/features/ventas/api/crear-fallo-respuesta-invalida'
+import { esDeudorApi } from '@/features/ventas/deudores/api/conversores-deudores'
 import {
   esEstadoVentaApi,
   esFormatoVentaApi,
@@ -75,6 +76,9 @@ function esVentaDetalleApi(valor: unknown): valor is VentaDetalleApi {
     esOrigenApi(valor.origen) &&
     esModalidadEntregaApi(valor.modalidadEntrega) &&
     esTextoOpcional(valor.clienteReferencia) &&
+    // Tolerante: si el back no manda estos campos (version vieja), el detalle sigue sirviendo
+    (valor.deudor === undefined || valor.deudor === null || esDeudorApi(valor.deudor)) &&
+    (valor.fechaEstimadaPago === undefined || esTextoOpcional(valor.fechaEstimadaPago)) &&
     esObjeto(valor.vendedor) &&
     typeof valor.vendedor.idUsuario === 'number' &&
     typeof valor.vendedor.nombre === 'string' &&

@@ -1,3 +1,5 @@
+import { TriangleAlert } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
@@ -51,6 +53,14 @@ export function TarjetaComprobanteConDeuda({ comprobante }: TarjetaComprobanteCo
           </div>
         </dl>
       </div>
+
+      {/* --- AVISO: EL PAGO INICIAL NO QUEDO REGISTRADO (O NO SE PUDO CONFIRMAR) --- */}
+      {comprobante.avisoPagoInicial !== null && (
+        <Alert>
+          <TriangleAlert aria-hidden="true" />
+          <AlertDescription>{comprobante.avisoPagoInicial}</AlertDescription>
+        </Alert>
+      )}
 
       <Separator />
 

@@ -17,7 +17,7 @@ export const DNI_DIGITOS_MINIMOS = 7
 export const DNI_DIGITOS_MAXIMOS = 8
 
 /** Cuantos deudores trae cada pagina de la lista. */
-export const DEUDORES_POR_PAGINA = 10
+export const DEUDORES_POR_PAGINA = 20
 
 /** Cuantas sugerencias muestra el buscador de deudor de Registrar Venta. */
 export const SUGERENCIAS_DEUDOR_MAXIMAS = 6

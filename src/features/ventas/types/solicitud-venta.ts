@@ -34,4 +34,14 @@ export interface SolicitudVenta extends DatosCobroSolicitud {
   canalVenta: CanalVenta
   tipoEntrega: TipoEntrega
   items: { idProducto: string; cantidad: number }[]
+  /** Solo en un fiado (sin pagos): a quien se le fia. Una venta de contado con deudor es 400. */
+  idDeudor?: number
+  /** AAAA-MM-DD, solo en un fiado. Se omite para "Sin fecha". No puede ser anterior a hoy (hora de Argentina). */
+  fechaEstimadaPago?: string
+  /**
+   * Direccion de envio, una sola linea de 1 a 200 caracteres. El back la exige con Envio y la rechaza con Retiro.
+   * Todavia no hay interfaz que la pida: la solicitud ya sabe llevarla para cuando se agregue. Es un dato personal:
+   * nunca va en un mensaje ni en un log.
+   */
+  direccionEnvio?: string
 }

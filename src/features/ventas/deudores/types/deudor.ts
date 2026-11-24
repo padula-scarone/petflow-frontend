@@ -2,7 +2,7 @@
 export interface Deudor {
   idDeudor: number
   nombreCompleto: string
-  /** Con o sin codigo de pais; admite espacios, guiones y un "+" inicial. */
+  /** Solo digitos, de 11 a 15, con codigo de pais (el back lo normaliza). Con el 549 son 13. */
   telefono: string
   /** 7 u 8 digitos, sin puntos. */
   dni: string
@@ -30,8 +30,8 @@ export type EstadoGuardadoDeudor =
   | { fase: 'dni-duplicado'; deudorExistente: Deudor }
   /** 404 al editar: el deudor ya no existe. */
   | { fase: 'no-encontrado' }
-  /** 400 o falla de red. */
-  | { fase: 'error'; mensaje: string }
+  /** 400 o falla de red. Si el back marco campos concretos, `erroresCampos` los trae con texto propio. */
+  | { fase: 'error'; mensaje: string; erroresCampos?: ErroresDatosDeudor }
 
 /** Lo que devuelve una busqueda de deudores ya terminada. */
 export type ResultadoBusquedaDeudor =

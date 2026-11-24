@@ -94,6 +94,12 @@ export function convertirDetalleApiAVentaDetalle(
     estado: venta.estado,
     montoTotal: convertirCentavosAPesos(montoTotalCentavos),
     clienteReferencia: venta.clienteReferencia,
+    // El detalle trae al deudor completo, pero la venta del Historial solo guarda lo que muestra: su id y su nombre
+    deudor:
+      venta.deudor === undefined || venta.deudor === null
+        ? null
+        : { idDeudor: venta.deudor.idDeudor, nombreCompleto: venta.deudor.nombreCompleto },
+    fechaEstimadaPago: venta.fechaEstimadaPago ?? null,
     origen: venta.origen,
     modalidadEntrega: venta.modalidadEntrega,
     fechaHoraLimiteModificacion: venta.fechaHoraLimiteModificacion,

@@ -72,13 +72,24 @@ export interface EstadoPagoConDeuda {
   errorMontoAhora?: string
 }
 
-/** Confirmacion de una venta con deuda (simulada). */
+/**
+ * Confirmacion de una venta con deuda. Son dos llamadas que no son atomicas (el fiado y, si se pago algo, el cobro del
+ * pago inicial): las tres ultimas fases son decisiones del vendedor DESPUES de que la venta ya existe. En ellas nunca se
+ * reenvia el alta de la venta.
+ */
 export type EstadoConfirmacionConDeuda =
   | { fase: 'cerrada' }
   | { fase: 'resumen' }
-  | { fase: 'enviando' }
-  /** 404: el deudor ya no existe. 400: dato invalido. */
-  | { fase: 'error'; estadoHttp: 400 | 404 | null; mensaje: string; reintentable: boolean }
+  /** `paso` dice que esta viajando: la venta, el pago inicial o la carga del comprobante. */
+  | { fase: 'enviando'; paso: 'venta' | 'pago' | 'comprobante' }
+  /** El back rechazo la venta sin guardar nada (404: el deudor ya no existe; 400: dato invalido), o no se encontro. */
+  | { fase: 'error'; estadoHttp: 400 | 401 | 403 | 404 | 409 | null; mensaje: string; reintentable: boolean }
+  /** Sin respuesta util y no se pudo verificar: la venta pudo guardarse. No se reenvia. */
+  | { fase: 'venta-incierta'; mensaje: string }
+  /** La venta existe como deuda total pero el pago inicial no se registro (o no se pudo confirmar). */
+  | { fase: 'pago-no-registrado'; mensaje: string; reintentable: boolean; incierto: boolean }
+  /** La venta existe pero no se pudo cargar su comprobante. */
+  | { fase: 'comprobante-pendiente'; mensaje: string }
 
 /** Props del paso de pago con deuda. Los callbacks son las unicas puertas de entrada del vendedor. */
 export interface PropiedadesPagoConDeuda {
@@ -109,5 +120,10 @@ export interface PropiedadesPagoConDeuda {
   /** Con deuda abre el resumen para confirmar; sin deuda es una venta de contado y la confirma directamente. */
   onConfirmarPago: () => void
   onCerrarResumen: () => void
+  /** Registra la venta con deuda; tambien reintenta el pago inicial o la carga del comprobante si la venta ya existe. */
   onConfirmarVentaConDeuda: () => void
+  /** Con el pago inicial sin registrar: sigue con la venta como deuda total, y el comprobante lo avisa. */
+  onContinuarSinPagoInicial: () => void
+  /** Con la venta incierta: descarta la venta en curso (no se puede reenviar sin riesgo de duplicarla). */
+  onAbandonarVentaIncierta: () => void
 }

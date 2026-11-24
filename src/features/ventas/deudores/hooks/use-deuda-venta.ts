@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { crearDeudorApiEjemplo } from '@/features/ventas/deudores/ejemplos/api-deudores-ejemplo'
-import { useBuscarDeudoresEjemplo } from '@/features/ventas/deudores/hooks/use-buscar-deudores-ejemplo'
 import { MENSAJE_GUARDADO_DEUDOR_FALLIDO } from '@/features/ventas/deudores/config/mensajes-deudores'
+import { useBuscarDeudores } from '@/features/ventas/deudores/hooks/use-buscar-deudores'
+import { useGuardarDeudor } from '@/features/ventas/deudores/hooks/use-guardar-deudor'
 import type { DatosDeudor, Deudor, EstadoGuardadoDeudor } from '@/features/ventas/deudores/types/deudor'
 import type { FechaEstimadaPago } from '@/features/ventas/deudores/types/pago-con-deuda'
 
@@ -10,8 +10,9 @@ import type { FechaEstimadaPago } from '@/features/ventas/deudores/types/pago-co
  * se conserva aunque el bloque desaparezca (por ejemplo si el vendedor cubre el total y despues lo vuelve a bajar),
  * pero solo viaja con la venta mientras quede una deuda.
  */
-export function useDeudaVentaEjemplo() {
-  const busqueda = useBuscarDeudoresEjemplo()
+export function useDeudaVenta() {
+  const busqueda = useBuscarDeudores()
+  const { crear } = useGuardarDeudor()
 
   // --- ESTADOS ---
   const [deudorElegido, setDeudorElegido] = useState<Deudor | null>(null)
@@ -33,8 +34,12 @@ export function useDeudaVentaEjemplo() {
   /** Da de alta un deudor; si el DNI ya existia (409), selecciona a esa persona y avisa. */
   const crearDeudor = async (datos: DatosDeudor): Promise<EstadoGuardadoDeudor> => {
     try {
-      const resultado = await crearDeudorApiEjemplo(datos)
-      if (resultado.fase === 'guardado') seleccionarDeudor(resultado.deudor)
+      const resultado = await crear(datos)
+      if (resultado.fase === 'guardado') {
+        // Uno nuevo tiene que poder aparecer en la proxima busqueda
+        busqueda.olvidarResultados()
+        seleccionarDeudor(resultado.deudor)
+      }
       if (resultado.fase === 'dni-duplicado') {
         seleccionarDeudor(resultado.deudorExistente)
         setAvisoDniExistente(true)

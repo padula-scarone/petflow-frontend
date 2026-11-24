@@ -20,7 +20,7 @@ interface ListaPagosFiadoProps {
 /** Cada pago que recibio un fiado: cuando, con que recibo y cuanto. El pago inicial tambien tiene su recibo. */
 export function ListaPagosFiado({ idLista, numeroComprobante, pagos, variante, className }: ListaPagosFiadoProps) {
   const nombreAccesible = `Pagos del fiado ${numeroComprobante}`
-  const describirVia = (pago: PagoFiado) => `Recibo ${pago.numeroRecibo}`
+  const describirVia = (pago: PagoFiado) => (pago.numeroRecibo === null ? 'Cobro' : `Recibo ${pago.numeroRecibo}`)
 
   if (variante === 'tabla') {
     return (

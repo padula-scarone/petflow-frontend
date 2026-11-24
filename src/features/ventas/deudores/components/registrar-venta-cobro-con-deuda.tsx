@@ -174,6 +174,8 @@ export function RegistrarVentaCobroConDeuda({
           estadoConfirmacion={estadoConfirmacion}
           onCerrar={propiedadesPago.onCerrarResumen}
           onConfirmar={propiedadesPago.onConfirmarVentaConDeuda}
+          onContinuarSinPagoInicial={propiedadesPago.onContinuarSinPagoInicial}
+          onAbandonarVentaIncierta={propiedadesPago.onAbandonarVentaIncierta}
           onCambiarDeudor={() => {
             propiedadesPago.onCerrarResumen()
             propiedadesPago.onCambiarDeudor()
