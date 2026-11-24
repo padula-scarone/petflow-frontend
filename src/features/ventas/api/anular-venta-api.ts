@@ -27,7 +27,7 @@ function esAnularVentaResponse(valor: unknown): valor is AnularVentaResponse {
 }
 
 /**
- * POST /api/ventas/:idVenta/anulacion (Anular y Editar usan el mismo endpoint). Un 200 con una forma que
+ * POST /api/ventas/:idVenta/anulacion. Un 200 con una forma que
  * no cumple el contrato se devuelve como fallo: la venta pudo anularse igual, asi que quien llama lo trata
  * como resultado incierto y consulta el detalle.
  */

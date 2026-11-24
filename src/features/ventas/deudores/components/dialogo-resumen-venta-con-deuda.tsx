@@ -11,16 +11,22 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { formatearMoneda } from "@/lib/formatear-moneda";
+import { DetalleConfirmacionVenta } from "@/features/ventas/components/detalle-confirmacion-venta";
+import { EstadoEnvioCobro } from "@/features/ventas/components/estado-envio-cobro";
+import { FilaDetalleConfirmacion } from "@/features/ventas/components/fila-detalle-confirmacion";
 import type {
   EstadoConfirmacionConDeuda,
   EstadoPagoConDeuda,
 } from "@/features/ventas/deudores/types/pago-con-deuda";
 import { describirFechaEstimada } from "@/features/ventas/deudores/utils/fechas-estimadas";
+import type { ResumenConfirmacionVenta } from "@/features/ventas/types/resumen-confirmacion-venta";
 
-/** Props del resumen que se confirma antes de registrar una venta con deuda. */
+/** Props del resumen que se confirma antes de registrar una venta, sea de contado, mixta o con deuda. */
 interface DialogoResumenVentaConDeudaProps {
   estadoPago: EstadoPagoConDeuda;
   estadoConfirmacion: EstadoConfirmacionConDeuda;
+  /** Todo lo que se revisa antes de registrar: productos, entrega, descuento y medios de pago. */
+  resumenConfirmacion: ResumenConfirmacionVenta;
   onCerrar: () => void;
   onConfirmar: () => void;
   /** Tras un 404: vuelve al bloque Deuda para elegir a otra persona. */
@@ -31,39 +37,15 @@ interface DialogoResumenVentaConDeudaProps {
   onAbandonarVentaIncierta: () => void;
 }
 
-/** Una fila del resumen: etiqueta a la izquierda, dato a la derecha. */
-function FilaResumen({
-  etiqueta,
-  dato,
-  destacada = false,
-}: {
-  etiqueta: string;
-  dato: string;
-  destacada?: boolean;
-}) {
-  return (
-    <div className="flex items-baseline justify-between gap-interno">
-      <dt className="text-texto-suave">{etiqueta}</dt>
-      <dd
-        className={
-          destacada
-            ? "text-cifra-secundaria font-bold tabular-nums"
-            : "font-medium tabular-nums"
-        }
-      >
-        {dato}
-      </dd>
-    </div>
-  );
-}
-
 /**
- * Antes de registrar una venta con deuda se muestra que se cobra ahora, cuanto queda debiendo, a quien y para cuando.
- * Es el unico paso extra: una deuda se cobra despues, y un error aca es mas caro que uno en una venta de contado.
+ * La confirmacion definitiva antes de registrar cualquier venta: todos sus datos de un vistazo y, con deuda, a quien
+ * se le fia y para cuando. Una venta registrada no se edita (solo se anula dentro de los 15 minutos), asi que este es
+ * el momento de corregir: "Volver y corregir" deja el carrito y el cobro como estaban.
  */
 export function DialogoResumenVentaConDeuda({
   estadoPago,
   estadoConfirmacion,
+  resumenConfirmacion,
   onCerrar,
   onConfirmar,
   onCambiarDeudor,
@@ -73,6 +55,7 @@ export function DialogoResumenVentaConDeuda({
   const { resumen, deuda } = estadoPago;
   const { fase } = estadoConfirmacion;
   const enviando = fase === "enviando";
+  const conDeuda = resumen.queDebe > 0;
   const deudorInexistente =
     fase === "error" && estadoConfirmacion.estadoHttp === 404;
   // Una vez que la venta existe, el dialogo no se cierra con un toque afuera: hay que resolver como sigue
@@ -87,59 +70,88 @@ export function DialogoResumenVentaConDeuda({
       open
       onOpenChange={(abierto) => !abierto && sePuedeCerrar && onCerrar()}
     >
-      <DialogContent aria-describedby="descripcion-resumen-deuda">
+      {/* En celular todo el dialogo scrollea, botones incluidos: se lee el detalle hasta el total antes de poder
+          confirmar, y los botones no tapan nada. Desde sm es el dialogo de siempre, con el pie fijo */}
+      <DialogContent
+        className="max-sm:overflow-y-auto"
+        aria-describedby="descripcion-resumen-deuda"
+      >
         <DialogHeader>
           <DialogTitle>
             {ventaYaRegistrada
               ? "La venta ya quedó registrada"
               : fase === "venta-incierta"
                 ? "No pudimos confirmar la venta"
-                : "Confirmar venta con deuda"}
+                : conDeuda
+                  ? "Confirmar venta con deuda"
+                  : "Confirmar venta"}
           </DialogTitle>
           <DialogDescription id="descripcion-resumen-deuda">
             {mostrarResumen
-              ? "Revisá los datos: después de registrarla, la deuda se cobra desde Deudores."
+              ? `Revisá los datos antes de registrarla. Una venta registrada no se edita: solo se puede anular dentro de los 15 minutos.${
+                  conDeuda ? " La deuda se cobra desde Deudores." : ""
+                }`
               : "Lo que sigue depende de cómo quedó el registro."}
           </DialogDescription>
         </DialogHeader>
 
-        <DialogBody>
+        <DialogBody className="max-sm:flex-none max-sm:overflow-visible">
           {mostrarResumen && (
-            <dl className="flex flex-col gap-interno text-cuerpo">
-              <FilaResumen
-                etiqueta="Importe de la venta"
-                dato={formatearMoneda(resumen.importeVenta)}
-              />
-              <FilaResumen
-                etiqueta="Paga ahora"
-                dato={formatearMoneda(resumen.cobradoAhora)}
-              />
-              <div className="border-t pt-interno">
-                <FilaResumen
-                  etiqueta="Queda debiendo"
-                  dato={formatearMoneda(resumen.queDebe)}
+            <DetalleConfirmacionVenta resumen={resumenConfirmacion}>
+              {conDeuda ? (
+                <>
+                  <FilaDetalleConfirmacion
+                    etiqueta="Importe de la venta"
+                    dato={formatearMoneda(resumen.importeVenta)}
+                  />
+                  <FilaDetalleConfirmacion
+                    etiqueta="Paga ahora"
+                    dato={formatearMoneda(resumen.cobradoAhora)}
+                  />
+                  <FilaDetalleConfirmacion
+                    etiqueta="Queda debiendo"
+                    dato={formatearMoneda(resumen.queDebe)}
+                    destacada
+                  />
+                  {/* El deudor y la fecha dependen de la deuda: van corridos debajo de ella */}
+                  <FilaDetalleConfirmacion
+                    etiqueta="Deudor"
+                    dato={deuda?.deudorElegido?.nombreCompleto ?? "—"}
+                    sangria
+                  />
+                  <FilaDetalleConfirmacion
+                    etiqueta="Fecha estimada de pago"
+                    dato={
+                      deuda?.fechaEstimada?.modo === "fecha"
+                        ? describirFechaEstimada(deuda.fechaEstimada.fecha)
+                        : describirFechaEstimada(null)
+                    }
+                    sangria
+                  />
+                </>
+              ) : (
+                <FilaDetalleConfirmacion
+                  etiqueta="Total a cobrar"
+                  dato={formatearMoneda(resumen.cobradoAhora)}
                   destacada
                 />
-              </div>
-              <div className="flex flex-col gap-interno border-t pt-interno">
-                <FilaResumen
-                  etiqueta="Deudor"
-                  dato={deuda?.deudorElegido?.nombreCompleto ?? "—"}
-                />
-                <FilaResumen
-                  etiqueta="Fecha estimada de pago"
-                  dato={
-                    deuda?.fechaEstimada?.modo === "fecha"
-                      ? describirFechaEstimada(deuda.fechaEstimada.fecha)
-                      : describirFechaEstimada(null)
-                  }
-                />
-              </div>
-            </dl>
+              )}
+            </DetalleConfirmacionVenta>
           )}
 
+          {/* Una venta de contado viaja de una sola vez: la barra avisa que sigue en camino */}
+          {estadoConfirmacion.fase === "enviando" &&
+            estadoConfirmacion.segundosTranscurridos !== undefined && (
+              <EstadoEnvioCobro
+                estadoEnvio={{
+                  fase: "enviando",
+                  segundosTranscurridos: estadoConfirmacion.segundosTranscurridos,
+                }}
+              />
+            )}
+
           {/* Solo con pago inicial: el pago es un cobro y los cobros no se anulan, asi que el fiado queda firme */}
-          {mostrarResumen && resumen.cobradoAhora > 0 && (
+          {mostrarResumen && conDeuda && resumen.cobradoAhora > 0 && (
             <Alert>
               <TriangleAlert aria-hidden="true" />
               <AlertDescription>
@@ -221,10 +233,11 @@ export function DialogoResumenVentaConDeuda({
                 disabled={enviando}
                 onClick={onCerrar}
               >
-                Volver
+                Volver y corregir
               </Button>
               <Button
                 type="button"
+                variant={conDeuda ? "default" : "exito"}
                 disabled={enviando || deudorInexistente}
                 onClick={onConfirmar}
               >
@@ -234,7 +247,7 @@ export function DialogoResumenVentaConDeuda({
                     className="animate-spin motion-reduce:animate-none"
                   />
                 )}
-                {enviando ? "Registrando…" : "Registrar venta"}
+                {enviando ? "Registrando…" : "Confirmar venta"}
               </Button>
             </>
           )}

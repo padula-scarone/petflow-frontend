@@ -4,7 +4,6 @@ import { Button } from '@/components/ui/button'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-venta'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
-import { EstadoEnvioCobro } from '@/features/ventas/components/estado-envio-cobro'
 import { EstadoMediosPago } from '@/features/ventas/components/estado-medios-pago'
 import { SeccionEntrega } from '@/features/ventas/components/seccion-entrega'
 import { TarjetaDescuentoManual } from '@/features/ventas/components/tarjeta-descuento-manual'
@@ -143,7 +142,6 @@ export function RegistrarVentaCobroConDeuda({
           puedeAjustarAutomaticamente={formaPago === 'mixto'}
           onAjustarAutomaticamente={propiedadesPago.onAjustarMontosAutomaticamente}
         />
-        <EstadoEnvioCobro estadoEnvio={estadoEnvio} />
         {motivoNoConfirmable && !puedeConfirmar && (
           <p role="status" className="text-auxiliar text-amber-700 tabular-nums">
             {motivoNoConfirmable}
@@ -156,6 +154,7 @@ export function RegistrarVentaCobroConDeuda({
           </p>
           <BotonConfirmarCobro
             formaPago={deuda ? 'fiado' : 'unico'}
+            etiqueta={deuda ? undefined : 'REGISTRAR VENTA'}
             habilitado={puedeConfirmar && !enviando}
             enviando={enviando}
             onConfirmarCobro={propiedadesPago.onConfirmarPago}
@@ -180,8 +179,9 @@ export function RegistrarVentaCobroConDeuda({
         <DialogoResumenVentaConDeuda
           estadoPago={estadoPago}
           estadoConfirmacion={estadoConfirmacion}
+          resumenConfirmacion={propiedadesPago.resumenConfirmacion}
           onCerrar={propiedadesPago.onCerrarResumen}
-          onConfirmar={propiedadesPago.onConfirmarVentaConDeuda}
+          onConfirmar={propiedadesPago.onConfirmarVenta}
           onContinuarSinPagoInicial={propiedadesPago.onContinuarSinPagoInicial}
           onAbandonarVentaIncierta={propiedadesPago.onAbandonarVentaIncierta}
           onCambiarDeudor={() => {

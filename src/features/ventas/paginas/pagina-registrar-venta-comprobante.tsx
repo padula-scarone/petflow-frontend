@@ -8,7 +8,7 @@ import { useNavegacionRegistrarVenta } from '@/features/ventas/hooks/use-navegac
 export function PaginaRegistrarVentaComprobante() {
   const { estadoComprobante, onReintentarComprobante, iniciarNuevaVenta } =
     useContextoRegistrarVenta()
-  const { irAlCarrito, irAEditarEnHistorial } = useNavegacionRegistrarVenta()
+  const { irAlCarrito } = useNavegacionRegistrarVenta()
 
   // Acceso directo invalido (ej. recargar): sin venta registrada no hay comprobante que mostrar
   if (!estadoComprobante) return <Navigate to={RUTAS_REGISTRAR_VENTA.carrito} replace />
@@ -35,9 +35,6 @@ export function PaginaRegistrarVentaComprobante() {
       comprobante={estadoComprobante.comprobante}
       enlaceWhatsApp={estadoComprobante.enlaceWhatsApp}
       enlaceMail={estadoComprobante.enlaceMail}
-      edicionDisponible={estadoComprobante.edicionDisponible}
-      fechaHoraLimiteEdicion={estadoComprobante.fechaHoraLimiteEdicion}
-      onEditarVenta={() => irAEditarEnHistorial(estadoComprobante.comprobante.idVenta)}
       onNuevaVenta={empezarNuevaVenta}
     />
   )

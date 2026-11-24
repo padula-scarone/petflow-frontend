@@ -24,7 +24,7 @@ export function crearMensajeConsultaFallida(recurso: string) {
 
 // --- ERRORES DEL ALTA DE VENTA ---
 export const MENSAJE_RESULTADO_INCIERTO =
-  'No la cobres de nuevo todavía: es posible que se haya registrado. Revisá en el Historial de ventas o consultá con el encargado si figura. Si no figura, cancelá esta venta y cargala otra vez.'
+  'No pudimos confirmar si la venta se registró. No la cargues de nuevo todavía: revisá en el Historial de ventas si figura. Si no figura, cargala otra vez.'
 export const MENSAJE_DATOS_NO_COINCIDEN =
   'Algunos datos de la venta no coinciden. Volvé al carrito, revisá los productos y el cobro e intentá de nuevo.'
 export const MENSAJE_DATOS_ENVIO_RECHAZADOS =
@@ -44,11 +44,11 @@ export function crearMensajeStockInsuficiente(nombreProducto: string) {
 // --- ERROR DEL DETALLE DE LA VENTA ---
 export const MENSAJE_COMPROBANTE_ILEGIBLE = 'No pudimos mostrar el comprobante. Intentá de nuevo.'
 
-// --- ERRORES DEL HISTORIAL: DETALLE, ANULAR Y EDITAR ---
+// --- ERRORES DEL HISTORIAL: DETALLE Y ANULAR ---
 export const MENSAJE_VENTA_INEXISTENTE = 'La venta ya no existe. Actualizá el listado.'
 export const MENSAJE_DETALLE_ILEGIBLE = 'No pudimos mostrar la venta. Intentá de nuevo.'
 export const MENSAJE_PLAZO_VENCIDO =
-  'Pasaron más de 15 minutos: ya no se puede editar ni anular esta venta. Actualizá el listado.'
+  'Pasaron más de 15 minutos: ya no se puede anular esta venta. Actualizá el listado.'
 export const MENSAJE_MOTIVO_INVALIDO = 'El motivo no es válido. Escribí entre 1 y 200 caracteres.'
 export const MENSAJE_ANULACION_SIN_CAJA =
   'No se pudo anular. Revisá que haya una caja abierta (una venta cobrada la necesita) y que la venta no haya cambiado, y volvé a intentar.'
@@ -59,8 +59,6 @@ export const MENSAJE_ANULACION_FIADO_CON_COBROS =
 export const MENSAJE_ANULACION_NO_APLICADA = 'La venta no se anuló. Podés intentar de nuevo.'
 export const MENSAJE_ANULACION_INCIERTA =
   'No pudimos confirmar si la venta se anuló. Actualizá el listado para ver su estado. Si seguís viéndola vigente, podés intentar de nuevo: no se anulará dos veces.'
-export const MENSAJE_EDICION_NO_PREPARADA =
-  'No pudimos preparar la edición y no se anuló nada. Intentá de nuevo.'
 
 /** Texto cuando otra persona ya anulo la venta que se queria anular. */
 export function crearMensajeYaAnulada(nombreUsuario: string | null) {

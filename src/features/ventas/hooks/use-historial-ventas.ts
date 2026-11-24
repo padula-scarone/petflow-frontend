@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router'
+import { useState } from 'react'
 import { convertirDetalleApiAVentaDetalle } from '@/features/ventas/api/convertir-detalle-api-a-venta-detalle'
 import { MENSAJE_DETALLE_ILEGIBLE } from '@/features/ventas/config/mensajes-error-venta'
 import { useDeudaFiadoDetalle } from '@/features/ventas/deudores/hooks/use-deuda-fiado-detalle'
@@ -7,7 +6,7 @@ import { useCatalogoProductos } from '@/features/ventas/hooks/use-catalogo-produ
 import { useDetalleVenta } from '@/features/ventas/hooks/use-detalle-venta'
 import { useListaHistorial } from '@/features/ventas/hooks/use-lista-historial'
 import { useMediosPago } from '@/features/ventas/hooks/use-medios-pago'
-import { useModificarVenta } from '@/features/ventas/hooks/use-modificar-venta'
+import { useAnularVenta } from '@/features/ventas/hooks/use-anular-venta'
 import { usePlazoModificacionVenta } from '@/features/ventas/hooks/use-plazo-modificacion-venta'
 import type { MedioPago } from '@/features/ventas/types/cobro'
 import type {
@@ -32,20 +31,9 @@ import { traducirErrorConsulta } from '@/features/ventas/utils/traducir-error-ve
 const SIN_MEDIOS: MedioPago[] = []
 const SIN_PRODUCTOS: ProductoCatalogo[] = []
 
-const PARAMETRO_VENTA = 'venta'
-const ID_VENTA_MAXIMO = 2_147_483_647
-
-/** Lee `?venta=<id>`: un entero positivo que cabe en el id del back; cualquier otra cosa se ignora. */
-function leerIdVentaDeParametro(texto: string | null) {
-  if (texto === null || !/^\d+$/.test(texto)) return null
-  const idVenta = Number(texto)
-  return idVenta >= 1 && idVenta <= ID_VENTA_MAXIMO ? idVenta : null
-}
-
 /**
- * Orquesta el Historial de ventas contra el back: lista paginada con filtros, detalle, editar y anular. El cobro de
+ * Orquesta el Historial de ventas contra el back: lista paginada con filtros, detalle y anular. El cobro de
  * un fiado ya no vive aca: "Ver deuda" lleva a la ficha del deudor. Cada parte vive en su propio hook; aca solo se conectan y se arma lo que consume la vista.
- * Si la URL trae `?venta=<id>` (viene de Editar en el Comprobante), abre el detalle de esa venta y limpia el parametro.
  */
 export function useHistorialVentas() {
   // --- DATOS DEL BACK COMPARTIDOS ---
@@ -55,18 +43,8 @@ export function useHistorialVentas() {
 
   // --- LISTA Y DETALLE ---
   const lista = useListaHistorial()
-  const [parametrosBusqueda, setParametrosBusqueda] = useSearchParams()
-  const [idVentaInicial] = useState(() => leerIdVentaDeParametro(parametrosBusqueda.get(PARAMETRO_VENTA)))
-  const detalle = useDetalleVenta(idVentaInicial)
+  const detalle = useDetalleVenta()
   const [textoBusquedaProducto, setTextoBusquedaProducto] = useState('')
-
-  // El parametro ya se uso al montar: se limpia para que un reload o un "atras" no vuelva a abrir el detalle
-  useEffect(() => {
-    if (!parametrosBusqueda.has(PARAMETRO_VENTA)) return
-    const siguientes = new URLSearchParams(parametrosBusqueda)
-    siguientes.delete(PARAMETRO_VENTA)
-    setParametrosBusqueda(siguientes, { replace: true })
-  }, [parametrosBusqueda, setParametrosBusqueda])
 
   // --- RELOJ DEL PLAZO ---
   // El desfase sale de la ultima respuesta: el reloj del servidor manda sobre el del dispositivo
@@ -136,10 +114,9 @@ export function useHistorialVentas() {
   // --- CALCULOS: FILTROS ---
   const productosCoincidentes = filtrarProductosCatalogo(catalogo.datos ?? SIN_PRODUCTOS, textoBusquedaProducto)
 
-  // --- EDITAR Y ANULAR ---
-  const modificacion = useModificarVenta({
+  // --- ANULAR ---
+  const anulacion = useAnularVenta({
     buscarFila,
-    medios,
     desfaseServidorMilisegundos,
     // La verdad la tiene el servidor: se vuelve a pedir la pagina actual y, si hay uno abierto, el detalle
     alCambiarVenta: () => {
@@ -185,22 +162,21 @@ export function useHistorialVentas() {
     },
     acciones: {
       onVerDetalle: detalle.abrir,
-      onSolicitarAccion: modificacion.solicitarAccion,
+      onSolicitarAnulacion: anulacion.solicitarAnulacion,
     },
-    aviso: modificacion.aviso,
+    aviso: anulacion.aviso,
     detalle: estadoDetalle,
-    confirmacion: modificacion.confirmacion,
+    confirmacion: anulacion.confirmacion,
     onCambiarPagina: lista.cambiarPagina,
     onReintentar: lista.reintentar,
-    onCerrarAviso: modificacion.cerrarAviso,
+    onCerrarAviso: anulacion.cerrarAviso,
     onCerrarDetalle: detalle.cerrar,
     onReintentarDetalle: detalle.recargar,
     onReintentarDeudaFiado: deudaFiado.reintentar,
-    onEditarVenta: () => void modificacion.confirmarAccion(),
-    onAnularVenta: () => void modificacion.confirmarAccion(),
-    onCancelarConfirmacion: modificacion.cancelarConfirmacion,
-    onSeleccionarMotivo: modificacion.seleccionarMotivo,
-    onCambiarDetalleMotivo: modificacion.cambiarDetalleMotivo,
+    onAnularVenta: () => void anulacion.confirmarAnulacion(),
+    onCancelarConfirmacion: anulacion.cancelarConfirmacion,
+    onSeleccionarMotivo: anulacion.seleccionarMotivo,
+    onCambiarDetalleMotivo: anulacion.cambiarDetalleMotivo,
   }
 
   return { propiedadesHistorial }

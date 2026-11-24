@@ -100,10 +100,6 @@ export type EstadoComprobanteVenta =
       enlaceWhatsApp: string
       /** Enlace mailto: con el asunto y el texto del comprobante. */
       enlaceMail: string
-      /** Falso cuando ya vencio la ventana de 15 minutos para editar. */
-      edicionDisponible: boolean
-      /** Hasta cuando se puede editar, en formato ISO 8601. */
-      fechaHoraLimiteEdicion: string
     }
 
 /** Props del componente presentacional de la Seccion 3 de Registrar Venta. */
@@ -113,10 +109,5 @@ export interface RegistrarVentaComprobanteProps {
   enlaceWhatsApp: string
   /** Enlace mailto: con el asunto y el texto del comprobante, armado por el hook. */
   enlaceMail: string
-  /** Falso cuando ya vencio la ventana de 15 minutos para editar. */
-  edicionDisponible: boolean
-  /** Hasta cuando se puede editar, en formato ISO 8601. */
-  fechaHoraLimiteEdicion: string
-  onEditarVenta: () => void
   onNuevaVenta: () => void
 }

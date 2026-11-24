@@ -1,34 +1,23 @@
 import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router'
 import { useSesion } from '@/features/auth/hooks/use-sesion'
 import { useUsuarioSesion } from '@/features/auth/hooks/use-usuario-sesion'
 import { anularVentaApi } from '@/features/ventas/api/anular-venta-api'
 import { consultarVentaApi } from '@/features/ventas/api/consultar-venta-api'
-import { convertirDetalleApiAVentaDetalle } from '@/features/ventas/api/convertir-detalle-api-a-venta-detalle'
 import {
   crearMensajeYaAnulada,
   MENSAJE_ANULACION_INCIERTA,
   MENSAJE_ANULACION_NO_APLICADA,
-  MENSAJE_DETALLE_ILEGIBLE,
-  MENSAJE_EDICION_NO_PREPARADA,
   MENSAJE_PLAZO_VENCIDO,
-  MENSAJE_VENTA_INEXISTENTE,
 } from '@/features/ventas/config/mensajes-error-venta'
 import { CODIGO_MOTIVO_OTRO } from '@/features/ventas/config/motivos-venta'
-import { RUTAS_REGISTRAR_VENTA } from '@/features/ventas/config/rutas-registrar-venta'
-import type { BorradorRepoblado } from '@/features/ventas/types/borrador-repoblado'
-import type { MedioPago } from '@/features/ventas/types/cobro'
 import type {
-  AccionVenta,
   AvisoHistorial,
   CodigoMotivo,
   ConfirmacionAccionVenta,
   ErrorAccionVenta,
   FilaHistorial,
 } from '@/features/ventas/types/historial'
-import { construirBorradorRepoblado } from '@/features/ventas/utils/construir-borrador-repoblado'
 import { construirTextoMotivo } from '@/features/ventas/utils/construir-texto-motivo'
-import { CLAVE_BORRADOR_REPOBLADO } from '@/features/ventas/utils/leer-borrador-repoblado'
 import { esMotivoValido } from '@/features/ventas/utils/motivos-venta'
 import {
   clasificarFalloAccion,
@@ -49,18 +38,10 @@ type ResultadoAnulacion =
   /** `ventaCambio` indica que el servidor mostro un estado distinto al de la pantalla: hay que volver a pedir los datos. */
   | { tipo: 'error'; error: ErrorAccionVenta; ventaCambio: boolean }
 
-/** Como termino la preparacion de la edicion (pedir los items antes de anular). */
-type ResultadoPreparacion =
-  | { tipo: 'listo'; borrador: BorradorRepoblado }
-  | { tipo: 'sin-sesion' }
-  | { tipo: 'error'; error: ErrorAccionVenta }
-
-/** Lo que necesita el hook que anula y edita ventas. */
-interface OpcionesModificarVenta {
+/** Lo que necesita el hook que anula ventas. */
+interface OpcionesAnularVenta {
   /** Busca la fila en el detalle abierto o, si no esta, en la lista. */
   buscarFila: (idVenta: number) => FilaHistorial | undefined
-  /** Para cruzar el tipo de los pagos al preparar la edicion. */
-  medios: MedioPago[]
   /** Hora del servidor menos hora local, para estimar cuando salio un pedido. */
   desfaseServidorMilisegundos: number
   /** El servidor cambio la venta (o la lista quedo vieja): hay que volver a pedir lista y detalle. */
@@ -68,20 +49,13 @@ interface OpcionesModificarVenta {
 }
 
 /**
- * Editar y Anular una venta: confirmacion con motivo, pedido al back y su resultado. Editar pide primero los
- * items de la venta (si ese pedido falla no se anula nada), anula, y recien entonces abre Registrar Venta con
- * los datos cargados. Si el resultado de la anulacion es incierto, consulta el detalle para saber que paso;
- * reintentar es seguro porque el back responde 409 a una segunda anulacion y ese 409 tambien se verifica.
+ * Anular una venta: confirmacion con motivo, pedido al back y su resultado. Si el resultado de la anulacion es
+ * incierto, consulta el detalle para saber que paso; reintentar es seguro porque el back responde 409 a una
+ * segunda anulacion y ese 409 tambien se verifica.
  */
-export function useModificarVenta({
-  buscarFila,
-  medios,
-  desfaseServidorMilisegundos,
-  alCambiarVenta,
-}: OpcionesModificarVenta) {
+export function useAnularVenta({ buscarFila, desfaseServidorMilisegundos, alCambiarVenta }: OpcionesAnularVenta) {
   const { cliente } = useSesion()
   const usuario = useUsuarioSesion()
-  const navegar = useNavigate()
 
   // --- ESTADOS ---
   const [confirmacion, setConfirmacion] = useState<EstadoConfirmacion | null>(null)
@@ -90,27 +64,8 @@ export function useModificarVenta({
   const envioBloqueadoRef = useRef(false)
 
   // --- PEDIDOS ---
-  /** Pide el detalle de la venta para verificar o para preparar la edicion. */
+  /** Pide el detalle de la venta para verificar si la anulacion se aplico. */
   const consultarDetalle = (idVenta: number) => consultarVentaApi(cliente, String(idVenta))
-
-  const prepararEdicion = async (idVenta: number): Promise<ResultadoPreparacion> => {
-    const respuesta = await consultarDetalle(idVenta)
-    if (!respuesta.exitoso) {
-      if (clasificarFalloAccion(respuesta.error) === 'sin-sesion') return { tipo: 'sin-sesion' }
-      return {
-        tipo: 'error',
-        error:
-          respuesta.error.estado === 404
-            ? crearErrorAccionVenta(404, MENSAJE_VENTA_INEXISTENTE, { reintentable: false })
-            : crearErrorAccionVenta(null, MENSAJE_EDICION_NO_PREPARADA),
-      }
-    }
-    const venta = convertirDetalleApiAVentaDetalle(respuesta.datos.venta, medios)
-    if (venta === null) {
-      return { tipo: 'error', error: crearErrorAccionVenta(null, MENSAJE_DETALLE_ILEGIBLE) }
-    }
-    return { tipo: 'listo', borrador: construirBorradorRepoblado(venta) }
-  }
 
   /** Despues de un 409 o de un resultado incierto: el detalle dice si la anulacion se aplico. */
   const verificarAnulacion = async (
@@ -186,11 +141,11 @@ export function useModificarVenta({
   }
 
   // --- ACCIONES ---
-  const solicitarAccion = (accion: AccionVenta, idVenta: number) => {
+  const solicitarAnulacion = (idVenta: number) => {
     const fila = buscarFila(idVenta)
     // Sin motivo elegido: no hay opcion preseleccionada
     if (fila) {
-      setConfirmacion({ accion, fila, enviando: false, error: null, codigoMotivo: null, detalleMotivo: '' })
+      setConfirmacion({ fila, enviando: false, error: null, codigoMotivo: null, detalleMotivo: '' })
     }
   }
 
@@ -207,7 +162,7 @@ export function useModificarVenta({
   const cambiarDetalleMotivo = (detalleMotivo: string) =>
     setConfirmacion((actual) => actual && { ...actual, detalleMotivo })
 
-  const confirmarAccion = async () => {
+  const confirmarAnulacion = async () => {
     if (confirmacion === null || envioBloqueadoRef.current) return
     // El front no deja confirmar sin motivo; el servidor tambien lo validaria (400)
     if (!esMotivoValido(confirmacion.codigoMotivo, confirmacion.detalleMotivo)) return
@@ -218,21 +173,6 @@ export function useModificarVenta({
 
     try {
       const motivo = construirTextoMotivo(enCurso.codigoMotivo as CodigoMotivo, enCurso.detalleMotivo)
-
-      // Editar: los items se piden antes de anular, asi un fallo no deja una venta anulada sin repoblar
-      let borrador: BorradorRepoblado | null = null
-      if (enCurso.accion === 'EDITAR') {
-        const preparacion = await prepararEdicion(idVenta)
-        if (preparacion.tipo === 'sin-sesion') {
-          setConfirmacion({ ...enCurso, enviando: false })
-          return
-        }
-        if (preparacion.tipo === 'error') {
-          setConfirmacion({ ...enCurso, enviando: false, error: preparacion.error })
-          return
-        }
-        borrador = preparacion.borrador
-      }
 
       const resultado = await anularVenta(idVenta, motivo)
       if (resultado.tipo === 'sin-sesion') {
@@ -248,10 +188,6 @@ export function useModificarVenta({
       // Aplicada: la verdad la tiene el servidor, se vuelve a pedir lista y detalle
       setConfirmacion(null)
       alCambiarVenta()
-      if (borrador !== null) {
-        navegar(RUTAS_REGISTRAR_VENTA.carrito, { state: { [CLAVE_BORRADOR_REPOBLADO]: borrador } })
-        return
-      }
       setAviso({
         mensaje: `Venta ${enCurso.fila.numeroComprobante} anulada. Se repuso el stock${
           resultado.huboCobro ? ' y se revirtió la caja' : ''
@@ -269,10 +205,10 @@ export function useModificarVenta({
         motivoValido: esMotivoValido(confirmacion.codigoMotivo, confirmacion.detalleMotivo),
       },
     aviso,
-    solicitarAccion,
+    solicitarAnulacion,
     seleccionarMotivo,
     cambiarDetalleMotivo,
-    confirmarAccion,
+    confirmarAnulacion,
     cancelarConfirmacion: () => setConfirmacion(null),
     cerrarAviso: () => setAviso(null),
   }

@@ -7,8 +7,8 @@ import { TarjetaComprobanteConDeuda } from '@/features/ventas/deudores/component
 import type { RegistrarVentaComprobanteConDeudaProps } from '@/features/ventas/deudores/types/comprobante-con-deuda'
 
 /**
- * Seccion 3 de Registrar Venta cuando la venta quedo con deuda. Igual que el comprobante de siempre, pero sin
- * Editar: una venta con pago inicial ya no se puede anular (los cobros no se anulan).
+ * Seccion 3 de Registrar Venta cuando la venta quedo con deuda. Igual que el comprobante de siempre: enviarlo y
+ * empezar otra venta.
  */
 export function RegistrarVentaComprobanteConDeuda({
   comprobante,

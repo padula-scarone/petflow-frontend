@@ -1,4 +1,5 @@
 import type { LineaPagoMixto, MedioPago } from '@/features/ventas/types/cobro'
+import type { ResumenConfirmacionVenta } from '@/features/ventas/types/resumen-confirmacion-venta'
 import type {
   DatosDeudor,
   Deudor,
@@ -73,16 +74,19 @@ export interface EstadoPagoConDeuda {
 }
 
 /**
- * Confirmacion de una venta con deuda. Son dos llamadas que no son atomicas (el fiado y, si se pago algo, el cobro del
- * pago inicial): las tres ultimas fases son decisiones del vendedor DESPUES de que la venta ya existe. En ellas nunca se
- * reenvia el alta de la venta.
+ * Confirmacion de una venta, con o sin deuda. Una venta de contado es una sola llamada; una con deuda son dos que no son
+ * atomicas (el fiado y, si se pago algo, el cobro del pago inicial): las tres ultimas fases son decisiones del vendedor
+ * DESPUES de que la venta ya existe. En ellas nunca se reenvia el alta de la venta.
  */
 export type EstadoConfirmacionConDeuda =
   | { fase: 'cerrada' }
   | { fase: 'resumen' }
-  /** `paso` dice que esta viajando: la venta, el pago inicial o la carga del comprobante. */
-  | { fase: 'enviando'; paso: 'venta' | 'pago' | 'comprobante' }
-  /** El back rechazo la venta sin guardar nada (404: el deudor ya no existe; 400: dato invalido), o no se encontro. */
+  /**
+   * `paso` dice que esta viajando: la venta, el pago inicial o la carga del comprobante. `segundosTranscurridos` solo
+   * viene en una venta de contado, que lleva la cuenta para la barra de progreso.
+   */
+  | { fase: 'enviando'; paso: 'venta' | 'pago' | 'comprobante'; segundosTranscurridos?: number }
+  /** El back rechazo la venta sin guardar nada (404: el deudor ya no existe; 400 o 409: dato o stock), o no se encontro. */
   | { fase: 'error'; estadoHttp: 400 | 401 | 403 | 404 | 409 | null; mensaje: string; reintentable: boolean }
   /** Sin respuesta util y no se pudo verificar: la venta pudo guardarse. No se reenvia. */
   | { fase: 'venta-incierta'; mensaje: string }
@@ -95,6 +99,8 @@ export type EstadoConfirmacionConDeuda =
 export interface PropiedadesPagoConDeuda {
   estadoPago: EstadoPagoConDeuda
   estadoConfirmacion: EstadoConfirmacionConDeuda
+  /** Todo lo que se revisa en la confirmacion antes de registrar. */
+  resumenConfirmacion: ResumenConfirmacionVenta
   // --- Forma y medios de pago ---
   onCambiarFormaPago: (formaPago: FormaPagoAhora) => void
   onSeleccionarMedioPago: (idMedioPago: number) => void
@@ -117,13 +123,16 @@ export interface PropiedadesPagoConDeuda {
   onCrearDeudor: (datos: DatosDeudor) => Promise<EstadoGuardadoDeudor>
   onCambiarFechaEstimada: (fecha: FechaEstimadaPago | null) => void
   // --- Confirmacion ---
-  /** Con deuda abre el resumen para confirmar; sin deuda es una venta de contado y la confirma directamente. */
+  /** Abre la confirmacion con todos los datos de la venta, con o sin deuda. No registra nada. */
   onConfirmarPago: () => void
   onCerrarResumen: () => void
-  /** Registra la venta con deuda; tambien reintenta el pago inicial o la carga del comprobante si la venta ya existe. */
-  onConfirmarVentaConDeuda: () => void
+  /**
+   * Registra la venta. Con deuda tambien reintenta el pago inicial o la carga del comprobante si la venta ya existe;
+   * de contado envia el alta una sola vez.
+   */
+  onConfirmarVenta: () => void
   /** Con el pago inicial sin registrar: sigue con la venta como deuda total, y el comprobante lo avisa. */
   onContinuarSinPagoInicial: () => void
-  /** Con la venta incierta: descarta la venta en curso (no se puede reenviar sin riesgo de duplicarla). */
+  /** Con la venta incierta (con o sin deuda): descarta la venta en curso, porque reenviarla podria duplicarla. */
   onAbandonarVentaIncierta: () => void
 }

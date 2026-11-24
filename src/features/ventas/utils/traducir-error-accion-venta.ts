@@ -69,7 +69,7 @@ export function traducirRechazoAnulacion(error: ErrorApi): ErrorAccionVenta {
   }
   if (error.estado === ESTADO_SIN_PERMISO) {
     return PATRON_SIN_PERMISO.test(error.mensaje ?? '')
-      ? crearErrorAccionVenta(403, crearMensajeSinPermiso('editar ni anular ventas'), { reintentable: false })
+      ? crearErrorAccionVenta(403, crearMensajeSinPermiso('anular ventas'), { reintentable: false })
       : crearErrorAccionVenta(403, MENSAJE_PLAZO_VENCIDO, { reintentable: false })
   }
   if (error.estado === ESTADO_NO_ENCONTRADO) {

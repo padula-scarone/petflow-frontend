@@ -2,7 +2,6 @@ import { Card } from '@/components/ui/card'
 import { formatearMoneda, formatearMonedaConSigno } from '@/lib/formatear-moneda'
 import { BotonCancelarVenta } from '@/features/ventas/components/boton-cancelar-venta'
 import { BotonConfirmarCobro } from '@/features/ventas/components/boton-confirmar-cobro'
-import { EstadoEnvioCobro } from '@/features/ventas/components/estado-envio-cobro'
 import { EstadoSaldoPago } from '@/features/ventas/deudores/components/estado-saldo-pago'
 import type { EstadoPagoConDeuda } from '@/features/ventas/deudores/types/pago-con-deuda'
 import type { EstadoEnvioVenta } from '@/features/ventas/types/envio-venta'
@@ -85,9 +84,9 @@ export function PanelResumenPagoConDeuda({
 
       {/* --- ACCIONES (ESCRITORIO) --- */}
       <div className="hidden flex-col gap-interno border-t pt-bloque xl:flex">
-        <EstadoEnvioCobro estadoEnvio={estadoEnvio} />
         <BotonConfirmarCobro
           formaPago={deuda ? 'fiado' : 'unico'}
+          etiqueta={deuda ? undefined : 'REGISTRAR VENTA'}
           habilitado={puedeConfirmar && !enviando}
           enviando={enviando}
           onConfirmarCobro={onConfirmarPago}
