@@ -1,5 +1,6 @@
 import { NotebookPen } from 'lucide-react'
 import { Card } from '@/components/ui/card'
+import { cn } from '@/lib/utils'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { BotonFiarTodo } from '@/features/ventas/deudores/components/boton-fiar-todo'
 import { CampoMonto } from '@/features/ventas/components/campo-monto'
@@ -9,9 +10,8 @@ import type {
   FormaPagoAhora,
   PropiedadesPagoConDeuda,
 } from '@/features/ventas/deudores/types/pago-con-deuda'
+import { CLASE_GRUPO_SELECTOR, CLASE_OPCION_SELECTOR } from '@/features/ventas/config/clases-selector-opciones'
 
-const CLASE_GRUPO = 'w-full rounded-grande border border-borde-campo bg-fondo-tarjeta sm:w-fit'
-const CLASE_OPCION = 'flex-1 px-4 sm:flex-none sm:min-w-28'
 
 /** Props del panel donde se elige con que paga el cliente ahora. */
 type PanelPagoAhoraProps = Pick<
@@ -52,37 +52,42 @@ export function PanelPagoAhora({
 
   return (
     <Card className="gap-bloque p-contorno">
-      {/* --- ENCABEZADO: FORMA DE PAGO Y FIAR TODO --- */}
-      <div className="flex flex-col gap-interno">
-        <h2 className="text-titulo-seccion font-bold">Medio de pago</h2>
-        <div className="flex flex-col gap-interno sm:flex-row sm:items-center sm:justify-between">
-          {/* Fiando todo no se cobra nada: Unico y Mixto no tienen nada que elegir y se ocultan */}
-          {fiarTodo ? (
-            <p className="flex items-center gap-2 font-medium">
-              <NotebookPen aria-hidden="true" className="size-4 shrink-0" />
-              Toda la venta queda como deuda
-            </p>
-          ) : (
-            <ToggleGroup
-              type="single"
-              aria-label="Forma de pago"
-              className={CLASE_GRUPO}
-              value={formaPago}
-              // Radix emite '' al des-seleccionar; la forma de pago siempre debe tener valor
-              onValueChange={(valor) => {
-                if (valor) onCambiarFormaPago(valor as FormaPagoAhora)
-              }}
-            >
-              <ToggleGroupItem value="unico" className={CLASE_OPCION}>
-                Único
-              </ToggleGroupItem>
-              <ToggleGroupItem value="mixto" className={CLASE_OPCION}>
-                Mixto
-              </ToggleGroupItem>
-            </ToggleGroup>
-          )}
-          <BotonFiarTodo fiarTodo={fiarTodo} onFiarTodo={onFiarTodo} onCobrarAlgoAhora={onCobrarAlgoAhora} />
-        </div>
+      {/* --- ENCABEZADO: TITULO, FIAR TODO Y FORMA DE PAGO --- */}
+      {/* Celular: titulo, selector y "Fiar todo" apilados. Desde sm: "Fiar todo" sube a la fila del titulo, a la derecha,
+          y el selector queda debajo a todo el ancho, igual que en Canal y Entrega */}
+      <div className="grid gap-interno sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+        <h2 className="text-titulo-seccion font-bold sm:col-start-1 sm:row-start-1">Medio de pago</h2>
+        {/* Fiando todo no se cobra nada: Unico y Mixto no tienen nada que elegir y se ocultan */}
+        {fiarTodo ? (
+          <p className="flex items-center gap-2 font-medium sm:col-span-2 sm:row-start-2">
+            <NotebookPen aria-hidden="true" className="size-4 shrink-0" />
+            Toda la venta queda como deuda
+          </p>
+        ) : (
+          <ToggleGroup
+            type="single"
+            aria-label="Forma de pago"
+            className={cn(CLASE_GRUPO_SELECTOR, 'sm:col-span-2 sm:row-start-2')}
+            value={formaPago}
+            // Radix emite '' al des-seleccionar; la forma de pago siempre debe tener valor
+            onValueChange={(valor) => {
+              if (valor) onCambiarFormaPago(valor as FormaPagoAhora)
+            }}
+          >
+            <ToggleGroupItem value="unico" className={CLASE_OPCION_SELECTOR}>
+              Único
+            </ToggleGroupItem>
+            <ToggleGroupItem value="mixto" className={CLASE_OPCION_SELECTOR}>
+              Mixto
+            </ToggleGroupItem>
+          </ToggleGroup>
+        )}
+        <BotonFiarTodo
+          fiarTodo={fiarTodo}
+          onFiarTodo={onFiarTodo}
+          onCobrarAlgoAhora={onCobrarAlgoAhora}
+          className="sm:col-start-2 sm:row-start-1"
+        />
       </div>
 
       {/* --- CONTENIDO --- */}

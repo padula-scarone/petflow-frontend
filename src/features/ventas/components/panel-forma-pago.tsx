@@ -4,9 +4,8 @@ import { CampoClienteFiado } from '@/features/ventas/components/campo-cliente-fi
 import { GrillaMediosPago } from '@/features/ventas/components/grilla-medios-pago'
 import { ListaPagoMixto } from '@/features/ventas/components/lista-pago-mixto'
 import type { EstadoCobro, FormaPago } from '@/features/ventas/types/cobro'
+import { CLASE_GRUPO_SELECTOR, CLASE_OPCION_SELECTOR } from '@/features/ventas/config/clases-selector-opciones'
 
-const CLASE_GRUPO = 'w-full rounded-grande border border-borde-campo bg-fondo-tarjeta sm:w-fit'
-const CLASE_OPCION = 'flex-1 px-4 sm:flex-none sm:min-w-28'
 
 /** Props del panel donde se elige la forma de pago y se completa segun ella. */
 interface PanelFormaPagoProps {
@@ -42,28 +41,28 @@ export function PanelFormaPago({
   return (
     <Card className="gap-bloque p-contorno">
       {/* --- SELECTOR DE FORMA DE PAGO --- */}
-      <div className="flex flex-col gap-interno sm:flex-row sm:items-center">
-        <span id="etiqueta-forma-pago" className="text-cuerpo font-medium">
-          Forma de pago:
-        </span>
+      <div className="flex flex-col gap-interno">
+        <h2 id="titulo-forma-pago" className="text-titulo-seccion font-bold">
+          Forma de pago
+        </h2>
         <ToggleGroup
           type="single"
-          aria-labelledby="etiqueta-forma-pago"
-          className={CLASE_GRUPO}
+          aria-labelledby="titulo-forma-pago"
+          className={CLASE_GRUPO_SELECTOR}
           value={formaPago}
           // Radix emite '' al des-seleccionar; la forma de pago siempre debe tener valor
           onValueChange={(valor) => {
             if (valor) onCambiarFormaPago(valor as FormaPago)
           }}
         >
-          <ToggleGroupItem value="unico" className={CLASE_OPCION}>
+          <ToggleGroupItem value="unico" className={CLASE_OPCION_SELECTOR}>
             Único
           </ToggleGroupItem>
-          <ToggleGroupItem value="mixto" className={CLASE_OPCION}>
+          <ToggleGroupItem value="mixto" className={CLASE_OPCION_SELECTOR}>
             Mixto
           </ToggleGroupItem>
           {permiteFiado && (
-            <ToggleGroupItem value="fiado" className={CLASE_OPCION}>
+            <ToggleGroupItem value="fiado" className={CLASE_OPCION_SELECTOR}>
               Fiado
             </ToggleGroupItem>
           )}
