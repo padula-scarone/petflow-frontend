@@ -24,7 +24,7 @@ export function crearMensajeConsultaFallida(recurso: string) {
 
 // --- ERRORES DEL ALTA DE VENTA ---
 export const MENSAJE_RESULTADO_INCIERTO =
-  'No la cobres de nuevo todavía: es posible que se haya registrado. Revisá en el Historial de ventas o consultá con el encargado si figura. Si no figura, cancelá esta venta y cargala otra vez.'
+  'No pudimos confirmar si la venta se registró. No la cargues de nuevo todavía: revisá en el Historial de ventas si figura. Si no figura, cargala otra vez.'
 export const MENSAJE_DATOS_NO_COINCIDEN =
   'Algunos datos de la venta no coinciden. Volvé al carrito, revisá los productos y el cobro e intentá de nuevo.'
 export const MENSAJE_DATOS_ENVIO_RECHAZADOS =

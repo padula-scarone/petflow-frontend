@@ -41,6 +41,7 @@ export function ContenedorCobroConDeuda({
     alRechazarDatosEnvio: contexto.mostrarErroresDatosEnvio,
     propiedadesCobro: contexto.propiedadesCobro,
     confirmarCobro: contexto.confirmarCobro,
+    descartarRechazoEnvio: contexto.descartarRechazoEnvio,
     alAbandonarVenta: onNuevaVenta,
   })
 

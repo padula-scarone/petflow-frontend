@@ -50,6 +50,7 @@ import {
   convertirPesosACentavos,
 } from '@/features/ventas/utils/calcular-centavos'
 import { construirDatosEnvioSolicitud } from '@/features/ventas/utils/construir-datos-envio-solicitud'
+import { construirResumenConfirmacionVenta } from '@/features/ventas/utils/construir-resumen-confirmacion-venta'
 import { FILTROS_HISTORIAL_VACIOS } from '@/features/ventas/utils/contar-filtros-activos'
 
 /** Lo que necesita el pago con deuda de la venta en curso. */
@@ -68,6 +69,8 @@ interface OpcionesPagoConDeuda {
   propiedadesCobro: PropiedadesCobroRegistrarVenta
   /** Registra la venta de contado contra el back real. */
   confirmarCobro: () => Promise<void>
+  /** Borra el mensaje de un rechazo del back de la venta de contado, al cerrar la confirmacion. */
+  descartarRechazoEnvio: () => void
   /** Descarta la venta en curso y vuelve al carrito vacio: lo usa quien ya no puede reenviarla sin riesgo. */
   alAbandonarVenta: () => void
 }
@@ -83,7 +86,8 @@ interface MontoAhoraEscrito {
  * queda como deuda. Reutiliza el cobro de siempre para los medios, el descuento y el pago mixto, y solo agrega lo
  * nuevo: el monto parcial, "Fiar todo", el deudor y la fecha estimada.
  *
- * Una venta de contado se confirma con el cobro real de siempre. Una venta con deuda son DOS llamadas, que no son
+ * Toda venta, de contado o con deuda, pasa por la misma confirmacion: el boton de pago solo la abre, y recien al
+ * confirmar ahi se registra. Una venta de contado se registra con el cobro real de siempre. Una venta con deuda son DOS llamadas, que no son
  * atomicas: (1) POST /api/ventas con pagos vacios, el deudor y la fecha estimada; (2) si se pago algo ahora,
  * POST /api/cuentas-corrientes/:idDeudor/cobros con ese fiado y los medios. Si el paso 1 funciona y el paso 2 falla, la
  * venta YA existe como deuda total: nunca se reenvia el POST de la venta, solo se reintenta el pago (o se sigue sin el).
@@ -98,6 +102,7 @@ export function usePagoConDeuda({
   alRechazarDatosEnvio,
   propiedadesCobro,
   confirmarCobro,
+  descartarRechazoEnvio,
   alAbandonarVenta,
 }: OpcionesPagoConDeuda) {
   const { cliente } = useSesion()
@@ -107,7 +112,7 @@ export function usePagoConDeuda({
   // --- ESTADOS ---
   const [fiarTodo, setFiarTodo] = useState(false)
   const [montoAhoraEscrito, setMontoAhoraEscrito] = useState<MontoAhoraEscrito | null>(null)
-  const [estadoConfirmacion, setEstadoConfirmacion] = useState<EstadoConfirmacionConDeuda>({ fase: 'cerrada' })
+  const [estadoConfirmacionLocal, setEstadoConfirmacion] = useState<EstadoConfirmacionConDeuda>({ fase: 'cerrada' })
   const [comprobante, setComprobante] = useState<ComprobanteConDeuda | null>(null)
   // Refs y no estados: lo que ya paso en el back no se puede deshacer, y un segundo toque puede llegar antes del
   // siguiente render. Mientras alguno este cargado, el POST de la venta no vuelve a salir.
@@ -193,6 +198,25 @@ export function usePagoConDeuda({
   // Sin deuda es una venta de contado: ademas se exige lo que exige el cobro real (envio posible, forma de pago valida)
   const contadoConfirmable = estadoCobro.puedeConfirmar && estadoCobro.formaPago !== 'fiado'
   const puedeConfirmar = confirmable && (hayDeuda || contadoConfirmable)
+
+  /**
+   * Lo que muestra la confirmacion. Una venta con deuda lleva su propio estado. Una de contado lo toma del envio, que ya
+   * sabe si viaja, si el back la rechazo o si no se supo que paso. Un resultado incierto manda aunque la confirmacion
+   * se haya cerrado: la venta pudo guardarse y no se puede seguir como si nada.
+   */
+  const estadoConfirmacion = ((): EstadoConfirmacionConDeuda => {
+    if (hayDeuda) return estadoConfirmacionLocal
+    const { estadoEnvio } = propiedadesCobro
+    if (estadoEnvio.fase === 'resultado-incierto') return { fase: 'venta-incierta', mensaje: estadoEnvio.mensaje }
+    if (estadoConfirmacionLocal.fase === 'cerrada') return estadoConfirmacionLocal
+    if (estadoEnvio.fase === 'enviando') {
+      return { fase: 'enviando', paso: 'venta', segundosTranscurridos: estadoEnvio.segundosTranscurridos }
+    }
+    if (estadoEnvio.fase === 'rechazado') {
+      return { fase: 'error', estadoHttp: null, mensaje: estadoEnvio.mensaje, reintentable: true }
+    }
+    return estadoConfirmacionLocal
+  })()
 
   const estadoPago: EstadoPagoConDeuda = {
     formaPago,
@@ -458,9 +482,20 @@ export function usePagoConDeuda({
     void confirmarVentaConDeuda()
   }
 
+  const resumenConfirmacion = construirResumenConfirmacionVenta({
+    articulos,
+    canalVenta,
+    tipoEntrega,
+    direccionEnvio,
+    destinatarioEnvio,
+    descuentoManual: estadoCobro.descuentoManual,
+    estadoPago,
+  })
+
   const propiedadesPago: PropiedadesPagoConDeuda = {
     estadoPago,
     estadoConfirmacion,
+    resumenConfirmacion,
     onCambiarFormaPago: cambiarFormaPago,
     onSeleccionarMedioPago: seleccionarMedioPago,
     onCambiarMontoAhora: (monto) => {
@@ -484,13 +519,19 @@ export function usePagoConDeuda({
     onCambiarFechaEstimada: deuda.cambiarFechaEstimada,
     onConfirmarPago: () => {
       if (!puedeConfirmar || estadoConfirmacion.fase !== 'cerrada') return
-      // Con un dato del envio invalido no se registra nada: el error queda marcado en su campo
+      // Con un dato del envio invalido no se abre la confirmacion: el error queda marcado en su campo
       if (!validarDatosEnvio()) return
-      if (hayDeuda) setEstadoConfirmacion({ fase: 'resumen' })
+      setEstadoConfirmacion({ fase: 'resumen' })
+    },
+    onCerrarResumen: () => {
+      setEstadoConfirmacion({ fase: 'cerrada' })
+      // El mensaje del rechazo ya se vio en la confirmacion: no queda colgado en el cobro
+      descartarRechazoEnvio()
+    },
+    onConfirmarVenta: () => {
+      if (hayDeuda) void confirmarVentaConDeuda()
       else void confirmarCobro()
     },
-    onCerrarResumen: () => setEstadoConfirmacion({ fase: 'cerrada' }),
-    onConfirmarVentaConDeuda: () => void confirmarVentaConDeuda(),
     onContinuarSinPagoInicial: continuarSinPagoInicial,
     onAbandonarVentaIncierta: alAbandonarVenta,
   }
