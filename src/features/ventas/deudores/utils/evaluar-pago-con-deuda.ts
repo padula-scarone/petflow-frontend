@@ -1,5 +1,6 @@
 import { MOTIVO_MONTO_AHORA_VACIO } from '@/features/ventas/deudores/config/mensajes-deudores'
 import type { FormaPagoAhora, ResumenPagoConDeuda } from '@/features/ventas/deudores/types/pago-con-deuda'
+import { MOTIVO_INGRESAR_PAGA_CON } from '@/features/ventas/config/mensajes-error-venta'
 import { MONTO_RECIBIDO_MAXIMO_CENTAVOS } from '@/features/ventas/config/reglas-venta'
 import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import { formatearMoneda } from '@/lib/formatear-moneda'
@@ -77,7 +78,8 @@ export function evaluarPagoConDeuda(entrada: EntradaEvaluacionPago): EvaluacionP
       const mensaje = `El monto no puede superar el total (${formatearMoneda(resumen.importeVenta)})`
       return bloquearCon(mensaje, mensaje)
     }
-    if (entrada.medioUnicoAdmiteVuelto && entrada.pagaConCentavos !== null) {
+    if (entrada.medioUnicoAdmiteVuelto) {
+      if (entrada.pagaConCentavos === null) return bloquearCon(MOTIVO_INGRESAR_PAGA_CON)
       if (entrada.pagaConCentavos < entrada.cobradoAhoraCentavos) {
         return bloquearCon('El monto con el que paga no cubre lo que se cobra ahora')
       }

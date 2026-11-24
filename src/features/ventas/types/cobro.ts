@@ -44,6 +44,8 @@ export interface LineaPagoMixto {
   vuelto: number | null
   /** Negativo = descuento, positivo = recargo. */
   montoAjuste: number
+  /** Lo que paga este medio: su parte mas el ajuste. Es el monto exacto que ofrece "Paga justo". */
+  montoTotal: number
 }
 
 /** Datos que emite el formulario de descuento al aplicarse. */

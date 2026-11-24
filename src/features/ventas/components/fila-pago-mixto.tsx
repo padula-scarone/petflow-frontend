@@ -76,12 +76,24 @@ export function FilaPagoMixto({
 
         {medio.admiteVuelto && (
           <div className="flex flex-col gap-bloque">
-            <CampoMonto
-              idCampo={`paga-con-${medio.idMedioPago}`}
-              etiqueta="Paga con"
-              valor={linea.pagaCon}
-              onCambiar={(monto) => onCambiarPagaCon(medio.idMedioPago, monto)}
-            />
+            <div className="flex flex-col gap-1">
+              <CampoMonto
+                idCampo={`paga-con-${medio.idMedioPago}`}
+                etiqueta="Paga con"
+                valor={linea.pagaCon}
+                onCambiar={(monto) => onCambiarPagaCon(medio.idMedioPago, monto)}
+              />
+              {linea.montoTotal > 0 && (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="self-start px-3 text-cuerpo tabular-nums"
+                  onClick={() => onCambiarPagaCon(medio.idMedioPago, linea.montoTotal)}
+                >
+                  Paga justo ({formatearMoneda(linea.montoTotal)})
+                </Button>
+              )}
+            </div>
             <p className="flex items-baseline justify-between gap-interno">
               <span className="text-cuerpo text-texto-suave">Vuelto</span>
               <span className="text-cifra-secundaria font-bold tabular-nums">

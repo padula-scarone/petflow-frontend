@@ -83,7 +83,7 @@ export function PanelResumenCobro({
           className="w-full"
         />
         {!puedeConfirmar && motivoNoConfirmable && (
-          <p role="status" className="text-center text-cuerpo text-texto-suave tabular-nums">
+          <p role="status" className="text-center text-cuerpo text-amber-700 tabular-nums">
             {motivoNoConfirmable}
           </p>
         )}

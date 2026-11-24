@@ -74,9 +74,13 @@ export function useBarrasDesplazables(
       // Durante la pausa el scroll puede moverse solo por el cambio de alto del area: no es un gesto del usuario
       if (performance.now() < ignorarHasta) return
 
-      // Cerca del principio la cabecera esta en su lugar natural: siempre visible
+      // Cerca del principio la cabecera esta en su lugar natural: siempre visible. Ocultarla ahi dejaria un hueco
+      // vacio sobre el contenido, asi que no hay forma de ocultarla antes de pasar esta zona
       if (posicionActual <= (cabeceraRef.current?.offsetHeight ?? 0)) {
-        desplazadoEnLaDireccion = 0
+        // Al bajar se sale de la zona con el umbral de ocultar ya cumplido: se oculta con el primer movimiento
+        // al cruzarla, igual que en cualquier otro punto del contenido. Sin esto, la primera vez que se baja
+        // en una pantalla hay que sumar ademas los px del umbral y la barra tarda mas en irse
+        desplazadoEnLaDireccion = variacion > 0 ? UMBRAL_OCULTAR : 0
         cambiarVisibilidad(true)
         return
       }

@@ -1,3 +1,4 @@
+import type { OrigenFicha } from '@/features/ventas/deudores/config/rutas-deudores'
 import type { Deudor } from '@/features/ventas/deudores/types/deudor'
 import type { EstadoFichaDeudor, FiadoPendiente } from '@/features/ventas/deudores/types/cuenta-corriente'
 import type { PagoComprobante } from '@/features/ventas/types/comprobante'
@@ -129,6 +130,8 @@ export interface FichaDeudorProps {
   /** Un fiado por fila, con lo tildado y lo tipeado; vacio hasta que la ficha esta lista. */
   filasFiados: FilaFiadoSeleccionable[]
   resumenSeleccion: ResumenSeleccionFiados
+  /** Pantalla desde la que se llego: dice a donde vuelve "Volver" (el texto del boton). */
+  origen: OrigenFicha
   onVolver: () => void
   onReintentar: () => void
   onEditarDeudor: () => void

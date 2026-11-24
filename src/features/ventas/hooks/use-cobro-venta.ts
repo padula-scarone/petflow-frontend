@@ -4,7 +4,7 @@ import {
   MONTO_RECIBIDO_MAXIMO_CENTAVOS,
   MOTIVO_DESCUENTO_LONGITUD_MAXIMA,
 } from '@/features/ventas/config/reglas-venta'
-import { MOTIVO_ELEGIR_MEDIO_PAGO } from '@/features/ventas/config/mensajes-error-venta'
+import { MOTIVO_ELEGIR_MEDIO_PAGO, MOTIVO_INGRESAR_PAGA_CON } from '@/features/ventas/config/mensajes-error-venta'
 import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
 import type {
   DatosDescuentoManual,
@@ -112,6 +112,7 @@ export function useCobroVenta({
             )
           : null,
       montoAjuste: convertirCentavosAPesos(ajusteCentavos),
+      montoTotal: convertirCentavosAPesos(montoCentavos + ajusteCentavos),
     }),
   )
 
@@ -149,7 +150,8 @@ export function useCobroVenta({
     }
     if (formaPago === 'unico') {
       if (!medioUnico) return MOTIVO_ELEGIR_MEDIO_PAGO
-      if (medioUnico.admiteVuelto && pagaConCentavos !== null) {
+      if (medioUnico.admiteVuelto) {
+        if (pagaConCentavos === null) return MOTIVO_INGRESAR_PAGA_CON
         if (pagaConCentavos < totalCentavos) return 'El monto con el que paga no cubre el total'
         if (pagaConCentavos > MONTO_RECIBIDO_MAXIMO_CENTAVOS) {
           return 'El monto con el que paga es demasiado alto'
@@ -160,6 +162,9 @@ export function useCobroVenta({
       // Falta cubrir y excedente no son motivos aparte: los muestra el estado de cobertura
       if (lineasCalculadas.some((linea) => linea.montoCentavos === 0)) {
         return 'Quitá o completá los medios sin monto'
+      }
+      if (lineasCalculadas.some((linea) => linea.medio.admiteVuelto && linea.entrada.pagaConCentavos === null)) {
+        return MOTIVO_INGRESAR_PAGA_CON
       }
       const efectivoInsuficiente = lineasCalculadas.some(
         (linea) =>

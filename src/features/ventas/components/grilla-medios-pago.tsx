@@ -1,4 +1,5 @@
 import { CreditCard } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { CampoMonto } from '@/features/ventas/components/campo-monto'
@@ -15,6 +16,8 @@ interface GrillaMediosPagoProps {
   onCambiarPagaCon: (monto: number | null) => void
   /** false en una devolución: el saldo se cobra sin el recargo o descuento del medio, asi que no se muestra. */
   mostrarAjustes?: boolean
+  /** Lo que se cobra con el medio, con su ajuste: lo ofrece "Paga justo". Sin este dato el atajo no se muestra. */
+  montoPagaJusto?: number
 }
 
 export function GrillaMediosPago({
@@ -25,6 +28,7 @@ export function GrillaMediosPago({
   onSeleccionarMedioPago,
   onCambiarPagaCon,
   mostrarAjustes = true,
+  montoPagaJusto,
 }: GrillaMediosPagoProps) {
   const medioSeleccionado = medios.find((medio) => medio.idMedioPago === idMedioSeleccionado)
 
@@ -67,14 +71,25 @@ export function GrillaMediosPago({
 
       {/* --- PAGA CON Y VUELTO (SOLO EFECTIVO) --- */}
       {medioSeleccionado?.admiteVuelto && (
-        <div className="grid gap-bloque sm:grid-cols-2 sm:items-end">
+        // gap-y-1: el atajo queda pegado al campo, como "Sumar el restante". En celular el vuelto baja con su propio aire
+        <div className="grid gap-x-bloque gap-y-1 sm:grid-cols-2 sm:items-end">
           <CampoMonto
             idCampo="paga-con"
             etiqueta="Paga con"
             valor={pagaCon}
             onCambiar={onCambiarPagaCon}
           />
-          <p className="flex items-baseline justify-between gap-interno">
+          {montoPagaJusto !== undefined && montoPagaJusto > 0 && (
+            <Button
+              type="button"
+              variant="ghost"
+              className="self-start px-3 text-cuerpo tabular-nums sm:col-start-1 sm:row-start-2"
+              onClick={() => onCambiarPagaCon(montoPagaJusto)}
+            >
+              Paga justo ({formatearMoneda(montoPagaJusto)})
+            </Button>
+          )}
+          <p className="mt-3 flex items-baseline justify-between gap-interno sm:col-start-2 sm:row-start-1 sm:mt-0">
             <span className="text-cuerpo text-texto-suave">Vuelto</span>
             <span className="text-cifra-secundaria font-bold tabular-nums">
               {formatearMoneda(vuelto ?? 0)}
