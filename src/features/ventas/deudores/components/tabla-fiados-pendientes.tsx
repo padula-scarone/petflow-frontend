@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { formatearFecha } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { BotonPagosFiado } from '@/features/ventas/deudores/components/boton-pagos-fiado'
+import { BotonVerVenta } from '@/features/ventas/deudores/components/boton-ver-venta'
 import { CampoMontoFiado } from '@/features/ventas/deudores/components/campo-monto-fiado'
 import { EstadoProximoPago } from '@/features/ventas/deudores/components/estado-proximo-pago'
 import { ListaPagosFiado } from '@/features/ventas/deudores/components/lista-pagos-fiado'
@@ -71,6 +72,12 @@ function FilaTablaFiado({ fila, onAlternarFiado, onCambiarMontoFiado }: FilaTabl
         <div role="cell" className="whitespace-nowrap tabular-nums">
           <p className="font-bold">{fiado.numeroComprobante}</p>
           <p className="text-auxiliar text-texto-suave">{formatearFecha(fiado.fechaHora)}</p>
+          {/* -ml-3: el boton trae su propio aire; asi el icono queda alineado con el comprobante */}
+          <BotonVerVenta
+            idVenta={fiado.idVenta}
+            numeroComprobante={fiado.numeroComprobante}
+            className="-ml-3 text-auxiliar text-texto-suave"
+          />
         </div>
         <div role="cell">
           <EstadoProximoPago

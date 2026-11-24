@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { formatearFecha } from '@/lib/formatear-fecha-hora'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 import { BotonPagosFiado } from '@/features/ventas/deudores/components/boton-pagos-fiado'
+import { BotonVerVenta } from '@/features/ventas/deudores/components/boton-ver-venta'
 import { CampoMontoFiado } from '@/features/ventas/deudores/components/campo-monto-fiado'
 import { EstadoProximoPago } from '@/features/ventas/deudores/components/estado-proximo-pago'
 import { ListaPagosFiado } from '@/features/ventas/deudores/components/lista-pagos-fiado'
@@ -100,6 +101,15 @@ export function TarjetaFiadoPendiente({ fila, onAlternarFiado, onCambiarMontoFia
           </dd>
         </div>
       </dl>
+
+      {/* --- VER VENTA --- */}
+      {/* Fuera de la lista de datos (un <dl> solo admite pares termino/valor). -ml-3: el boton trae su propio aire,
+          asi el icono queda alineado con el resto del contenido */}
+      <BotonVerVenta
+        idVenta={fiado.idVenta}
+        numeroComprobante={fiado.numeroComprobante}
+        className="-ml-3 -mt-2 self-start"
+      />
 
       {/* --- MONTO A COBRAR --- */}
       <div className="flex items-start justify-between gap-interno border-t pt-interno">
