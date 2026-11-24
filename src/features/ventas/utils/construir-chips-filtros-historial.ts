@@ -54,9 +54,9 @@ export function construirChipsFiltrosHistorial(
     }
     if (filtros.textoCliente.trim() !== '') {
       chips.push({
-        clave: 'cliente',
-        etiqueta: `Cliente: ${filtros.textoCliente.trim()}`,
-        descripcion: 'el cliente',
+        clave: 'deudor',
+        etiqueta: `Deudor: ${filtros.textoCliente.trim()}`,
+        descripcion: 'el deudor',
         onQuitar: () => onCambiarFiltros({ textoCliente: '' }),
       })
     }

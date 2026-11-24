@@ -57,12 +57,6 @@ export function TarjetaComprobante({ comprobante }: TarjetaComprobanteProps) {
             <dt className="text-texto-suave">Vendedor</dt>
             <dd className="font-medium">{comprobante.nombreVendedor}</dd>
           </div>
-          {comprobante.clienteReferencia !== null && (
-            <div className="min-w-0">
-              <dt className="text-texto-suave">Cliente</dt>
-              <dd className="truncate font-medium">{comprobante.clienteReferencia}</dd>
-            </div>
-          )}
         </dl>
       </div>
 

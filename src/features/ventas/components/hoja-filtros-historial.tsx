@@ -64,11 +64,11 @@ export function HojaFiltrosHistorial({ propiedades }: HojaFiltrosHistorialProps)
       />
       {filtros.estado === 'PENDIENTE_PAGO' && (
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="hoja-cliente" className="text-cuerpo font-medium">
-            Cliente
+          <Label htmlFor="hoja-deudor" className="text-cuerpo font-medium">
+            Deudor
           </Label>
           <Input
-            id="hoja-cliente"
+            id="hoja-deudor"
             type="text"
             autoComplete="off"
             placeholder="Buscar por nombre"

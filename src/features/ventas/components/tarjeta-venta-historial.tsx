@@ -9,6 +9,7 @@ import { AccionDeudaFiado } from '@/features/ventas/deudores/components/accion-d
 import { AvisoFaltanteFiado } from '@/features/ventas/deudores/components/aviso-faltante-fiado'
 import type { FilaHistorial, PropiedadesAccionesVenta } from '@/features/ventas/types/historial'
 import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
+import { obtenerNombreDeudor } from '@/features/ventas/utils/obtener-nombre-deudor'
 
 /** Props de la tarjeta de una venta (mobile y pantallas medianas). */
 interface TarjetaVentaHistorialProps {
@@ -20,14 +21,14 @@ export function TarjetaVentaHistorial({ fila, acciones }: TarjetaVentaHistorialP
   return (
     // h-full + mt-auto en el total: las tarjetas de una misma fila de la grilla igualan alto
     <Card className="h-full min-w-0 gap-interno p-contorno">
-      {/* --- COMPROBANTE, CLIENTE (SI EXISTE) Y ESTADO --- */}
+      {/* --- COMPROBANTE, DEUDOR (SI HAY DEUDA) Y ESTADO --- */}
       {/* flex-wrap: en 320 px el estado baja a su propia linea en vez de cortarse */}
       <div className="flex flex-wrap items-start justify-between gap-2">
         <div className="min-w-0 max-w-full">
           <p className="text-auxiliar text-texto-suave">N.º de comprobante</p>
           <p className="font-bold tabular-nums">{fila.numeroComprobante}</p>
-          {fila.clienteReferencia !== null && (
-            <p className="truncate text-cuerpo text-texto-suave">Cliente: {fila.clienteReferencia}</p>
+          {obtenerNombreDeudor(fila) !== null && (
+            <p className="truncate text-cuerpo text-texto-suave">Deudor: {obtenerNombreDeudor(fila)}</p>
           )}
         </div>
         <InsigniaEstadoVenta estado={fila.estado} />

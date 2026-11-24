@@ -32,6 +32,7 @@ import {
 } from '@/features/ventas/utils/construir-enlaces-comprobante'
 import { convertirVentaAComprobante } from '@/features/ventas/utils/convertir-venta-a-comprobante'
 import { describirEntrega, describirOrigen } from '@/features/ventas/utils/describir-origen-entrega'
+import { obtenerNombreDeudor } from '@/features/ventas/utils/obtener-nombre-deudor'
 
 /** Props de la ventana con el detalle de una venta. */
 interface DetalleVentaHistorialProps {
@@ -167,12 +168,13 @@ export function DetalleVentaHistorial({
                     <dt className="text-texto-suave">Vendedor</dt>
                     <dd className="truncate font-medium">{venta.vendedor.nombre}</dd>
                   </div>
-                  <div className="min-w-0">
-                    <dt className="text-texto-suave">Cliente</dt>
-                    <dd className="truncate font-medium">
-                      {venta.deudor?.nombreCompleto ?? venta.clienteReferencia ?? '—'}
-                    </dd>
-                  </div>
+                  {/* Solo una venta con deuda tiene a quien mostrar: en contado no hay "cliente" */}
+                  {obtenerNombreDeudor(venta) !== null && (
+                    <div className="min-w-0">
+                      <dt className="text-texto-suave">Deudor</dt>
+                      <dd className="truncate font-medium">{obtenerNombreDeudor(venta)}</dd>
+                    </div>
+                  )}
                 </dl>
 
                 {/* --- DEUDA: SOLO UN FIADO PENDIENTE CON DEUDOR --- */}
