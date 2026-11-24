@@ -25,13 +25,12 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
       <div
         role="table"
         aria-label="Deudores"
-        className="grid grid-cols-[repeat(8,auto)] justify-between gap-x-interno text-cuerpo"
+        className="grid grid-cols-[repeat(7,auto)] justify-between gap-x-interno text-cuerpo"
       >
         {/* --- ENCABEZADO --- */}
         <div role="row" className={cn(CLASE_FILA, 'min-h-control font-medium text-texto-suave')}>
           <span role="columnheader">Nombre</span>
           <span role="columnheader">DNI</span>
-          <span role="columnheader">Teléfono</span>
           <span role="columnheader">Fiados pendientes</span>
           <span role="columnheader" className="justify-self-end">
             Saldo
@@ -55,9 +54,6 @@ export function TablaDeudores({ filas, onAbrirFicha }: TablaDeudoresProps) {
             </div>
             <div role="cell" className="tabular-nums">
               {fila.dni}
-            </div>
-            <div role="cell" className="whitespace-nowrap tabular-nums">
-              {fila.telefono}
             </div>
             <div role="cell" className="tabular-nums">
               {fila.cantidadFiadosPendientes}

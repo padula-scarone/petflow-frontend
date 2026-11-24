@@ -25,10 +25,10 @@ export function TarjetaDeudor({ fila, onAbrirFicha }: TarjetaDeudorProps) {
   return (
     // h-full + mt-auto en el saldo: las tarjetas de una misma fila de la grilla igualan alto
     <Card className="h-full min-w-0 gap-interno p-contorno">
-      {/* --- NOMBRE, DNI Y TELEFONO --- */}
+      {/* --- NOMBRE Y DNI --- */}
       <div className="min-w-0">
         <p className="font-bold wrap-break-word">{fila.nombreCompleto}</p>
-        <DatosContactoDeudor dni={fila.dni} telefono={fila.telefono} className="text-cuerpo text-texto-suave" />
+        <DatosContactoDeudor dni={fila.dni} className="text-cuerpo text-texto-suave" />
       </div>
 
       {/* --- FIADOS, FECHA DE FIADO Y PROXIMO PAGO --- */}

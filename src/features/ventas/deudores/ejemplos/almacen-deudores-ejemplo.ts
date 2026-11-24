@@ -56,7 +56,6 @@ function convertirAFilaDeudor(deudor: DeudorAlmacenado, hoy: string): FilaDeudor
   return {
     idDeudor: deudor.deudor.idDeudor,
     nombreCompleto: deudor.deudor.nombreCompleto,
-    telefono: deudor.deudor.telefono,
     dni: deudor.deudor.dni,
     cantidadFiadosPendientes: filtrarFiadosPendientes(deudor.fiados).length,
     saldo: convertirCentavosAPesos(calcularSaldoDeudorCentavos(deudor)),

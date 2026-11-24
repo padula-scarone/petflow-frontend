@@ -123,17 +123,11 @@ export function BuscadorDeudor({
                   <button
                     type="button"
                     {...navegacion.propiedadesOpcion(indiceDeudor)}
-                    // @container: el telefono dice "Tel.:" si la fila es angosta (mide la fila, no su propia caja)
-                    className="@container flex min-h-control w-full flex-col items-start justify-center gap-0.5 rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-interno"
+                    className="flex min-h-control w-full flex-col items-start justify-center gap-0.5 rounded-mediano px-3 py-2 text-left text-cuerpo aria-selected:bg-fondo-seleccion focus-visible:outline-none sm:flex-row sm:items-center sm:justify-between sm:gap-interno"
                     onClick={() => elegirDeudor(deudor)}
                   >
                     <span className="min-w-0 font-medium">{deudor.nombreCompleto}</span>
-                    <DatosContactoDeudor
-                      dni={deudor.dni}
-                      telefono={deudor.telefono}
-                      contenedorPropio={false}
-                      className="shrink-0 text-auxiliar text-texto-suave"
-                    />
+                    <DatosContactoDeudor dni={deudor.dni} className="shrink-0 text-auxiliar text-texto-suave" />
                   </button>
                 </li>
               ))}

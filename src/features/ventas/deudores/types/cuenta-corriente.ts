@@ -30,7 +30,7 @@ export interface FiltrosDeudores {
 export interface FilaDeudor {
   idDeudor: number
   nombreCompleto: string
-  telefono: string
+  // Sin telefono a proposito: la lista muestra a todos los deudores a la vez y el telefono solo se ve en la ficha
   dni: string
   cantidadFiadosPendientes: number
   saldo: number

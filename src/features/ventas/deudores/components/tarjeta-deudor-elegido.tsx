@@ -11,7 +11,7 @@ interface TarjetaDeudorElegidoProps {
   onCambiarDeudor: () => void
 }
 
-/** El deudor elegido, con su DNI y telefono, y un boton para cambiarlo. */
+/** El deudor elegido, con su DNI (sin telefono: esta pantalla esta a la vista en el mostrador), y un boton para cambiarlo. */
 export function TarjetaDeudorElegido({ deudor, avisoDniExistente, onCambiarDeudor }: TarjetaDeudorElegidoProps) {
   return (
     <div className="flex flex-col gap-interno">
@@ -35,12 +35,10 @@ export function TarjetaDeudorElegido({ deudor, avisoDniExistente, onCambiarDeudo
             Cambiar
           </Button>
         </div>
-        {/* --- DNI Y TELEFONO --- */}
-        {/* Debajo y con todo el ancho de la caja: al lado del avatar y del boton no entraria el telefono. Desde sm se
-            alinea con el nombre */}
+        {/* --- DNI --- */}
+        {/* Debajo y con todo el ancho de la caja; desde sm se alinea con el nombre */}
         <DatosContactoDeudor
           dni={deudor.dni}
-          telefono={deudor.telefono}
           className="text-cuerpo text-texto-suave sm:pl-[calc(var(--spacing-control)+var(--spacing-interno))]"
         />
       </div>
