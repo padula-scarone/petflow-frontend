@@ -64,7 +64,10 @@ export interface ConsultaCuentasCorrientesApi {
   cantidadPorPagina: number
   texto?: string
   incluirSinDeuda?: 'true' | 'false'
-  /** Filtro por proximo pago. El back todavia no lo tiene: hasta que lo despliegue, mandarlo da 400. */
+  /**
+   * Filtro por proximo pago, sobre la fecha estimada mas temprana de los fiados pendientes (hora de Argentina). Con el
+   * filtro solo cuentan los deudores con fiados pendientes, sea cual sea `incluirSinDeuda`.
+   */
   proximoPago?: ProximoPagoApi
   ordenarPor?: OrdenarPorApi
   sentido?: 'asc' | 'desc'

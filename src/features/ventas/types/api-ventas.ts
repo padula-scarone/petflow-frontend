@@ -94,6 +94,8 @@ export interface RegistrarVentaRequest {
   fechaEstimadaPago?: string
   /** 1 a 200 caracteres. Obligatoria con ENVIO y prohibida con RETIRO. */
   direccionEnvio?: string
+  /** 1 a 100 caracteres. Opcional con ENVIO y prohibido con RETIRO. */
+  destinatarioEnvio?: string
 }
 
 /** Pago de la respuesta del alta. */

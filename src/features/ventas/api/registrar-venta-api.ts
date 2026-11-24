@@ -43,6 +43,7 @@ export function convertirSolicitudACuerpo(solicitud: SolicitudVenta): RegistrarV
     ...(solicitud.idDeudor !== undefined && { idDeudor: solicitud.idDeudor }),
     ...(solicitud.fechaEstimadaPago !== undefined && { fechaEstimadaPago: solicitud.fechaEstimadaPago }),
     ...(solicitud.direccionEnvio !== undefined && { direccionEnvio: solicitud.direccionEnvio }),
+    ...(solicitud.destinatarioEnvio !== undefined && { destinatarioEnvio: solicitud.destinatarioEnvio }),
   }
 }
 

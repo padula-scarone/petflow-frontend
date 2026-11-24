@@ -44,4 +44,6 @@ export interface SolicitudVenta extends DatosCobroSolicitud {
    * nunca va en un mensaje ni en un log.
    */
   direccionEnvio?: string
+  /** Quien recibe el envio, de 1 a 100 caracteres. Opcional con Envio y prohibido con Retiro. Tambien es un dato personal. */
+  destinatarioEnvio?: string
 }
