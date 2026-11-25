@@ -53,13 +53,21 @@ export interface EstadoPagoConDeuda {
   mediosDisponibles: MedioPago[]
   /** Pago unico. */
   idMedioSeleccionado: number | null
-  /** Porcion base que cubre el medio ahora; null = campo vacio. */
+  /**
+   * Lo que se cobra ahora con el medio, ya con su recargo o descuento: es lo que muestra el campo "Cobrar ahora".
+   * La porcion base que viaja al back sale de aca. null = campo vacio.
+   */
   montoAhora: number | null
   pagaCon: number | null
   /** Solo si el medio admite vuelto y "Paga con" supera lo que se cobra ahora. */
   vuelto: number | null
-  /** Pago mixto. */
+  /** Pago mixto. En cada linea, `montoACubrir` es la porcion base y `montoTotal` lo que paga el medio con su ajuste. */
   lineasPagoMixto: LineaPagoMixto[]
+  /**
+   * Pago mixto: lo que suma a cada linea "Sumar el restante", ya con el ajuste de su medio. Se indexa por id de medio.
+   * Los campos del mixto muestran el monto final, asi que el atajo tiene que hablar en el mismo monto.
+   */
+  restanteFinalPorMedio: Record<number, number>
   resumen: ResumenPagoConDeuda
   /** null cuando no hay deuda, o cuando todavia no se eligio como paga (un medio o "Fiar todo"). */
   deuda: EstadoDeuda | null

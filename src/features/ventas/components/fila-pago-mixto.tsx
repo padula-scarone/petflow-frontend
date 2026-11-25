@@ -12,6 +12,8 @@ interface FilaPagoMixtoProps {
   medio: MedioPago
   /** Lo que todavia falta cubrir de la venta, para ofrecer completarlo en esta linea. */
   faltaCubrir: number
+  /** Verdadero: el campo muestra lo que paga el medio con su ajuste, y lo que se escribe tambien es ese monto. */
+  mostrarMontoFinal?: boolean
   onQuitar: (idMedioPago: number) => void
   onCambiarMonto: (idMedioPago: number, monto: number | null) => void
   onCambiarPagaCon: (idMedioPago: number, monto: number | null) => void
@@ -22,6 +24,7 @@ export function FilaPagoMixto({
   linea,
   medio,
   faltaCubrir,
+  mostrarMontoFinal = false,
   onQuitar,
   onCambiarMonto,
   onCambiarPagaCon,
@@ -59,7 +62,7 @@ export function FilaPagoMixto({
           <CampoMonto
             idCampo={`monto-${medio.idMedioPago}`}
             etiqueta="Monto a cubrir"
-            valor={linea.montoACubrir}
+            valor={mostrarMontoFinal && linea.montoACubrir !== null ? linea.montoTotal : linea.montoACubrir}
             onCambiar={(monto) => onCambiarMonto(medio.idMedioPago, monto)}
           />
           {faltaCubrir > 0 && (

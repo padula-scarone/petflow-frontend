@@ -8,6 +8,11 @@ interface ListaPagoMixtoProps {
   lineas: LineaPagoMixto[]
   mediosDisponibles: MedioPago[]
   faltaCubrir: number
+  /**
+   * Lo que suma "Sumar el restante" a cada linea, con el ajuste de su medio, por id de medio. Si se informa, los campos
+   * muestran el monto final de cada medio (su parte mas el recargo o descuento) en lugar de la parte sola.
+   */
+  restanteFinalPorMedio?: Record<number, number>
   onAgregarLineaPago: (idMedioPago: number) => void
   onQuitarLineaPago: (idMedioPago: number) => void
   onCambiarMontoLinea: (idMedioPago: number, monto: number | null) => void
@@ -19,6 +24,7 @@ export function ListaPagoMixto({
   lineas,
   mediosDisponibles,
   faltaCubrir,
+  restanteFinalPorMedio,
   onAgregarLineaPago,
   onQuitarLineaPago,
   onCambiarMontoLinea,
@@ -66,7 +72,8 @@ export function ListaPagoMixto({
             key={linea.idMedioPago}
             linea={linea}
             medio={medio}
-            faltaCubrir={faltaCubrir}
+            faltaCubrir={restanteFinalPorMedio ? (restanteFinalPorMedio[linea.idMedioPago] ?? 0) : faltaCubrir}
+            mostrarMontoFinal={restanteFinalPorMedio !== undefined}
             onQuitar={onQuitarLineaPago}
             onCambiarMonto={onCambiarMontoLinea}
             onCambiarPagaCon={onCambiarPagaConLinea}
