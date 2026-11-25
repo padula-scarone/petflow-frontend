@@ -2,6 +2,7 @@ import { CreditCard, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatearMoneda, formatearMonedaConSigno } from '@/lib/formatear-moneda'
+import { convertirPesosACentavos } from '@/features/ventas/utils/calcular-centavos'
 import { CampoMonto } from '@/features/ventas/components/campo-monto'
 import { describirAjusteMedio } from '@/features/ventas/utils/describir-ajuste-medio'
 import type { LineaPagoMixto, MedioPago } from '@/features/ventas/types/cobro'
@@ -86,7 +87,10 @@ export function FilaPagoMixto({
                 valor={linea.pagaCon}
                 onCambiar={(monto) => onCambiarPagaCon(medio.idMedioPago, monto)}
               />
-              {linea.montoTotal > 0 && (
+              {/* El atajo sobra cuando el campo ya tiene ese monto (recien apretado o escrito a mano); vuelve al cambiarlo o vaciarlo */}
+              {linea.montoTotal > 0 &&
+                (linea.pagaCon === null ||
+                  convertirPesosACentavos(linea.pagaCon) !== convertirPesosACentavos(linea.montoTotal)) && (
                 <Button
                   type="button"
                   variant="outline"
