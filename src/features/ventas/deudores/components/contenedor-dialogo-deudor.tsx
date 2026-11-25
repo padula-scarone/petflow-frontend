@@ -42,6 +42,7 @@ export function ContenedorDialogoDeudor({
       valores={formulario.valores}
       errores={formulario.errores}
       estadoGuardado={formulario.estadoGuardado}
+      datosCompletos={formulario.datosCompletos}
       onCambiarValor={formulario.cambiarValor}
       onSalirDelCampo={formulario.salirDelCampo}
       onEnviar={() => void enviar()}

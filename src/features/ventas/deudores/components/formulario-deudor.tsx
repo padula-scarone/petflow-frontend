@@ -76,7 +76,7 @@ function CampoDatoDeudor({
 }
 
 /**
- * Los tres datos de un deudor: nombre y apellido, telefono y DNI. Se usa igual para el alta y
+ * Los tres datos de un deudor: nombre y apellido, DNI y telefono. Se usa igual para el alta y
  * para la edicion. Los errores de cada campo los decide el hook; aca solo se muestran.
  */
 export function FormularioDeudor({
@@ -110,21 +110,21 @@ export function FormularioDeudor({
       />
       <CampoDatoDeudor
         {...propiedadesComunes}
-        campo="telefono"
-        etiqueta="Teléfono"
-        tipo="tel"
-        modoEntrada="tel"
-        valor={valores.telefono}
-        error={errores.telefono}
-      />
-      <CampoDatoDeudor
-        {...propiedadesComunes}
         campo="dni"
         etiqueta="DNI"
         tipo="text"
         modoEntrada="numeric"
         valor={valores.dni}
         error={errores.dni}
+      />
+      <CampoDatoDeudor
+        {...propiedadesComunes}
+        campo="telefono"
+        etiqueta="Teléfono"
+        tipo="tel"
+        modoEntrada="tel"
+        valor={valores.telefono}
+        error={errores.telefono}
       />
     </form>
   )
