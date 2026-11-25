@@ -82,8 +82,8 @@ export function GrillaMediosPago({
           {montoPagaJusto !== undefined && montoPagaJusto > 0 && (
             <Button
               type="button"
-              variant="ghost"
-              className="self-start px-3 text-cuerpo tabular-nums sm:col-start-1 sm:row-start-2"
+              variant="outline"
+              className="self-start bg-fondo-tarjeta text-cuerpo tabular-nums sm:col-start-1 sm:row-start-2"
               onClick={() => onCambiarPagaCon(montoPagaJusto)}
             >
               Paga justo ({formatearMoneda(montoPagaJusto)})

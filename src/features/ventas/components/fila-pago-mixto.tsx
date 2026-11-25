@@ -65,8 +65,8 @@ export function FilaPagoMixto({
           {faltaCubrir > 0 && (
             <Button
               type="button"
-              variant="ghost"
-              className="self-start px-3 text-cuerpo tabular-nums"
+              variant="outline"
+              className="self-start bg-fondo-tarjeta text-cuerpo tabular-nums"
               onClick={() => onCompletarConRestante(medio.idMedioPago)}
             >
               Sumar el restante ({formatearMoneda(faltaCubrir)})
@@ -86,8 +86,8 @@ export function FilaPagoMixto({
               {linea.montoTotal > 0 && (
                 <Button
                   type="button"
-                  variant="ghost"
-                  className="self-start px-3 text-cuerpo tabular-nums"
+                  variant="outline"
+                  className="self-start bg-fondo-tarjeta text-cuerpo tabular-nums"
                   onClick={() => onCambiarPagaCon(medio.idMedioPago, linea.montoTotal)}
                 >
                   Paga justo ({formatearMoneda(linea.montoTotal)})
