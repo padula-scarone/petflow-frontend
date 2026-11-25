@@ -170,7 +170,7 @@ export interface RegistrarDevolucionRequest {
   /** Solo con medio EFECTIVO y saldo mayor a 0; mayor o igual al saldo. */
   montoRecibido?: number
   /** De 1 a 200 caracteres: la etiqueta del motivo o, con "Otro", el detalle escrito. */
-  motivoDevolucion: string
+  motivoCambio: string
 }
 
 /** Respuesta 201 del alta: la misma devolución que el detalle (los campos planos extra se ignoran). */
