@@ -102,6 +102,6 @@ export function coincideFilaConEnvio(fila: DevolucionListado, envio: EnvioAltaDe
 /** Indica si el detalle de un candidato lo cargo este usuario con este motivo (lo que la lista no muestra). */
 export function coincideDetalleConEnvio(devolucion: DevolucionDetalle, envio: EnvioAltaDevolucion) {
   return (
-    devolucion.vendedor.idUsuario === envio.idUsuario && devolucion.motivoDevolucion === envio.cuerpo.motivoDevolucion.trim()
+    devolucion.vendedor.idUsuario === envio.idUsuario && devolucion.motivoDevolucion === envio.cuerpo.motivoCambio.trim()
   )
 }

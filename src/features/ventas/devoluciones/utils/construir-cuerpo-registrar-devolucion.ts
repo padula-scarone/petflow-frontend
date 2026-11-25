@@ -44,6 +44,6 @@ export function construirCuerpoRegistrarDevolucion(
     ...(cobraSaldo &&
       medioSeleccionado?.admiteVuelto === true &&
       borrador.montoRecibido !== null && { montoRecibido: borrador.montoRecibido }),
-    motivoDevolucion: construirTextoMotivoConEtiquetas(codigoMotivo, borrador.detalleMotivo, ETIQUETA_POR_MOTIVO_DEVOLUCION),
+    motivoCambio: construirTextoMotivoConEtiquetas(codigoMotivo, borrador.detalleMotivo, ETIQUETA_POR_MOTIVO_DEVOLUCION),
   }
 }
