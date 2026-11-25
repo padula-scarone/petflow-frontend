@@ -2,6 +2,7 @@ import { CreditCard } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
 import { formatearMoneda } from '@/lib/formatear-moneda'
+import { convertirPesosACentavos } from '@/features/ventas/utils/calcular-centavos'
 import { CampoMonto } from '@/features/ventas/components/campo-monto'
 import { describirAjusteMedio } from '@/features/ventas/utils/describir-ajuste-medio'
 import type { MedioPago } from '@/features/ventas/types/cobro'
@@ -79,11 +80,14 @@ export function GrillaMediosPago({
             valor={pagaCon}
             onCambiar={onCambiarPagaCon}
           />
-          {montoPagaJusto !== undefined && montoPagaJusto > 0 && (
+          {/* El atajo sobra cuando el campo ya tiene ese monto (recien apretado o escrito a mano); vuelve al cambiarlo o vaciarlo */}
+          {montoPagaJusto !== undefined &&
+            montoPagaJusto > 0 &&
+            (pagaCon === null || convertirPesosACentavos(pagaCon) !== convertirPesosACentavos(montoPagaJusto)) && (
             <Button
               type="button"
-              variant="ghost"
-              className="self-start px-3 text-cuerpo tabular-nums sm:col-start-1 sm:row-start-2"
+              variant="outline"
+              className="self-start bg-fondo-tarjeta text-cuerpo tabular-nums sm:col-start-1 sm:row-start-2"
               onClick={() => onCambiarPagaCon(montoPagaJusto)}
             >
               Paga justo ({formatearMoneda(montoPagaJusto)})

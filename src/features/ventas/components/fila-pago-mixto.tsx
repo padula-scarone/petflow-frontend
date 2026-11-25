@@ -2,6 +2,7 @@ import { CreditCard, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { formatearMoneda, formatearMonedaConSigno } from '@/lib/formatear-moneda'
+import { convertirPesosACentavos } from '@/features/ventas/utils/calcular-centavos'
 import { CampoMonto } from '@/features/ventas/components/campo-monto'
 import { describirAjusteMedio } from '@/features/ventas/utils/describir-ajuste-medio'
 import type { LineaPagoMixto, MedioPago } from '@/features/ventas/types/cobro'
@@ -12,6 +13,8 @@ interface FilaPagoMixtoProps {
   medio: MedioPago
   /** Lo que todavia falta cubrir de la venta, para ofrecer completarlo en esta linea. */
   faltaCubrir: number
+  /** Verdadero: el campo muestra lo que paga el medio con su ajuste, y lo que se escribe tambien es ese monto. */
+  mostrarMontoFinal?: boolean
   onQuitar: (idMedioPago: number) => void
   onCambiarMonto: (idMedioPago: number, monto: number | null) => void
   onCambiarPagaCon: (idMedioPago: number, monto: number | null) => void
@@ -22,6 +25,7 @@ export function FilaPagoMixto({
   linea,
   medio,
   faltaCubrir,
+  mostrarMontoFinal = false,
   onQuitar,
   onCambiarMonto,
   onCambiarPagaCon,
@@ -59,14 +63,14 @@ export function FilaPagoMixto({
           <CampoMonto
             idCampo={`monto-${medio.idMedioPago}`}
             etiqueta="Monto a cubrir"
-            valor={linea.montoACubrir}
+            valor={mostrarMontoFinal && linea.montoACubrir !== null ? linea.montoTotal : linea.montoACubrir}
             onCambiar={(monto) => onCambiarMonto(medio.idMedioPago, monto)}
           />
           {faltaCubrir > 0 && (
             <Button
               type="button"
-              variant="ghost"
-              className="self-start px-3 text-cuerpo tabular-nums"
+              variant="outline"
+              className="self-start bg-fondo-tarjeta text-cuerpo tabular-nums"
               onClick={() => onCompletarConRestante(medio.idMedioPago)}
             >
               Sumar el restante ({formatearMoneda(faltaCubrir)})
@@ -83,11 +87,14 @@ export function FilaPagoMixto({
                 valor={linea.pagaCon}
                 onCambiar={(monto) => onCambiarPagaCon(medio.idMedioPago, monto)}
               />
-              {linea.montoTotal > 0 && (
+              {/* El atajo sobra cuando el campo ya tiene ese monto (recien apretado o escrito a mano); vuelve al cambiarlo o vaciarlo */}
+              {linea.montoTotal > 0 &&
+                (linea.pagaCon === null ||
+                  convertirPesosACentavos(linea.pagaCon) !== convertirPesosACentavos(linea.montoTotal)) && (
                 <Button
                   type="button"
-                  variant="ghost"
-                  className="self-start px-3 text-cuerpo tabular-nums"
+                  variant="outline"
+                  className="self-start bg-fondo-tarjeta text-cuerpo tabular-nums"
                   onClick={() => onCambiarPagaCon(medio.idMedioPago, linea.montoTotal)}
                 >
                   Paga justo ({formatearMoneda(linea.montoTotal)})

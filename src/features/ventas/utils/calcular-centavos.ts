@@ -32,6 +32,26 @@ export function calcularMontoFinalCentavos(baseCentavos: number, ajusteBasisPoin
   return Math.round((baseCentavos * (10000 + ajusteBasisPoints)) / 10000)
 }
 
+/**
+ * La porcion base que, con el ajuste del medio, da el monto final escrito: lo contrario de `calcularMontoFinalCentavos`.
+ * El back cobra el final redondeado desde una base en centavos, asi que no todo final se puede lograr exacto (con
+ * recargo, algunos centavos se saltean). Entre las bases vecinas se elige la que deja el final mas cerca de lo escrito;
+ * si dos empatan, la menor, que es la que cobra menos.
+ */
+export function calcularBaseDesdeMontoFinalCentavos(montoFinalCentavos: number, ajusteBasisPoints: number) {
+  const factorBasisPoints = 10000 + ajusteBasisPoints
+  // Un descuento del 100 % o mas no tiene base que lo deshaga: se deja el monto como esta
+  if (factorBasisPoints <= 0) return montoFinalCentavos
+  const baseAproximada = Math.round((montoFinalCentavos * 10000) / factorBasisPoints)
+  const candidatas = [baseAproximada - 1, baseAproximada, baseAproximada + 1].filter((base) => base >= 0)
+  return candidatas.reduce((mejor, candidata) =>
+    Math.abs(calcularMontoFinalCentavos(candidata, ajusteBasisPoints) - montoFinalCentavos) <
+    Math.abs(calcularMontoFinalCentavos(mejor, ajusteBasisPoints) - montoFinalCentavos)
+      ? candidata
+      : mejor,
+  )
+}
+
 /** Descuento manual en porcentaje, convertido a centavos sobre el subtotal. */
 export function calcularDescuentoPorcentajeCentavos(subtotalCentavos: number, porcentaje: number) {
   return Math.round((subtotalCentavos * porcentaje) / 100)

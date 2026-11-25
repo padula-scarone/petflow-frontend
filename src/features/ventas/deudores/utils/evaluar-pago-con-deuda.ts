@@ -3,6 +3,7 @@ import type { FormaPagoAhora, ResumenPagoConDeuda } from '@/features/ventas/deud
 import { MOTIVO_INGRESAR_PAGA_CON } from '@/features/ventas/config/mensajes-error-venta'
 import { MONTO_RECIBIDO_MAXIMO_CENTAVOS } from '@/features/ventas/config/reglas-venta'
 import type { EstadoCargaRecurso } from '@/features/ventas/types/carga'
+import { convertirCentavosAPesos } from '@/features/ventas/utils/calcular-centavos'
 import { formatearMoneda } from '@/lib/formatear-moneda'
 
 /** Todo lo que decide si el pago se puede confirmar. */
@@ -19,6 +20,8 @@ interface EntradaEvaluacionPago {
   /** Lo que escribio en "Paga con"; null = vacio. */
   pagaConCentavos: number | null
   cobradoAhoraCentavos: number
+  /** Lo maximo que se puede cobrar ahora con el medio elegido: el importe de la venta con el ajuste del medio. */
+  montoMaximoUnicoCentavos: number
   // --- Pago mixto ---
   cantidadLineasMixto: number
   /** Motivo que ya calcula el cobro de siempre para el pago mixto (medios sin monto, efectivo que no alcanza). */
@@ -75,7 +78,8 @@ export function evaluarPagoConDeuda(entrada: EntradaEvaluacionPago): EvaluacionP
       return bloquearCon(MOTIVO_MONTO_AHORA_VACIO, MOTIVO_MONTO_AHORA_VACIO)
     }
     if (resumen.excedente > 0) {
-      const mensaje = `El monto no puede superar el total (${formatearMoneda(resumen.importeVenta)})`
+      // El campo muestra el monto con el ajuste del medio: el tope que se dice es el mismo
+      const mensaje = `El monto no puede superar el total (${formatearMoneda(convertirCentavosAPesos(entrada.montoMaximoUnicoCentavos))})`
       return bloquearCon(mensaje, mensaje)
     }
     if (entrada.medioUnicoAdmiteVuelto) {

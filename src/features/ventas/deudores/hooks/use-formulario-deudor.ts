@@ -52,6 +52,8 @@ export function useFormularioDeudor({ valoresIniciales, guardar }: OpcionesFormu
     ...(estadoGuardado.fase === 'error' ? estadoGuardado.erroresCampos : undefined),
   }
   const guardando = estadoGuardado.fase === 'guardando'
+  // Solo mira que no haya campos vacios: el formato de cada dato lo sigue explicando su error al tocarse o al enviar
+  const datosCompletos = Object.values(valores).every((valor) => valor.trim() !== '')
 
   // --- ACCIONES ---
   const cambiarValor = (campo: CampoDeudor, valor: string) => {
@@ -85,5 +87,5 @@ export function useFormularioDeudor({ valoresIniciales, guardar }: OpcionesFormu
     }
   }
 
-  return { valores, errores, estadoGuardado, guardando, cambiarValor, salirDelCampo, enviar }
+  return { valores, errores, estadoGuardado, guardando, datosCompletos, cambiarValor, salirDelCampo, enviar }
 }

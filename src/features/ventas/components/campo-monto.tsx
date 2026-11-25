@@ -28,10 +28,12 @@ export function CampoMonto({
   // Se guarda lo tipeado aparte del numero: "12," tiene que seguir viendose como "12," mientras se escribe
   const [texto, setTexto] = useState(formatearMontoParaCampo(valor))
   const [valorPrevio, setValorPrevio] = useState(valor)
-  // Si el valor cambia desde afuera (por ejemplo al completar con lo que falta), el campo lo muestra
+  const [enfocado, setEnfocado] = useState(false)
+  // Si el valor cambia desde afuera (por ejemplo al completar con lo que falta), el campo lo muestra. Con el campo en
+  // uso no se pisa lo que se esta escribiendo: si quien lo recibe lo corrige (un centavo por redondeo), se ve al salir
   if (valor !== valorPrevio) {
     setValorPrevio(valor)
-    if (parsearTextoMonto(texto) !== valor) setTexto(formatearMontoParaCampo(valor))
+    if (!enfocado && parsearTextoMonto(texto) !== valor) setTexto(formatearMontoParaCampo(valor))
   }
 
   return (
@@ -60,8 +62,12 @@ export function CampoMonto({
             setValorPrevio(monto)
             onCambiar(monto)
           }}
-          // Al salir del campo se completan los decimales: "1500" queda "1500,00"
-          onBlur={() => setTexto(formatearMontoParaCampo(parsearTextoMonto(texto)))}
+          onFocus={() => setEnfocado(true)}
+          // Al salir del campo se completan los decimales ("1500" queda "1500,00") y se muestra el valor que quedo
+          onBlur={() => {
+            setEnfocado(false)
+            setTexto(formatearMontoParaCampo(valor))
+          }}
         />
       </div>
     </div>

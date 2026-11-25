@@ -19,6 +19,8 @@ export interface PagoResumenVenta {
   montoBase: number
   /** Recargo (positivo) o descuento (negativo) del medio sobre esa parte. */
   montoAjuste: number
+  /** El porcentaje del ajuste del medio, por ejemplo "+10 %" o "−5 %". */
+  descripcionAjuste: string
   /** Solo efectivo con "Paga con" informado. */
   montoRecibido: number | null
   /** Solo si hay monto recibido. */

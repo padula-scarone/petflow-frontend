@@ -60,13 +60,14 @@ export function DetalleConfirmacionVenta({ resumen, children }: DetalleConfirmac
         <Grupo>
           {pagos.map((pago) => (
             <div key={pago.idMedioPago} className="flex flex-col gap-1.5">
+              {/* Con ajuste la fila dice "Total": es lo que paga el medio, y debajo se explica de donde sale */}
               <FilaDetalleConfirmacion
-                etiqueta={pago.nombreMedioPago}
+                etiqueta={pago.montoAjuste === 0 ? pago.nombreMedioPago : `Total ${pago.nombreMedioPago}`}
                 dato={formatearMoneda(pago.montoBase + pago.montoAjuste)}
               />
               {pago.montoAjuste !== 0 && (
                 <FilaDetalleConfirmacion
-                  etiqueta={pago.montoAjuste < 0 ? 'Descuento del medio' : 'Recargo del medio'}
+                  etiqueta={`${pago.montoAjuste < 0 ? 'Descuento' : 'Recargo'} aplicado (${pago.descripcionAjuste} sobre ${formatearMoneda(pago.montoBase)})`}
                   dato={formatearMonedaConSigno(pago.montoAjuste)}
                   sangria
                 />

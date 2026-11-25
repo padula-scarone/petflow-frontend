@@ -45,6 +45,7 @@ import type { SolicitudVenta, PagoSolicitud } from '@/features/ventas/types/soli
 import type { ArticuloCarrito, CanalVenta, ErroresDatosEnvio, TipoEntrega } from '@/features/ventas/types/venta'
 import {
   calcularAjusteBasisPoints,
+  calcularBaseDesdeMontoFinalCentavos,
   calcularMontoFinalCentavos,
   convertirCentavosAPesos,
   convertirPesosACentavos,
@@ -168,6 +169,29 @@ export function usePagoConDeuda({
     ajusteMediosPagoCentavos,
   })
   const cobradoAhoraCentavos = pagadoAhoraBaseCentavos + ajusteMediosPagoCentavos
+  // Los campos de monto muestran lo que se cobra (base mas ajuste del medio); lo que se guarda y viaja es la base
+  const ajusteMedioUnicoBasisPoints = medioUnico ? calcularAjusteBasisPoints(medioUnico) : 0
+  const montoAhoraMostrado =
+    montoAhoraUnico === null
+      ? null
+      : convertirCentavosAPesos(
+          calcularMontoFinalCentavos(convertirPesosACentavos(montoAhoraUnico), ajusteMedioUnicoBasisPoints),
+        )
+  const montoMaximoUnicoCentavos = calcularMontoFinalCentavos(importeVentaCentavos, ajusteMedioUnicoBasisPoints)
+  const restanteBaseMixtoCentavos = Math.max(importeVentaCentavos - pagadoAhoraBaseCentavos, 0)
+  // Lo que el atajo suma a cada linea: cuanto crece su monto final al agregarle el restante en base
+  const restanteFinalPorMedio: Record<number, number> = Object.fromEntries(
+    estadoCobro.lineasPagoMixto.flatMap((linea) => {
+      const medio = estadoCobro.mediosDisponibles.find((candidato) => candidato.idMedioPago === linea.idMedioPago)
+      if (!medio || restanteBaseMixtoCentavos === 0) return []
+      const ajusteBasisPoints = calcularAjusteBasisPoints(medio)
+      const baseLineaCentavos = convertirPesosACentavos(linea.montoACubrir ?? 0)
+      const crecimientoCentavos =
+        calcularMontoFinalCentavos(baseLineaCentavos + restanteBaseMixtoCentavos, ajusteBasisPoints) -
+        calcularMontoFinalCentavos(baseLineaCentavos, ajusteBasisPoints)
+      return [[linea.idMedioPago, convertirCentavosAPesos(crecimientoCentavos)] as const]
+    }),
+  )
   const pagaConCentavos = estadoCobro.pagaCon === null ? null : convertirPesosACentavos(estadoCobro.pagaCon)
   const vueltoUnico =
     !fiarTodo && formaPago === 'unico' && medioUnico?.admiteVuelto && pagaConCentavos !== null
@@ -189,6 +213,7 @@ export function usePagoConDeuda({
     montoAhoraUnico,
     pagaConCentavos,
     cobradoAhoraCentavos,
+    montoMaximoUnicoCentavos,
     cantidadLineasMixto: estadoCobro.lineasPagoMixto.length,
     motivoCobroMixto: estadoCobro.motivoNoConfirmable,
     hayDeuda,
@@ -223,10 +248,11 @@ export function usePagoConDeuda({
     fiarTodo,
     mediosDisponibles: estadoCobro.mediosDisponibles,
     idMedioSeleccionado: estadoCobro.idMedioSeleccionado,
-    montoAhora: montoAhoraUnico,
+    montoAhora: montoAhoraMostrado,
     pagaCon: estadoCobro.pagaCon,
     vuelto: vueltoUnico,
     lineasPagoMixto: estadoCobro.lineasPagoMixto,
+    restanteFinalPorMedio,
     resumen,
     deuda: mostrarDeuda
       ? {
@@ -492,7 +518,14 @@ export function usePagoConDeuda({
     resumenConfirmacion,
     onCambiarFormaPago: cambiarFormaPago,
     onSeleccionarMedioPago: seleccionarMedioPago,
-    onCambiarMontoAhora: (monto) => {
+    // El campo habla en monto final: aca se lo lleva a la porcion base, que es lo que se guarda
+    onCambiarMontoAhora: (montoFinal) => {
+      const monto =
+        montoFinal === null
+          ? null
+          : convertirCentavosAPesos(
+              calcularBaseDesdeMontoFinalCentavos(convertirPesosACentavos(montoFinal), ajusteMedioUnicoBasisPoints),
+            )
       setMontoAhoraEscrito({ monto, importeVentaCentavos })
       setFiarTodo(false)
     },
@@ -501,7 +534,17 @@ export function usePagoConDeuda({
     onCobrarAlgoAhora: () => setFiarTodo(false),
     onAgregarLineaPago: agregarLineaPago,
     onQuitarLineaPago: propiedadesCobro.onQuitarLineaPago,
-    onCambiarMontoLinea: propiedadesCobro.onCambiarMontoLinea,
+    // El campo de cada linea habla en monto final: se lo lleva a la porcion base de su medio
+    onCambiarMontoLinea: (idMedioPago, montoFinal) => {
+      const medio = estadoCobro.mediosDisponibles.find((candidato) => candidato.idMedioPago === idMedioPago)
+      const monto =
+        montoFinal === null || !medio
+          ? montoFinal
+          : convertirCentavosAPesos(
+              calcularBaseDesdeMontoFinalCentavos(convertirPesosACentavos(montoFinal), calcularAjusteBasisPoints(medio)),
+            )
+      propiedadesCobro.onCambiarMontoLinea(idMedioPago, monto)
+    },
     onCambiarPagaConLinea: propiedadesCobro.onCambiarPagaConLinea,
     onCompletarConRestante: propiedadesCobro.onCompletarConRestante,
     onAjustarMontosAutomaticamente: propiedadesCobro.onAjustarMontosAutomaticamente,

@@ -5,6 +5,7 @@ import type {
   ResumenConfirmacionVenta,
 } from '@/features/ventas/types/resumen-confirmacion-venta'
 import type { ArticuloCarrito, CanalVenta, TipoEntrega } from '@/features/ventas/types/venta'
+import { describirAjusteMedio } from '@/features/ventas/utils/describir-ajuste-medio'
 import { listarDatosEnvio } from '@/features/ventas/utils/listar-datos-envio'
 
 /** Lo que hace falta para armar el resumen que se revisa antes de registrar la venta. */
@@ -35,6 +36,7 @@ function construirPagos(estadoPago: EstadoPagoConDeuda): PagoResumenVenta[] {
         nombreMedioPago: medio.nombre,
         montoBase: estadoPago.resumen.pagadoAhoraBase,
         montoAjuste: estadoPago.resumen.ajusteMediosPago,
+        descripcionAjuste: describirAjusteMedio(medio),
         montoRecibido: medio.admiteVuelto ? estadoPago.pagaCon : null,
         vuelto: medio.admiteVuelto ? estadoPago.vuelto : null,
       },
@@ -50,6 +52,7 @@ function construirPagos(estadoPago: EstadoPagoConDeuda): PagoResumenVenta[] {
         nombreMedioPago: medio.nombre,
         montoBase: linea.montoACubrir ?? 0,
         montoAjuste: linea.montoAjuste,
+        descripcionAjuste: describirAjusteMedio(medio),
         montoRecibido: medio.admiteVuelto ? linea.pagaCon : null,
         vuelto: medio.admiteVuelto ? linea.vuelto : null,
       },

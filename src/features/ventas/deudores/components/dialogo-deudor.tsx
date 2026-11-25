@@ -27,6 +27,8 @@ interface DialogoDeudorProps {
   valores: DatosDeudor
   errores: ErroresDatosDeudor
   estadoGuardado: EstadoGuardadoDeudor
+  /** Verdadero cuando los tres datos tienen texto: hasta entonces no se puede guardar. */
+  datosCompletos: boolean
   onCambiarValor: (campo: CampoDeudor, valor: string) => void
   onSalirDelCampo: (campo: CampoDeudor) => void
   onEnviar: () => void
@@ -79,6 +81,7 @@ export function DialogoDeudor({
   valores,
   errores,
   estadoGuardado,
+  datosCompletos,
   onCambiarValor,
   onSalirDelCampo,
   onEnviar,
@@ -115,7 +118,7 @@ export function DialogoDeudor({
           <Button type="button" variant="outline" disabled={guardando} className="bg-fondo-tarjeta" onClick={onCerrar}>
             Cancelar
           </Button>
-          <Button type="submit" form={ID_FORMULARIO_DEUDOR} disabled={guardando}>
+          <Button type="submit" form={ID_FORMULARIO_DEUDOR} disabled={guardando || !datosCompletos}>
             {guardando && <Loader2 aria-hidden="true" className="animate-spin motion-reduce:animate-none" />}
             {guardando ? 'Guardando…' : modo === 'alta' ? 'Guardar deudor' : 'Guardar cambios'}
           </Button>

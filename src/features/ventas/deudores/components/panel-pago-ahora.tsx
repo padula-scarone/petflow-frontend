@@ -123,6 +123,7 @@ export function PanelPagoAhora({
           lineas={estadoPago.lineasPagoMixto}
           mediosDisponibles={estadoPago.mediosDisponibles}
           faltaCubrir={resumen.queDebe}
+          restanteFinalPorMedio={estadoPago.restanteFinalPorMedio}
           onAgregarLineaPago={onAgregarLineaPago}
           onQuitarLineaPago={onQuitarLineaPago}
           onCambiarMontoLinea={onCambiarMontoLinea}
